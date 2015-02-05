@@ -701,6 +701,40 @@ class npc_torturer_lecraft : public CreatureScript
         }
 };
 
+/* Sarathstra, Scourge of the North */
+#define QUEST_SARATHSTRA_SCOURGE_OF_THE_NORTH    12097
+#define NPC_SARATHSTRA                           26858
+#define GOSSIP_ITEM_SARATHSTRA                   "Призвать Сарастру."
+
+class npc_rokhan : public CreatureScript
+{
+public:
+    npc_rokhan() : CreatureScript("npc_rokhan") { }
+
+bool OnGossipHello(Player* player, Creature* creature)
+    {
+    if (creature->IsQuestGiver())
+        player->PrepareQuestMenu(creature->GetGUID());
+
+    if (player->GetQuestStatus(QUEST_SARATHSTRA_SCOURGE_OF_THE_NORTH) == QUEST_STATUS_INCOMPLETE)
+        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SARATHSTRA, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+
+    player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+    return true;
+    }
+
+bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    {
+        player->PlayerTalkClass->ClearMenus();
+        if (action == GOSSIP_ACTION_INFO_DEF+1)
+        {
+            player->CLOSE_GOSSIP_MENU();
+            Creature* sarathstra = creature->SummonCreature(NPC_SARATHSTRA, 4329, 998, 95.3, 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60000) ;
+            }
+            return true;
+    }
+};
+
 void AddSC_dragonblight()
 {
     new npc_commander_eligor_dawnbringer();
@@ -708,4 +742,5 @@ void AddSC_dragonblight()
     new spell_q12096_q12092_bark();
     new npc_wyrmrest_defender();
     new npc_torturer_lecraft();
+    new npc_rokhan();
 }
