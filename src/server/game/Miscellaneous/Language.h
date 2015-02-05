@@ -1,4 +1,4 @@
-LANG_INVALID_REALMID                = 11001,/*
+/*
  * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
