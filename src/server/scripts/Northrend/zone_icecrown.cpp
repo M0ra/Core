@@ -904,6 +904,7 @@ enum FactionValiantChampion
     SPELL_GIVE_VALIANT_MARK_5   = 62996,
     SPELL_DEFEND_AURA_PERIODIC  = 64223, // 10sec
     SPELL_DEFEND                = 62719,
+	SPELL_THRUST                = 62544,
 
     SPELL_GIVE_CHAMPION_MARK    = 63596,
 
