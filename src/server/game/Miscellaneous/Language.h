@@ -1,4 +1,4 @@
-/*
+LANG_INVALID_REALMID                = 11001,/*
  * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -1186,6 +1186,7 @@ enum TrinityStrings
     // Use for custom patches             11000-11999
     LANG_AUTO_BROADCAST                 = 11000,
     LANG_INVALID_REALMID                = 11001,
+	LANG_BAN_CHEATER                    = 11010,
 
     // Show Kick in world
     LANG_COMMAND_KICKMESSAGE_WORLD = 11002,
