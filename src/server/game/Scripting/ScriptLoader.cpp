@@ -690,8 +690,6 @@ void AddSC_outdoorpvp_zm();
 void AddSC_chat_log();
 void AddSC_action_ip_logger();
 
-void AddSC_PWS_Transmogrification();
-void AddSC_CS_Transmogrification();
 #endif
 
 void AddScripts()
