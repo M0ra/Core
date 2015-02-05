@@ -16,7 +16,6 @@
 #include "AnticheatMgr.h"
 #include "AnticheatScripts.h"
 #include "MapManager.h"
-#include "Language.h"
 
 #define CLIMB_ANGLE 1.9f
 
@@ -340,7 +339,6 @@ void AnticheatMgr::BuildReport(Player* player,uint8 reportType)
             {
                 str = "Possible cheater found: " + std::string(player->GetName());
                 sWorld->BanCharacter(player->GetName(), "24h", str, "AC");
-                sWorld->SendWorldText(LANG_BAN_CHEATER, (handler->GetSession() ? handler->GetSession()->GetPlayerName().c_str() : "AC"), name.c_str(), secsToTimeString(TimeStringToSecs(durationStr), true).c_str(), reasonStr);
             }
         }
         else
