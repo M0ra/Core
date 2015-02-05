@@ -1,0 +1,171 @@
+diff --git a/src/server/game/Entities/Player/Player.cpp b/src/server/game/Entities/Player/Player.cpp
+index 2f584fd..2d61d8c 100644
+--- a/src/server/game/Entities/Player/Player.cpp
++++ b/src/server/game/Entities/Player/Player.cpp
+@@ -16,6 +16,17 @@
+  * with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++// 1
++// 2
++// 3
++// 4
++// 5
++// 6
++// 7
++// 8
++// 9
++// 10
++
+ #include "Player.h"
+ #include "AccountMgr.h"
+ #include "AchievementMgr.h"
+diff --git a/src/server/game/Scripting/ScriptLoader.cpp b/src/server/game/Scripting/ScriptLoader.cpp
+index f5cb3ae..c7e3ed7 100644
+--- a/src/server/game/Scripting/ScriptLoader.cpp
++++ b/src/server/game/Scripting/ScriptLoader.cpp
+@@ -1296,6 +1296,46 @@ void AddBattlegroundScripts()
+ #ifdef SCRIPTS
+ /* This is where custom scripts' loading functions should be declared. */
+ 
++// 1
++// 2
++// 3
++// 4
++// 5
++// 6
++// 7
++// 8
++// 9
++// 10
++// 11
++// 12
++// 13
++// 14
++// 15
++// 16
++// 17
++// 18
++// 19
++// 20
++// 21
++// 22
++// 23
++// 24
++// 25
++// 26
++// 27
++// 28
++// 29
++// 30
++// 31
++// 32
++// 33
++// 34
++// 35
++// 36
++// 37
++// 38
++// 39
++// 40
+ #endif
+ 
+ void AddCustomScripts()
+@@ -1303,5 +1343,45 @@ void AddCustomScripts()
+ #ifdef SCRIPTS
+     /* This is where custom scripts should be added. */
+ 
++    // 1
++    // 2
++    // 3
++    // 4
++    // 5
++    // 6
++    // 7
++    // 8
++    // 9
++    // 10
++    // 11
++    // 12
++    // 13
++    // 14
++    // 15
++    // 16
++    // 17
++    // 18
++    // 19
++    // 20
++    // 21
++    // 22
++    // 23
++    // 24
++    // 25
++    // 26
++    // 27
++    // 28
++    // 29
++    // 30
++    // 31
++    // 32
++    // 33
++    // 34
++    // 35
++    // 36
++    // 37
++    // 38
++    // 39
++    // 40
+ #endif
+ }
+diff --git a/src/server/scripts/Custom/CMakeLists.txt b/src/server/scripts/Custom/CMakeLists.txt
+index 99cf026..dca1367 100644
+--- a/src/server/scripts/Custom/CMakeLists.txt
++++ b/src/server/scripts/Custom/CMakeLists.txt
+@@ -10,6 +10,47 @@
+ set(scripts_STAT_SRCS
+   ${scripts_STAT_SRCS}
+ #  ${sources_Custom}
++# Path to files
++# 1
++# 2
++# 3
++# 4
++# 5
++# 6
++# 7
++# 8
++# 9
++# 10
++# 11
++# 12
++# 13
++# 14
++# 15
++# 16
++# 17
++# 18
++# 19
++# 20
++# 21
++# 22
++# 23
++# 24
++# 25
++# 26
++# 27
++# 28
++# 29
++# 30
++# 31
++# 32
++# 33
++# 34
++# 35
++# 36
++# 37
++# 38
++# 39
++# 40
+ )
+ 
+ message("  -> Prepared: Custom")
