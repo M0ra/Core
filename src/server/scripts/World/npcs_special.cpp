@@ -2378,6 +2378,200 @@ public:
     }
 };
 
+/*#####
+# npc_argent squire
+#####*/
+
+enum Squire
+{
+    ACH_PONY_UP                     = 3736,
+
+    NPC_ARGENT_GRUNT                = 33239,
+    NPC_ARGENT_SQUIRE               = 33238,
+
+    SPELL_SQUIRE_MOUNT_CHECK        = 67039,
+    SPELL_STORMWIND_PENNANT         = 62727,
+    SPELL_SENJIN_PENNANT            = 63446,
+    SPELL_DARNASSUS_PENNANT         = 63443,
+    SPELL_EXODAR_PENNANT            = 63439,
+    SPELL_UNDERCITY_PENNANT         = 63441,
+    SPELL_GNOMEREAGAN_PENNANT       = 63442,
+    SPELL_IRONFORGE_PENNANT         = 63440,
+    SPELL_ORGRIMMAR_PENNANT         = 63444,
+    SPELL_SILVERMOON_PENNANT        = 63438,
+    SPELL_THUNDERBLUFF_PENNANT      = 63445,
+    SPELL_SQUIRE_TIRED              = 67401,
+    SPELL_SQUIRE_BANK               = 67368,
+    SPELL_SQUIRE_SHOP               = 67377,
+    SPELL_SQUIRE_POSTMAN            = 67376,
+    SPELL_PLAYER_TIRED              = 67334
+};
+
+class npc_argent_squire : public CreatureScript
+{
+public:
+    npc_argent_squire() : CreatureScript("npc_argent_squire") { }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_argent_squireAI(creature);
+    }
+
+    struct npc_argent_squireAI : public ScriptedAI
+    {
+        npc_argent_squireAI(Creature* creature) : ScriptedAI(creature) { }
+
+        bool Bank;
+        bool Shop;
+        bool Mail;
+
+        uint32 curPennant;
+
+        void Reset()
+        {
+            curPennant = 0;
+            Bank=false;
+            Shop=false;
+            Mail=false;
+
+            if (Aura* tired = me->GetOwner()->GetAura(SPELL_PLAYER_TIRED))
+            {
+                int32 duration = tired->GetDuration();
+                tired = me->AddAura(SPELL_SQUIRE_TIRED, me);
+                tired->SetDuration(duration);
+            }
+        }
+
+        void UpdateAI(uint32 diff)
+        {
+            Player* player = me->GetOwner()->ToPlayer();
+
+            if (player->HasAchieved(ACH_PONY_UP))
+                if (!me->HasAura(SPELL_SQUIRE_MOUNT_CHECK))
+                    me->AddAura(SPELL_SQUIRE_MOUNT_CHECK,me);
+
+            if (me->HasAura(SPELL_SQUIRE_TIRED)) // Make sure Tired aura is applied before Unsummon
+            {
+                if (Bank || Shop || Mail)
+                {
+                    me->DespawnOrUnsummon();
+                }
+            }
+        }
+
+        void sGossipSelect (Player* player, uint32 /*sender*/, uint32 action)
+        {
+            switch (action)
+            {
+                case 0:
+                    player->CLOSE_GOSSIP_MENU();
+                    if (!Bank)
+                    {
+                        Bank = true;
+                        me->AddAura(SPELL_SQUIRE_BANK,me);
+                        player->AddAura(SPELL_PLAYER_TIRED, player);
+                        me->SetFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_BANKER);
+                    }
+                    player->GetSession()->SendShowBank(player->GetGUID());
+                    break;
+                case 1:
+                    player->CLOSE_GOSSIP_MENU();
+                    if (!Shop)
+                    {
+                        Shop = true;
+                        me->AddAura(SPELL_SQUIRE_SHOP,me);
+                        player->AddAura(SPELL_PLAYER_TIRED, player);
+                    }
+                    player->GetSession()->SendListInventory(me->GetGUID());
+                    break;
+                case 2:
+                    player->CLOSE_GOSSIP_MENU();
+                    if (!Mail)
+                    {
+                        me->RemoveFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_VENDOR);
+                        me->SetFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_MAILBOX);
+                        Mail = true;
+                        me->AddAura(SPELL_SQUIRE_POSTMAN,me);
+                        player->AddAura(SPELL_PLAYER_TIRED, player);
+                    }
+                    player->GetSession()->SendShowMail(me->GetGUID());
+                    break;
+                case 3: //Darnassus/Darkspear Pennant
+                    player->CLOSE_GOSSIP_MENU();
+                    me->RemoveAurasDueToSpell(curPennant);
+                    if (me->GetEntry()==NPC_ARGENT_SQUIRE)
+                    {
+                        me->AddAura(SPELL_DARNASSUS_PENNANT,me);
+                        curPennant = SPELL_DARNASSUS_PENNANT;
+                    }
+                    else
+                    {
+                        me->AddAura(SPELL_SENJIN_PENNANT,me);
+                        curPennant = SPELL_SENJIN_PENNANT;
+                    }
+                    break;
+                case 4: //Exodar/Forsaken Pennant
+                    player->CLOSE_GOSSIP_MENU();
+                    me->RemoveAurasDueToSpell(curPennant);
+                    if (me->GetEntry()==NPC_ARGENT_SQUIRE)
+                    {
+                        me->AddAura(SPELL_EXODAR_PENNANT,me);
+                        curPennant = SPELL_EXODAR_PENNANT;
+                    }
+                    else
+                    {
+                        me->AddAura(SPELL_UNDERCITY_PENNANT,me);
+                        curPennant = SPELL_UNDERCITY_PENNANT;
+                    }
+                    break;
+                case 5: //Gnomereagan/Orgrimmar Pennant
+                    player->CLOSE_GOSSIP_MENU();
+                    me->RemoveAurasDueToSpell(curPennant);
+                    if (me->GetEntry()==NPC_ARGENT_SQUIRE)
+                    {
+                        me->AddAura(SPELL_GNOMEREAGAN_PENNANT,me);
+                        curPennant = SPELL_GNOMEREAGAN_PENNANT;
+                    }
+                    else
+                    {
+                        me->AddAura(SPELL_ORGRIMMAR_PENNANT,me);
+                        curPennant = SPELL_ORGRIMMAR_PENNANT;
+                    }
+                    break;
+                case 6: //Ironforge/Silvermoon Pennant
+                    player->CLOSE_GOSSIP_MENU();
+                    me->RemoveAurasDueToSpell(curPennant);
+                    if (me->GetEntry()==NPC_ARGENT_SQUIRE)
+                    {
+                        me->AddAura(SPELL_IRONFORGE_PENNANT,me);
+                        curPennant = SPELL_IRONFORGE_PENNANT;
+                    }
+                    else
+                    {
+                        me->AddAura(SPELL_SILVERMOON_PENNANT,me);
+                        curPennant = SPELL_SILVERMOON_PENNANT;
+                    }
+                    break;
+                case 7: //Stormwind/Thunder Bluff Pennant
+                    player->CLOSE_GOSSIP_MENU();
+                    me->RemoveAurasDueToSpell(curPennant);
+                    if (me->GetEntry()==NPC_ARGENT_SQUIRE)
+                    {
+                        me->AddAura(SPELL_STORMWIND_PENNANT,me);
+                        curPennant = SPELL_STORMWIND_PENNANT;
+                    }
+                    else
+                    {
+                        me->AddAura(SPELL_THUNDERBLUFF_PENNANT,me);
+                        curPennant = SPELL_THUNDERBLUFF_PENNANT;
+                    }
+                    break;
+            }
+        }
+
+    };
+};
+
 void AddSC_npcs_special()
 {
     new npc_air_force_bots();
@@ -2400,4 +2594,5 @@ void AddSC_npcs_special()
     new npc_firework();
     new npc_spring_rabbit();
     new npc_imp_in_a_ball();
+	new npc_argent_squire();
 }

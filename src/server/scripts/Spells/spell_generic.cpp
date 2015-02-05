@@ -4057,6 +4057,42 @@ public:
     }
 };
 
+class spell_gen_mount_check : public SpellScriptLoader
+{
+public:
+    spell_gen_mount_check() : SpellScriptLoader("spell_gen_mount_check") { }
+
+    class spell_gen_mount_check_AuraScript : public AuraScript
+    {
+
+        PrepareAuraScript(spell_gen_mount_check_AuraScript);
+
+    public:
+        spell_gen_mount_check_AuraScript() { }
+
+        void HandleEffectPeriodic(AuraEffect const * aurEff)
+        {
+            if (Unit* caster = GetCaster())
+            {
+                if (caster->GetOwner()->IsMounted())
+                    caster->Mount(29736);
+                else if (caster->IsMounted())
+                    caster->Dismount();
+            }
+        }
+
+        void Register()
+        {
+            OnEffectPeriodic += AuraEffectPeriodicFn(spell_gen_mount_check_AuraScript::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_gen_mount_check_AuraScript();
+    }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -4140,4 +4176,5 @@ void AddSC_generic_spell_scripts()
     new spell_gen_gm_freeze();
     new spell_gen_stand();
     new spell_gen_mixology_bonus();
+	new spell_gen_mount_check();
 }

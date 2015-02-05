@@ -327,6 +327,7 @@ class WorldSession
         void SendTrainerList(ObjectGuid guid, std::string const& strTitle);
         void SendListInventory(ObjectGuid guid);
         void SendShowBank(ObjectGuid guid);
+		void SendShowMail(ObjectGuid guid);
         bool CanOpenMailBox(ObjectGuid guid);
         void SendShowMailBox(ObjectGuid guid);
         void SendTabardVendorActivate(ObjectGuid guid);
