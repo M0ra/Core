@@ -902,6 +902,8 @@ enum FactionValiantChampion
     SPELL_GIVE_VALIANT_MARK_3   = 62771,
     SPELL_GIVE_VALIANT_MARK_4   = 62995,
     SPELL_GIVE_VALIANT_MARK_5   = 62996,
+    SPELL_DEFEND_AURA_PERIODIC  = 64223, // 10sec
+    SPELL_DEFEND                = 62719,
 
     SPELL_GIVE_CHAMPION_MARK    = 63596,
 
@@ -1377,6 +1379,6 @@ void AddSC_icecrown()
     new npc_frostbrood_skytalon();
     new npc_keritose();
     new npc_faction_valiant_champion();
-	new npc_argent_champion();
-	new npc_squire_danny();
+    new npc_argent_champion();
+    new npc_squire_danny();
 }
