@@ -393,7 +393,7 @@ class boss_grand_champion_toc5 : public CreatureScript
                         _phase = 1;
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
-                        if (Creature* announcer = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_ANNOUNCER) : 0))
+                        if (Creature* announcer = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_ANNOUNCER) : 0));
                             announcer->AI()->SetData(DATA_GRAND_CHAMPIONS_DEFEATED, announcer->AI()->GetData(DATA_GRAND_CHAMPIONS_DEFEATED) - 1);
                         CreatureAddon const* cainfo = me->GetCreatureAddon();
                         if (cainfo && cainfo->mount != 0)
@@ -553,7 +553,7 @@ class boss_grand_champion_toc5 : public CreatureScript
                 switch (spell->Id)
                 {
                     case SPELL_TRAMPLE:
-                        if (_phase == 2 && !me->HasAura(SPELL_STUNNED) && caster->isCharmed())
+                        if (_phase == 2 && !me->HasAura(SPELL_STUNNED) && caster->IsCharmed())
                         {
                             // temporary stop motion
                             me->GetMotionMaster()->MovementExpired();

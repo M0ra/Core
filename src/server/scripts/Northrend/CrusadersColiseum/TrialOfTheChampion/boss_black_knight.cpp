@@ -271,7 +271,7 @@ class boss_black_knight : public CreatureScript
                 DoCast(me, SPELL_BLACK_KNIGHT_CREDIT, true);
                 Talk(SAY_DEATH_3);
 
-                if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance ? _instance->GetGuidData(DATA_PORTCULLIS) : 0))
+                if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_PORTCULLIS) : 0))
                     _instance->HandleGameObject(go->GetGUID(), true);
 
                 if (_instance)
