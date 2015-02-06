@@ -393,7 +393,7 @@ class boss_grand_champion_toc5 : public CreatureScript
                         _phase = 1;
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
-                        if (Creature* announcer = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_ANNOUNCER) : 0));
+                        if (Creature* announcer = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_ANNOUNCER) : 0))
                             announcer->AI()->SetData(DATA_GRAND_CHAMPIONS_DEFEATED, announcer->AI()->GetData(DATA_GRAND_CHAMPIONS_DEFEATED) - 1);
                         CreatureAddon const* cainfo = me->GetCreatureAddon();
                         if (cainfo && cainfo->mount != 0)
@@ -765,86 +765,9 @@ class boss_grand_champion_toc5 : public CreatureScript
         }
 };
 
-class spell_ride_vehicle_toc5 : public SpellScriptLoader
-{
-    public:
-        spell_ride_vehicle_toc5() : SpellScriptLoader("spell_ride_vehicle_toc5") {}
-
-        class spell_ride_vehicle_toc5_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_ride_vehicle_toc5_SpellScript);
-
-            SpellCastResult CheckRequirement()
-            {
-                if (GetTargetUnit() && GetTargetUnit()->ToCreature())
-                {
-                    if (GetTargetUnit()->GetEntry() == VEHICLE_ARGENT_WARHORSE)
-                        if (GetCaster() && GetCaster()->ToPlayer() && GetCaster()->ToPlayer()->GetTeamId() == TEAM_HORDE)
-                            return SPELL_FAILED_BAD_TARGETS;
-
-                    if (GetTargetUnit()->GetEntry() == VEHICLE_ARGENT_BATTLEWORG)
-                        if (GetCaster() && GetCaster()->ToPlayer() && GetCaster()->ToPlayer()->GetTeamId() == TEAM_ALLIANCE)
-                            return SPELL_FAILED_BAD_TARGETS;
-                }
-
-                if (GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == 46106 ||
-                    GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == 46069 ||
-                    GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == 46070)
-                {
-                    GetCaster()->RemoveAurasByType(SPELL_AURA_MOD_SHAPESHIFT);
-                    return SPELL_CAST_OK;
-                }
-                else
-                {
-                    SetCustomCastResultMessage(SPELL_CUSTOM_ERROR_MUST_HAVE_LANCE_EQUIPPED);
-                    return SPELL_FAILED_CUSTOM_ERROR;
-                }
-            }
-
-            void Register()
-            {
-                OnCheckCast += SpellCheckCastFn(spell_ride_vehicle_toc5_SpellScript::CheckRequirement);
-            }
-        };
-
-        class spell_ride_vehicle_toc5_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_ride_vehicle_toc5_AuraScript);
-
-            void HandleOnEffect(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                if (Unit* target = GetTarget())
-                    target->RemoveAurasDueToSpell(SPELL_DEFEND);
-
-                if (Unit* caster = GetCaster())
-                {
-                    caster->RemoveAurasDueToSpell(SPELL_DEFEND);
-                    for (uint8 i = 0; i < 3; ++i)
-                        caster->RemoveAurasDueToSpell(SPELL_VISUAL_SHIELD_1 + i);
-                }
-            }
-
-            void Register()
-            {
-                AfterEffectApply += AuraEffectApplyFn(spell_ride_vehicle_toc5_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
-                AfterEffectRemove += AuraEffectRemoveFn(spell_ride_vehicle_toc5_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL);
-            }
-        };
-
-        AuraScript* GetAuraScript() const
-        {
-            return new spell_ride_vehicle_toc5_AuraScript();
-        }
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_ride_vehicle_toc5_SpellScript();
-        }
-};
 
 void AddSC_boss_grand_champions()
 {
     new npc_faction_champion_toc5();
     new boss_grand_champion_toc5();
-    new spell_ride_vehicle_toc5();
 }

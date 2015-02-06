@@ -537,19 +537,31 @@ class npc_risen_ghoul : public CreatureScript
 
 class npc_black_knight_skeletal_gryphon : public CreatureScript
 {
-    public:
-        npc_black_knight_skeletal_gryphon() : CreatureScript("npc_black_knight_skeletal_gryphon") { }
+public:
+    npc_black_knight_skeletal_gryphon() : CreatureScript("npc_black_knight_skeletal_gryphon") { }
 
-        struct npc_black_knight_skeletal_gryphonAI : public npc_escortAI
+    struct npc_black_knight_skeletal_gryphonAI : public npc_escortAI
+    {
+        npc_black_knight_skeletal_gryphonAI(Creature* creature) : npc_escortAI(creature)
         {
-            npc_black_knight_skeletal_gryphonAI(Creature* creature) : npc_escortAI(creature)
-            {
-                Start(false, true);
-                me->SetFlying(true);
-                me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1);
-            }
+            Start(false, true);
+            instance = creature->GetInstanceScript();
+        }
+		
+		void Initialize()
+        {
+            pHighlord = NULL;
+        }
 
+        Creature* pHighlord;
+        InstanceScript* instance;
+
+
+        void Reset() override
+        {
+            Initialize();
+        }
+		
             void WaypointReached(uint32 /*i*/) { }
             void AttackStart(Unit* /*who*/) { }
 
