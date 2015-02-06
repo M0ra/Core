@@ -2726,6 +2726,20 @@ LFG.Location.All = 1
 UI.ShowQuestLevelsInDialogs = 0
 
 #
+#    External.Mail.Enable
+#        Enable external mail delivery from mail_external table.
+#        Default: 0 (disabled)
+#                 1 (enabled)
+#
+#    External.Mail.Interval
+#        Mail delivery delay time for item sending from mail_external table, in minutes.
+#        Default: 5 minutes
+#
+
+External.Mail.Enable = 1
+External.Mail.Interval = 5
+
+#
 #     Calculate.Creature.Zone.Area.Data
 #        Description: Calculate at loading creature zoneId / areaId and save in creature table (WARNING: SLOW WORLD SERVER STARTUP)
 #        Default:     0  - (Do not show)
