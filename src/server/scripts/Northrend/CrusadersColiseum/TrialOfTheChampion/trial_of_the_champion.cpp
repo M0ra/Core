@@ -383,7 +383,7 @@ public:
         void StartGrandChampionsAttack()
         {
             for (uint8 i = 0; i < 3; ++i)
-                if (Creature* GrandChampion = ObjectAccessor::GetCreature(*me, instance ? instance->GetGuidData(DATA_GRAND_CHAMPION_1 + i) : 0))
+                if (Creature* GrandChampion = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1 + i) : 0))
                     AggroAllPlayers(GrandChampion);
         }
 

@@ -467,7 +467,7 @@ class npc_risen_ghoul : public CreatureScript
             void SpellHitTarget(Unit* target, SpellInfo const* spell)
             {
                 if (spell->Id == DUNGEON_MODE<uint32>(SPELL_EXPLODE, SPELL_EXPLODE_H) && target->GetTypeId() == TYPEID_PLAYER)
-                    if (Creature* knight = ObjectAccessor::GetCreature(*me, _instance ? _instance->GetGuidData(DATA_BLACK_KNIGHT) : 0))
+                    if (Creature* knight = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_BLACK_KNIGHT) : 0))
                         knight->AI()->DoAction(DATA_I_VE_HAD_WORSE);
             }
 
