@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2012 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -16,35 +16,36 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: boss_grand_champions
-SD%Complete: 50 %
-SDComment: Is missing the ai to make the npcs look for a new mount and use it.
-SDCategory: Trial Of the Champion
-EndScriptData */
-
-#include "ScriptMgr.h"
-#include "ScriptedCreature.h"
-#include "ScriptedEscortAI.h"
-#include "Vehicle.h"
+#include "ScriptPCH.h"
 #include "trial_of_the_champion.h"
-#include "Player.h"
 
 enum Spells
 {
-    //Vehicle
+    // Vehicle
     SPELL_CHARGE                    = 63010,
+    SPELL_CHARGE_TRIGGERED          = 43807, // temp
+    SPELL_CHARGE_DMG                = 68498,
+    SPELL_THRUST                    = 62544,
     SPELL_SHIELD_BREAKER            = 68504,
     SPELL_SHIELD                    = 66482,
+    SPELL_TRAMPLE                   = 67866,
+    SPELL_STUNNED                   = 65918,
+    SPELL_KNEEL                     = 68442,
 
-    // Marshal Jacob Alerius && Mokra the Skullcrusher || Warrior
+    // Defend
+    SPELL_DEFEND                    = 66482,
+    SPELL_VISUAL_SHIELD_1           = 63130,
+    SPELL_VISUAL_SHIELD_2           = 63131,
+    SPELL_VISUAL_SHIELD_3           = 63132,
+
+    // Marshal Jacob Alerius && Mokra the Skullcrusher (Warrior)
     SPELL_MORTAL_STRIKE             = 68783,
     SPELL_MORTAL_STRIKE_H           = 68784,
     SPELL_BLADESTORM                = 63784,
     SPELL_INTERCEPT                 = 67540,
-    SPELL_ROLLING_THROW             = 47115, //not implemented in the AI yet...
+    SPELL_ROLLING_THROW             = 67546,
 
-    // Ambrose Boltspark && Eressea Dawnsinger || Mage
+    // Ambrose Boltspark && Eressea Dawnsinger (Mage)
     SPELL_FIREBALL                  = 66042,
     SPELL_FIREBALL_H                = 68310,
     SPELL_BLAST_WAVE                = 66044,
@@ -53,7 +54,7 @@ enum Spells
     SPELL_POLYMORPH                 = 66043,
     SPELL_POLYMORPH_H               = 68311,
 
-    // Colosos && Runok Wildmane || Shaman
+    // Colosos && Runok Wildmane (Shaman)
     SPELL_CHAIN_LIGHTNING           = 67529,
     SPELL_CHAIN_LIGHTNING_H         = 68319,
     SPELL_EARTH_SHIELD              = 67530,
@@ -61,974 +62,789 @@ enum Spells
     SPELL_HEALING_WAVE_H            = 68318,
     SPELL_HEX_OF_MENDING            = 67534,
 
-    // Jaelyne Evensong && Zul'tore || Hunter
-    SPELL_DISENGAGE                 = 68340, //not implemented in the AI yet...
+    // Jaelyne Evensong && Zul'tore (Hunter)
+  //SPELL_DISENGAGE                 = 68340,
+    SPELL_DISENGAGE                 = 68339,
     SPELL_LIGHTNING_ARROWS          = 66083,
     SPELL_MULTI_SHOT                = 66081,
     SPELL_SHOOT                     = 65868,
     SPELL_SHOOT_H                   = 67988,
 
-    // Lana Stouthammer Evensong && Deathstalker Visceri || Rouge
+    // Lana Stouthammer Evensong && Deathstalker Visceri (Rouge)
     SPELL_EVISCERATE                = 67709,
     SPELL_EVISCERATE_H              = 68317,
     SPELL_FAN_OF_KNIVES             = 67706,
-    SPELL_POISON_BOTTLE             = 67701
+    SPELL_POISON_BOTTLE             = 67701,
+    SPELL_DEADLY_POISON             = 67710,
+    SPELL_DEADLY_POISON_H           = 68315
 };
 
-enum Seats
+enum Enums
 {
-    SEAT_ID_0                       = 0
+    SAY_START_1                     = 1,
+    SAY_START_2                     = 2,
+    POINT_RANGE                     = 10,
+    POINT_MOUNT                     = 11
 };
 
-/*
-struct Point
+enum Events
 {
-    float x, y, z;
+    // Mounted
+    EVENT_THRUST = 1,
+    EVENT_SHIELD,
+    EVENT_SHIELDBREAKER,
+    // Rogue
+    EVENT_EVISCERATE,
+    EVENT_FANOFKNIVES,
+    EVENT_POISONBOTTLE,
+    EVENT_DEADLYPOISON,
+    // Hunter
+    EVENT_DISENGAGE,
+    EVENT_SHOOT,
+    EVENT_MULTISHOT,
+    EVENT_LIGHTNINGARROWS,
+    // Shaman
+    EVENT_CHAINLIGHTNING,
+    EVENT_HEALINGWAVE,
+    EVENT_EARTHSHIELD,
+    EVENT_HEXOFMENDING,
+    // Mage
+    EVENT_FIREBALL,
+    EVENT_BLASTWAVE,
+    EVENT_HASTE,
+    EVENT_POLYMORPH,
+    // Warrior
+    EVENT_ROLLINGTHROW,
+    EVENT_BLADESTORM,
+    EVENT_MORTALSTRIKE,
+    EVENT_INTERCEPT
 };
 
-const Point MovementPoint[] =
+Position const Waypoints[12] =
 {
-  {746.84f, 623.15f, 411.41f},
-  {747.96f, 620.29f, 411.09f},
-  {750.23f, 618.35f, 411.09f}
+    // Path 1
+    {747.36f, 634.07f, 411.572f, 0.0f},
+    {780.43f, 607.15f, 411.82f, 0.0f},
+    {785.99f, 599.41f, 411.92f, 0.0f},
+    {778.44f, 601.64f, 411.79f, 0.0f},
+    // Path 2
+    {747.35f, 634.07f, 411.57f, 0.0f},
+    {768.72f, 581.01f, 411.92f, 0.0f},
+    {763.55f, 590.52f, 411.71f, 0.0f},
+    {763.55f, 590.52f, 411.71f, 0.0f},
+    // Path 3
+    {747.35f, 634.07f, 411.57f, 0.0f},
+    {784.02f, 645.33f, 412.39f, 0.0f},
+    {775.67f, 641.91f, 411.91f, 0.0f},
+    {775.67f, 641.91f, 411.91f, 0.0f}
 };
-*/
-void AggroAllPlayers(Creature* temp)
-{
-    Map::PlayerList const &PlList = temp->GetMap()->GetPlayers();
 
-    if (PlList.isEmpty())
+Position const Mounts[4] =
+{
+    {781.88f, 656.76f, 412.4f, 0.0f},
+    {783.26f, 581.86f, 412.4f, 0.0f},
+    {710.95f, 581.95f, 412.4f, 0.0f},
+    {712.53f, 657.36f, 412.4f, 0.0f}
+};
+
+void AggroAllPlayers(Creature* source)
+{
+    Map::PlayerList const &playerList = source->GetMap()->GetPlayers();
+
+    if (playerList.isEmpty())
             return;
 
-    for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+    for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
     {
         if (Player* player = i->GetSource())
         {
             if (player->IsGameMaster())
                 continue;
 
-            if (player->IsAlive())
+            if (player->GetVehicle())
             {
-                temp->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
-                temp->SetReactState(REACT_AGGRESSIVE);
-                temp->SetInCombatWith(player);
-                player->SetInCombatWith(temp);
-                temp->AddThreat(player, 0.0f);
-            }
-        }
-    }
-}
-
-bool GrandChampionsOutVehicle(Creature* me)
-{
-    InstanceScript* instance = me->GetInstanceScript();
-
-    if (!instance)
-        return false;
-
-    Creature* pGrandChampion1 = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1));
-    Creature* pGrandChampion2 = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_2));
-    Creature* pGrandChampion3 = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_3));
-
-    if (pGrandChampion1 && pGrandChampion2 && pGrandChampion3)
-    {
-        if (!pGrandChampion1->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) &&
-            !pGrandChampion2->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) &&
-            !pGrandChampion3->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT))
-            return true;
-    }
-
-    return false;
-}
-
-/*
-* Generic AI for vehicles used by npcs in ToC, it needs more improvements.  *
-* Script Complete: 25%.                                                     *
-*/
-
-class generic_vehicleAI_toc5 : public CreatureScript
-{
-public:
-    generic_vehicleAI_toc5() : CreatureScript("generic_vehicleAI_toc5") { }
-
-    struct generic_vehicleAI_toc5AI : public npc_escortAI
-    {
-        generic_vehicleAI_toc5AI(Creature* creature) : npc_escortAI(creature)
-        {
-            Initialize();
-            SetDespawnAtEnd(false);
-            uiWaypointPath = 0;
-
-            instance = creature->GetInstanceScript();
-        }
-
-        void Initialize()
-        {
-            uiChargeTimer = 5000;
-            uiShieldBreakerTimer = 8000;
-            uiBuffTimer = urand(30000, 60000);
-        }
-
-        InstanceScript* instance;
-
-        uint32 uiChargeTimer;
-        uint32 uiShieldBreakerTimer;
-        uint32 uiBuffTimer;
-
-        uint32 uiWaypointPath;
-
-        void Reset() override
-        {
-            Initialize();
-        }
-
-        void SetData(uint32 uiType, uint32 /*uiData*/) override
-        {
-            switch (uiType)
-            {
-                case 1:
-                    AddWaypoint(0, 747.36f, 634.07f, 411.572f);
-                    AddWaypoint(1, 780.43f, 607.15f, 411.82f);
-                    AddWaypoint(2, 785.99f, 599.41f, 411.92f);
-                    AddWaypoint(3, 778.44f, 601.64f, 411.79f);
-                    uiWaypointPath = 1;
-                    break;
-                case 2:
-                    AddWaypoint(0, 747.35f, 634.07f, 411.57f);
-                    AddWaypoint(1, 768.72f, 581.01f, 411.92f);
-                    AddWaypoint(2, 763.55f, 590.52f, 411.71f);
-                    uiWaypointPath = 2;
-                    break;
-                case 3:
-                    AddWaypoint(0, 747.35f, 634.07f, 411.57f);
-                    AddWaypoint(1, 784.02f, 645.33f, 412.39f);
-                    AddWaypoint(2, 775.67f, 641.91f, 411.91f);
-                    uiWaypointPath = 3;
-                    break;
-            }
-
-            if (uiType <= 3)
-                Start(false, true);
-        }
-
-        void WaypointReached(uint32 waypointId) override
-        {
-            switch (waypointId)
-            {
-                case 2:
-                    if (uiWaypointPath == 3 || uiWaypointPath == 2)
-                        instance->SetData(DATA_MOVEMENT_DONE, instance->GetData(DATA_MOVEMENT_DONE)+1);
-                    break;
-                case 3:
-                    instance->SetData(DATA_MOVEMENT_DONE, instance->GetData(DATA_MOVEMENT_DONE)+1);
-                    break;
-            }
-        }
-
-        void EnterCombat(Unit* /*who*/) override
-        {
-            DoCastSpellShield();
-        }
-
-        void DoCastSpellShield()
-        {
-            for (uint8 i = 0; i < 3; ++i)
-                DoCast(me, SPELL_SHIELD, true);
-        }
-
-        void UpdateAI(uint32 uiDiff) override
-        {
-            npc_escortAI::UpdateAI(uiDiff);
-
-            if (!UpdateVictim())
-                return;
-
-            if (uiBuffTimer <= uiDiff)
-            {
-                if (!me->HasAura(SPELL_SHIELD))
-                    DoCastSpellShield();
-
-                uiBuffTimer = urand(30000, 45000);
-            }else uiBuffTimer -= uiDiff;
-
-            if (uiChargeTimer <= uiDiff)
-            {
-                Map::PlayerList const& players = me->GetMap()->GetPlayers();
-                if (me->GetMap()->IsDungeon() && !players.isEmpty())
+                if (Creature* vehicle = player->GetVehicleBase()->ToCreature())
                 {
-                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-                    {
-                        Player* player = itr->GetSource();
-                        if (player && !player->IsGameMaster() && me->IsInRange(player, 8.0f, 25.0f, false))
-                        {
-                            DoResetThreat();
-                            me->AddThreat(player, 1.0f);
-                            DoCast(player, SPELL_CHARGE);
-                            break;
-                        }
-                    }
-                }
-                uiChargeTimer = 5000;
-            }else uiChargeTimer -= uiDiff;
-
-            //dosen't work at all
-            if (uiShieldBreakerTimer <= uiDiff)
+                    source->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
+                    source->SetReactState(REACT_AGGRESSIVE);
+                    source->SetInCombatWith(vehicle);
+                    player->SetInCombatWith(source);
+                    vehicle->SetInCombatWith(source);
+                    source->AddThreat(vehicle, 0.0f);
+                 }
+            }
+            else if (player->IsAlive())
             {
-                Vehicle* pVehicle = me->GetVehicleKit();
-                if (!pVehicle)
+                source->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
+                source->SetReactState(REACT_AGGRESSIVE);
+                source->SetInCombatWith(player);
+                player->SetInCombatWith(source);
+                source->AddThreat(player, 0.0f);
+            }
+        }
+    }
+}
+
+Unit* GetRangedTarget(float minRange, float maxRange, WorldObject* source)
+{
+    Map* map = source->GetMap();
+    if (map && map->IsDungeon())
+    {
+        std::list<Unit*> targets;
+        Map::PlayerList const& Players = map->GetPlayers();
+        for (Map::PlayerList::const_iterator itr = Players.begin(); itr != Players.end(); ++itr)
+            if (Player* player = itr->GetSource())
+            {
+                if (player->IsGameMaster() || !player->IsAlive() || source->GetDistance(player) < minRange || source->GetDistance(player) > maxRange)
+                    continue;
+
+                targets.push_back(player);
+            }
+
+        if (!targets.empty())
+        {
+            Unit* target = SelectRandomContainerElement(targets);
+
+            if (Unit* vehicle = target->GetVehicleBase())
+                return vehicle;
+
+            return target;
+        }
+    }
+
+    return NULL;
+}
+
+class npc_faction_champion_toc5 : public CreatureScript
+{
+    public:
+        npc_faction_champion_toc5() : CreatureScript("npc_faction_champion_toc5") { }
+
+        struct npc_faction_champion_toc5AI : public ScriptedAI
+        {
+            npc_faction_champion_toc5AI(Creature* creature) : ScriptedAI(creature)
+            {
+            }
+
+            void Reset()
+            {
+                _events.Reset();
+            }
+
+            void MovementInform(uint32 type, uint32 id)
+            {
+                if (type != POINT_MOTION_TYPE)
                     return;
 
-                if (Unit* pPassenger = pVehicle->GetPassenger(SEAT_ID_0))
+                if (id == POINT_RANGE)
+                    _events.RescheduleEvent(EVENT_CHARGE, 1);
+            }
+
+            void EnterCombat(Unit* /*who*/)
+            {
+                _events.ScheduleEvent(EVENT_THRUST, urand(5000, 10000));
+                _events.ScheduleEvent(EVENT_CHARGE, urand(5000, 15000));
+                _events.ScheduleEvent(EVENT_SHIELD, 1);
+            }
+
+            void EnterEvadeMode()
+            {
+                if (GetRangedTarget(0.0f , 200.0f, me))
                 {
-                    Map::PlayerList const& players = me->GetMap()->GetPlayers();
-                    if (me->GetMap()->IsDungeon() && !players.isEmpty())
+                    AggroAllPlayers(me);
+                    return;
+                }
+
+                ScriptedAI::EnterEvadeMode();
+            }
+
+            void SpellHit(Unit* caster, SpellInfo const* spell)
+            {
+                if (spell->Id == SPELL_CHARGE_TRIGGERED)
+                    caster->CastSpell(me, SPELL_CHARGE_DMG, true);
+            }
+
+            void UpdateAI(uint32 const diff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                _events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    switch (eventId)
                     {
-                        for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-                        {
-                            Player* player = itr->GetSource();
-                            if (player && !player->IsGameMaster() && me->IsInRange(player, 10.0f, 30.0f, false))
+                        case EVENT_CHARGE:
+                            if (Unit* target = GetRangedTarget(8.0f, 25.0f, me))
                             {
-                                pPassenger->CastSpell(player, SPELL_SHIELD_BREAKER, true);
-                                break;
+                                DoResetThreat();
+                                me->AddThreat(target, 100.0f);
+                                me->GetMotionMaster()->MoveChase(me->GetVictim());
+                                DoCast(target, SPELL_CHARGE);
                             }
-                        }
-                    }
-                }
-                uiShieldBreakerTimer = 7000;
-            }else uiShieldBreakerTimer -= uiDiff;
-
-            DoMeleeAttackIfReady();
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return GetInstanceAI<generic_vehicleAI_toc5AI>(creature);
-    }
-};
-
-class boss_warrior_toc5 : public CreatureScript
-{
-public:
-    boss_warrior_toc5() : CreatureScript("boss_warrior_toc5") { }
-
-    // Marshal Jacob Alerius && Mokra the Skullcrusher || Warrior
-    struct boss_warrior_toc5AI : public ScriptedAI
-    {
-        boss_warrior_toc5AI(Creature* creature) : ScriptedAI(creature)
-        {
-            Initialize();
-            instance = creature->GetInstanceScript();
-
-            bDone = false;
-            bHome = false;
-
-            uiPhase = 0;
-            uiPhaseTimer = 0;
-
-            me->SetReactState(REACT_PASSIVE);
-            // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
-        }
-
-        void Initialize()
-        {
-            uiBladeStormTimer = urand(15000, 20000);
-            uiInterceptTimer = 7000;
-            uiMortalStrikeTimer = urand(8000, 12000);
-        }
-
-        InstanceScript* instance;
-
-        uint8 uiPhase;
-        uint32 uiPhaseTimer;
-
-        uint32 uiBladeStormTimer;
-        uint32 uiInterceptTimer;
-        uint32 uiMortalStrikeTimer;
-
-        bool bDone;
-        bool bHome;
-
-        void Reset() override
-        {
-            Initialize();
-        }
-
-        void JustReachedHome() override
-        {
-            ScriptedAI::JustReachedHome();
-
-            if (!bHome)
-                return;
-
-            uiPhaseTimer = 15000;
-            uiPhase = 1;
-
-            bHome = false;
-        }
-
-        void UpdateAI(uint32 uiDiff) override
-        {
-            if (!bDone && GrandChampionsOutVehicle(me))
-            {
-                bDone = true;
-
-                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
-
-                EnterEvadeMode();
-                bHome = true;
-            }
-
-            if (uiPhaseTimer <= uiDiff)
-            {
-                if (uiPhase == 1)
-                {
-                    AggroAllPlayers(me);
-                    uiPhase = 0;
-                }
-            }else uiPhaseTimer -= uiDiff;
-
-            if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT))
-                return;
-
-            if (uiInterceptTimer <= uiDiff)
-            {
-                Map::PlayerList const& players = me->GetMap()->GetPlayers();
-                if (me->GetMap()->IsDungeon() && !players.isEmpty())
-                {
-                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-                    {
-                        Player* player = itr->GetSource();
-                        if (player && !player->IsGameMaster() && me->IsInRange(player, 8.0f, 25.0f, false))
-                        {
-                            DoResetThreat();
-                            me->AddThreat(player, 5.0f);
-                            DoCast(player, SPELL_INTERCEPT);
+                            else if (!GetRangedTarget(8.0f, 200.0f, me)) // all targets below 8 yd distance, try to get range
+                            {
+                                float x, y, z;
+                                me->GetNearPoint(me, x, y, z, 1.0f, 12.0f, float(M_PI*2*rand_norm()));
+                                me->GetMotionMaster()->MovePoint(POINT_RANGE, x, y, z);
+                            }
+                            else if (me->GetVictim())
+                                me->GetMotionMaster()->MoveChase(me->GetVictim());
+                            _events.ScheduleEvent(EVENT_CHARGE, urand(6000, 12000));
                             break;
-                        }
+                        case EVENT_SHIELD:
+                            DoCast(me, SPELL_SHIELD);
+                            _events.ScheduleEvent(EVENT_SHIELD, urand(10000, 15000));
+                            break;
+                        case EVENT_THRUST:
+                            DoCastVictim(SPELL_THRUST);
+                            _events.ScheduleEvent(EVENT_THRUST, urand(2000, 3000));
+                            break;
                     }
                 }
-                uiInterceptTimer = 7000;
-            } else uiInterceptTimer -= uiDiff;
-
-            if (uiBladeStormTimer <= uiDiff)
-            {
-                DoCastVictim(SPELL_BLADESTORM);
-                uiBladeStormTimer = urand(15000, 20000);
-            } else uiBladeStormTimer -= uiDiff;
-
-            if (uiMortalStrikeTimer <= uiDiff)
-            {
-                DoCastVictim(SPELL_MORTAL_STRIKE);
-                uiMortalStrikeTimer = urand(8000, 12000);
-            } else uiMortalStrikeTimer -= uiDiff;
-
-            DoMeleeAttackIfReady();
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return GetInstanceAI<boss_warrior_toc5AI>(creature);
-    }
-};
-
-class boss_mage_toc5 : public CreatureScript
-{
-public:
-    boss_mage_toc5() : CreatureScript("boss_mage_toc5") { }
-
-    // Ambrose Boltspark && Eressea Dawnsinger || Mage
-    struct boss_mage_toc5AI : public ScriptedAI
-    {
-        boss_mage_toc5AI(Creature* creature) : ScriptedAI(creature)
-        {
-            Initialize();
-            instance = creature->GetInstanceScript();
-
-            bDone = false;
-            bHome = false;
-
-            uiPhase = 0;
-            uiPhaseTimer = 0;
-
-            me->SetReactState(REACT_PASSIVE);
-            // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
-        }
-
-        void Initialize()
-        {
-            uiFireBallTimer = 5000;
-            uiPolymorphTimer = 8000;
-            uiBlastWaveTimer = 12000;
-            uiHasteTimer = 22000;
-        }
-
-        InstanceScript* instance;
-
-        uint8 uiPhase;
-        uint32 uiPhaseTimer;
-
-        uint32 uiFireBallTimer;
-        uint32 uiBlastWaveTimer;
-        uint32 uiHasteTimer;
-        uint32 uiPolymorphTimer;
-
-        bool bDone;
-        bool bHome;
-
-        void Reset() override
-        {
-            Initialize();
-        }
-
-        void JustReachedHome() override
-        {
-            ScriptedAI::JustReachedHome();
-
-            if (!bHome)
-                return;
-
-            uiPhaseTimer = 15000;
-            uiPhase = 1;
-
-            bHome = false;
-        }
-
-        void UpdateAI(uint32 uiDiff) override
-        {
-            if (!bDone && GrandChampionsOutVehicle(me))
-            {
-                bDone = true;
-
-                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
-
-                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
-
-                EnterEvadeMode();
-                bHome = true;
             }
 
-            if (uiPhaseTimer <= uiDiff)
-            {
-                if (uiPhase == 1)
-                {
-                    AggroAllPlayers(me);
-                    uiPhase = 0;
-                }
-            }else uiPhaseTimer -= uiDiff;
-
-            if (uiFireBallTimer <= uiDiff)
-            {
-                if (me->GetVictim())
-                    DoCastVictim(SPELL_FIREBALL);
-                uiFireBallTimer = 5000;
-            } else uiFireBallTimer -= uiDiff;
-
-            if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT))
-                return;
-
-            if (uiFireBallTimer <= uiDiff)
-            {
-                DoCastVictim(SPELL_FIREBALL);
-                uiFireBallTimer = 5000;
-            } else uiFireBallTimer -= uiDiff;
-
-            if (uiPolymorphTimer <= uiDiff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    DoCast(target, SPELL_POLYMORPH);
-                uiPolymorphTimer = 8000;
-            } else uiPolymorphTimer -= uiDiff;
-
-            if (uiBlastWaveTimer <= uiDiff)
-            {
-                DoCastAOE(SPELL_BLAST_WAVE, false);
-                uiBlastWaveTimer = 13000;
-            } else uiBlastWaveTimer -= uiDiff;
-
-            if (uiHasteTimer <= uiDiff)
-            {
-                me->InterruptNonMeleeSpells(true);
-
-                DoCast(me, SPELL_HASTE);
-                uiHasteTimer = 22000;
-            } else uiHasteTimer -= uiDiff;
-
-            DoMeleeAttackIfReady();
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return GetInstanceAI<boss_mage_toc5AI>(creature);
-    }
-};
-
-class boss_shaman_toc5 : public CreatureScript
-{
-public:
-    boss_shaman_toc5() : CreatureScript("boss_shaman_toc5") { }
-
-    // Colosos && Runok Wildmane || Shaman
-    struct boss_shaman_toc5AI : public ScriptedAI
-    {
-        boss_shaman_toc5AI(Creature* creature) : ScriptedAI(creature)
-        {
-            Initialize();
-            instance = creature->GetInstanceScript();
-
-            bDone = false;
-            bHome = false;
-
-            uiPhase = 0;
-            uiPhaseTimer = 0;
-
-            me->SetReactState(REACT_PASSIVE);
-            // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
-        }
-
-        void Initialize()
-        {
-            uiChainLightningTimer = 16000;
-            uiHealingWaveTimer = 12000;
-            uiEartShieldTimer = urand(30000, 35000);
-            uiHexMendingTimer = urand(20000, 25000);
-        }
-
-        InstanceScript* instance;
-
-        uint8 uiPhase;
-        uint32 uiPhaseTimer;
-
-        uint32 uiChainLightningTimer;
-        uint32 uiEartShieldTimer;
-        uint32 uiHealingWaveTimer;
-        uint32 uiHexMendingTimer;
-
-        bool bDone;
-        bool bHome;
-
-        void Reset() override
-        {
-            Initialize();
-        }
-
-        void EnterCombat(Unit* who) override
-        {
-            DoCast(me, SPELL_EARTH_SHIELD);
-            DoCast(who, SPELL_HEX_OF_MENDING);
+        private:
+            EventMap _events;
         };
 
-        void JustReachedHome() override
+        CreatureAI* GetAI(Creature* creature) const
         {
-            ScriptedAI::JustReachedHome();
-
-            if (!bHome)
-                return;
-
-            uiPhaseTimer = 15000;
-            uiPhase = 1;
-
-            bHome = false;
+            return new npc_faction_champion_toc5AI(creature);
         }
-
-        void UpdateAI(uint32 uiDiff) override
-        {
-            if (!bDone && GrandChampionsOutVehicle(me))
-            {
-                bDone = true;
-
-                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
-
-                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
-
-                EnterEvadeMode();
-                bHome = true;
-            }
-
-            if (uiPhaseTimer <= uiDiff)
-            {
-                if (uiPhase == 1)
-                {
-                    AggroAllPlayers(me);
-                    uiPhase = 0;
-                }
-            }else uiPhaseTimer -= uiDiff;
-
-            if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT))
-                return;
-
-            if (uiChainLightningTimer <= uiDiff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    DoCast(target, SPELL_CHAIN_LIGHTNING);
-
-                uiChainLightningTimer = 16000;
-            } else uiChainLightningTimer -= uiDiff;
-
-            if (uiHealingWaveTimer <= uiDiff)
-            {
-                bool bChance = roll_chance_i(50);
-
-                if (!bChance)
-                {
-                    if (Unit* pFriend = DoSelectLowestHpFriendly(40))
-                        DoCast(pFriend, SPELL_HEALING_WAVE);
-                } else
-                    DoCast(me, SPELL_HEALING_WAVE);
-
-                uiHealingWaveTimer = 12000;
-            } else uiHealingWaveTimer -= uiDiff;
-
-            if (uiEartShieldTimer <= uiDiff)
-            {
-                DoCast(me, SPELL_EARTH_SHIELD);
-
-                uiEartShieldTimer = urand(30000, 35000);
-            } else uiEartShieldTimer -= uiDiff;
-
-            if (uiHexMendingTimer <= uiDiff)
-            {
-                DoCastVictim(SPELL_HEX_OF_MENDING, true);
-
-                uiHexMendingTimer = urand(20000, 25000);
-            } else uiHexMendingTimer -= uiDiff;
-
-            DoMeleeAttackIfReady();
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return GetInstanceAI<boss_shaman_toc5AI>(creature);
-    }
 };
 
-class boss_hunter_toc5 : public CreatureScript
+class boss_grand_champion_toc5 : public CreatureScript
 {
-public:
-    boss_hunter_toc5() : CreatureScript("boss_hunter_toc5") { }
+    public:
+        boss_grand_champion_toc5() : CreatureScript("boss_grand_champion_toc5") { }
 
-        // Jaelyne Evensong && Zul'tore || Hunter
-    struct boss_hunter_toc5AI : public ScriptedAI
-    {
-        boss_hunter_toc5AI(Creature* creature) : ScriptedAI(creature)
+        struct boss_grand_champion_toc5AI : public ScriptedAI
         {
-            Initialize();
-            instance = creature->GetInstanceScript();
-
-            bDone = false;
-            bHome = false;
-
-            uiPhase = 0;
-            uiPhaseTimer = 0;
-
-            me->SetReactState(REACT_PASSIVE);
-            // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
-        }
-
-        void Initialize()
-        {
-            uiShootTimer = 12000;
-            uiMultiShotTimer = 0;
-            uiLightningArrowsTimer = 7000;
-
-            uiTargetGUID.Clear();
-
-            bShoot = false;
-        }
-
-        InstanceScript* instance;
-
-        uint8 uiPhase;
-        uint32 uiPhaseTimer;
-
-        uint32 uiShootTimer;
-        uint32 uiMultiShotTimer;
-        uint32 uiLightningArrowsTimer;
-
-        ObjectGuid uiTargetGUID;
-
-        bool bShoot;
-        bool bDone;
-        bool bHome;
-
-        void Reset() override
-        {
-            Initialize();
-        }
-
-        void JustReachedHome() override
-        {
-            ScriptedAI::JustReachedHome();
-
-            if (!bHome)
-                return;
-
-            uiPhaseTimer = 15000;
-            uiPhase = 1;
-
-            bHome = false;
-        }
-
-        void UpdateAI(uint32 uiDiff) override
-        {
-            if (!bDone && GrandChampionsOutVehicle(me))
+            boss_grand_champion_toc5AI(Creature* creature) : ScriptedAI(creature)
             {
-                bDone = true;
-
-                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
-
-                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
-
-                EnterEvadeMode();
-                bHome = true;
+                _instance = creature->GetInstanceScript();
+                _waypointReached = false;
+                _phase = 1;
+                _point = 0;
+                me->SetReactState(REACT_PASSIVE);
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             }
 
-            if (uiPhaseTimer <= uiDiff)
+            void Reset()
             {
-                if (uiPhase == 1)
+                _events.Reset();
+
+                if (_phase == 0 || _phase == 3)
+                    me->Dismount();
+            }
+
+            void JustReachedHome()
+            {
+                Reset();
+            }
+
+            void Evade()
+            {
+                _phase = 0;
+                _phaseChangeTimer = 20000;
+                EnterEvadeMode();
+                me->setFaction(35);
+            }
+
+            void SetData(uint32 type, uint32 /*data*/)
+            {
+                if (type && type <= 3)
+                {
+                    _waypointPath = type - 1;
+                    _waypointReached = true;
+                }
+
+                switch (type)
+                {
+                    case 10:
+                        me->SetReactState(REACT_AGGRESSIVE);
+                        me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
+                        Evade();
+                        break;
+                    case 11:
+                        me->DespawnOrUnsummon(10000);
+                        Evade();
+                        break;
+                }
+            }
+
+            void MovementInform(uint32 type, uint32 id)
+            {
+                if (type != POINT_MOTION_TYPE)
+                    return;
+
+                switch (id)
+                {
+                    case POINT_RANGE:
+                        _events.RescheduleEvent(EVENT_CHARGE, 1);
+                        break;
+                    case POINT_MOUNT:
+                    {
+                        _phase = 1;
+                        me->SetReactState(REACT_AGGRESSIVE);
+                        me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
+                        if (Creature* announcer = ObjectAccessor::GetCreature(*me, _instance ? _instance->GetGuidData(DATA_ANNOUNCER) : 0))
+                            announcer->AI()->SetData(DATA_GRAND_CHAMPIONS_DEFEATED, announcer->AI()->GetData(DATA_GRAND_CHAMPIONS_DEFEATED) - 1);
+                        CreatureAddon const* cainfo = me->GetCreatureAddon();
+                        if (cainfo && cainfo->mount != 0)
+                            me->Mount(cainfo->mount);
+                        me->SetFullHealth();
+                        if (me->GetVictim())
+                            me->GetMotionMaster()->MoveChase(me->GetVictim());
+                        break;
+                    }
+                }
+
+                if (id != _point)
+                    return;
+
+                if (id == 3 && _instance)
+                    _instance->SetData(DATA_MOVEMENT_DONE, _instance->GetData(DATA_MOVEMENT_DONE) + 1);
+
+                if (id < 3)
+                {
+                    ++_point;
+                    _waypointReached = true;
+                }
+            }
+
+            void InitUnmountedEvents()
+            {
+                switch (me->GetEntry())
+                {
+                    // Rogue
+                    case NPC_LANA:
+                    case NPC_VISCERI:
+                        _events.ScheduleEvent(EVENT_EVISCERATE, urand(5000, 8000));
+                        _events.ScheduleEvent(EVENT_FANOFKNIVES, urand(10000, 14000));
+                        _events.ScheduleEvent(EVENT_POISONBOTTLE, urand(12000, 19000));
+                        _events.ScheduleEvent(EVENT_DEADLYPOISON, urand(5000, 10000));
+                        break;
+                    // Hunter
+                    case NPC_JAELYNE:
+                    case NPC_ZULTORE:
+                        _events.ScheduleEvent(EVENT_DISENGAGE, urand(5000, 8000));
+                        _events.ScheduleEvent(EVENT_SHOOT, urand(5000, 7000));
+                        _events.ScheduleEvent(EVENT_MULTISHOT, urand(12000, 15000));
+                        _events.ScheduleEvent(EVENT_LIGHTNINGARROWS, urand(10000, 16000));
+                        break;
+                    // Shaman
+                    case NPC_COLOSOS:
+                    case NPC_RUNOK:
+                        _events.ScheduleEvent(EVENT_CHAINLIGHTNING, urand(5000, 10000));
+                        _events.ScheduleEvent(EVENT_HEALINGWAVE, urand(8000, 12000));
+                        _events.ScheduleEvent(EVENT_EARTHSHIELD, urand(500, 1000));
+                        _events.ScheduleEvent(EVENT_HEXOFMENDING, urand(1000, 3000));
+                        break;
+                    // Mage
+                    case NPC_AMBROSE:
+                    case NPC_ERESSEA:
+                        _events.ScheduleEvent(EVENT_FIREBALL, urand(5000, 6000));
+                        _events.ScheduleEvent(EVENT_BLASTWAVE, urand(12000, 15000));
+                        _events.ScheduleEvent(EVENT_HASTE, urand(15000, 20000));
+                        _events.ScheduleEvent(EVENT_POLYMORPH, urand(10000, 12000));
+                        break;
+                    // Warrior
+                    case NPC_JACOB:
+                    case NPC_MOKRA:
+                        //_events.ScheduleEvent(EVENT_ROLLINGTHROW, urand(20000, 25000));
+                        _events.ScheduleEvent(EVENT_BLADESTORM, urand(15000, 20000));
+                        _events.ScheduleEvent(EVENT_MORTALSTRIKE, urand(8000, 12000));
+                        _events.ScheduleEvent(EVENT_INTERCEPT, urand(7000, 10000));
+                        break;
+                }
+            }
+
+            void EnterCombat(Unit* /*who*/)
+            {
+                DoZoneInCombat(me, 150.0f);
+                me->CallForHelp(20.0f);
+
+                switch (_phase)
+                {
+                    case 1:
+                        me->CastCustomSpell(SPELL_SHIELD, SPELLVALUE_AURA_STACK, 3, me, true);
+                        _events.ScheduleEvent(EVENT_THRUST, urand(5000, 8000));
+                        _events.ScheduleEvent(EVENT_CHARGE, urand(5000, 10000));
+                        _events.ScheduleEvent(EVENT_SHIELD, urand(7000, 15000));
+                        _events.ScheduleEvent(EVENT_SHIELDBREAKER, urand(5000, 12000));
+                        break;
+                    case 3:
+                        InitUnmountedEvents();
+                        break;
+                }
+            }
+
+            void SearchMount()
+            {
+                float x, y;
+                x = me->GetPositionX();
+                y = me->GetPositionY();
+
+                if (x >= 746.5f && y >= 618.5f)
+                    me->GetMotionMaster()->MovePoint(POINT_MOUNT, Mounts[0]);
+                else if (x > 746.5f && y < 618.5f)
+                    me->GetMotionMaster()->MovePoint(POINT_MOUNT, Mounts[1]);
+                else if (x < 746.5f && y < 618.5f)
+                    me->GetMotionMaster()->MovePoint(POINT_MOUNT, Mounts[2]);
+                else if (x < 746.5f && y > 618.5f)
+                    me->GetMotionMaster()->MovePoint(POINT_MOUNT, Mounts[3]);
+            }
+
+            void DamageTaken(Unit* attacker, uint32& damage)
+            {
+                if (_phase == 2)
+                {
+                    damage = 0;
+                    return;
+                }
+
+                if (damage >= me->GetHealth())
+                {
+                    damage = me->GetHealth() - 1;
+
+                    switch (_phase)
+                    {
+                        case 1:
+                            _phase = 2;
+                            me->Dismount();
+                            me->SetReactState(REACT_PASSIVE);
+                            me->AddUnitMovementFlag(MOVEMENTFLAG_WALKING);
+                            SearchMount();
+                            if (Creature* announcer = ObjectAccessor::GetCreature(*me, _instance ? _instance->GetGuidData(DATA_ANNOUNCER) : 0))
+                                announcer->AI()->SetData(DATA_GRAND_CHAMPIONS_DEFEATED, announcer->AI()->GetData(DATA_GRAND_CHAMPIONS_DEFEATED) + 1);
+                            break;
+                        case 3:
+                            _phase = 2;
+                            Talk(SAY_START_1);
+                            me->InterruptNonMeleeSpells(true);
+                            DoCast(me, SPELL_KNEEL, true);
+                            if (_instance)
+                                _instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+                            me->SetReactState(REACT_PASSIVE);
+                            break;
+                    }
+                }
+            }
+
+            void EnterEvadeMode()
+            {
+                if (_phase != 0 && GetRangedTarget(0.0f , 200.0f, me))
                 {
                     AggroAllPlayers(me);
-                    uiPhase = 0;
+                    return;
                 }
-            }else uiPhaseTimer -= uiDiff;
 
-            if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT))
-                return;
+                ScriptedAI::EnterEvadeMode();
+            }
 
-            if (uiLightningArrowsTimer <= uiDiff)
+            void SpellHit(Unit* caster, SpellInfo const* spell)
             {
-                DoCastAOE(SPELL_LIGHTNING_ARROWS, false);
-                uiLightningArrowsTimer = 7000;
-            } else uiLightningArrowsTimer -= uiDiff;
-
-            if (uiShootTimer <= uiDiff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST, 0, 30.0f))
+                switch (spell->Id)
                 {
-                    uiTargetGUID = target->GetGUID();
-                    DoCast(target, SPELL_SHOOT);
+                    case SPELL_TRAMPLE:
+                        if (_phase == 2 && !me->HasAura(SPELL_STUNNED) && caster->isCharmed())
+                        {
+                            // temporary stop motion
+                            me->GetMotionMaster()->MovementExpired();
+                            me->GetMotionMaster()->MoveIdle();
+                            caster->CastSpell(me, SPELL_STUNNED, true);
+                        }
+                        break;
+                    case SPELL_CHARGE_TRIGGERED:
+                        caster->CastSpell(me, SPELL_CHARGE_DMG, true);
+                        break;
                 }
-                uiShootTimer = 12000;
-                uiMultiShotTimer = 3000;
-                bShoot = true;
-            } else uiShootTimer -= uiDiff;
+            }
 
-            if (bShoot && uiMultiShotTimer <= uiDiff)
+            void SpellHitTarget(Unit* target, SpellInfo const* spell)
             {
-                me->InterruptNonMeleeSpells(true);
-                Unit* target = ObjectAccessor::GetUnit(*me, uiTargetGUID);
+                if (spell->Id == SPELL_FAN_OF_KNIVES)
+                    DoCast(target, SPELL_DEADLY_POISON, true);
+            }
 
-                if (target && me->IsInRange(target, 5.0f, 30.0f, false))
+            void UpdateAI(uint32 const diff)
+            {
+                if (_waypointReached)
                 {
-                    DoCast(target, SPELL_MULTI_SHOT);
+                    _waypointReached = false;
+                    me->GetMotionMaster()->MovePoint(_point, Waypoints[_point + 4 * _waypointPath]);
+                }
+
+                switch (_phase)
+                {
+                    case 0:
+                        if (_phaseChangeTimer <= diff)
+                        {
+                            me->RestoreFaction();
+                            _phase = 3;
+                            DoZoneInCombat(me, 150.0f);
+                        }
+                        else
+                            _phaseChangeTimer -= diff;
+                        break;
+                    case 2:
+                        if (!me->HasAura(SPELL_KNEEL) && !me->HasAura(SPELL_STUNNED) && !me->isMoving())
+                            SearchMount();
+                        return;
+                }
+
+                if (!UpdateVictim())
+                    return;
+
+                _events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        // Mounted
+                        case EVENT_CHARGE:
+                            if (Unit* target = GetRangedTarget(8.0f, 25.0f, me))
+                            {
+                                DoResetThreat();
+                                me->AddThreat(target, 100.0f);
+                                me->GetMotionMaster()->MoveChase(me->GetVictim());
+                                DoCast(target, SPELL_CHARGE);
+                            }
+                            else if (!GetRangedTarget(8.0f, 200.0f, me)) // all targets below 8 yd distance, try to get range
+                            {
+                                float x, y, z;
+                                me->GetNearPoint(me, x, y, z, 1.0f, 12.0f, float(M_PI*2*rand_norm()));
+                                me->GetMotionMaster()->MovePoint(POINT_RANGE, x, y, z);
+                            }
+                            else if (me->GetVictim())
+                                me->GetMotionMaster()->MoveChase(me->GetVictim());
+                            _events.ScheduleEvent(EVENT_CHARGE, urand(5000, 9000));
+                            break;
+                        case EVENT_SHIELD:
+                            DoCast(me, SPELL_SHIELD);
+                            _events.ScheduleEvent(EVENT_SHIELD, urand(5000, 7000));
+                            break;
+                        case EVENT_THRUST:
+                            DoCastVictim(SPELL_THRUST);
+                            _events.ScheduleEvent(EVENT_THRUST, 2000);
+                            break;
+                        case EVENT_SHIELDBREAKER:
+                            if (Unit* target = GetRangedTarget(10.0f, 30.0f, me))
+                            {
+                                DoCast(target, SPELL_SHIELD_BREAKER, true);
+                                _events.ScheduleEvent(EVENT_SHIELDBREAKER, urand(6000, 11000));
+                            }
+                            else
+                                _events.ScheduleEvent(EVENT_SHIELDBREAKER, 1000);
+                            break;
+                        // Rogue
+                        case EVENT_EVISCERATE:
+                            DoCastVictim(SPELL_EVISCERATE);
+                            _events.ScheduleEvent(EVENT_EVISCERATE, urand(5000, 8000));
+                            break;
+                        case EVENT_FANOFKNIVES:
+                            DoCastAOE(SPELL_FAN_OF_KNIVES);
+                            _events.ScheduleEvent(EVENT_FANOFKNIVES, urand(7000, 10000));
+                            break;
+                        case EVENT_POISONBOTTLE:
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                                DoCast(target, SPELL_POISON_BOTTLE);
+                            _events.ScheduleEvent(EVENT_POISONBOTTLE, urand(12000, 16000));
+                            break;
+                        case EVENT_DEADLYPOISON:
+                            DoCastVictim(SPELL_DEADLY_POISON);
+                            _events.ScheduleEvent(EVENT_DEADLYPOISON, urand(5000, 7500));
+                            break;
+                        // Hunter
+                        case EVENT_DISENGAGE:
+                            if (me->IsWithinCombatRange(me->GetVictim(), 5.0f))
+                                DoCast(SPELL_DISENGAGE);
+                            _events.ScheduleEvent(EVENT_DISENGAGE, urand(5000, 7000));
+                            break;
+                        case EVENT_SHOOT:
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 45.0f))
+                                DoCast(target, SPELL_SHOOT);
+                            _events.ScheduleEvent(EVENT_SHOOT, urand(5000, 8000));
+                            break;
+                        case EVENT_MULTISHOT:
+                            if (Unit* target = GetRangedTarget(5.0f, 30.0f, me))
+                                DoCast(target, SPELL_MULTI_SHOT);
+                            _events.ScheduleEvent(EVENT_MULTISHOT, urand(7000, 10000));
+                            break;
+                        case EVENT_LIGHTNINGARROWS:
+                            DoCast(SPELL_LIGHTNING_ARROWS);
+                            _events.ScheduleEvent(EVENT_LIGHTNINGARROWS, urand(30000, 40000));
+                            break;
+                        // Shaman
+                        case EVENT_CHAINLIGHTNING:
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                                DoCast(target, SPELL_CHAIN_LIGHTNING);
+                            _events.ScheduleEvent(EVENT_CHAINLIGHTNING, urand(6000, 12000));
+                            break;
+                        case EVENT_HEALINGWAVE:
+                            if (Unit* friendly = DoSelectLowestHpFriendly(40.0f, 20000))
+                                DoCast(friendly, SPELL_HEALING_WAVE);
+                            else
+                                DoCast(me, SPELL_HEALING_WAVE);
+                            _events.ScheduleEvent(EVENT_HEALINGWAVE, urand(7000, 10000));
+                            break;
+                        case EVENT_EARTHSHIELD:
+                            DoCast(me, SPELL_EARTH_SHIELD);
+                            _events.ScheduleEvent(EVENT_EARTHSHIELD, urand(25000, 35000));
+                            break;
+                        case EVENT_HEXOFMENDING:
+                            DoCastVictim(SPELL_HEX_OF_MENDING);
+                            _events.ScheduleEvent(EVENT_HEXOFMENDING, urand(16000, 22000));
+                            break;
+                        // Mage
+                        case EVENT_FIREBALL:
+                            DoCastVictim(SPELL_FIREBALL);
+                            _events.ScheduleEvent(EVENT_FIREBALL, urand(4000, 6000));
+                            break;
+                        case EVENT_BLASTWAVE:
+                            DoCastAOE(SPELL_BLAST_WAVE);
+                            _events.ScheduleEvent(EVENT_BLASTWAVE, urand(10000, 18000));
+                            break;
+                        case EVENT_HASTE:
+                            DoCast(me, SPELL_HASTE);
+                            _events.ScheduleEvent(EVENT_HASTE, urand(20000, 22000));
+                            break;
+                        case EVENT_POLYMORPH:
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                                DoCast(target, SPELL_POLYMORPH);
+                            _events.ScheduleEvent(EVENT_POLYMORPH, urand(8000, 12000));
+                            break;
+                        // Warrior
+                        case EVENT_ROLLINGTHROW:
+                            DoCastVictim(SPELL_ROLLING_THROW);
+                            _events.ScheduleEvent(EVENT_ROLLINGTHROW, urand(17000, 23000));
+                            break;
+                        case EVENT_BLADESTORM:
+                            DoCast(SPELL_BLADESTORM);
+                            _events.ScheduleEvent(EVENT_BLADESTORM, urand(15000, 25000));
+                            break;
+                        case EVENT_MORTALSTRIKE:
+                            DoCastVictim(SPELL_MORTAL_STRIKE);
+                            _events.ScheduleEvent(EVENT_MORTALSTRIKE, urand(8000, 12000));
+                            break;
+                        case EVENT_INTERCEPT:
+                            if (Unit* target = GetRangedTarget(8.0f, 25.0f, me))
+                                DoCast(target, SPELL_INTERCEPT);
+                            _events.ScheduleEvent(EVENT_INTERCEPT, urand(10000, 20000));
+                            break;
+                    }
+                }
+
+                if (_phase == 3)
+                    DoMeleeAttackIfReady();
+            }
+
+        private:
+            InstanceScript* _instance;
+            EventMap _events;
+            uint8 _phase;
+            uint8 _point;
+            uint8 _waypointPath;
+            uint32 _phaseChangeTimer;
+            bool _waypointReached;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const
+        {
+            return new boss_grand_champion_toc5AI(creature);
+        }
+};
+
+class spell_ride_vehicle_toc5 : public SpellScriptLoader
+{
+    public:
+        spell_ride_vehicle_toc5() : SpellScriptLoader("spell_ride_vehicle_toc5") {}
+
+        class spell_ride_vehicle_toc5_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_ride_vehicle_toc5_SpellScript);
+
+            SpellCastResult CheckRequirement()
+            {
+                if (GetTargetUnit() && GetTargetUnit()->ToCreature())
+                {
+                    if (GetTargetUnit()->GetEntry() == VEHICLE_ARGENT_WARHORSE)
+                        if (GetCaster() && GetCaster()->ToPlayer() && GetCaster()->ToPlayer()->GetTeamId() == TEAM_HORDE)
+                            return SPELL_FAILED_BAD_TARGETS;
+
+                    if (GetTargetUnit()->GetEntry() == VEHICLE_ARGENT_BATTLEWORG)
+                        if (GetCaster() && GetCaster()->ToPlayer() && GetCaster()->ToPlayer()->GetTeamId() == TEAM_ALLIANCE)
+                            return SPELL_FAILED_BAD_TARGETS;
+                }
+
+                if (GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == 46106 ||
+                    GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == 46069 ||
+                    GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == 46070)
+                {
+                    GetCaster()->RemoveAurasByType(SPELL_AURA_MOD_SHAPESHIFT);
+                    return SPELL_CAST_OK;
                 }
                 else
                 {
-                    Map::PlayerList const& players = me->GetMap()->GetPlayers();
-                    if (me->GetMap()->IsDungeon() && !players.isEmpty())
-                    {
-                        for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-                        {
-                            Player* player = itr->GetSource();
-                            if (player && !player->IsGameMaster() && me->IsInRange(player, 5.0f, 30.0f, false))
-                            {
-                                DoCast(player, SPELL_MULTI_SHOT);
-                                break;
-                            }
-                        }
-                    }
+                    SetCustomCastResultMessage(SPELL_CUSTOM_ERROR_MUST_HAVE_LANCE_EQUIPPED);
+                    return SPELL_FAILED_CUSTOM_ERROR;
                 }
-                bShoot = false;
-            } else uiMultiShotTimer -= uiDiff;
-
-            DoMeleeAttackIfReady();
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return GetInstanceAI<boss_hunter_toc5AI>(creature);
-    }
-};
-
-class boss_rouge_toc5 : public CreatureScript
-{
-public:
-    boss_rouge_toc5() : CreatureScript("boss_rouge_toc5") { }
-
-    // Lana Stouthammer Evensong && Deathstalker Visceri || Rouge
-    struct boss_rouge_toc5AI : public ScriptedAI
-    {
-        boss_rouge_toc5AI(Creature* creature) : ScriptedAI(creature)
-        {
-            Initialize();
-            instance = creature->GetInstanceScript();
-
-            bDone = false;
-            bHome = false;
-
-            uiPhase = 0;
-            uiPhaseTimer = 0;
-
-            me->SetReactState(REACT_PASSIVE);
-            // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
-        }
-
-        void Initialize()
-        {
-            uiEviscerateTimer = 8000;
-            uiFanKivesTimer = 14000;
-            uiPosionBottleTimer = 19000;
-        }
-
-        InstanceScript* instance;
-
-        uint8 uiPhase;
-        uint32 uiPhaseTimer;
-        uint32 uiEviscerateTimer;
-        uint32 uiFanKivesTimer;
-        uint32 uiPosionBottleTimer;
-
-        bool bDone;
-        bool bHome;
-
-        void Reset() override
-        {
-            Initialize();
-        }
-
-        void JustReachedHome() override
-        {
-            ScriptedAI::JustReachedHome();
-
-            if (!bHome)
-                return;
-
-            uiPhaseTimer = 15000;
-            uiPhase = 1;
-
-            bHome = false;
-        }
-
-        void UpdateAI(uint32 uiDiff) override
-        {
-            if (!bDone && GrandChampionsOutVehicle(me))
-            {
-                bDone = true;
-
-                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
-                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
-
-                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
-
-                EnterEvadeMode();
-                bHome = true;
             }
 
-            if (uiPhaseTimer <= uiDiff)
+            void Register()
             {
-                if (uiPhase == 1)
-                {
-                    AggroAllPlayers(me);
-                    uiPhase = 0;
-                }
-            } else uiPhaseTimer -= uiDiff;
+                OnCheckCast += SpellCheckCastFn(spell_ride_vehicle_toc5_SpellScript::CheckRequirement);
+            }
+        };
 
-            if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT))
-                return;
-
-            if (uiEviscerateTimer <= uiDiff)
-            {
-                DoCastVictim(SPELL_EVISCERATE);
-                uiEviscerateTimer = 8000;
-            } else uiEviscerateTimer -= uiDiff;
-
-            if (uiFanKivesTimer <= uiDiff)
-            {
-                DoCastAOE(SPELL_FAN_OF_KNIVES, false);
-                uiFanKivesTimer = 14000;
-            } else uiFanKivesTimer -= uiDiff;
-
-            if (uiPosionBottleTimer <= uiDiff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                    DoCast(target, SPELL_POISON_BOTTLE);
-                uiPosionBottleTimer = 19000;
-            } else uiPosionBottleTimer -= uiDiff;
-
-            DoMeleeAttackIfReady();
-        }
-
-        void JustDied(Unit* /*killer*/) override
+        class spell_ride_vehicle_toc5_AuraScript : public AuraScript
         {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
-        }
-    };
+            PrepareAuraScript(spell_ride_vehicle_toc5_AuraScript);
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return GetInstanceAI<boss_rouge_toc5AI>(creature);
-    }
+            void HandleOnEffect(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (Unit* target = GetTarget())
+                    target->RemoveAurasDueToSpell(SPELL_DEFEND);
+
+                if (Unit* caster = GetCaster())
+                {
+                    caster->RemoveAurasDueToSpell(SPELL_DEFEND);
+                    for (uint8 i = 0; i < 3; ++i)
+                        caster->RemoveAurasDueToSpell(SPELL_VISUAL_SHIELD_1 + i);
+                }
+            }
+
+            void Register()
+            {
+                AfterEffectApply += AuraEffectApplyFn(spell_ride_vehicle_toc5_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_ride_vehicle_toc5_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_ride_vehicle_toc5_AuraScript();
+        }
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_ride_vehicle_toc5_SpellScript();
+        }
 };
 
 void AddSC_boss_grand_champions()
 {
-    new generic_vehicleAI_toc5();
-    new boss_warrior_toc5();
-    new boss_mage_toc5();
-    new boss_shaman_toc5();
-    new boss_hunter_toc5();
-    new boss_rouge_toc5();
+    new npc_faction_champion_toc5();
+    new boss_grand_champion_toc5();
+    new spell_ride_vehicle_toc5();
 }
