@@ -338,7 +338,8 @@ void AnticheatMgr::BuildReport(Player* player,uint8 reportType)
             if (m_Players[key].GetAverage() > 0.5f)
             {
                 str = "Possible cheater found: " + std::string(player->GetName());
-                sWorld->BanCharacter(player->GetName(), "24h", str, "AC");
+                sWorld->BanCharacter(player->GetName(), "1h", str, "Anticheat");
+                sWorld->SendWorldText(LANG_BAN_CHEATER, player->GetName().c_str());
             }
         }
         else
