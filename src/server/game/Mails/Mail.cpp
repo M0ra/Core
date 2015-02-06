@@ -303,8 +303,8 @@ void WorldSession::SendExternalMails()
     do
     {
         Field *fields = result->Fetch();
-       uint32 id = fields[0].GetUInt32();
-        uint32 receiver_guid = fields[1].GetUInt32();
+        uint32 id = fields[0].GetUInt32();
+        ObjectGuid receiver_guid = fields[1].GetUInt32();
         std::string subject = fields[2].GetString();
         std::string body = fields[3].GetString();
         uint32 money = fields[4].GetUInt32();
