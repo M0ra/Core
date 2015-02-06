@@ -16926,6 +16926,11 @@ void Unit::_EnterVehicle(Vehicle* vehicle, int8 seatId, AuraApplication const* a
             return;
         }
     }
+	
+	// Check if there is unit type non move on vehicle
+    // If so, root the vehicle once someone gets in
+    if (vehicle->GetBase()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
+        SetControlled(true, UNIT_STATE_ROOT);
 
     ASSERT(!m_vehicle);
     (void)vehicle->AddPassenger(this, seatId);
