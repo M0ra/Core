@@ -119,13 +119,13 @@ class boss_black_knight : public CreatureScript
 
         struct boss_black_knightAI : public ScriptedAI
         {
-            boss_black_knightAI(Creature* creature) : ScriptedAI(creature), _summons(me)
+            boss_black_knightAI(Creature* creature) : ScriptedAI(creature), summons(creature)
             {
                 _instance = creature->GetInstanceScript();
             }
 
             InstanceScript* _instance;
-            SummonList _summons;
+            SummonList summons;
 
             bool isResurrecting;
             bool isSummoningArmy;
@@ -148,7 +148,7 @@ class boss_black_knight : public CreatureScript
 
             void Reset()
             {
-                _summons.DespawnAll();
+                summons.DespawnAll();
 
                 me->SetDisplayId(me->GetNativeDisplayId());
                 me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
@@ -182,8 +182,8 @@ class boss_black_knight : public CreatureScript
 
             void JustSummoned(Creature* summon)
             {
-                _summons.Summon(summon);
-                DoZoneInCombat(summon, 200.0f);
+            summons.Summon(summon);
+            summon->AI()->AttackStart(me->GetVictim());
             }
 
             void EnterEvadeMode()
@@ -232,9 +232,7 @@ class boss_black_knight : public CreatureScript
                     me->SetHealth(0);
                     me->AddUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
 
-                    _summons.DoAction(NPC_RISEN_CHAMPION, 1);
-                    _summons.DoAction(NPC_RISEN_BRIGHTSTAR, 1);
-                    _summons.DoAction(NPC_RISEN_SUNSWORN, 1);
+                    summons.DespawnAll();
 
                     switch (phase)
                     {
@@ -546,7 +544,7 @@ class npc_black_knight_skeletal_gryphon : public CreatureScript
         {
             npc_black_knight_skeletal_gryphonAI(Creature* creature) : npc_escortAI(creature)
             {
-                Start(false, true, 0, NULL);
+                Start(false, true);
                 me->SetFlying(true);
                 me->SetReactState(REACT_PASSIVE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1);
@@ -559,8 +557,7 @@ class npc_black_knight_skeletal_gryphon : public CreatureScript
             {
                 npc_escortAI::UpdateAI(diff);
 
-                if (!UpdateVictim())
-                    return;
+                UpdateVictim();
             }
         };
 

@@ -203,7 +203,7 @@ Unit* GetRangedTarget(float minRange, float maxRange, WorldObject* source)
 
         if (!targets.empty())
         {
-            Unit* target = SelectRandomContainerElement(targets);
+            Unit* target = Trinity::Containers::SelectRandomContainerElement(targets);
 
             if (Unit* vehicle = target->GetVehicleBase())
                 return vehicle;
