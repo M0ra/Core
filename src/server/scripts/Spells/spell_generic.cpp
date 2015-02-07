@@ -4122,8 +4122,8 @@ class spell_gen_turkey_tracker : public SpellScriptLoader
                 if(GetCaster()->GetAura(SPELL_KILL_COUNTER_VISUAL_MAX))
                     return;
 
-                Player* target = GetHitPlayer();
-                if(!target)
+                Player* me = GetHitPlayer();
+                if(!me)
                     return;
 
                 if(Aura const* aura = GetCaster()->ToPlayer()->GetAura(GetSpellInfo()->Id))
@@ -4131,21 +4131,21 @@ class spell_gen_turkey_tracker : public SpellScriptLoader
                     switch(aura->GetStackAmount())
                     {
                         case 10:
-                            target->HandleEmoteCommand("Охотник на Индеек!");
-                            GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
+                            me->HandleEmoteCommand("Охотник на Индеек!");
+                            GetCaster()->CastSpell(me, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             break;
                         case 20:
-                            target->HandleEmoteCommand("Доминирование над Индейками!");
-                            GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
+                            me->HandleEmoteCommand("Доминирование над Индейками!");
+                            GetCaster()->CastSpell(me, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             break;
                         case 30:
-                            target->HandleEmoteCommand("Резня Индеек!");
-                            GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
+                            me->HandleEmoteCommand("Резня Индеек!");
+                            GetCaster()->CastSpell(me, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             break;
                         case 40:
-                            target->HandleEmoteCommand("Чемпион Индеек!");
-                            GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
-                            GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL_MAX, true, NULL); // Achievement Credit
+                            me->HandleEmoteCommand("Чемпион Индеек!");
+                            GetCaster()->CastSpell(me, SPELL_KILL_COUNTER_VISUAL, true, NULL);
+                            GetCaster()->CastSpell(me, SPELL_KILL_COUNTER_VISUAL_MAX, true, NULL); // Achievement Credit
                             break;
                         default:
                             break;
