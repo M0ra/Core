@@ -1422,7 +1422,7 @@ public:
 enum BlackKnight
 {
     SPELL_BK_CHARGE                 = 63003,
-    SPELL_SHIELD_BREAKER            = 65147,
+    //SPELL_SHIELD_BREAKER            = 65147,
     SPELL_DARK_SHIELD               = 64505
 
 };
@@ -1605,133 +1605,6 @@ public:
     }
 };
 
-/*######
-## vehicle_black_knights_gryphon
-######*/
-
-const Position BlackKnightGryphonWaypoints[19] =
-{
-    {8522.41f, 582.23f, 552.29f, 0.0f},
-    {8502.92f, 610.34f, 550.01f, 0.0f},
-    {8502.50f, 628.61f, 547.38f, 0.0f},
-    {8484.50f, 645.16f, 547.30f, 0.0f},
-    {8454.49f, 693.96f, 547.30f, 0.0f},
-    {8403.00f, 742.34f, 547.30f, 0.0f},
-    {8374.00f, 798.35f, 547.93f, 0.0f},
-    {8376.43f, 858.33f, 548.00f, 0.0f},
-    {8388.22f, 868.56f, 547.78f, 0.0f},
-    {8465.58f, 871.45f, 547.30f, 0.0f},
-    {8478.29f, 1014.63f, 547.30f, 0.0f},
-    {8530.86f, 1037.65f, 547.30f, 0.0f},
-    {8537.69f, 1078.33f, 554.80f, 0.0f},
-    {8537.69f, 1078.33f, 578.10f, 0.0f},
-    {8740.47f, 1611.72f, 496.19f, 0.0f},
-    {9025.06f, 1799.67f, 171.54f, 0.0f},
-    {9138.47f, 2013.83f, 104.24f, 0.0f},
-    {9081.39f, 2158.26f, 72.98f, 0.0f},
-    {9054.00f, 2124.85f, 57.13f, 0.0f}
-};
-
-// UPDATE `creature_template` SET scriptname = 'vehicle_black_knights_gryphon' WHERE `entry` = 33519;
-
-class vehicle_black_knights_gryphon : public CreatureScript
-{
-public:
-    vehicle_black_knights_gryphon() : CreatureScript("vehicle_black_knights_gryphon") { }
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new vehicle_black_knights_gryphonAI(creature);
-    }
-
-    struct vehicle_black_knights_gryphonAI : public VehicleAI
-    {
-        vehicle_black_knights_gryphonAI(Creature* creature) : VehicleAI(creature)
-        {
-             if (VehicleSeatEntry* vehSeat = const_cast<VehicleSeatEntry*>(sVehicleSeatStore.LookupEntry(3548)))
-                vehSeat->m_flags |= VEHICLE_SEAT_FLAG_UNCONTROLLED;
-        }
-
-        bool isInUse;
-        bool wpReached;
-        uint8 count;
-        uint32 relocateTimer;
-
-        void Reset()
-        {
-            count = 0;
-            wpReached = false;
-            isInUse = false;
-            relocateTimer = 1000;
-        }
-
-        void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply)
-        {
-            if (who && apply)
-            {
-                isInUse = apply;
-                wpReached = true;
-                me->RemoveUnitMovementFlag(MOVEMENTFLAG_WALKING);
-                me->SetSpeed(MOVE_RUN, 2.0f);
-                me->SetSpeed(MOVE_FLIGHT, 3.5f);
-            }
-        }
-
-        void MovementInform(uint32 type, uint32 id)
-        {
-            if (type != POINT_MOTION_TYPE)
-                return;
-
-            if (id < 18)
-            {
-                if (id > 11)
-                {
-                    me->SetUnitMovementFlags(MOVEMENTFLAG_LEVITATING);
-                    me->SetSpeed(MOVE_RUN, 5.0f);
-                    //me->SetFlying(true);
-                }
-
-                ++count;
-                wpReached = true;
-            }
-            else
-            {
-                Unit* player = me->GetVehicleKit()->GetPassenger(0);
-                if (player && player->GetTypeId() == TYPEID_PLAYER)
-                {
-                    player->ToPlayer()->KilledMonsterCredit(me->GetEntry(), 0);
-                    player->ExitVehicle();
-                    me->DespawnOrUnsummon(5000);
-                }
-            }
-        }
-
-        void UpdateAI(uint32 const diff)
-        {
-            if (!me->IsVehicle())
-                return;
-
-            if (!isInUse)
-                return;
-
-            // TODO: fix passenger relocation
-            if (relocateTimer <= diff)
-            {
-                me->GetVehicleKit()->RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
-                relocateTimer = 1000;
-            }
-            else
-                relocateTimer -= diff;
-
-            if (wpReached)
-            {
-                wpReached = false;
-                me->GetMotionMaster()->MovePoint(count, BlackKnightGryphonWaypoints[count]);
-            }
-        }
-    };
-};
-
 void AddSC_icecrown()
 {
     new npc_squire_david;
@@ -1746,5 +1619,4 @@ void AddSC_icecrown()
     new npc_squire_danny();
 	new npc_squire_cavin();
 	new npc_the_black_knight();
-	new vehicle_black_knights_gryphon();
 }
