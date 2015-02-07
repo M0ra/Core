@@ -4093,15 +4093,6 @@ public:
     }
 };
 
-enum Emotes
-{
-    EMOTE_1                = 1,
-    EMOTE_2                = 2,
-    EMOTE_3                = 3,
-	EMOTE_4                = 4
-
-};
-
 enum TheTurkinator
 {
     SPELL_KILL_COUNTER_VISUAL       = 62015,
@@ -4140,19 +4131,19 @@ class spell_gen_turkey_tracker : public SpellScriptLoader
                     switch(aura->GetStackAmount())
                     {
                         case 10:
-							Talk(EMOTE_1);
+                            target->HandleEmoteCommand("Охотник на Индеек!");
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             break;
                         case 20:
-                            Talk(EMOTE_2);
+                            target->HandleEmoteCommand("Доминирование над Индейками!");
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             break;
                         case 30:
-                            Talk(EMOTE_3);
+                            target->HandleEmoteCommand("Резня Индеек!");
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             break;
                         case 40:
-                            Talk(EMOTE_4);
+                            target->HandleEmoteCommand("Чемпион Индеек!");
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL_MAX, true, NULL); // Achievement Credit
                             break;
