@@ -1533,7 +1533,7 @@ public:
                 me->GetMotionMaster()->MoveIdle();
                 me->RemoveAurasDueToSpell(SPELL_DEFEND_AURA_PERIODIC);
                 me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-                me->MonsterYell(YELL_ATTACK_PHASE_1_END,LANG_UNIVERSAL,guidAttacker);
+                me->Yell(YELL_ATTACK_PHASE_1_END,LANG_UNIVERSAL,guidAttacker);
                 uireattackTimer = 10000;
             }
         }
@@ -1589,7 +1589,7 @@ public:
 
                     me->SetMaxHealth(12500);
                     me->SetHealth(12500);
-                    me->MonsterYell(YELL_ATTACK_PHASE_2,LANG_UNIVERSAL,guidAttacker);
+                    me->Yell(YELL_ATTACK_PHASE_2,LANG_UNIVERSAL,guidAttacker);
                     uireattackTimer = 99999999;
                 }else uireattackTimer -= uiDiff;
             }
