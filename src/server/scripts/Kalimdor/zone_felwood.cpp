@@ -100,7 +100,58 @@ public:
     }
 };
 
+/*######
+## at_ancient_leaf
+######*/
+
+enum AncientMisc
+{
+    QUEST_ANCIENT_LEAF = 7632,
+    NPC_VARTRUS = 14524,
+    NPC_STOMA = 14525,
+    NPC_HASTAT = 14526,
+    MAX_ANCIENTS = 3
+};
+
+struct AncientSpawn
+{
+    uint32 entry;
+    float fX, fY, fZ, fO;
+};
+
+static const AncientSpawn SpawnLocations[MAX_ANCIENTS] =
+{
+    { NPC_VARTRUS, 6204.051758f, -1172.575684f, 370.079224f, 0.86052f },  // Vartus the Ancient
+    { NPC_STOMA,   6246.953613f, -1155.985718f, 366.182953f, 2.90269f },  // Stoma the Ancient
+    { NPC_HASTAT,  6193.449219f, -1137.834106f, 366.260529f, 5.77332f },  // Hastat the Ancient
+};
+
+class at_ancient_leaf : public AreaTriggerScript
+{
+    public:
+        at_ancient_leaf() : AreaTriggerScript("at_ancient_leaf") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        {
+            if (player->IsGameMaster() || !player->IsAlive())
+                return false;
+
+            // Handle Call Ancients event start - The area trigger summons 3 ancients
+            if ((player->GetQuestStatus(QUEST_ANCIENT_LEAF) == QUEST_STATUS_COMPLETE) || (player->GetQuestStatus(QUEST_ANCIENT_LEAF) == QUEST_STATUS_REWARDED))
+            {
+                // If ancients are already spawned, skip the rest
+                if (GetClosestCreatureWithEntry(player, NPC_VARTRUS, 50.0f) || GetClosestCreatureWithEntry(player, NPC_STOMA, 50.0f) || GetClosestCreatureWithEntry(player, NPC_HASTAT, 50.0f))
+                    return true;
+
+                for (uint8 i = 0; i < MAX_ANCIENTS; ++i)
+                    player->SummonCreature(SpawnLocations[i].entry, SpawnLocations[i].fX, SpawnLocations[i].fY, SpawnLocations[i].fZ, SpawnLocations[i].fO, TEMPSUMMON_TIMED_DESPAWN, 5 * MINUTE * IN_MILLISECONDS);
+            }
+            return false;
+        }
+};
+
 void AddSC_felwood()
 {
     new npcs_riverbreeze_and_silversky();
+	new at_ancient_leaf();
 }
