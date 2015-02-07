@@ -337,6 +337,13 @@ class npc_warden_mellichar : public CreatureScript
                 instance->HandleGameObject(instance->GetGuidData(DATA_WARDENS_SHIELD), false);
                 IsRunning = true;
             }
+			
+			void JustSummoned(Creature* summon) override
+            {
+                DoZoneInCombat(summon);
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
+                    summon->AI()->AttackStart(target);
+            }
 
             bool CanProgress()
             {
