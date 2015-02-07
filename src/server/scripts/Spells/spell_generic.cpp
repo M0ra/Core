@@ -4131,19 +4131,19 @@ class spell_gen_turkey_tracker : public SpellScriptLoader
                     switch(aura->GetStackAmount())
                     {
                         case 10:
-                            target->MonsterTextEmote("Охотник на Индеек!", 0, true);
+                            target->Talk("Охотник на Индеек!", 0, true);
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             break;
                         case 20:
-                            target->MonsterTextEmote("Доминирование над Индейками!", 0, true);
+                            target->Talk("Доминирование над Индейками!", 0, true);
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             break;
                         case 30:
-                            target->MonsterTextEmote("Резня Индеек!", 0, true);
+                            target->Talk("Резня Индеек!", 0, true);
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             break;
                         case 40:
-                            target->MonsterTextEmote("Чемпион Индеек!", 0, true);
+                            target->Talk("Чемпион Индеек!", 0, true);
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL, true, NULL);
                             GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL_MAX, true, NULL); // Achievement Credit
                             break;
