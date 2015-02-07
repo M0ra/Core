@@ -39,6 +39,14 @@
 #include "Vehicle.h"
 #include "../Custom/Transmog/Transmogrification.h"
 
+enum Text
+{
+    EMOTE_CASE_1  =  1,
+	EMOTE_CASE_2  =  2,
+	EMOTE_CASE_3  =  3,
+	EMOTE_CASE_4  =  4
+};
+
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
 {
     public:
@@ -4097,14 +4105,6 @@ enum TheTurkinator
 {
     SPELL_KILL_COUNTER_VISUAL       = 62015,
     SPELL_KILL_COUNTER_VISUAL_MAX   = 62021
-};
-
-enum Emote
-{
-    EMOTE_CASE_1  =  1,
-	EMOTE_CASE_2  =  2,
-	EMOTE_CASE_3  =  3,
-	EMOTE_CASE_4  =  4
 };
 
 class spell_gen_turkey_tracker : public SpellScriptLoader
