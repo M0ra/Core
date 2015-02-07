@@ -23,6 +23,7 @@
 #include "Player.h"
 #include "TemporarySummon.h"
 #include "CombatAI.h"
+#include "Unit.h"
 
 /*######
 ## npc_squire_david
@@ -78,7 +79,7 @@ public:
 enum ArgentValiant
 {
     SPELL_CHARGE                = 63010,
-    SPELL_SHIELD_BREAKER        = 65147,
+    //SPELL_SHIELD_BREAKER        = 65147,
     SPELL_KILL_CREDIT           = 63049
 };
 
@@ -1391,18 +1392,13 @@ class npc_squire_cavin : public CreatureScript
 public:
     npc_squire_cavin() : CreatureScript("npc_squire_cavin") { }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 uiSender, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         player->PlayerTalkClass->ClearMenus();
-        if (uiAction == GOSSIP_ACTION_INFO_DEF+1)
+        if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
-            Position pos;
-            creature->GetPosition(&pos);
-            {
-                if(TempSummon* temp = creature->SummonCreature(NPC_BLACK_KNIGHT,pos,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,10000))
-                    temp->AI()->SetGUID(player->GetGUID());
-            }
             player->CLOSE_GOSSIP_MENU();
+            creature->SummonCreature(NPC_BLACK_KNIGHT, 8436.9f, 970.9f, 544.7f, 0.0f);
         }
         return true;
     }
@@ -1471,7 +1467,7 @@ public:
 
         void SetGUID(ObjectGuid guid, int32)
         {
-            if(Player* plr = Player::GetPlayer(*me,guid))
+            if(Player* plr = ObjectAccessor::GetPlayer(*me,guid))
             {
                 guidAttacker = guid;
                 mountDuel = true;
@@ -1514,7 +1510,7 @@ public:
 
             }else if(uiId == 2)
             {
-                if(Player* plr = Player::GetPlayer(*me,guidAttacker))
+                if(Player* plr = ObjectAccessor::GetPlayer(*me,guidAttacker))
                 {
                     AttackStart(plr);
                 }
@@ -1591,7 +1587,7 @@ public:
                         me->GetMotionMaster()->MoveChase(me->GetVictim());
                     me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 
-                    if(Player* plr = Player::GetPlayer(*me,guidAttacker))
+                    if(Player* plr = ObjectAccessor::GetPlayer(*me,guidAttacker))
                         plr->ExitVehicle();
 
                     me->SetMaxHealth(12500);
