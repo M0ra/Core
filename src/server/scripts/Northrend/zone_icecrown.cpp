@@ -23,7 +23,12 @@
 #include "Player.h"
 #include "TemporarySummon.h"
 #include "CombatAI.h"
-#include "Unit.h"
+
+enum Spells
+{
+    SPELL_SHIELD_BREAKER        = 65147,
+    SPELL_CHARGE                = 63010
+};
 
 /*######
 ## npc_squire_david
@@ -78,8 +83,6 @@ public:
 
 enum ArgentValiant
 {
-    SPELL_CHARGE                = 63010,
-    //SPELL_SHIELD_BREAKER        = 65147,
     SPELL_KILL_CREDIT           = 63049
 };
 
@@ -894,8 +897,6 @@ UPDATE creature_template SET scriptname = 'npc_faction_valiant_champion' WHERE e
 
 enum FactionValiantChampion
 {
-    //SPELL_CHARGE                = 63010,
-    //SPELL_SHIELD_BREAKER        = 65147,
     SPELL_REFRESH_MOUNT         = 66483,
 
     SPELL_GIVE_VALIANT_MARK_1   = 62724,
@@ -1220,9 +1221,6 @@ UPDATE creature_template SET scriptname = 'npc_argent_champion' WHERE entry = 33
 
 enum ArgentChampion
 {
-    //SPELL_CHARGE                = 63010,
-    //SPELL_SHIELD_BREAKER        = 65147,
-
     SPELL_ARGENT_CRUSADE_CHAMPION   = 63501,
     SPELL_GIVE_KILL_CREDIT_CHAMPION = 63516
 };
@@ -1422,7 +1420,6 @@ public:
 enum BlackKnight
 {
     SPELL_BK_CHARGE                 = 63003,
-    //SPELL_SHIELD_BREAKER            = 65147,
     SPELL_DARK_SHIELD               = 64505
 
 };
