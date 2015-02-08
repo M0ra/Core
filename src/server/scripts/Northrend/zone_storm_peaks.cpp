@@ -846,6 +846,39 @@ class spell_close_rift : public SpellScriptLoader
         }
 };
 
+class npc_column_ornament : public CreatureScript
+{
+public:
+    npc_column_ornament() : CreatureScript("npc_column_ornament") { }
+
+    struct npc_column_ornamentAI : public ScriptedAI
+    {
+        npc_column_ornamentAI(Creature* creature) : ScriptedAI(creature) {}
+
+        void Reset() { } 
+  
+        void SpellHit(Unit* hitter, SpellInfo* spell)
+        {
+            if (!hitter || !spell)
+                return;
+
+            if (spell->Id != 54933)
+                return;
+
+            if (spell->Id == 54933)
+            {
+                hitter->ToPlayer()->ExitVehicle();
+    hitter->ToPlayer()->JumpTo(me,25.0f);        
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_column_ornamentAI(creature);
+    }
+};
+
 void AddSC_storm_peaks()
 {
     new npc_injured_goblin();
@@ -859,4 +892,5 @@ void AddSC_storm_peaks()
     new spell_jokkum_scriptcast();
     new spell_veranus_summon();
     new spell_close_rift();
+	new npc_column_ornament();
 }
