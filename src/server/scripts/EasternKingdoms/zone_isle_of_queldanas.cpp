@@ -175,6 +175,7 @@ public:
 		if (player->GetQuestStatus(QUEST_THALORIEN_H) == QUEST_STATUS_INCOMPLETE ||
             player->GetQuestStatus(QUEST_THALORIEN_A) == QUEST_STATUS_INCOMPLETE)		
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Осмотреть труп.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 action)
