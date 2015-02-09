@@ -366,11 +366,6 @@ public:
                 events.ScheduleEvent(EVENT_STEP_13, 3 * IN_MILLISECONDS);
         }
 
-        void SetGUID(ObjectGuid, int32 /*id*/)
-        {
-            uiPlayer = ObjectGuid;
-        }
-
         void DoAction(int32 action)
         {
             switch (action)
