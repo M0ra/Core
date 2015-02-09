@@ -368,7 +368,7 @@ public:
 
         void SetGUID(ObjectGuid, int32 /*id*/)
         {
-            uiPlayer = guid;
+            uiPlayer = ObjectGuid;
         }
 
         void DoAction(int32 action)
