@@ -172,13 +172,9 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature)
     {
-        player->PrepareGossipMenu(creature, 0);
-
 		if (player->GetQuestStatus(QUEST_THALORIEN_H) == QUEST_STATUS_INCOMPLETE ||
             player->GetQuestStatus(QUEST_THALORIEN_A) == QUEST_STATUS_INCOMPLETE)		
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Осмотреть труп.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-        player->SendPreparedGossip(creature);
-        return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 action)
