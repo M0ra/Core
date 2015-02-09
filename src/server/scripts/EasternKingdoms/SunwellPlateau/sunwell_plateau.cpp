@@ -164,7 +164,7 @@ public:
                         gQuelDelar->SetFlag(GAMEOBJECT_FLAGS, 5);
                     }
                     // Presentamos al Player y le quitamos la espada
-                    if (Player* player = me->GetPlayer(*me, uiPlayer))
+                    if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayer))
                     {
                         player->DestroyItemCount(49879, 1, true);
                         player->DestroyItemCount(49889, 1, true);
@@ -180,36 +180,36 @@ public:
                     break;
                 case 3:
                     // Say de Theron
-                    if(Creature* pTheron = me->GetCreature(*me, uiTheron))
+                    if(Creature* pTheron = ObjectAccessor::GetCreature(*me, uiTheron))
                         Talk(SAY_QUELDELAR_3);
                     events.ScheduleEvent(4, 4000);
                     break;
                 case 4:
                     // Rommath y Auric se acercan a la espada
-                    if(Creature* pRommath = me->GetCreature(*me, uiRommath))
+                    if(Creature* pRommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         pRommath->GetMotionMaster()->MovePoint(1, 1675.8f, 617.19f, 28.0504f);
-                    if(Creature* pAuric = me->GetCreature(*me, uiAuric))
+                    if(Creature* pAuric = ObjectAccessor::GetCreature(*me, uiAuric))
                         pAuric->GetMotionMaster()->MovePoint(1, 1681.77f, 612.084f, 28.4409f);
                     events.ScheduleEvent(5, 6000);
                     break;
                 case 5:
                     // Rommath y Auric se orientan a la espada, Say de Rommath, Theron se acerca a la espada
-                    if(Creature* pRommath = me->GetCreature(*me, uiRommath))
+                    if(Creature* pRommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
                         pRommath->SetOrientation(0.3308f);
                         Talk(SAY_QUELDELAR_4);
                     }
-                    if(Creature* pAuric = me->GetCreature(*me, uiAuric))
+                    if(Creature* pAuric = ObjectAccessor::GetCreature(*me, uiAuric))
                         pAuric->SetOrientation(1.29057f);
-                    if(Creature* pTheron = me->GetCreature(*me, uiTheron))
+                    if(Creature* pTheron = ObjectAccessor::GetCreature(*me, uiTheron))
                         pTheron->GetMotionMaster()->MovePoint(1, 1677.07f, 613.122f, 28.0504f);
                     events.ScheduleEvent(6, 10000);
                     break;
                 case 6:
                     // Theron se acera mas a la espada
-                    if(Creature* pTheron = me->GetCreature(*me, uiTheron))
+                    if(Creature* pTheron = ObjectAccessor::GetCreature(*me, uiTheron))
                     {
-                        if(Player* player = me->GetPlayer(*me, uiPlayer))
+                        if(Player* player = ObjectAccessor::GetPlayer(*me, uiPlayer))
                             Talk(SAY_QUELDELAR_5);
                         pTheron->GetMotionMaster()->MovePoint(1, 1682.3f, 618.459f, 27.9581f);
                     }
@@ -217,21 +217,21 @@ public:
                     break;
                 case 7:
                     // Theron la intenta tocarla...
-                    if(Creature* pTheron = me->GetCreature(*me, uiTheron))
+                    if(Creature* pTheron = ObjectAccessor::GetCreature(*me, uiTheron))
                         pTheron->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
                     events.ScheduleEvent(8, 800);
                     break;
                 case 8:
                     // Theron Knockback
-                    if(Creature* pTheron = me->GetCreature(*me, uiTheron))
+                    if(Creature* pTheron = ObjectAccessor::GetCreature(*me, uiTheron))
                         pTheron->CastSpell(pTheron, 70493, true);
                     events.ScheduleEvent(9, 1000);
                     break;
                 case 9:
                     // Rommath congela al player, el guardia se acerca a Auric
-                    if(Creature* pRommath = me->GetCreature(*me, uiRommath))
+                    if(Creature* pRommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
-                        if(Player* player = me->GetPlayer(*me, uiPlayer))
+                        if(Player* player = ObjectAccessor::GetPlayer(*me, uiPlayer))
                         {
                             //pRommath->Attack(player, false);
                             //pRommath->CastSpell(player, 70540, true);
@@ -254,44 +254,44 @@ public:
                     break;
                 case 11:
                     // Say1 de Auric
-                    if(Creature* pAuric = me->GetCreature(*me, uiAuric))
+                    if(Creature* pAuric = ObjectAccessor::GetCreature(*me, uiAuric))
                         Talk(SAY_QUELDELAR_8);
                     events.ScheduleEvent(12, 6000);
                     break;
                 case 12:
                     // Say2 de Auric
-                    if(Creature* pAuric = me->GetCreature(*me, uiAuric))
+                    if(Creature* pAuric = ObjectAccessor::GetCreature(*me, uiAuric))
                         Talk(SAY_QUELDELAR_9);
                     events.ScheduleEvent(13, 5000);
                     break;
                 case 13:
                     // Say de Rommath
-                    if(Creature* pRommath = me->GetCreature(*me, uiRommath))
+                    if(Creature* pRommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         Talk(SAY_QUELDELAR_10);
                     events.ScheduleEvent(14, 2000);
                     break;
                 case 14:
                     // Guardia se retira, Say de Rommath
-                    if(Creature* pGuard = me->FindNearestCreature(37781, 20))
+                    if(Creature* pGuard = ObjectAccessor::FindNearestCreature(37781, 20))
                     {
                         pGuard->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_STAND);
                         pGuard->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         pGuard->GetMotionMaster()->MovePoint(0, pGuard->GetHomePosition());
                     }
-                    if(Creature* pRommath = me->GetCreature(*me, uiRommath))
+                    if(Creature* pRommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
                         pRommath->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        if(Player* player = me->GetPlayer(*me, uiPlayer))
+                        if(Player* player = ObjectAccessor::GetPlayer(*me, uiPlayer))
                             Talk(SAY_QUELDELAR_11);
                     }
                     events.ScheduleEvent(15, 7000);
                     break;
                 case 15:
                     // Say de Auric, desbloquea Quel'Delar
-                    if(Creature* pAuric = me->GetCreature(*me, uiAuric))
+                    if(Creature* pAuric = ObjectAccessor::GetCreature(*me, uiAuric))
                     {
                         pAuric->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        if(Player* player = me->GetPlayer(*me, uiPlayer))
+                        if(Player* player = ObjectAccessor::GetPlayer(*me, uiPlayer))
                             Talk(SAY_QUELDELAR_12);
                         if(GameObject* gQuelDelar = me->FindNearestGameObject(201794, 20))
                             gQuelDelar->RemoveFlag(GAMEOBJECT_FLAGS, 5);
@@ -300,11 +300,11 @@ public:
                     break;
                 case 16:
                     // Cada uno a su sitio...
-                    if(Creature* pAuric = me->GetCreature(*me, uiAuric))
+                    if(Creature* pAuric = ObjectAccessor::GetCreature(*me, uiAuric))
                         pAuric->GetMotionMaster()->MovePoint(0, pAuric->GetHomePosition());
-                    if(Creature* pRommath = me->GetCreature(*me, uiRommath))
+                    if(Creature* pRommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         pRommath->GetMotionMaster()->MovePoint(0, pRommath->GetHomePosition());
-                    if(Creature* pTheron = me->GetCreature(*me, uiTheron))
+                    if(Creature* pTheron = ObjectAccessor::GetCreature(*me, uiTheron))
                         pTheron->GetMotionMaster()->MovePoint(0, pTheron->GetHomePosition());
                     break;
             }
