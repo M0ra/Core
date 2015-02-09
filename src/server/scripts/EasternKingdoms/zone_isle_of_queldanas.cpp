@@ -180,7 +180,7 @@ public:
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_THA, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
         }		
 		
-        player->SEND_GOSSIP_MENU(GOSSIP_THA, creature->GetGUID());
+        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
         return true;
     }
 
