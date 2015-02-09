@@ -2016,6 +2016,51 @@ public:
     }
 };
 
+enum TriggerMisc
+{
+    GO_SPELL_FOCUS              = 184750,
+    NPC_DARK_CONCLAVE_RITUALIST = 22138
+};
+
+class npc_invis_arakkoa_target : public CreatureScript
+{
+public:
+    npc_invis_arakkoa_target() : CreatureScript("npc_invis_arakkoa_target") { }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_invis_arakkoa_targetAI (creature);
+    }
+
+    struct npc_invis_arakkoa_targetAI : public ScriptedAI
+    {
+        npc_invis_arakkoa_targetAI(Creature* creature) : ScriptedAI(creature){}
+
+        uint32 checkTimer;
+
+        void Reset()
+        {
+            checkTimer = 4*IN_MILLISECONDS;
+        }
+
+        void UpdateAI(uint32 diff)
+        {
+            if (checkTimer <= diff)
+            {
+                if (!me->FindNearestCreature(NPC_DARK_CONCLAVE_RITUALIST, 1000.0f))
+                {
+                    me->SummonGameObject(GO_SPELL_FOCUS, -4192.24f, 2005.37f, 76.79f, 0.80f, 0, 0, 0, 0, 300);
+                    me->DespawnOrUnsummon();
+                }
+
+                checkTimer = 4*IN_MILLISECONDS;
+            }
+            else
+            checkTimer -= diff;
+         }    
+    };
+};
+
 void AddSC_shadowmoon_valley()
 {
     new npc_invis_infernal_caster();
@@ -2035,4 +2080,5 @@ void AddSC_shadowmoon_valley()
     new npc_enraged_spirit();
     new spell_unlocking_zuluheds_chains();
     new npc_shadowmoon_tuber_node();
+	new npc_invis_arakkoa_target();
 }
