@@ -56,26 +56,27 @@ enum LiadrinnSpeeches
 ## npc_captain_selana
 ######*/
 
-#define CS_GOSSIP1 "Give me a situation report, Captain."
-#define CS_GOSSIP2 "What went wrong?"
-#define CS_GOSSIP3 "Why did they stop?"
-#define CS_GOSSIP4 "Your insight is appreciated."
+#define CS_GOSSIP1 "Дайте мне оперативную сводку, Капитан."
+#define CS_GOSSIP2 "Что пошло не так, как надо?"
+#define CS_GOSSIP3 "Почему они останавливались?"
+#define CS_GOSSIP4 "Ваше понимание ценится."
 
 enum Says
 {
-    SAY_QUELDELAR_1  = 1,  // Damas y Caballeros, les presento a $N, portador de Quel'Delar.
-    SAY_QUELDELAR_2  = 2,  // �De verdad es esa Quel'Delar?
-    SAY_QUELDELAR_3  = 3,  // Ya lo veremos
-    SAY_QUELDELAR_4  = 4,  // �Mira Lor'themar! Sin duda es Quel'Delar.
-    SAY_QUELDELAR_5  = 5,  // Asi sea. Tienes mi agradecimiento $N, por restaurar Quel'Delar a sus leg�timos propietarios
-    SAY_QUELDELAR_6  = 6,  // �Que siginifica esta traici�n?
-    SAY_QUELDELAR_7  = 7,  // Suelta el arma y rindete, traidor.
-    SAY_QUELDELAR_8  = 8,  // Esto no es culpa mia, Rommath. No es ninguna traici�n.
-    SAY_QUELDELAR_9  = 9,  // Retira a tus hombres. La estupidez del propio Lor'themar caus� sus heridas. Quel'Delar no se elige, ella elige a su maestro.
-    SAY_QUELDELAR_10 = 10,  // Guaridas, volved a vuestros puestos
-    SAY_QUELDELAR_11 = 11,  // Tendras lo que buscas, $N. Toma la espada y marchate. Y tu Auric, ten cuidado con lo que dices en este lugar sagrado.
-    SAY_QUELDELAR_12 = 12  // Lleva la espada a Dalaran a traves del portal, $N. Has hecho lo que muchos quel'dorei han so�ado durante a�os. Por fin se ha restaurado Quel'Delar.
+    SAY_QUELDELAR_1  = 1,  // Дамы и господа, я представляю $N, носителем Кель'Делара.
+    SAY_QUELDELAR_2  = 2,  // Неужели это Кель'Делар?
+    SAY_QUELDELAR_3  = 3,  // Мы увидим!
+    SAY_QUELDELAR_4  = 4,  // Лор'темар Смотри! Определенно Кель'Делар.
+    SAY_QUELDELAR_5  = 5,  // Так оно и будет. У вас есть моя благодарность $N, Кель'Делар покажет законного владельца.
+    SAY_QUELDELAR_6  = 6,  // Что? Это предательство?
+    SAY_QUELDELAR_7  = 7,  // Бросай оружие и сдавайся, предатель.
+    SAY_QUELDELAR_8  = 8,  // Это не моя вина, Роммат. Там нет предательство.
+    SAY_QUELDELAR_9  = 9,  // Убери своих людей. Глупость самого Лор'темара, причина его повреждения. Кель'Делар не выбрали, он выбирает своего хозяина.
+    SAY_QUELDELAR_10 = 10,  // Дэнс , обратно в ваших сообщениях
+    SAY_QUELDELAR_11 = 11,  // Вы будете иметь то, что вы ищете , $N. Возьмите меч и ступайте. Будьте осторожны, что вы говорите в этом священном месте.
+    SAY_QUELDELAR_12 = 12  // Возьмите меч и идите через портал в Даларан, $N. Вы сделали то, что многие квел'дореи мечтали в течение многих лет. Мы, наконец восстановили Кель'Делар.
 };
+
 class npc_queldelar_sp : public CreatureScript
 {
 public:
@@ -91,7 +92,7 @@ public:
             player->PrepareGossipMenu(creature, 0);
 
             if (player->HasItemCount(49879, 1) || player->HasItemCount(49889, 1))
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "He traido a Quel'Delar.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Я принес Кель'Делар.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
             player->SendPreparedGossip(creature);
 
             return true;
