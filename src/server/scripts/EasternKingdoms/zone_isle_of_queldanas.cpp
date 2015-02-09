@@ -174,8 +174,9 @@ public:
     {
         player->PrepareGossipMenu(creature, 0);
 
-        if ((player->GetQuestStatus(QUEST_THALORIEN_A) == QUEST_STATUS_INCOMPLETE) || (player->GetQuestStatus(QUEST_THALORIEN_H) == QUEST_STATUS_INCOMPLETE))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Examine the corpse.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+		if (player->GetQuestStatus(QUEST_THALORIEN_H) == QUEST_STATUS_INCOMPLETE ||
+            player->GetQuestStatus(QUEST_THALORIEN_A) == QUEST_STATUS_INCOMPLETE)		
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Осмотреть труп.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
         player->SendPreparedGossip(creature);
         return true;
     }
