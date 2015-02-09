@@ -3302,7 +3302,7 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 64936: // Item - Warrior T8 Protection 4P Bonus
                 spellInfo->Effects[EFFECT_0].BasePoints = 100; // 100% chance of procc'ing, not -10% (chance calculated in PrepareTriggersExecutedOnHit)
                 break;
-			case 63163: // Apply Enchanted Bridle (Argent Tournament)
+	    case 63163: // Apply Enchanted Bridle (Argent Tournament)
                 spellInfo->Effects[EFFECT_0].DieSides = 0; // was 1, that should probably mean seat 0, but instead it's treated as spell 1
                 spellInfo->Effects[EFFECT_0].BasePoints = 52391; // Ride Vehicle (forces seat 0)
                 break;	
