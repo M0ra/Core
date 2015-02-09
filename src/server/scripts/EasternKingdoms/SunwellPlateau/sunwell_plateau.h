@@ -50,7 +50,8 @@ enum DataTypes
     DATA_ORB_OF_THE_BLUE_DRAGONFLIGHT_4,
 
     // Misc
-    DATA_PLAYER_GUID
+    DATA_PLAYER_GUID,
+	DATA_QUELDELAR_INTRODUCER
 };
 
 enum CreatureIds

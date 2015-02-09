@@ -272,7 +272,7 @@ public:
                     break;
                 case 14:
                     // Guardia se retira, Say de Rommath
-                    if(Creature* pGuard = ObjectAccessor::FindNearestCreature(37781, 20))
+                    if(Creature* pGuard = me->FindNearestCreature(37781, 20))
                     {
                         pGuard->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_STAND);
                         pGuard->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
