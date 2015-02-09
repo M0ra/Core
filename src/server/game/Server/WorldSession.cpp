@@ -846,8 +846,28 @@ void WorldSession::ReadMovementInfo(WorldPacket &data, MovementInfo* mi)
         in conjunction with any of the moving movement flags such as MOVEMENTFLAG_FORWARD.
         It will freeze clients that receive this player's movement info.
     */
-    REMOVE_VIOLATING_FLAGS(mi->HasMovementFlag(MOVEMENTFLAG_ROOT),
-        MOVEMENTFLAG_ROOT);
+    if (!GetPlayer()->GetVehicleBase())
+    {
+        // Only remove here for non vehicles
+        REMOVE_VIOLATING_FLAGS(mi->HasMovementFlag(MOVEMENTFLAG_ROOT),
+            MOVEMENTFLAG_ROOT);
+    }
+    else
+    {
+        // Actually players in rooted vehicles still send commands, don't clear root for these!
+        // Check specifically for the following conditions:
+        // MOVEMENTFLAG_ROOT + no other flags          (0x800)
+        // MOVEMENTFLAG_ROOT + MOVEMENTFLAG_LEFT       (0x810)
+        // MOVEMENTFLAG_ROOT + MOVEMENTFLAG_RIGHT      (0x820)
+        // MOVEMENTFLAG_ROOT + MOVEMENTFLAG_PITCH_UP   (0x840)
+        // MOVEMENTFLAG_ROOT + MOVEMENTFLAG_PITCH_DOWN (0x880)
+        // If none of these are true, clear the root
+        if (mi->flags != MOVEMENTFLAG_ROOT &&
+            mi->flags != MOVEMENTFLAG_ROOT + MOVEMENTFLAG_LEFT && mi->flags != MOVEMENTFLAG_ROOT + MOVEMENTFLAG_RIGHT && 
+            mi->flags != MOVEMENTFLAG_ROOT + MOVEMENTFLAG_PITCH_UP && mi->flags != MOVEMENTFLAG_ROOT + MOVEMENTFLAG_PITCH_DOWN)
+            REMOVE_VIOLATING_FLAGS(mi->HasMovementFlag(MOVEMENTFLAG_ROOT),
+                MOVEMENTFLAG_ROOT);
+    }
 
     //! Cannot hover without SPELL_AURA_HOVER
     REMOVE_VIOLATING_FLAGS(mi->HasMovementFlag(MOVEMENTFLAG_HOVER) && !GetPlayer()->HasAuraType(SPELL_AURA_HOVER),
