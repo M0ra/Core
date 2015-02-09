@@ -3298,6 +3298,10 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 64936: // Item - Warrior T8 Protection 4P Bonus
                 spellInfo->Effects[EFFECT_0].BasePoints = 100; // 100% chance of procc'ing, not -10% (chance calculated in PrepareTriggersExecutedOnHit)
                 break;
+			case 63163: // Apply Enchanted Bridle (Argent Tournament)
+                spellInfo->EffectDieSides[0] = 0; // was 1, that should probably mean seat 0, but instead it's treated as spell 1
+                spellInfo->EffectBasePoints[0] = 52391; // Ride Vehicle (forces seat 0)
+                break;	
             case 19970: // Entangling Roots (Rank 6) -- Nature's Grasp Proc
             case 19971: // Entangling Roots (Rank 5) -- Nature's Grasp Proc
             case 19972: // Entangling Roots (Rank 4) -- Nature's Grasp Proc
