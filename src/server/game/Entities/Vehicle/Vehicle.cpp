@@ -196,10 +196,6 @@ void Vehicle::ApplyAllImmunities()
         _me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, true);
     }
 
-	// Honour non movement flag (4)
-    if (_me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
-        _me->SetControlled(true, UNIT_STATE_ROOT);
-	
     // Different immunities for vehicles goes below
     switch (GetVehicleInfo()->m_ID)
     {
