@@ -271,7 +271,7 @@ class boss_black_knight : public CreatureScript
                 DoCast(me, SPELL_BLACK_KNIGHT_CREDIT, true);
                 Talk(SAY_DEATH_3);
 
-                if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_PORTCULLIS) : 0))
+                if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_PORTCULLIS)))
                     _instance->HandleGameObject(go->GetGUID(), true);
 
                 if (_instance)
@@ -467,7 +467,7 @@ class npc_risen_ghoul : public CreatureScript
             void SpellHitTarget(Unit* target, SpellInfo const* spell)
             {
                 if (spell->Id == DUNGEON_MODE<uint32>(SPELL_EXPLODE, SPELL_EXPLODE_H) && target->GetTypeId() == TYPEID_PLAYER)
-                    if (Creature* knight = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_BLACK_KNIGHT) : 0))
+                    if (Creature* knight = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_BLACK_KNIGHT)))
                         knight->AI()->DoAction(DATA_I_VE_HAD_WORSE);
             }
 
