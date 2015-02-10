@@ -613,7 +613,7 @@ public:
                         for (uint8 i=0; i<3; i++)
                             if (Creature* boss = ObjectAccessor::GetCreature(*me, bossGUID[i]))
                             {
-                                boss->SetTarget();
+                                boss->SetTarget.clear();
                                 boss->CastSpell(boss, SPELL_MOUNT_LANCE_STAND, true);
                                 boss->SetHomePosition(boss->GetPositionX(), boss->GetPositionY(), boss->GetPositionZ(), boss->GetOrientation());
                             }
