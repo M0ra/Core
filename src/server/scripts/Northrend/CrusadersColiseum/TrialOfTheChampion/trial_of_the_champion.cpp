@@ -613,7 +613,7 @@ public:
                         for (uint8 i=0; i<3; i++)
                             if (Creature* boss = ObjectAccessor::GetCreature(*me, bossGUID[i]))
                             {
-                                boss->SetTarget(target->GetGUID());
+                                boss->SetTarget();
                                 boss->CastSpell(boss, SPELL_MOUNT_LANCE_STAND, true);
                                 boss->SetHomePosition(boss->GetPositionX(), boss->GetPositionY(), boss->GetPositionZ(), boss->GetOrientation());
                             }
@@ -622,7 +622,7 @@ public:
                             for (uint8 j=0; j<3; j++)
                                 if (Creature* add = ObjectAccessor::GetCreature(*me, addsGUID[i][j]))
                                 {
-                                    add->SetTarget(target->GetGUID());
+                                    add->SetTarget();
                                     add->SetFacingToObject(me);
                                     add->CastSpell(add, SPELL_MOUNT_LANCE_STAND, true);
                                     add->SetHomePosition(add->GetPositionX(), add->GetPositionY(), add->GetPositionZ(), add->GetOrientation());
@@ -1299,7 +1299,7 @@ public:
                         if (Creature* blackKinght = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_BLACK_KNIGHT)))
                         {
                             blackKinght->AI()->DoCast(me, SPELL_DEATH_PUSH_INTRO);
-                            blackKinght->SetTarget(target->GetGUID());
+                            blackKinght->SetTarget();
                         }
                         events.ScheduleEvent(6, 2000);
                         break;
