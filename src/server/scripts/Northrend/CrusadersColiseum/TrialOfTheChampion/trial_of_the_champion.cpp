@@ -268,11 +268,11 @@ public:
             {
                 if (!playersGUID.empty())
                 {
-                    if(Player* player = me->GetPlayer(*me, *playersGUID.begin()))
+                    if(Player* player = ObjectAccessor::GetPlayer(*me, *playersGUID.begin()))
                     {
                         if (!announceID.empty())
                         {
-                            int32 announce = SelectRandomContainerElement(announceID);
+                            int32 announce = Trinity::Containers::SelectRandomContainerElement(announceID);
                             //DoScriptText(announce, me, player);
                             announceID.erase(announce);
                         }
@@ -614,7 +614,7 @@ public:
                         for (uint8 i=0; i<3; i++)
                             if (Creature* boss = ObjectAccessor::GetCreature(*me, bossGUID[i]))
                             {
-                                boss->SetTarget(0);
+                                boss->SetTarget(target->GetGUID());
                                 boss->CastSpell(boss, SPELL_MOUNT_LANCE_STAND, true);
                                 boss->SetHomePosition(boss->GetPositionX(), boss->GetPositionY(), boss->GetPositionZ(), boss->GetOrientation());
                             }
@@ -623,7 +623,7 @@ public:
                             for (uint8 j=0; j<3; j++)
                                 if (Creature* add = ObjectAccessor::GetCreature(*me, addsGUID[i][j]))
                                 {
-                                    add->SetTarget(0);
+                                    add->SetTarget(target->GetGUID());
                                     add->SetFacingToObject(me);
                                     add->CastSpell(add, SPELL_MOUNT_LANCE_STAND, true);
                                     add->SetHomePosition(add->GetPositionX(), add->GetPositionY(), add->GetPositionZ(), add->GetOrientation());
@@ -700,7 +700,7 @@ public:
                         {
                             for (uint8 i=0; i<3; i++)
                             {
-                                if (Creature* add = ObjectAccessor::>GetCreature(*me, addsGUID[1][i]))
+                                if (Creature* add = ObjectAccessor::GetCreature(*me, addsGUID[1][i]))
                                 {
                                     add->RemoveAurasDueToSpell(SPELL_MOUNT_LANCE_STAND);
                                     add->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -859,7 +859,7 @@ public:
                                     boss->SetFacingToObject(tirion);
                                 boss->SetHomePosition(boss->GetPositionX(), boss->GetPositionY(), boss->GetPositionZ() + 1.0f, boss->GetOrientation());
                                 boss->SetReactState(REACT_AGGRESSIVE);
-                                boss->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                                boss->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                             }
                         events.ScheduleEvent(4, 10000);
                         break;
@@ -868,7 +868,7 @@ public:
                         {
                             for (uint8 i=0; i<3; i++)
                                 if (Creature* boss = ObjectAccessor::GetCreature(*me, bossGUID[i]))
-                                    if (!boss->isInCombat())
+                                    if (!boss->IsInCombat())
                                         AggroAllPlayers(boss);
                         }
 
@@ -1300,7 +1300,7 @@ public:
                         if (Creature* blackKinght = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_BLACK_KNIGHT)))
                         {
                             blackKinght->AI()->DoCast(me, SPELL_DEATH_PUSH_INTRO);
-                            blackKinght->SetTarget(0);
+                            blackKinght->SetTarget(target->GetGUID());
                         }
                         events.ScheduleEvent(6, 2000);
                         break;
@@ -1399,7 +1399,7 @@ public:
         InstanceScript* instance = creature->GetInstanceScript();
         uint32 gossipTextId = 0;
 
-        if (player->isGameMaster())
+        if (player->IsGameMaster())
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);

@@ -163,7 +163,7 @@ struct npc_mounted_championAI : ScriptedAI
             me->Dismount();
             me->RemoveAurasDueToSpell(SPELL_SHIELD);
             me->CastSpell(me, SPELL_KNEE, true);
-            me->SetTarget(target->GetGUID());
+            me->SetTarget(player->GetGUID());
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
     }
@@ -327,7 +327,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(target->GetGUID());
+                me->SetTarget(player->GetGUID());
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
@@ -488,7 +488,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(target->GetGUID());
+                me->SetTarget(player->GetGUID());
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
@@ -553,7 +553,7 @@ public:
             if(defeated)
                 return;
 
-            if(me->HasUnitState(UNIT_STAT_CASTING))
+            if(me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
             if (polymorphTimer <= diff)
@@ -675,7 +675,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(target->GetGUID());
+                me->SetTarget(player->GetGUID());
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
@@ -714,7 +714,7 @@ public:
             if(defeated)
                 return;
 
-            if(me->HasUnitState(UNIT_STAT_CASTING))
+            if(me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
             if (chainLightningTimer <= diff)
@@ -835,7 +835,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(target->GetGUID());
+                me->SetTarget(player->GetGUID());
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
@@ -900,7 +900,7 @@ public:
             if(defeated)
                 return;
 
-            if(me->HasUnitState(UNIT_STAT_CASTING))
+            if(me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
             if(me->GetDistance(me->GetVictim()) >= 30.0f)
@@ -1022,7 +1022,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(target->GetGUID());
+                me->SetTarget(player->GetGUID());
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
