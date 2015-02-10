@@ -1022,7 +1022,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(player->GetGUID());
+                me->SetTarget(ObjectGuid::Empty);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
