@@ -204,7 +204,7 @@ class npc_queldelar_sp : public CreatureScript
                             quelDelar->SetFlag(GAMEOBJECT_FLAGS, 5);
                         }
 
-                        if (Player* player = me->GetPlayer(*me, uiPlayer))
+                        if (Player* player = ObjectAccessorGetPlayer(*me, uiPlayer))
                         {
                             player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_1, 1, true);
                             player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_2, 1, true);
@@ -261,7 +261,7 @@ class npc_queldelar_sp : public CreatureScript
                     case EVENT_QUEST_STEP_9:
                         if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         {
-                            if (Player* player = me->GetPlayer(*me, uiPlayer))
+                            if (Player* player = ObjectAccessorGetPlayer(*me, uiPlayer))
                                 rommath->AddAura(SPELL_ICY_PRISON, player);
                             rommath->AI()->Talk(SAY_QUELDELAR_6);
                         }
