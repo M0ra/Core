@@ -428,7 +428,7 @@ public:
         void SetData(uint32 type, uint32 data)
         {
             if (type == 1)
-                Start(false, true, 0, NULL);
+                Start(false, true);
         }
 
         void WaypointReached(uint32 id)
