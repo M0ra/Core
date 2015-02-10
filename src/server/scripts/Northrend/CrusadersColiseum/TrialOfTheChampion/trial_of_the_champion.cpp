@@ -165,9 +165,9 @@ public:
             for (uint8 i=0; i<3; i++)
             {
                 bossEntry[i] = 0;
-                bossGUID[i] = 0;
+                bossGUID[i];
                 for (uint8 j=0; j<3; j++)
-                    addsGUID[i][j] = 0;
+                    addsGUID[i][j];
             }
 
             announceID.clear();
@@ -267,7 +267,7 @@ public:
             {
                 if (!playersGUID.empty())
                 {
-                    if(Player* player = ObjectAccessor::GetPlayer(*me, *playersGUID.begin()))
+                    if(Player* player = me->GetPlayer(*me, *playersGUID.begin()))
                     {
                         if (!announceID.empty())
                         {
