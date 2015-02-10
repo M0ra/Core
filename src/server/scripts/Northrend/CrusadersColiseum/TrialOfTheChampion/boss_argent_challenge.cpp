@@ -164,9 +164,9 @@ class boss_eadric : public CreatureScript
                     me->setFaction(35);
                     Talk(SAY_DEATH_E);
 
-                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_MAIN_GATE) : 0))
+                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_MAIN_GATE)))
                         _instance->HandleGameObject(go->GetGUID(), true);
-                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_PORTCULLIS) : 0))
+                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_PORTCULLIS)))
                         _instance->HandleGameObject(go->GetGUID(), true);
                 }
             }
@@ -418,9 +418,9 @@ class boss_paletress : public CreatureScript
 
                     Talk(SAY_DEATH_P);
 
-                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_MAIN_GATE) : 0))
+                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_MAIN_GATE)))
                         _instance->HandleGameObject(go->GetGUID(), true);
-                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_PORTCULLIS) : 0))
+                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_PORTCULLIS)))
                         _instance->HandleGameObject(go->GetGUID(), true);
                 }
             }
