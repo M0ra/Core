@@ -15,6 +15,11 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* ScriptData
+SDName: Instance Trial of the Champion
+SDCategory: Trial Of the Champion
+EndScriptData */
+
 #include "ScriptPCH.h"
 #include "trial_of_the_champion.h"
 
@@ -25,49 +30,45 @@ class instance_trial_of_the_champion : public InstanceMapScript
 public:
     instance_trial_of_the_champion() : InstanceMapScript("instance_trial_of_the_champion", 650) { }
 
-    InstanceScript* GetInstanceScript(InstanceMap* map) const
+    InstanceScript* GetInstanceScript(InstanceMap* pMap) const
     {
-        return new instance_trial_of_the_champion_InstanceMapScript(map);
+        return new instance_trial_of_the_champion_InstanceMapScript(pMap);
     }
 
     struct instance_trial_of_the_champion_InstanceMapScript : public InstanceScript
     {
-        instance_trial_of_the_champion_InstanceMapScript(Map* map) : InstanceScript(map) {Initialize();}
+        instance_trial_of_the_champion_InstanceMapScript(Map* pMap) : InstanceScript(pMap) {}
 
         uint32 m_auiEncounter[MAX_ENCOUNTER];
-        uint32 teamInInstance;
-
-        uint16 movementDone;
-        uint16 grandChampionsDeaths;
-        uint8 argentSoldierDeaths;
-        uint32 memoryEntry;
         uint32 grandChampionEntry[3];
+        uint32 memoryEntry;
 
-        ObjectGuid  announcerGUID;
-        ObjectGuid  mainGateGUID;
-        ObjectGuid  portcullisGUID;
-        ObjectGuid  grandChampion1GUID;
-        ObjectGuid  grandChampion2GUID;
-        ObjectGuid  grandChampion3GUID;
-        ObjectGuid  championLootGUID;
-        ObjectGuid  argentChampionGUID;
-        ObjectGuid  blackKnightGUID;
+        ObjectGuid uiAnnouncerGUID;
+        ObjectGuid uiTirionGUID;
+        ObjectGuid uiThrallGUID;
+        ObjectGuid uiGarroshGUID;
+        ObjectGuid uiVarianGUID;
+        ObjectGuid uiJainaGUID;
+        ObjectGuid grandChampionGUID[3];
+        ObjectGuid uiBlackKnightGUID;
+        ObjectGuid uiBlackKnightGryphonGUID;
+        ObjectGuid uiMainGateGUID;
+        ObjectGuid uiPortcullisGUID;
+        ObjectGuid uiChampionLootGUID;
 
-        GuidList  vehicleList;
-        std::string str_data;
+        GuidList VehicleList;
+        uint32 TeamInInstance;
+
+        bool achievementHadWorse;
 
         void Initialize()
         {
-            movementDone = 0;
-            grandChampionsDeaths = 0;
-            argentSoldierDeaths = 0;
-            teamInInstance = 0;
-            memoryEntry = 0;
+            achievementHadWorse = true;
 
-            for (uint8 i = 0; i < 3; ++i)
-                grandChampionEntry[i] = 0;
-
-            vehicleList.clear();
+            VehicleList.clear();
+            TeamInInstance = 0;
+            memset(&grandChampionEntry, 0, sizeof(grandChampionEntry));
+            memset(&grandChampionEntry, 0, sizeof(grandChampionGUID));
             memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
         }
 
@@ -82,206 +83,135 @@ public:
             return false;
         }
 
+        void OnPlayerEnter(Player* player)
+        {
+            if (!TeamInInstance)
+                TeamInInstance = player->GetTeam();
+        }
+
         void OnCreatureCreate(Creature* creature)
         {
-            Map::PlayerList const &players = instance->GetPlayers();
-
-            if (!players.isEmpty())
+            switch(creature->GetEntry())
             {
-                if (Player* player = players.begin()->GetSource())
-                    teamInInstance = player->GetTeam();
-            }
-
-            switch (creature->GetEntry())
-            {
-                // Grand Champions
-                case NPC_MOKRA:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_JACOB);
-                    break;
-                case NPC_ERESSEA:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_AMBROSE);
-                    break;
-                case NPC_RUNOK:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_COLOSOS);
-                    break;
-                case NPC_ZULTORE:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_JAELYNE);
-                    break;
-                case NPC_VISCERI:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_LANA);
-                    break;
-                // Faction Champios
-                case NPC_ORGRIMMAR_CHAMPION:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_STORMWIND_CHAMPION);
-                    break;
-                case NPC_SILVERMOON_CHAMPION:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_GNOMEREGAN_CHAMPION);
-                    break;
-                case NPC_THUNDER_CHAMPION:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_EXODAR_CHAMPION);
-                    break;
-                case NPC_TROLL_CHAMPION:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_DARNASSUS_CHAMPION);
-                    break;
-                case NPC_UNDERCITY_CHAMPION:
-                    if (teamInInstance == HORDE)
-                        creature->UpdateEntry(NPC_IRONFORGE_CHAMPION);
-                    break;
-                // Coliseum Announcer, Just NPC_JAEREN must be spawned.
+                // Coliseum Announcer || Only NPC_JAEREN must be spawned.
                 case NPC_JAEREN:
-                    announcerGUID = creature->GetGUID();
-                    if (teamInInstance == ALLIANCE)
+                    if (TeamInInstance == ALLIANCE)
                         creature->UpdateEntry(NPC_ARELAS);
+                    uiAnnouncerGUID = creature->GetGUID();
                     break;
-                case NPC_JAEREN_AN:
-                    if (teamInInstance == ALLIANCE)
-                        creature->UpdateEntry(NPC_ARELAS_AN);
+                case NPC_TIRION:
+                    uiTirionGUID = creature->GetGUID();
+                    break;
+                case NPC_THRALL:
+                    uiThrallGUID = creature->GetGUID();
+                    break;
+                case NPC_GARROSH:
+                    uiGarroshGUID = creature->GetGUID();
+                    break;
+                case NPC_VARIAN:
+                    uiVarianGUID = creature->GetGUID();
+                    break;
+                case NPC_JAINA:
+                    uiJainaGUID = creature->GetGUID();
                     break;
                 case VEHICLE_ARGENT_WARHORSE:
                 case VEHICLE_ARGENT_BATTLEWORG:
-                    vehicleList.push_back(creature->GetGUID());
-                    break;
-                case NPC_EADRIC:
-                case NPC_PALETRESS:
-                    argentChampionGUID = creature->GetGUID();
+                    VehicleList.push_back(creature->GetGUID());
                     break;
                 case NPC_BLACK_KNIGHT:
-                    blackKnightGUID = creature->GetGUID();
+                    creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    creature->SetReactState(REACT_PASSIVE);
+                    uiBlackKnightGUID = creature->GetGUID();
+                    break;
+                case VEHICLE_BLACK_KNIGHT:
+                    uiBlackKnightGryphonGUID = creature->GetGUID();
+                    creature->SetPhaseMask(2, true);
                     break;
             }
         }
 
         void OnGameObjectCreate(GameObject* go)
         {
-            switch (go->GetEntry())
+            switch(go->GetEntry())
             {
                 case GO_MAIN_GATE:
-                    mainGateGUID = go->GetGUID();
+                    uiMainGateGUID = go->GetGUID();
                     break;
-                case GO_NORTH_PORTCULLIS:
-                    portcullisGUID = go->GetGUID();
+                case GO_PORTCULLIS:
+                    uiPortcullisGUID = go->GetGUID();
                     break;
                 case GO_CHAMPIONS_LOOT:
                 case GO_CHAMPIONS_LOOT_H:
-                    championLootGUID = go->GetGUID();
+                case GO_EADRIC_LOOT:
+                case GO_EADRIC_LOOT_H:
+                case GO_PALETRESS_LOOT:
+                case GO_PALETRESS_LOOT_H:
+                    uiChampionLootGUID = go->GetGUID();
                     break;
             }
         }
 
         void SetData(uint32 type, uint32 data)
         {
-            switch (type)
+            switch(type)
             {
-                case DATA_MOVEMENT_DONE:
-                    movementDone = data;
-                    if (movementDone == 3)
-                    {
-                        if (Creature* announcer = instance->GetCreature(announcerGUID))
-                            announcer->AI()->SetData(DATA_IN_POSITION, 0);
-                    }
-                    break;
                 case BOSS_GRAND_CHAMPIONS:
-                    if (data == IN_PROGRESS)
+                    m_auiEncounter[0] = data;
+                    if (data == SPECIAL)
                     {
-                        m_auiEncounter[0] = data;
-                        for (GuidList::const_iterator itr = vehicleList.begin(); itr != vehicleList.end(); ++itr)
+                        for (GuidList::const_iterator itr = VehicleList.begin(); itr != VehicleList.end(); ++itr)
                             if (Creature* summon = instance->GetCreature(*itr))
                                 summon->RemoveFromWorld();
-                    }
-                    else if (data == DONE)
+                    } else if (data == IN_PROGRESS)
                     {
-                        ++grandChampionsDeaths;
-                        if (grandChampionsDeaths >= 3)
-                        {
-                            for (uint8 i = 0; i < 3; ++i)
-                                if (Creature* GrandChampion = instance->GetCreature(GetGuidData(DATA_GRAND_CHAMPION_1 + i)))
-                                    GrandChampion->AI()->SetData(11, 0);
-
-                            UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_GRAND_CHAMPION_CREDIT, NULL);
-
-                            if (Creature* announcer = instance->GetCreature(announcerGUID))
-                            {
-                                m_auiEncounter[0] = data;
-                                announcer->CastSpell(announcer, SPELL_GRAND_CHAMPION_CREDIT, true);
-                                announcer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
-                                announcer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                                announcer->SummonGameObject(instance->IsHeroic() ? GO_CHAMPIONS_LOOT_H : GO_CHAMPIONS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);
-                                BindPlayersToInstance(announcer);
-                            }
-                        }
-                    }
-                    break;
-                case DATA_ARGENT_SOLDIER_DEFEATED:
-                    argentSoldierDeaths = data;
-                    if (argentSoldierDeaths == 9)
+                        for (uint8 i=0; i<3; i++)
+                            if (Creature* boss = instance->GetCreature(grandChampionGUID[i]))
+                                AggroAllPlayers(boss);
+                    } else if (data == DONE)
                     {
-                        if (Creature* boss = instance->GetCreature(argentChampionGUID))
+                        DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_ACHIEVEMENT_CHAMPIONS);
+                        if (Creature* announcer =  instance->GetCreature(uiAnnouncerGUID))
                         {
-                            boss->GetMotionMaster()->MovePoint(0, 746.88f, 618.74f, 411.06f);
-                            boss->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-                            boss->SetReactState(REACT_AGGRESSIVE);
-                            boss->setFaction(16);
+                            announcer->GetMotionMaster()->MovePoint(0, 742.742f, 630.207f, 411.172f);
+                            announcer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                            announcer->SummonGameObject(instance->IsHeroic()? GO_CHAMPIONS_LOOT_H : GO_CHAMPIONS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);
                         }
                     }
                     break;
                 case BOSS_ARGENT_CHALLENGE_E:
                     m_auiEncounter[1] = data;
-                    if (data == IN_PROGRESS)
+                    if (data == DONE)
                     {
-                        for (GuidList::const_iterator itr = vehicleList.begin(); itr != vehicleList.end(); ++itr)
-                            if (Creature* summon = instance->GetCreature(*itr))
-                                summon->RemoveFromWorld();
-                    }
-                    else if (data == DONE)
-                    {
-                        UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_ARGENT_CREDIT, NULL);
-
-                        if (Creature* announcer = instance->GetCreature(announcerGUID))
+                        if (Creature* announcer = instance->GetCreature(uiAnnouncerGUID))
                         {
-                            announcer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
+                            DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_ACHIEVEMENT_EADRIC);
+                            announcer->GetMotionMaster()->MovePoint(0, 742.742f, 630.207f, 411.172f);
                             announcer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                            announcer->SummonGameObject(instance->IsHeroic() ? GO_EADRIC_LOOT_H : GO_EADRIC_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);
-                            BindPlayersToInstance(announcer);
+                            announcer->SummonGameObject(instance->IsHeroic()? GO_EADRIC_LOOT_H : GO_EADRIC_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);
                         }
                     }
                     break;
                 case BOSS_ARGENT_CHALLENGE_P:
                     m_auiEncounter[2] = data;
-                    if (data == IN_PROGRESS)
+                    if (data == DONE)
                     {
-                        for (GuidList::const_iterator itr = vehicleList.begin(); itr != vehicleList.end(); ++itr)
-                            if (Creature* summon = instance->GetCreature(*itr))
-                                summon->RemoveFromWorld();
-                    }
-                    else if (data == DONE)
-                    {
-                        UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_ARGENT_CREDIT, NULL);
-
-                        if (Creature* announcer = instance->GetCreature(announcerGUID))
+                        if (Creature* announcer = instance->GetCreature(uiAnnouncerGUID))
                         {
-                            announcer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
+                            DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_ACHIEVEMENT_PALETRESS);
+                            DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_ACHIEVEMENT_MEMORIES);
+                            announcer->GetMotionMaster()->MovePoint(0, 742.742f, 630.207f, 411.172f);
                             announcer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                            announcer->SummonGameObject(instance->IsHeroic() ? GO_PALETRESS_LOOT_H : GO_PALETRESS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);
-                            BindPlayersToInstance(announcer);
+                            announcer->SummonGameObject(instance->IsHeroic()? GO_PALETRESS_LOOT_H : GO_PALETRESS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);
                         }
                     }
                     break;
                 case BOSS_BLACK_KNIGHT:
                     m_auiEncounter[3] = data;
                     if (data == DONE)
-                        UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, SPELL_BLACK_KNIGHT_CREDIT, NULL);
+                        DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_ACHIEVEMENT_BLACK_KNIGHT);
                     break;
                 case DATA_GRAND_CHAMPION_ENTRY:
-                    for (uint8 i = 0; i < 3; ++i)
+                    for (uint8 i=0; i<3; i++)
                     {
                         if (grandChampionEntry[i] == 0)
                         {
@@ -293,65 +223,78 @@ public:
                 case DATA_MEMORY_ENTRY:
                     memoryEntry = data;
                     break;
+                case DATA_I_VE_HAD_WORSE:
+                    achievementHadWorse = (bool)data;
+                    break;
             }
 
-            if (data == DONE)
-                SaveToDB();
+            if (type != DATA_I_VE_HAD_WORSE)
+            {
+                if (data == DONE || data == FAIL)
+                    HandleGameObject(GetGuidData(DATA_PORTCULLIS), true);
+                else if (data == IN_PROGRESS)
+                    HandleGameObject(GetGuidData(DATA_PORTCULLIS), false);
+
+                if (data == DONE)
+                    SaveToDB();
+            }
         }
 
         uint32 GetData(uint32 data)
         {
-            switch (data)
+            switch(data)
             {
                 case BOSS_GRAND_CHAMPIONS:  return m_auiEncounter[0];
                 case BOSS_ARGENT_CHALLENGE_E: return m_auiEncounter[1];
                 case BOSS_ARGENT_CHALLENGE_P: return m_auiEncounter[2];
                 case BOSS_BLACK_KNIGHT: return m_auiEncounter[3];
 
-                case DATA_MOVEMENT_DONE: return movementDone;
-                case DATA_ARGENT_SOLDIER_DEFEATED: return argentSoldierDeaths;
-                case DATA_TEAM_IN_INSTANCE: return teamInInstance;
+                case DATA_TEAM: return TeamInInstance;
             }
 
             return 0;
-        }
-
-        ObjectGuid GetGuidData(uint32 uiData) const
-        {
-            switch (uiData)
-            {
-                case DATA_ANNOUNCER: return announcerGUID;
-                case DATA_MAIN_GATE: return mainGateGUID;
-                case DATA_PORTCULLIS: return portcullisGUID;
-
-                case DATA_GRAND_CHAMPION_1: return grandChampion1GUID;
-                case DATA_GRAND_CHAMPION_2: return grandChampion2GUID;
-                case DATA_GRAND_CHAMPION_3: return grandChampion3GUID;
-                case DATA_BLACK_KNIGHT: return blackKnightGUID;
-            }
-
-            return ObjectGuid::Empty;
         }
 
         void SetGuidData(uint32 type, ObjectGuid data)
         {
             switch (type)
             {
-                case DATA_GRAND_CHAMPION_1:
-                    grandChampion1GUID = data;
-                    break;
-                case DATA_GRAND_CHAMPION_2:
-                    grandChampion2GUID = data;
-                    break;
-                case DATA_GRAND_CHAMPION_3:
-                    grandChampion3GUID = data;
+                case DATA_GRAND_CHAMPION_GUID:
+                    for (uint8 i=0; i<3; i++)
+                    {
+                        if (grandChampionGUID[i] == 0)
+                        {
+                            grandChampionGUID[i] = data;
+                            return;
+                        }
+                    }
                     break;
             }
         }
 
+        ObjectGuid GetGuidData(uint32 data)
+        {
+            switch(data)
+            {
+                case DATA_ANNOUNCER: return uiAnnouncerGUID;
+                case DATA_TIRION: return uiTirionGUID;
+                case DATA_THRALL: return uiThrallGUID;
+                case DATA_GARROSH: return uiGarroshGUID;
+                case DATA_VARIAN: return uiVarianGUID;
+                case DATA_JAINA: return uiJainaGUID;
+                case DATA_MAIN_GATE: return uiMainGateGUID;
+                case DATA_PORTCULLIS: return uiPortcullisGUID;
+                case DATA_CHEST: return uiChampionLootGUID;
+                case DATA_BLACK_KNIGHT: return uiBlackKnightGUID;
+                case DATA_BLACK_KNIGHT_GRYPHON: return uiBlackKnightGryphonGUID;
+            }
+
+            return 0;
+        }
+
         bool CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/, uint32 /*miscvalue1*/)
         {
-            switch (criteria_id)
+            switch(criteria_id)
             {
                 case CRITERIA_CHAMPION_JACOB:
                 case CRITERIA_CHAMPION_LANA:
@@ -373,8 +316,8 @@ public:
                 case CRITERIA_CHAMPION_RUNOK_H:
                 case CRITERIA_CHAMPION_ERESSEA_H:
                 case CRITERIA_CHAMPION_ZULTORE_H:
-                    for (uint8 i = 0; i < 3; ++i)
-                        if (grandChampionEntry[i] == GetRelatedCreatureEntry(criteria_id))
+                    for(uint8 i = 0; i<3; i++)
+                        if(grandChampionEntry[i] == GetRelatedCreatureEntry(criteria_id))
                             return true;
                     return false;
                 case CRITERIA_MEMORY_HOGGER:
@@ -403,13 +346,15 @@ public:
                 case CRITERIA_MEMORY_VEZAX:
                 case CRITERIA_MEMORY_ALGALON:
                     return (memoryEntry == GetRelatedCreatureEntry(criteria_id));
+                case CRITERIA_I_VE_HAD_WORSE:
+                    return achievementHadWorse;
             }
+
             return false;
         }
-
         uint32 GetRelatedCreatureEntry(uint32 criteria_id)
         {
-            switch (criteria_id)
+            switch(criteria_id)
             {
                 case CRITERIA_CHAMPION_JACOB:
                 case CRITERIA_CHAMPION_JACOB_H:
@@ -470,7 +415,6 @@ public:
             }
             return 0;
         }
-
         std::string GetSaveData()
         {
             OUT_SAVE_INST_DATA;
@@ -480,14 +424,10 @@ public:
             saveStream << "T C " << m_auiEncounter[0]
                 << ' ' << m_auiEncounter[1]
                 << ' ' << m_auiEncounter[2]
-                << ' ' << m_auiEncounter[3]
-                << ' ' << grandChampionsDeaths
-                << ' ' << movementDone;
-
-            str_data = saveStream.str();
+                << ' ' << m_auiEncounter[3];
 
             OUT_SAVE_INST_DATA_COMPLETE;
-            return str_data;
+            return  saveStream.str();
         }
 
         void Load(const char* in)
@@ -501,10 +441,10 @@ public:
             OUT_LOAD_INST_DATA(in);
 
             char dataHead1, dataHead2;
-            uint16 data0, data1, data2, data3, data4, data5;
+            uint16 data0, data1, data2, data3;
 
             std::istringstream loadStream(in);
-            loadStream >> dataHead1 >> dataHead2 >> data0 >> data1 >> data2 >> data3 >> data4 >> data5;
+            loadStream >> dataHead1 >> dataHead2 >> data0 >> data1 >> data2 >> data3;
 
             if (dataHead1 == 'T' && dataHead2 == 'C')
             {
@@ -517,15 +457,17 @@ public:
                     if (m_auiEncounter[i] == IN_PROGRESS)
                         m_auiEncounter[i] = NOT_STARTED;
 
-                grandChampionsDeaths = data4;
-                movementDone = data5;
-            }
-            else
-                OUT_LOAD_INST_DATA_FAIL;
+                if (m_auiEncounter[1] != DONE && (m_auiEncounter[1] == DONE || m_auiEncounter[2] == DONE))
+                {
+                    // TODO: Respawn announcer OR Spawn Black Knight on the arena
+                }
+
+            } else OUT_LOAD_INST_DATA_FAIL;
 
             OUT_LOAD_INST_DATA_COMPLETE;
         }
     };
+
 };
 
 void AddSC_instance_trial_of_the_champion()
