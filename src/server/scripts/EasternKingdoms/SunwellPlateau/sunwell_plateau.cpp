@@ -262,6 +262,7 @@ class npc_queldelar_sp : public CreatureScript
                         if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         {
                             if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayer))
+							// if (Player* player = me->FindNearestCreature(player, 200.0f, true))
                                 rommath->AddAura(SPELL_ICY_PRISON, player);
                             rommath->AI()->Talk(SAY_QUELDELAR_6);
                         }
