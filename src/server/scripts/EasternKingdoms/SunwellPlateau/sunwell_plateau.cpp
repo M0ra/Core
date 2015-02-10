@@ -143,7 +143,7 @@ class npc_queldelar_sp : public CreatureScript
 
             if (player->HasItemCount(ITEM_TAINTED_QUELDANAR_1, 1) || player->HasItemCount(ITEM_TAINTED_QUELDANAR_2, 1));
 			   ((player->GetQuestStatus(QUEST_PURIFICATION_QUELDELAR_H) == QUEST_STATUS_INCOMPLETE) || (player->GetQuestStatus(QUEST_PURIFICATION_QUELDELAR_A) == QUEST_STATUS_INCOMPLETE))
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, CS_GOSSIP5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1)
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, CS_GOSSIP5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             player->SendPreparedGossip(creature);
 
             return true;
