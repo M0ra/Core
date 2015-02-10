@@ -163,7 +163,7 @@ struct npc_mounted_championAI : ScriptedAI
             me->Dismount();
             me->RemoveAurasDueToSpell(SPELL_SHIELD);
             me->CastSpell(me, SPELL_KNEE, true);
-            me->SetTarget(player->GetGUID());
+            me->SetTarget(ObjectGuid::Empty);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
     }
@@ -327,7 +327,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(player->GetGUID());
+                me->SetTarget(ObjectGuid::Empty);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
@@ -488,7 +488,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(player->GetGUID());
+                me->SetTarget(ObjectGuid::Empty);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
@@ -675,7 +675,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(player->GetGUID());
+                me->SetTarget(ObjectGuid::Empty);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
@@ -835,7 +835,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(player->GetGUID());
+                me->SetTarget(ObjectGuid::Empty);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 BindPlayersToInstance(me);
             }
