@@ -172,6 +172,7 @@ public:
 
             announceID.clear();
             playersGUID.clear();
+            stalkerGUID = 0;
             defeatedCount = 0;
             addsAttacking = false;
         }
