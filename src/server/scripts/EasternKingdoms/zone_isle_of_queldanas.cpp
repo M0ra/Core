@@ -165,7 +165,7 @@ Position const GuardLoc[4] =
     { 11806.0f, -7079.71f, 26.2067f, 3.218f }
 };
 
-#define GOSSIP_THA "Осмотреть труп."
+#define GOSSIP_DEAD "Осмотреть труп."
 
 class npc_thalorien_dawnseeker : public CreatureScript
 {
@@ -174,13 +174,11 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature)
     {
-		if (player->GetQuestStatus(24563) == QUEST_STATUS_INCOMPLETE ||
-            player->GetQuestStatus(24535) == QUEST_STATUS_INCOMPLETE)
-        {			
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_THA, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-        }		
-		
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        player->PrepareGossipMenu(creature, 0);
+
+        if ((player->GetQuestStatus(QUEST_THALORIEN_A) == QUEST_STATUS_INCOMPLETE) || (player->GetQuestStatus(QUEST_THALORIEN_H) == QUEST_STATUS_INCOMPLETE))
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_DEAD, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        player->SendPreparedGossip(creature);
         return true;
     }
 
@@ -368,6 +366,11 @@ public:
 
             if (summon->GetEntry() == NPC_MORLEN_GOLDGRIP)
                 events.ScheduleEvent(EVENT_STEP_13, 3 * IN_MILLISECONDS);
+        }
+		
+		void SetGUID(ObjectGuid guid, int32 /*id*/)
+		{
+            uiPlayer = guid;
         }
 
         void DoAction(int32 action)
