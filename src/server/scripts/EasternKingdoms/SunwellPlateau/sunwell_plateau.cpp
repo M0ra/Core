@@ -217,31 +217,31 @@ class npc_queldelar_sp : public CreatureScript
                         events.ScheduleEvent(EVENT_QUEST_STEP_3, 1 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_3:
-                        if (Creature* theron = me->GetCreature(*me, uiTheron))
+                        if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                             theron->AI()->Talk(SAY_QUELDELAR_3);
                         events.ScheduleEvent(EVENT_QUEST_STEP_4, 4 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_4:
-                        if (Creature* rommath = me->GetCreature(*me, uiRommath))
+                        if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                             rommath->GetMotionMaster()->MovePoint(1, 1675.8f, 617.19f, 28.0504f);
-                        if (Creature*auric = me->GetCreature(*me, uiAuric))
+                        if (Creature*auric = ObjectAccessor::GetCreature(*me, uiAuric))
                             auric->GetMotionMaster()->MovePoint(1, 1681.77f, 612.084f, 28.4409f);
                         events.ScheduleEvent(EVENT_QUEST_STEP_5, 6 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_5:
-                        if (Creature* rommath = me->GetCreature(*me, uiRommath))
+                        if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         {
                             rommath->SetOrientation(0.3308f);
                             rommath->AI()->Talk(SAY_QUELDELAR_4);
                         }
-                        if (Creature* auric = me->GetCreature(*me, uiAuric))
+                        if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                             auric->SetOrientation(1.29057f);
-                        if (Creature* theron = me->GetCreature(*me, uiTheron))
+                        if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                             theron->GetMotionMaster()->MovePoint(1, 1677.07f, 613.122f, 28.0504f);
                         events.ScheduleEvent(EVENT_QUEST_STEP_6, 10 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_6:
-                        if (Creature* theron = me->GetCreature(*me, uiTheron))
+                        if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                         {
                             theron->AI()->Talk(SAY_QUELDELAR_5);
                             theron->GetMotionMaster()->MovePoint(1, 1682.3f, 618.459f, 27.9581f);
@@ -249,17 +249,17 @@ class npc_queldelar_sp : public CreatureScript
                         events.ScheduleEvent(EVENT_QUEST_STEP_7, 4 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_7:
-                        if (Creature* theron = me->GetCreature(*me, uiTheron))
+                        if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                             theron->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
                         events.ScheduleEvent(EVENT_QUEST_STEP_8, 0.8 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_8:
-                        if (Creature* theron = me->GetCreature(*me, uiTheron))
+                        if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                             theron->CastSpell(theron, SPELL_WRATH_QUEL_DANAR, true);
                         events.ScheduleEvent(EVENT_QUEST_STEP_9, 1 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_9:
-                        if (Creature* rommath = me->GetCreature(*me, uiRommath))
+                        if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         {
                             if (Player* player = me->FindNearestPlayer(200.0f))
                                 rommath->AddAura(SPELL_ICY_PRISON, player);
@@ -278,17 +278,17 @@ class npc_queldelar_sp : public CreatureScript
                         events.ScheduleEvent(EVENT_QUEST_STEP_11, 2 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_11:
-                        if (Creature* auric = me->GetCreature(*me, uiAuric))
+                        if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                             auric->AI()->Talk(SAY_QUELDELAR_8);
                         events.ScheduleEvent(EVENT_QUEST_STEP_12, 6 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_12:
-                        if (Creature* auric = me->GetCreature(*me, uiAuric))
+                        if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                             auric->AI()->Talk(SAY_QUELDELAR_9);
                         events.ScheduleEvent(EVENT_QUEST_STEP_13, 5 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_13:
-                        if (Creature* rommath = me->GetCreature(*me, uiRommath))
+                        if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                             rommath->AI()->Talk(SAY_QUELDELAR_10);
                         events.ScheduleEvent(EVENT_QUEST_STEP_14, 2 * IN_MILLISECONDS);
                         break;
@@ -298,7 +298,7 @@ class npc_queldelar_sp : public CreatureScript
                             guard->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_STAND);
                             guard->GetMotionMaster()->MovePoint(0, guard->GetHomePosition());
                         }
-                        if (Creature* rommath = me->GetCreature(*me, uiRommath))
+                        if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         {
                             rommath->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
                             rommath->AI()->Talk(SAY_QUELDELAR_11);
@@ -306,7 +306,7 @@ class npc_queldelar_sp : public CreatureScript
                         events.ScheduleEvent(EVENT_QUEST_STEP_15, 7 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_15:
-                        if (Creature* auric = me->GetCreature(*me, uiAuric))
+                        if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                         {
                             auric->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
                             auric->AI()->Talk(SAY_QUELDELAR_12);
@@ -316,11 +316,11 @@ class npc_queldelar_sp : public CreatureScript
                         events.ScheduleEvent(EVENT_QUEST_STEP_16, 2 * IN_MILLISECONDS);
                         break;
                     case EVENT_QUEST_STEP_16:
-                        if (Creature* auric = me->GetCreature(*me, uiAuric))
+                        if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                             auric->GetMotionMaster()->MovePoint(0, auric->GetHomePosition());
-                        if (Creature* rommath = me->GetCreature(*me, uiRommath))
+                        if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                             rommath->GetMotionMaster()->MovePoint(0, rommath->GetHomePosition());
-                        if (Creature* theron = me->GetCreature(*me, uiTheron))
+                        if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                             theron->DespawnOrUnsummon(5 * IN_MILLISECONDS);
                         break;
                     default:
