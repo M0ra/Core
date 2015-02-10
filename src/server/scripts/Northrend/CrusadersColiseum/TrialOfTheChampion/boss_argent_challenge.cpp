@@ -164,9 +164,9 @@ class boss_eadric : public CreatureScript
                     me->setFaction(35);
                     Talk(SAY_DEATH_E);
 
-                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance ? _instance->GetGuidData(DATA_MAIN_GATE) : 0))
+                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_MAIN_GATE) : 0))
                         _instance->HandleGameObject(go->GetGUID(), true);
-                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance ? _instance->GetGuidData(DATA_PORTCULLIS) : 0))
+                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_PORTCULLIS) : 0))
                         _instance->HandleGameObject(go->GetGUID(), true);
                 }
             }
@@ -418,9 +418,9 @@ class boss_paletress : public CreatureScript
 
                     Talk(SAY_DEATH_P);
 
-                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance ? _instance->GetGuidData(DATA_MAIN_GATE) : 0))
+                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_MAIN_GATE) : 0))
                         _instance->HandleGameObject(go->GetGUID(), true);
-                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance ? _instance->GetGuidData(DATA_PORTCULLIS) : 0))
+                    if (GameObject* go = ObjectAccessor::GetGameObject(*me, _instance->GetGuidData(DATA_PORTCULLIS) : 0))
                         _instance->HandleGameObject(go->GetGUID(), true);
                 }
             }
@@ -454,8 +454,8 @@ class boss_paletress : public CreatureScript
                 me->RemoveAura(SPELL_SHIELD);
                 Talk(SAY_MEM_DIE);
 
-                if (me->getVictim())
-                    me->GetMotionMaster()->MoveChase(me->getVictim());
+                if (me->GetVictim())
+                    me->GetMotionMaster()->MoveChase(me->GetVictim());
             }
 
             void KilledUnit(Unit* /*victim*/)
@@ -513,8 +513,8 @@ class boss_paletress : public CreatureScript
                             return;
                         case EVENT_MEMORY:
                             DoCast(SPELL_SUMMON_MEMORY);
-                            if (me->getVictim())
-                                me->GetMotionMaster()->MoveChase(me->getVictim(), 10.0f);
+                            if (me->GetVictim())
+                                me->GetMotionMaster()->MoveChase(me->GetVictim(), 10.0f);
                             return;
                         case EVENT_HOLYFIRE:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 30.0f, true))
@@ -761,7 +761,7 @@ class npc_argent_soldier : public CreatureScript
                         break;
                 }
 
-                Start(false, true, 0);
+                Start(false, true);
                 _waypoint = type;
             }
 

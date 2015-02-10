@@ -318,7 +318,7 @@ public:
 
         ObjectGuid GetGuidData(uint32 uiData) const
         {
-            switch (data)
+            switch (uiData)
             {
                 case DATA_ANNOUNCER: return announcerGUID;
                 case DATA_MAIN_GATE: return mainGateGUID;
