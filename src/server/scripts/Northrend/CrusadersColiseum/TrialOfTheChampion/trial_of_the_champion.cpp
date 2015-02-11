@@ -267,7 +267,7 @@ public:
             {
                 if (!playersGUID.empty())
                 {
-                    if(Player* player = ObjectAccessor::GetPlayer(*me, *playersGUID))
+                    if(Player* player = ObjectAccessor::GetPlayer(*me, playersGUID.begin()))
                     {
                         if (!announceID.empty())
                         {
