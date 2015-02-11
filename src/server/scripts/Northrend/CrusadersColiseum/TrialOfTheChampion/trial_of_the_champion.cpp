@@ -267,8 +267,7 @@ public:
             {
                 if (!playersGUID.empty())
                 {
-                    if(Player* player = ObjectAccessor::GetPlayer(*me, playersGUID))
-                    {
+
                         if (!announceID.empty())
                         {
                             int32 announce = Trinity::Containers::SelectRandomContainerElement(announceID);
@@ -278,7 +277,7 @@ public:
                         playersGUID.erase(*playersGUID.begin());
                         // Public emote
                         Talk(EMOTE_FACTION_CHEER-player->getRace());
-                    }
+
                 }
             }
             else
