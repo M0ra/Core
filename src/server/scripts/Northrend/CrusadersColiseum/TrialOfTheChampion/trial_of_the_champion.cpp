@@ -143,7 +143,7 @@ public:
         ObjectGuid addsGUID[3][3];
         ObjectGuid stalkerGUID;
         std::set<int32> announceID;
-        std::set<uint64> playersGUID;
+        ObjectGuid playersGUID;
 
         bool addsAttacking;
         uint8 defeatedCount;
@@ -267,7 +267,8 @@ public:
             {
                 if (!playersGUID.empty())
                 {
-
+                    if(Player* player = ObjectAccessor::GetPlayer(*me, playersGUID.begin()))
+                    {
                         if (!announceID.empty())
                         {
                             int32 announce = Trinity::Containers::SelectRandomContainerElement(announceID);
@@ -277,7 +278,7 @@ public:
                         playersGUID.erase(*playersGUID.begin());
                         // Public emote
                         Talk(EMOTE_FACTION_CHEER-player->getRace());
-
+                    }
                 }
             }
             else
