@@ -289,7 +289,7 @@ public:
                 case DATA_BLACK_KNIGHT_GRYPHON: return uiBlackKnightGryphonGUID;
             }
 
-            return 0;
+            return ObjectGuid::Empty;
         }
 
         bool CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/, uint32 /*miscvalue1*/)
