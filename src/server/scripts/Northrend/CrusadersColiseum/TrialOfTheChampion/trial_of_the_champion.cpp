@@ -143,7 +143,7 @@ public:
         ObjectGuid addsGUID[3][3];
         ObjectGuid stalkerGUID;
         std::set<int32> announceID;
-        ObjectGuid playersGUID;
+        ObjectGuid playerGUID;
 
         bool addsAttacking;
         uint8 defeatedCount;
@@ -171,7 +171,7 @@ public:
             }
 
             announceID.clear();
-            playersGUID.clear();
+            playerGUID.Clear();
             defeatedCount = 0;
             addsAttacking = false;
         }
@@ -265,9 +265,9 @@ public:
         {
             if (champion->GetTypeId() ==  TYPEID_PLAYER)
             {
-                if (!playersGUID.empty())
+                if (!playerGUID.IsEmpty())
                 {
-                    if(Player* player = ObjectAccessor::GetPlayer(*me, playersGUID.begin()))
+                    if(Player* player = ObjectAccessor::GetPlayer(*me, playerGUID)
                     {
                         if (!announceID.empty())
                         {
@@ -350,7 +350,7 @@ public:
                         events.ScheduleEvent(2, 7000);
                         break;
                     case 2:
-                        if (!playersGUID.empty())
+                        if (!playerGUID.IsEmpty())
                         {
                             if (Player* player = me->GetMap()->GetPlayers().begin()->GetSource())
                                 AnnounceChampion(player);
