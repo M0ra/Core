@@ -203,10 +203,10 @@ public:
                                 if (player->IsGameMaster())
                                     continue;
 
-                                playersGUID.insert(player->GetGUID());
+                                playerGUID.insert(player->GetGUID());
                             }
                         }
-                        for (uint8 i = 0; i<playersGUID.size(); i++)
+                        for (uint8 i = 0; i < playerGUID.size(); i++)
                             announceID.insert(SAY_ANNOUNCER_PLAYER-i);
                     }
 
@@ -267,7 +267,7 @@ public:
             {
                 if (!playerGUID.IsEmpty())
                 {
-                    if(Player* player = ObjectAccessor::GetPlayer(*me, playerGUID)
+                    if(Player* player = ObjectAccessor::GetPlayer(*me, playerGUID))
                     {
                         if (!announceID.empty())
                         {

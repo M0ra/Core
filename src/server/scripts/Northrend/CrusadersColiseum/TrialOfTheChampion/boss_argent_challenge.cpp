@@ -139,7 +139,7 @@ class spell_eadric_hammer_of_righteous : public SpellScriptLoader
 
         class spell_eadric_hammer_of_righteousSpellScript : public SpellScript
         {
-            PrepareSpellScript(spell_eadric_hammer_of_righteousSpellScript)
+            PrepareSpellScript(spell_eadric_hammer_of_righteousSpellScript);
 
             void HandleBeforeHit()
             {
@@ -388,8 +388,6 @@ public:
             if (Creature* memory = ObjectAccessor::GetCreature(*me, memoryGUID))
                 memory->DespawnOrUnsummon(1000);
 
-            memoryGUID = 0;
-
             shielded = false;
             defeated = false;
         }
@@ -589,7 +587,7 @@ public:
 
             if (wakingNightmareTimer <= diff)
             {
-                DoScriptText(SAY_PALETRESS_NIGHTMARE_WARNING, me);
+                Talk(SAY_PALETRESS_NIGHTMARE_WARNING);
                 DoCast(me, SPELL_WAKING_NIGHTMARE);
                 wakingNightmareTimer = 15000;
             }else wakingNightmareTimer -= diff;
@@ -609,7 +607,7 @@ public:
 
         void JustDied(Unit* /*killer*/)
         {
-            if (me->isSummon())
+            if (me->IsSummon())
                 if (Unit* summoner = me->ToTempSummon()->GetSummoner())
                     if (summoner->IsAlive())
                         summoner->GetAI()->SetData(1, 0);
