@@ -299,8 +299,6 @@ void WorldSession::SendExternalMails()
     SQLTransaction trans = CharacterDatabase.BeginTransaction();
 
     MailDraft* mail = NULL;
-	
-	ObjectGuid receiver_guid
 
     do
     {
@@ -314,11 +312,12 @@ void WorldSession::SendExternalMails()
         uint32 itemCount = fields[6].GetUInt32();
 
         Player *receiver = ObjectAccessor::FindPlayer(receiver_guid);
+		ObjectGuid receiver_guid
 
         mail = new MailDraft(subject, body);
 
         if (money)
-       {
+        {
             TC_LOG_DEBUG("entities.player.character", "External Mail> Adding money");
             mail->AddMoney(money);
         }
