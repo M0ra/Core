@@ -299,19 +299,21 @@ void WorldSession::SendExternalMails()
     SQLTransaction trans = CharacterDatabase.BeginTransaction();
 
     MailDraft* mail = NULL;
+	
+	ObjectGuid receiver_guid
 
     do
     {
         Field *fields = result->Fetch();
         uint32 id = fields[0].GetUInt32();
-		uint32 receiver_guid = fields[1].GetUInt32();
+		receiver_guid = fields[1].GetUInt32();
         std::string subject = fields[2].GetString();
         std::string body = fields[3].GetString();
         uint32 money = fields[4].GetUInt32();
         uint32 itemId = fields[5].GetUInt32();
         uint32 itemCount = fields[6].GetUInt32();
 
-        Player *receiver = ObjectAccessor::FindPlayer(ObjectGuid);
+        Player *receiver = ObjectAccessor::FindPlayer(receiver_guid);
 
         mail = new MailDraft(subject, body);
 

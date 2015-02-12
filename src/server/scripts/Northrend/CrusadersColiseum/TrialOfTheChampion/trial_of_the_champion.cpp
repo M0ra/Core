@@ -275,7 +275,7 @@ public:
                             //DoScriptText(announce, me, player);
                             announceID.erase(announce);
                         }
-                        playersGUID.erase(*playersGUID.begin());
+                        playerGUID.erase(*playerGUID.begin());
                         // Public emote
                         Talk(EMOTE_FACTION_CHEER-player->getRace());
                     }
