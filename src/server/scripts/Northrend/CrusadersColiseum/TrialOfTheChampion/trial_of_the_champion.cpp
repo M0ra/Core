@@ -206,7 +206,7 @@ public:
                                 playerGUID = player->GetGUID();
                             }
                         }
-                        for (uint8 i = 0; i < playerGUID(); i++)
+                        for (uint8 i = 0; i < playerGUID; i++)
                             announceID.insert(SAY_ANNOUNCER_PLAYER-i);
                     }
 
