@@ -144,7 +144,7 @@ class spell_eadric_hammer_of_righteous : public SpellScriptLoader
             void HandleBeforeHit()
             {
                 Unit* caster = GetCaster();
-                Unit* target = GetTargetUnit();
+                Unit* target = GetHitUnit();
 
                 if(!caster || !target)
                     return;
