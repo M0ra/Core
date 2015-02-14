@@ -14,9 +14,9 @@ set(scripts_STAT_SRCS
   ${scripts_STAT_SRCS}
 #  ${sources_Custom}
 # Path to files
-# 1
-# 2
-# 3
+  Custom/Transmog/Transmogrification.h
+  Custom/Transmog/Transmogrification.cpp
+  Custom/Transmog/Transmogrifier.cpp
 # 4
 # 5
 # 6
