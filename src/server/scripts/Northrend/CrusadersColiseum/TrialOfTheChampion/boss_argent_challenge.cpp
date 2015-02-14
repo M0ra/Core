@@ -240,7 +240,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(0);
+                me->SetTarget(ObjectGuid::Empty);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 Talk(SAY_COMMON_DEATH);
                 BindPlayersToInstance(me);
@@ -276,7 +276,7 @@ public:
 
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 250, true))
                 {
-                    if (target && target->isAlive())
+                    if (target && target->IsAlive())
                     {
                         Talk(SAY_EADRIC_HAMMER);
                         DoCast(target, SPELL_HAMMER_JUSTICE);
@@ -439,7 +439,7 @@ public:
                 defeated = true;
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                 me->GetMotionMaster()->MovePoint(1, me->GetHomePosition());
-                me->SetTarget(0);
+                me->SetTarget(ObjectGuid::Empty);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 Talk(SAY_COMMON_DEATH);
                 BindPlayersToInstance(me);
