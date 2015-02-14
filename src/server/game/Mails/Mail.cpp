@@ -20,7 +20,6 @@
 #include "Mail.h"
 #include "Log.h"
 #include "World.h"
-#include "WorldSession.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "Unit.h"
