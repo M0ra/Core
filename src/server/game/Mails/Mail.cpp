@@ -311,6 +311,8 @@ void WorldSession::SendExternalMails()
         uint32 itemId = fields[5].GetUInt32();
         uint32 itemCount = fields[6].GetUInt32();
 
+		Player *receiver = ObjectAccessor::FindPlayer(HIGHGUID_PLAYER);
+		
         mail = new MailDraft(subject, body);
 
         if (money)
