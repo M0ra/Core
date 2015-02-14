@@ -159,14 +159,14 @@ public:
         void Reset()
         {
             events.Reset();
-            for (uint8 i=0; i<EVENTS_MAX; i++)
+            for (uint8 i = 0; i <EVENTS_MAX; i++)
                 eventIds[i] = 0;
 
-            for (uint8 i=0; i<3; i++)
+            for (uint8 i = 0; i < 3; i++)
             {
                 bossEntry[i] = 0;
                 bossGUID[i];
-                for (uint8 j=0; j<3; j++)
+                for (uint8 j = 0; j < 3; j++)
                     addsGUID[i][j];
             }
 
@@ -203,10 +203,10 @@ public:
                                 if (player->IsGameMaster())
                                     continue;
 
-                                playerGUID.insert(player->GetGUID());
+                                playerGUID = player->GetGUID();
                             }
                         }
-                        for (uint8 i = 0; i < playerGUID.size(); i++)
+                        for (uint8 i = 0; i < playerGUID(); i++)
                             announceID.insert(SAY_ANNOUNCER_PLAYER-i);
                     }
 
@@ -275,7 +275,7 @@ public:
                             //DoScriptText(announce, me, player);
                             announceID.erase(announce);
                         }
-                        playerGUID.erase(*playerGUID.begin());
+                        playerGUID = player->GetGUID();
                         // Public emote
                         Talk(EMOTE_FACTION_CHEER-player->getRace());
                     }
