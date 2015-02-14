@@ -934,6 +934,14 @@ void BattlefieldWG::ProcessEvent(WorldObject* obj, uint32 eventId)
                     building->Damaged();
                 else if (buildingGo->GetGOInfo()->building.destroyedEvent == eventId)
                     building->Destroyed();
+					
+               // Add Support of Quests Toppling the Towers & Southern Sabotage
+                if (go->GetEntry()==190356 || go->GetEntry()==190357 || go->GetEntry()==190358)
+                {
+                    for (GuidSet::const_iterator itr = m_PlayersInWar[GetDefenderTeam()].begin(); itr != m_PlayersInWar[GetDefenderTeam()].end(); ++itr)
+                        if (Player* player = ObjectAccessor::FindPlayer(*itr))
+                            player->RewardPlayerAndGroupAtEvent(35074, go);
+                }					
                 break;
             }
         }
