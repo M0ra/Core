@@ -304,14 +304,14 @@ void WorldSession::SendExternalMails()
     {
         Field *fields = result->Fetch();
         uint32 id = fields[0].GetUInt32();
-		uint32 receiver_guid = fields[1].GetUInt32();
+		ObjectGuid receiver_guid = (HIGHGUID_PLAYER,fields[1].GetUInt32());
         std::string subject = fields[2].GetString();
         std::string body = fields[3].GetString();
         uint32 money = fields[4].GetUInt32();
         uint32 itemId = fields[5].GetUInt32();
         uint32 itemCount = fields[6].GetUInt32();
 
-		Player *receiver = ObjectAccessor::FindPlayer(HIGHGUID_PLAYER);
+		Player *receiver = ObjectAccessor::FindPlayer(receiver_guid);
 		
         mail = new MailDraft(subject, body);
 
