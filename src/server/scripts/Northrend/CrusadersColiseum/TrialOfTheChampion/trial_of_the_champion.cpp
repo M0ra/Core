@@ -306,7 +306,7 @@ public:
                         pTrash->AI()->SetData(i, 0);
                     if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_MONK, SpawnPosition))
                         pTrash->AI()->SetData(i, 0);
-                    if (Creature* pTrash = me->SummonCreature(NPC_PRIESTESS, SpawnPosition))
+                    if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_PRIESTESS, SpawnPosition))
                         pTrash->AI()->SetData(i, 0);
                 }
             }
