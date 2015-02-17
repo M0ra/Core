@@ -268,7 +268,7 @@ class npc_queldelar_sp : public CreatureScript
                         {
                             if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayer))
 							// if (Player* player = me->FindNearestCreature(player, 200.0f, true))
-                                rommath->AddAura(SPELL_ICY_PRISON, player);
+                            rommath->AddAura(SPELL_ICY_PRISON, player);
                             rommath->AI()->Talk(SAY_QUELDELAR_6);
                         }
                         if (Creature* guard = me->FindNearestCreature(NPC_QUEL_GUARD, 200.0f))
@@ -367,18 +367,17 @@ class item_tainted_queldelar : public ItemScript
     public:
 
         item_tainted_queldelar() : ItemScript("item_tainted_queldelar") { }
-    
+		
         bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/) override
         {
             InstanceScript *instance = player->GetInstanceScript();
 
             if (instance && player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
             {
-                if (Creature *introducer = player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
-                {
-                    introducer->AI()->SetGUID(player->GetGUID());
-                    introducer->AI()->DoAction(ACTION_START_EVENT);
-                }                    
+                Creature *Introducer = NULL;
+                Introducer = ObjectAccessor::GetCreature((*player), instance->GetGuidData(DATA_QUELDELAR_INTRODUCER));
+                Introducer->AI()->SetGUID(player->GetGUID());
+                Introducer->AI()->DoAction(ACTION_START_EVENT);
                 return true;
             }
             else
@@ -386,9 +385,39 @@ class item_tainted_queldelar : public ItemScript
         }
 };
 
+class spell_cleanse_queldelar : public SpellScriptLoader
+{
+	public:
+		spell_cleanse_queldelar() : SpellScriptLoader("spell_cleanse_queldelar") { }
+
+		class spell_cleanse_queldelar_SpellScript : public SpellScript
+		{
+			PrepareSpellScript(spell_cleanse_queldelar_SpellScript);
+
+			void HandleStartScript(SpellEffIndex effIndex)
+			{
+				if (Creature* theron = GetCaster()->FindNearestCreature(NPC_THERON, 100.0f, true))
+					if (theron->AI())
+						theron->AI()->SetGUID(GetCaster()->GetGUID());
+				
+			}
+
+			void Register()
+			{
+				OnEffectHit += SpellEffectFn(spell_cleanse_queldelar_SpellScript::HandleStartScript, EFFECT_0, SPELL_EFFECT_SEND_EVENT);
+			}
+		};
+
+		SpellScript* GetSpellScript() const
+		{
+			return new spell_cleanse_queldelar_SpellScript();
+		}
+};
+
 void AddSC_sunwell_plateau()
 {
     new npc_queldelar_sp();
     new go_dalaran_portal();
     new item_tainted_queldelar();
+	new spell_cleanse_queldelar();
 }
