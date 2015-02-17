@@ -882,14 +882,14 @@ void BattlefieldWG::SendInitWorldStatesToAll()
                 SendInitWorldStatesTo(player);
 }
 
-void BattlefieldWG::BrokenWallOrTower(TeamId /*team*/)
+void BattlefieldWG::BrokenWallOrTower(TeamId team)
 {
     if (team == GetDefenderTeam())
     {
 		for (GuidSet::const_iterator itr = m_PlayersInWar[GetDefenderTeam()].begin(); itr != m_PlayersInWar[GetDefenderTeam()].end(); ++itr)
         {
             if (Player* player = ObjectAccessor::FindPlayer(*itr))
-                player->KilledMonsterCredit(CREDIT_TOWERS, 0);
+                player->KilledMonsterCredit(CREDIT_TOWERS);
         }
     }
 }
