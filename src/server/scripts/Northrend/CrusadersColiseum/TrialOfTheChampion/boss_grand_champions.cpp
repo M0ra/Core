@@ -825,7 +825,7 @@ public:
 
             if (uiLightningArrowsTimer <= uiDiff)
             {
-                if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
                     DoCast(target, SPELL_LIGHTNING_ARROWS);
 
                 uiLightningArrowsTimer = 15000;

@@ -338,6 +338,8 @@ public:
         ObjectGuid uiVehicle1GUID;
         ObjectGuid uiVehicle2GUID;
         ObjectGuid uiVehicle3GUID;
+		
+		ObjectGuid uiBlackKnightGUID;
 
         GuidList Champion1List;
         GuidList Champion2List;
@@ -612,11 +614,6 @@ public:
                     Talk(SAY_START5);
                 }
             }
-        }
-
-        void Reset() override
-        {
-            uiBlackKnightGUID.Clear();
         }
 
         void AggroAllPlayers(Creature* temp)
