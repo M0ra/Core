@@ -20,6 +20,7 @@
 #include "InstanceScript.h"
 #include "trial_of_the_champion.h"
 #include "Player.h"
+#include "CombatAI.h"
 
 #define MAX_ENCOUNTER  4
 
@@ -222,6 +223,8 @@ public:
 		
 		void SetData(uint32 uiType, uint32 uiData) override
         {
+            switch (uiType)
+            {		
                 case DATA_BLACK_KNIGHT:
                     uiBlackKnightEvent = uiData;
                     if (uiData == NOT_STARTED)
