@@ -530,15 +530,14 @@ public:
                         me->SummonCreature(VEHICLE_GR, 744.841f, 634.505f, 411.575f, 2.79f);
                         break;
                 }		
-
-        void UpdateAI(uint32 uiDiff) override
+        };
+		
+		void UpdateAI(uint32 uiDiff) override
         {
             npc_escortAI::UpdateAI(uiDiff);
 
             UpdateVictim();
         }
-			
-        };
     };
 };
 
