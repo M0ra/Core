@@ -149,7 +149,7 @@ public:
 
         void EnterEvadeMode()
         {
-            if (!pInstance) 
+            if (!instance) 
                 return;
             
             if (bEventInBattle)
@@ -269,7 +269,7 @@ public:
                     if (!bSummonArmy)
                     {
                         bSummonArmy = true;
-                        me->AddUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
+                        me->AddUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
                         me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
                         DoCast(me, SPELL_ARMY_DEAD);
                     }
@@ -277,7 +277,7 @@ public:
                     if (!bDeathArmyDone)
                         if (uiDeathArmyCheckTimer <= uiDiff)
                         {
-                            me->ClearUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
+                            me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
                             me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
                             uiDeathArmyCheckTimer = 0;
                             bDeathArmyDone = true;
@@ -556,7 +556,7 @@ public:
 	
         npc_grAI(Creature* creature) : npc_escortAI(creature)
         {
-            Start(false,true,0,NULL);
+            Start(false, true);
             instance = (InstanceScript*)creature->GetInstanceScript();	
         }
 

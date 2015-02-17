@@ -51,18 +51,6 @@ public:
             uiMovementDone                  = 0;
             uiGrandChampionsDeaths          = 0;
             uiArgentSoldierDeaths           = 0;
-            uiBlackKnightGUID               = 0;
-            uiAnnouncerGUID                 = 0;
-            uiMainGateGUID                  = 0;
-            uiMainGate1GUID                 = 0;
-            uiGrandChampionVehicle1GUID     = 0;
-            uiGrandChampionVehicle2GUID     = 0;
-            uiGrandChampionVehicle3GUID     = 0;
-            uiGrandChampion1GUID            = 0;
-            uiGrandChampion2GUID            = 0;
-            uiGrandChampion3GUID            = 0;
-            uiChampionLootGUID              = 0;
-            uiArgentChampionGUID            = 0;
 
             bDone = false;
 
@@ -395,7 +383,7 @@ public:
             SaveToDB();
     }
 
-    uint32 GetData(uint32 uiData) override
+    uint32 GetData(uint32 uiData)
     {
         switch (uiData)		
         {
