@@ -19,8 +19,8 @@
 #include "ScriptedCreature.h"
 #include "InstanceScript.h"
 #include "trial_of_the_champion.h"
+#include "Vehicle.h"
 #include "Player.h"
-#include "SpellScript.h"
 
 #define MAX_ENCOUNTER  4
 
