@@ -17,8 +17,6 @@
 
 #include "ScriptPCH.h"
 #include "trial_of_the_champion.h"
-#include "ScriptMgr.h"
-#include "ScriptedCreature.h"
 
 #define MAX_ENCOUNTER  4
 
@@ -238,7 +236,7 @@ public:
                     {
                         if (Creature* pBlackKnight =  instance->GetCreature(uiBlackKnightGUID))
                         {
-                            Talk(SAY_BLACK_KNIGHT_1);
+                            //Talk(SAY_BLACK_KNIGHT_1);
                         }
 
                     }else if (uiData == DONE)
@@ -266,7 +264,7 @@ public:
                     {
                         if (Creature* pBlackKnight =  instance->GetCreature(uiBlackKnightGUID))
                         {
-                            Talk(SAY_BLACK_KNIGHT_2);
+                            //Talk(SAY_BLACK_KNIGHT_2);
                             if (Creature* pAnnouncer =  instance->GetCreature(uiAnnouncerGUID))
                             {
                                 pAnnouncer->setDeathState(JUST_DIED);
@@ -314,7 +312,7 @@ public:
                         {
                             if (Creature* pAnnouncer =  instance->GetCreature(uiAnnouncerGUID))
                             {
-                                Talk(SAY_START_1);
+                                //Talk(SAY_START_1);
                                 pAnnouncer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                                 pAnnouncer->SummonGameObject(instance->IsHeroic()? GO_CHAMPIONS_LOOT_H : GO_CHAMPIONS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000);
                             }
@@ -339,7 +337,7 @@ public:
                             }
                             if (Creature* pAnnouncer = instance->GetCreature(uiAnnouncerGUID))
                             {
-                                Talk(SAY_START_2);
+                                //Talk(SAY_START_2);
                             }
                     }
                     break;
@@ -353,7 +351,7 @@ public:
                     }else if (uiData == DONE)				
                         if (Creature* pAnnouncer = instance->GetCreature(uiAnnouncerGUID))
                         {
-                            Talk(SAY_START_1);
+                            //Talk(SAY_START_1);
 
                             pAnnouncer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                             pAnnouncer->GetMotionMaster()->MovePoint(0,740.755f, 636.509f, 411.575f);
@@ -370,7 +368,7 @@ public:
                     }else if (uiData == DONE)				
                         if (Creature* pAnnouncer = instance->GetCreature(uiAnnouncerGUID))
                         {
-                            Talk(SAY_START_1);
+                            //Talk(SAY_START_1);
                             pAnnouncer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                             pAnnouncer->GetMotionMaster()->MovePoint(0,740.755f, 636.509f, 411.575f);
                             pAnnouncer->SummonGameObject(instance->IsHeroic()? GO_PALETRESS_LOOT_H : GO_PALETRESS_LOOT,746.59f,618.49f,411.09f,1.42f,0, 0, 0, 0,90000000);
