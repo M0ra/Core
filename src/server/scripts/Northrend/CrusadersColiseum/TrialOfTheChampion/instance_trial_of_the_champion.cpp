@@ -17,7 +17,8 @@
 
 #include "ScriptPCH.h"
 #include "trial_of_the_champion.h"
-#include "ScriptedEscortAI.h"
+#include "ScriptMgr.h"
+#include "ScriptedCreature.h"
 
 #define MAX_ENCOUNTER  4
 
