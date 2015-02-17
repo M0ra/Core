@@ -20,7 +20,7 @@
 #include "InstanceScript.h"
 #include "trial_of_the_champion.h"
 #include "Player.h"
-#include "ScriptedGossip.h"
+#include "SpellScript.h"
 
 #define MAX_ENCOUNTER  4
 
