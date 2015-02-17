@@ -20,7 +20,7 @@
 #include "InstanceScript.h"
 #include "trial_of_the_champion.h"
 #include "Player.h"
-#include "CombatAI.h"
+#include "ScriptedGossip.h"
 
 #define MAX_ENCOUNTER  4
 
@@ -221,10 +221,10 @@ public:
             }
         }        
 		
-		void SetData(uint32 uiType, uint32 uiData) override
-        {
-            switch (uiType)
-            {		
+    void SetData(uint32 uiType, uint32 uiData) override
+    {
+        switch (uiType)
+        {		
                 case DATA_BLACK_KNIGHT:
                     uiBlackKnightEvent = uiData;
                     if (uiData == NOT_STARTED)
@@ -293,9 +293,7 @@ public:
                             }						
                         }
                     }				
-                    break;		
-            switch (uiType)
-            {
+                    break;
                 case DATA_MOVEMENT_DONE:
                     uiMovementDone = uiData;
                     if (uiMovementDone == 3)
@@ -380,11 +378,11 @@ public:
                             pAnnouncer->SummonGameObject(instance->IsHeroic()? GO_PALETRESS_LOOT_H : GO_PALETRESS_LOOT,746.59f,618.49f,411.09f,1.42f,0, 0, 0, 0,90000000);
                         }
                         break;
-        }
+            }
 
         if (uiData == DONE)
             SaveToDB();
-    }
+        }
 
     uint32 GetData(uint32 uiData)
     {
@@ -488,7 +486,8 @@ public:
         
         OUT_LOAD_INST_DATA_COMPLETE;
     }
-};
+	
+    };
 };
 
 void AddSC_instance_trial_of_the_champion()
