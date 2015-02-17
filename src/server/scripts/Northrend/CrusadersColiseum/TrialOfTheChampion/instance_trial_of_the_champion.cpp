@@ -414,7 +414,7 @@ public:
             case DATA_GRAND_CHAMPION_3: return uiGrandChampion3GUID;
         }
 
-        return 0;
+        return ObjectGuid::Empty;
     }
 
     void SetGuidData(uint32 uiType, ObjectGuid uiData) override

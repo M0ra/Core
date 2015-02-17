@@ -650,9 +650,9 @@ public:
             Initialize();
         }
 
-        void WaypointReached(uint32 waypointId) override
+        void WaypointReached(uint32 uiPoint) override
         {
-            if (waypointId == 0)
+            if (uiPoint == 0)
             {
                 switch (uiWaypoint)
                 {
@@ -756,13 +756,13 @@ public:
                 {
                     if (uiCleaveTimer <= uiDiff)
                     {
-                        if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
                             DoCast(target, SPELL_STRIKE);				
                         uiCleaveTimer = 20000;
                     } else uiCleaveTimer -= uiDiff;				
                     if (uiStrikeTimer <= uiDiff)
                     {
-                        if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
                             DoCast(target, SPELL_CLEAVE);				
                         uiStrikeTimer = 25000;
                     } else uiStrikeTimer -= uiDiff;	
@@ -790,7 +790,7 @@ public:
 
                     if (uiPummelTimer <= uiDiff)
                     {
-                        if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
                             DoCast(target, SPELL_PUMMEL);				
                         uiPummelTimer = 35000;
                     } else uiPummelTimer -= uiDiff;	
@@ -812,21 +812,21 @@ public:
 
                     if (uiPainTimer <= uiDiff)
                     {
-                        if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
                             DoCast(target, SPELL_PAIN);				
                         uiPainTimer = 30000;
                     } else uiPainTimer -= uiDiff;	
 
                     if (uiMindTimer <= uiDiff)
                     {
-                        if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
                             DoCast(target, SPELL_MIND);				
                         uiMindTimer = 90000;
                     } else uiMindTimer -= uiDiff;
 
                     if (uiSsmiteTimer <= uiDiff)
                     {
-                        if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
                             DoCast(target, SPELL_SSMITE);				
                         uiSsmiteTimer = 25000;
                     } else uiSsmiteTimer -= uiDiff;					
