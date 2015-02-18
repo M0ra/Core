@@ -40,8 +40,8 @@ void CheckMessage(Player* player, std::string& msg, uint32 lang, Player* /*recei
     std::string lower = msg;
     std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
  
-    uint8 cheksSize = 29;
-    std::string checks[29];
+    uint8 cheksSize = 27;
+    std::string checks[27];
     checks[0] ="http://";
     checks[1] =".com";
     checks[2] =".www";
@@ -60,7 +60,7 @@ void CheckMessage(Player* player, std::string& msg, uint32 lang, Player* /*recei
     checks[15] ="fakewow";
     checks[16] ="deathside";
     checks[17] ="warsong";
-    checks[18] ="uwow";
+    checks[18] ="RiverRise";
     checks[19] ="air-world";
     checks[20] ="wow-cool";
     checks[21] ="elgracia";
@@ -75,7 +75,7 @@ void CheckMessage(Player* player, std::string& msg, uint32 lang, Player* /*recei
         if (lower.find(checks[i]) != std::string::npos)
         {
             msg = "";
-            handler->PSendSysMessage("Реклама запрещена!");         
+            ChatHandler(player).PSendSysMessage("Реклама запрещена!");         
             return;
         }
 } 
