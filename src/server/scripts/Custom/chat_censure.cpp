@@ -1,7 +1,6 @@
 #include "ScriptPCH.h"
 #include "Channel.h"
-#include "Chat.h"
-
+ 
 class System_Censure : public PlayerScript
 {
 public:
@@ -32,7 +31,7 @@ public:
                 CheckMessage(player, msg, lang, NULL, NULL, NULL, channel);
         }
  
-void CheckMessage(ChatHandler* handler, Player* player, std::string& msg, uint32 lang, Player* /*receiver*/, Group* /*group*/, Guild* /*guild*/, Channel* channel)
+void CheckMessage(Player* player, std::string& msg, uint32 lang, Player* /*receiver*/, Group* /*group*/, Guild* /*guild*/, Channel* channel)
 {
     //if (player->isGameMaster() || lang == LANG_ADDON)
             //return;
