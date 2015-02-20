@@ -28,12 +28,14 @@ enum Data
     BOSS_ARGENT_CHALLENGE_P,
     BOSS_BLACK_KNIGHT,
     DATA_MOVEMENT_DONE,
-	DATA_AGGRO_DONE,
-    DATA_AGRO_DONE,
     DATA_LESSER_CHAMPIONS_DEFEATED,
     DATA_START,
     DATA_IN_POSITION,
     DATA_ARGENT_SOLDIER_DEFEATED,
+    DATA_TEAM_IN_INSTANCE,
+    DATA_RESET,
+    DATA_AGGRO_DONE,
+    DATA_AGRO_DONE,
     DATA_BLACK_KNIGHT,
     DATA_KNIGHT
 };
@@ -41,6 +43,8 @@ enum Data
 enum Data64
 {
     DATA_ANNOUNCER,
+	DATA_ARGENT_CHAMPION,
+    DATA_HIGHLORD,
     DATA_MAIN_GATE,
 	DATA_MAIN_GATE1,
 
@@ -53,7 +57,7 @@ enum Data64
     DATA_GRAND_CHAMPION_3
 };
 
-enum CreatureIds
+enum Npcs
 {
     // Horde Champions
     NPC_MOKRA                   = 35572,
@@ -68,28 +72,43 @@ enum CreatureIds
     NPC_COLOSOS                 = 34701,
     NPC_JAELYNE                 = 34657,
     NPC_LANA                    = 34703,
+	
+	// Faction champions horde
+    NPC_ORGRIMAR_CHAMPION       = 35314,
+    NPC_SILVERMOON_CHAMPION     = 35326,
+    NPC_THUNDER_CHAMPION        = 35325,
+    NPC_TROLL_CHAMPION          = 35323,
+    NPC_UNDERCITY_CHAMPION      = 35327,
 
-	// Crusader Champions
+    // Faction champions alliance
+    NPC_STORMWIND_CHAMPION      = 35328,
+    NPC_GNOMERAGN_CHAMPION      = 35331,
+    NPC_EXODAR_CHAMPION         = 35330,
+    NPC_DRNASSUS_CHAMPION       = 35332,
+    NPC_IRONFORGE_CHAMPION      = 35329,
+
     NPC_EADRIC                  = 35119,
     NPC_PALETRESS               = 34928,
 
-	// Crusader mobs
     NPC_ARGENT_LIGHWIELDER      = 35309,
     NPC_ARGENT_MONK             = 35305,
     NPC_PRIESTESS               = 35307,
 
-	// Black Knight
     NPC_BLACK_KNIGHT            = 35451,
 
-	// Black Knight's add
     NPC_RISEN_JAEREN            = 35545,
     NPC_RISEN_ARELAS            = 35564,
+	
+	// Announcer Start Event
+    NPC_JAEREN                  = 35004,
+    NPC_ARELAS                  = 35005,
+    NPC_HIGHLORD                = 34996,
+    NPC_THRALL                  = 34994, 
+    NPC_GARROSH                 = 34995, 
+    NPC_VARIAN                  = 34990, 
+    NPC_JAINA_PROUDMOORE        = 34992,
 
-	// Announcer	
-    NPC_JAEREN_AN               = 35591,
-    NPC_ARELAS_AN               = 35592,
-    
-    // Memory	
+    // Memory
     MEMORY_ALGALON              = 35052,
     MEMORY_ARCHIMONDE           = 35041,
     MEMORY_CHROMAGGUS           = 35033,
@@ -114,11 +133,7 @@ enum CreatureIds
     MEMORY_VANCLEEF             = 35028,
     MEMORY_VASHJ                = 35040,
     MEMORY_VEKNILASH            = 35036,
-    MEMORY_VEZAX                = 35051,
-    
-    // Announcer Start Event
-    NPC_JAEREN                  = 35004,
-    NPC_ARELAS                  = 35005
+    MEMORY_VEZAX                = 35051
 };
 
 enum GameObjects
@@ -169,5 +184,12 @@ enum Vehicles
 
     VEHICLE_BLACK_KNIGHT                            = 35491
 };
+
+enum Actions
+{
+    ACTION_OUTRO                        = 0
+};
+
+void HandleSpellOnPlayersInInstanceToC5(Unit* caller, uint32 spellId);
 
 #endif
