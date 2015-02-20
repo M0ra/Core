@@ -486,8 +486,8 @@ class generic_vehicleAI_toc5 : public CreatureScript
 // Marshal Jacob Alerius && Mokra the Skullcrusher || Warrior
 class boss_warrior_toc5 : public CreatureScript
 {
-+    public:
-+        boss_warrior_toc5(): CreatureScript("boss_warrior_toc5") {}
+    public:
+        boss_warrior_toc5(): CreatureScript("boss_warrior_toc5") {}
 
     struct boss_warrior_toc5AI : public BossAI
     {
@@ -704,7 +704,6 @@ class boss_mage_toc5 : public CreatureScript
 
         bool bDone;
         bool bHome;
-		bool bHome;	
 
         bool hasBeenInCombat;
         bool bCredit;

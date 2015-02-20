@@ -411,7 +411,7 @@ public:
                     {
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                         {
-                            if (target && target->isAlive())
+                            if (target && target->IsAlive())
                             DoCast(target, SPELL_DEATH_RESPITE);
                         }
                         uiDeathRespiteTimer = urand(15000, 16000);
@@ -624,7 +624,7 @@ public:
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 100, true))
                 {
-                    if (target && target->isAlive())
+                    if (target && target->IsAlive())
                         DoCast(target, DUNGEON_MODE(SPELL_LEAP, SPELL_LEAP_H));
                 }
                 uiLeapTimer = 10000;

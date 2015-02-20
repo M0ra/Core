@@ -572,7 +572,7 @@ class npc_herald_toc5 : public CreatureScript
         void StartEncounter()
         {
             me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                if (GameObject* pGO = GameObject::GetGameObject(*me, instance->GetData64(DATA_MAIN_GATE1)))
+                if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetData64(DATA_MAIN_GATE1)))
                         instance->HandleGameObject(pGO->GetGUID(),false);	
 
             if (instance->GetData(BOSS_BLACK_KNIGHT) == NOT_STARTED)
@@ -587,17 +587,17 @@ class npc_herald_toc5 : public CreatureScript
                 }
 
                if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE && (instance->GetData(BOSS_ARGENT_CHALLENGE_E) == DONE || instance->GetData(BOSS_ARGENT_CHALLENGE_P) == DONE))
-+                {
-+			        me->SummonCreature(VEHICLE_BLACK_KNIGHT, 801.369507f, 640.574280f, 469.314362f, 3.97124f);
-+
-+    				me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-+    				me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-+    				me->SetReactState(REACT_AGGRESSIVE);
-+                    if (Creature* tirion = me->GetCreature(*me, tirionGUID))
-+                       tirion->AI()->Talk(SAY_INTRO_BLACK_KNIGHT_TIRION);
-+
-+    				Talk(SAY_HERALD_RAFTERS);
-+		        }
+                {
+			        me->SummonCreature(VEHICLE_BLACK_KNIGHT, 801.369507f, 640.574280f, 469.314362f, 3.97124f);
+
+    				me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+    				me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+    				me->SetReactState(REACT_AGGRESSIVE);
+                    if (Creature* tirion = me->GetCreature(*me, tirionGUID))
+                       tirion->AI()->Talk(SAY_INTRO_BLACK_KNIGHT_TIRION);
+
+    				Talk(SAY_HERALD_RAFTERS);
+		        }
             }
         }
 
@@ -729,12 +729,12 @@ class npc_herald_toc5 : public CreatureScript
                         events.ScheduleEvent(EVENT_PALETRESS_2, 5000, 0, PHASE_INPROGRESS);
                         break;
                     case EVENT_PALETRESS_2:
-                        if (Creature* argentchamp = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_ARGENT_CHAMPION)))
+                        if (Creature* argentchamp = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ARGENT_CHAMPION)))
                             argentchamp->AI()->Talk(SAY_PALETRESS_INTRO_3);
 
                         events.ScheduleEvent(EVENT_PALETRESS_3, 5000);
                     case EVENT_PALETRESS_3:
-                        if (Creature* argentchamp = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_ARGENT_CHAMPION)))
+                        if (Creature* argentchamp = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ARGENT_CHAMPION)))
                             argentchamp->AI()->Talk(SAY_PALETRESS_INTRO_4);
                         break;
                     case EVENT_EADRIC_1:
@@ -743,17 +743,17 @@ class npc_herald_toc5 : public CreatureScript
                         events.ScheduleEvent(EVENT_EADRIC_2, 5000);
                         break;
                     case EVENT_EADRIC_2:
-                        if (Creature* argentchamp = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_ARGENT_CHAMPION)))
+                        if (Creature* argentchamp = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ARGENT_CHAMPION)))
                             argentchamp->AI()->Talk(SAY_EADRIC_INTRO_3);
                         break;
                     case EVENT_OUTRO_1:
-                        if (Creature* tirion = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_HIGHLORD)))
+                        if (Creature* tirion = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_HIGHLORD)))
                             tirion->AI()->Talk(SAY_OUTRO_1_TIRION);
 
                         events.ScheduleEvent(EVENT_OUTRO_2, 5000);
                         break;
                     case EVENT_OUTRO_2:
-                        if (Creature* tirion = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_HIGHLORD)))
+                        if (Creature* tirion = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_HIGHLORD)))
                             tirion->AI()->Talk(SAY_OUTRO_2_TIRION);
 
                         events.ScheduleEvent(EVENT_OUTRO_3, 5000);
