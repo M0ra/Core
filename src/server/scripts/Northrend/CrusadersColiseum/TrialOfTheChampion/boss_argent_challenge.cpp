@@ -758,6 +758,8 @@ class npc_argent_soldier : public CreatureScript
         uint32 uiFinalTimer;
         uint32 uiDivineTimer;
 		
+		bool bStarted;
+		
         void Reset() override
         {
             Initialize();
@@ -936,7 +938,7 @@ class npc_argent_soldier : public CreatureScript
 
         void JustDied(Unit* killer) override
         {
-            instance->SetData(DATA_ARGENT_SOLDIER_DEFEATED,pInstance->GetData(DATA_ARGENT_SOLDIER_DEFEATED) + 1);
+            pInstance->SetData(DATA_ARGENT_SOLDIER_DEFEATED,pInstance->GetData(DATA_ARGENT_SOLDIER_DEFEATED) + 1);
         }
     };
 
