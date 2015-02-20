@@ -361,31 +361,6 @@ public:
                         
                     if (uiGhoulExplodeTimer <= uiDiff)
                     {
-					
-                        if (!SummonList.empty())
-                        {
-                            for(GuidList::const_iterator itr = SummonList.begin(); itr != SummonList.end(); ++itr)
-                            {
-                                if (Creature* temp = ObjectAccessor::GetCreature(*me, *itr))
-                                {
-                                    if (temp)
-                                    {
-                                        // Let all remaining ghouls explode
-                                        if (temp->GetEntry() == 35590 || temp->GetEntry() == 12444)
-                                        {
-                                            if (temp->IsAlive())
-                                            {
-                                                me->CastSpell(temp, SPELL_GHOUL_EXPLODE, true);
-                                                break;
-                                            }
-                                            else
-                                                continue;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
                         uiGhoulExplodeTimer = 8000;
                     } else uiGhoulExplodeTimer -= uiDiff;
                     

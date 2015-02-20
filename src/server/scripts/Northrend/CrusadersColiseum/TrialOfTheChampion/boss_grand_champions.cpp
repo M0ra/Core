@@ -1292,7 +1292,7 @@ class boss_rouge_toc5 : public CreatureScript
     		
 	    }
 
-        InstanceScript* instance;
+        InstanceScript* pInstance;
 
         uint8 uiPhase;
         uint32 uiPhaseTimer;

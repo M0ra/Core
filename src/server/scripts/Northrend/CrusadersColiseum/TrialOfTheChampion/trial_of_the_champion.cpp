@@ -572,7 +572,7 @@ class npc_herald_toc5 : public CreatureScript
         void StartEncounter()
         {
             me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetData64(DATA_MAIN_GATE1)))
+                if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
                         instance->HandleGameObject(pGO->GetGUID(),false);	
 
             if (instance->GetData(BOSS_BLACK_KNIGHT) == NOT_STARTED)
@@ -593,7 +593,7 @@ class npc_herald_toc5 : public CreatureScript
     				me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
     				me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
     				me->SetReactState(REACT_AGGRESSIVE);
-                    if (Creature* tirion = me->GetCreature(*me, tirionGUID))
+                    if (Creature* tirion = ObjectAccessor::GetCreature(*me, tirionGUID))
                        tirion->AI()->Talk(SAY_INTRO_BLACK_KNIGHT_TIRION);
 
     				Talk(SAY_HERALD_RAFTERS);
