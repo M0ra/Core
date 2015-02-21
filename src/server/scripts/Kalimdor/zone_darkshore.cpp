@@ -441,7 +441,7 @@ public:
 
     struct npc_sentinel_aynashaAI : public npc_escortAI
     {
-        npc_sentinel_aynashaAI(Creature* creature) : npc_escortAI(pCreature)
+        npc_sentinel_aynashaAI(Creature* creature) : npc_escortAI(creature)
         {
             bArrow_said = 0;
             uiWait_Controller = 0;
