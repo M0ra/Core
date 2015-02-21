@@ -52,11 +52,6 @@ public:
         {
 			SetHeaders(DataHeader);
             SetBossNumber(EncounterCount);
-			
-			uint32 onyxiaLiftoffTimer = 0;
-			manyWhelpsCounter   = 0;
-			
-			achievManyWhelpsHandleIt = false;
         }
 		
         void OnCreatureCreate(Creature* creature) override
