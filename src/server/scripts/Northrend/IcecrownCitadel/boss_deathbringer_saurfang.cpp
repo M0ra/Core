@@ -17,6 +17,7 @@
 
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
+#include "Group.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "SpellAuras.h"
@@ -949,6 +950,14 @@ class npc_muradin_bronzebeard_icc : public CreatureScript
         bool OnGossipHello(Player* player, Creature* creature) override
         {
             InstanceScript* instance = creature->GetInstanceScript();
+
+            if ((!player->GetGroup() || !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
+            {
+                player->ADD_GOSSIP_ITEM(0, "I'm not the raid leader...", 631, GOSSIP_ACTION_INFO_DEF + 2);
+                player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
+                return true;
+            }
+					
             if (instance && instance->GetBossState(DATA_DEATHBRINGER_SAURFANG) != DONE)
             {
                 player->ADD_GOSSIP_ITEM(0, "Let it begin...", 631, -ACTION_START_EVENT + 1);
@@ -964,6 +973,12 @@ class npc_muradin_bronzebeard_icc : public CreatureScript
             player->CLOSE_GOSSIP_MENU();
             if (action == -ACTION_START_EVENT + 1)
                 creature->AI()->DoAction(ACTION_START_EVENT);
+				
+            if (action == GOSSIP_ACTION_INFO_DEF + 2)
+                {
+                    player->CLOSE_GOSSIP_MENU();
+                    return true;
+                }				
 
             return true;
         }
