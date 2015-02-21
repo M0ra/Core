@@ -19,9 +19,6 @@
 #include "World.h"
 #include "AnticheatMgr.h"
 
-//custom scripts
-void AddSC_System_Censure();
-
 // spells
 void AddSC_deathknight_spell_scripts();
 void AddSC_druid_spell_scripts();
@@ -1470,7 +1467,7 @@ void AddCustomScripts()
 
     AddSC_PWS_Transmogrification();
     AddSC_CS_Transmogrification();
-    AddSC_System_Censure();
+    // 3
     // 4
     // 5
     // 6
