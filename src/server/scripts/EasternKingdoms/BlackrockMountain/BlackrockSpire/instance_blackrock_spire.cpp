@@ -119,14 +119,6 @@ public:
         {
             switch (go->GetEntry())
             {
-                case GO_WHELP_SPAWNER:
-                    Position goPos = go->GetPosition();
-                    if (Creature* temp = go->SummonCreature(NPC_WHELP, goPos, TEMPSUMMON_CORPSE_DESPAWN))
-                    {
-                        temp->SetInCombatWithZone();
-                        ++manyWhelpsCounter;
-                    }
-                    break;
                 case GO_EMBERSEER_IN:
                     go_emberseerin = go->GetGUID();
                     if (GetBossState(DATA_DRAGONSPIRE_ROOM) == DONE)
@@ -222,6 +214,14 @@ public:
                     if (GetBossState(DATA_GYTH) == DONE)
                         HandleGameObject(ObjectGuid::Empty, true, go);
                     break;
+				case GO_WHELP_SPAWNER:
+                    Position goPos = go->GetPosition();
+                    if (Creature* temp = go->SummonCreature(NPC_WHELP, goPos, TEMPSUMMON_CORPSE_DESPAWN))
+                    {
+                        temp->SetInCombatWithZone();
+                        ++manyWhelpsCounter;
+                    }
+                    break;	
                 default:
                     break;
             }
