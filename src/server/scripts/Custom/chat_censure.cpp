@@ -95,9 +95,7 @@ void CheckMessage(Player* player, string message)
 		    return;
 	     }
     }
-    
-    string msg;
-    ostringstream chat_string;
+
 } 
 };
  
