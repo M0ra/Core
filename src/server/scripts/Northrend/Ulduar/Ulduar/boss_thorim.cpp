@@ -21,7 +21,7 @@
 
 enum Yells
 {
-    SAY_AGGRO                                   = 0,
+    SAY_AGGRO_1                                 = 0,
     SAY_SPECIAL_1                               = 1,
     SAY_SPECIAL_2                               = 2,
     SAY_SPECIAL_3                               = 3,
@@ -452,7 +452,7 @@ public:
                         lightning->SetGoState(GO_STATE_ACTIVE);
 
                 DoCastAOE(SPELL_ACHIEVEMENT_CHECK);
-                me->setFaction(FACTION_FRIENDLY);
+                me->setFaction(35);
             }
         }
 
@@ -534,7 +534,7 @@ public:
                             if (Creature* Sif = me->SummonCreature(NPC_SIF, me->GetPositionX() + 10, me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 175000))
                             {
                                 SifGUID = Sif->GetGUID();
-                                Sif->setFaction(FACTION_FRIENDLY);
+                                Sif->setFaction(35);
                             }
                             break;
                         case EVENT_STORMHAMMER:
@@ -931,7 +931,7 @@ class npc_thorim_arena_phase : public CreatureScript
             // might be called by mind control release or controllers death?
             void EnterEvadeMode() override
             {
-                if (Creature* thorim = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(BOSS_THORIM) : 0))
+                if (Creature* thorim = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(BOSS_THORIM)))
                     thorim->AI()->DoAction(ACTION_BERSERK);
                 _EnterEvadeMode();
                 me->GetMotionMaster()->MoveTargetedHome();
