@@ -931,7 +931,7 @@ class npc_thorim_arena_phase : public CreatureScript
             // might be called by mind control release or controllers death?
             void EnterEvadeMode() override
             {
-                if (Creature* thorim = ObjectAccessor::GetCreature(*me, _instance ? _instance->GetGuidData(BOSS_THORIM) : 0))
+                if (Creature* thorim = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(BOSS_THORIM) : 0))
                     thorim->AI()->DoAction(ACTION_BERSERK);
                 _EnterEvadeMode();
                 me->GetMotionMaster()->MoveTargetedHome();
@@ -1141,7 +1141,7 @@ class npc_runic_colossus : public CreatureScript
 
                 if (BarrierTimer <= diff)
                 {
-                    me->MonsterTextEmote(EMOTE_BARRIER, 0, true);
+                    me->TextEmote(EMOTE_BARRIER, 0, true);
                     DoCast(me, SPELL_RUNIC_BARRIER);
                     BarrierTimer = urand(35000, 45000);
                 }

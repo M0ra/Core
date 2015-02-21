@@ -78,7 +78,12 @@ enum UlduarNPCs
     NPC_VEZAX                               = 33271,
     NPC_YOGG_SARON                          = 33288,
     NPC_ALGALON                             = 32871,
-
+	
+    // Thorim
+	NPC_RUNIC_COLOSSUS                      = 32872,
+    NPC_RUNE_GIANT                          = 32873,
+	NPC_SIF                                 = 33196,
+	
     // Mimiron
     NPC_LEVIATHAN_MKII                      = 33432,
     NPC_VX_001                              = 33651,
@@ -216,8 +221,12 @@ enum UlduarGameObjects
     GO_HODIR_CHEST                          = 194307,
 
     // Thorim
-    GO_THORIM_CHEST_HERO                    = 194315,
-    GO_THORIM_CHEST                         = 194314,
+	GO_THORIM_LIGHTNING_FIELD               = 194559,
+	DATA_RUNIC_COLOSSUS,
+    DATA_RUNE_GIANT,
+	GO_THORIM_DARK_IRON_PROTCULLIS          = 194560,
+	DATA_RUNIC_DOOR,
+	DATA_STONE_DOOR,
 
     // Mimiron
     GO_MIMIRON_TRAM                         = 194675,
@@ -348,6 +357,10 @@ enum UlduarData
 
     // Hodir
     DATA_HODIR_RARE_CACHE,
+	
+	// Thorim
+	DATA_CRITERIA_THORIM,
+
 
     // Mimiron
     DATA_LEVIATHAN_MK_II,
@@ -381,6 +394,7 @@ enum UlduarData
     DATA_UNIVERSE_GLOBE,
     DATA_ALGALON_TRAPDOOR,
     DATA_BRANN_BRONZEBEARD_ALG,
+
 };
 
 enum UlduarWorldStates
