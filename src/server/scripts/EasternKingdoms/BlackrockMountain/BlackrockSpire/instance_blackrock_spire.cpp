@@ -290,12 +290,15 @@ public:
                             Events.ScheduleEvent(EVENT_DARGONSPIRE_ROOM_STORE, 1000);
                     }
                     break;
+            }
+			switch (type)
+            {
 			    case DATA_PHASE_LEEROY:
                         achievManyWhelpsHandleIt = false;
                         manyWhelpsCounter = 0;
                         onyxiaLiftoffTimer = 15*IN_MILLISECONDS;
 					break;
-            }
+            }					
         }
 		
         ObjectGuid GetGuidData(uint32 type) const override
