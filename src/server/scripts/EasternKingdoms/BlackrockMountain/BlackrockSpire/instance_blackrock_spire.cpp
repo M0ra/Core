@@ -54,7 +54,7 @@ public:
             SetBossNumber(EncounterCount);
 			
 			uint32 onyxiaLiftoffTimer = 0;
-			ManyWhelpsCounter   = 0;
+			manyWhelpsCounter   = 0;
 			
 			achievManyWhelpsHandleIt = false;
         }
@@ -293,9 +293,6 @@ public:
                         onyxiaLiftoffTimer = 15*IN_MILLISECONDS;
 					break;
             }
-
-            if (type < MAX_ENCOUNTER && data == DONE)
-                SaveToDB();
         }
 
 		void OnGameObjectCreate(GameObject* go) override
@@ -551,7 +548,7 @@ public:
             ObjectGuid go_portcullis_tobossrooms;
 			
 			uint32 onyxiaLiftoffTimer = 0;
-		    ManyWhelpsCounter   = 0;
+		    manyWhelpsCounter   = 0;
 		    achievManyWhelpsHandleIt = false;
     };
 
