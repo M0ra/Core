@@ -9545,6 +9545,7 @@ void Unit::SetCharm(Unit* charm, bool apply)
             || charm->GetOwnerGUID() != GetGUID())
         {
             m_Controlled.erase(charm);
+            charm->GetMotionMaster()->Clear();
         }
     }
 }
