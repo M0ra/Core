@@ -64,7 +64,7 @@ enum CreaturesIds
     NPC_WARMASTER_VOONE             = 9237,
     NPC_MOTHER_SMOLDERWEB           = 10596,
     NPC_UROK_DOOMHOWL               = 10584,
-	NPC_WHELP                       = 10161,
+    NPC_WHELP                       = 10161,
     NPC_QUARTERMASTER_ZIGRIS        = 9736,
     NPC_GIZRUL_THE_SLAVENER         = 10268,
     NPC_HALYCON                     = 10220,

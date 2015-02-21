@@ -50,7 +50,7 @@ public:
     {
         instance_blackrock_spireMapScript(InstanceMap* map) : InstanceScript(map)
         {
-			SetHeaders(DataHeader);
+            SetHeaders(DataHeader);
             SetBossNumber(EncounterCount);
 			
 		    manyWhelpsCounter   = 0;
