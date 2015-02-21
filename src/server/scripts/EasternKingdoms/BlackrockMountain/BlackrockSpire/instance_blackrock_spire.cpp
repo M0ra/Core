@@ -52,6 +52,9 @@ public:
         {
 			SetHeaders(DataHeader);
             SetBossNumber(EncounterCount);
+			
+		    manyWhelpsCounter   = 0;
+		    achievManyWhelpsHandleIt = false;
         }
 		
         void OnCreatureCreate(Creature* creature) override
@@ -543,8 +546,6 @@ public:
             ObjectGuid go_portcullis_tobossrooms;
 			
 			uint32 onyxiaLiftoffTimer = 0;
-		    manyWhelpsCounter   = 0;
-		    achievManyWhelpsHandleIt = false;
 			
 			bool   achievManyWhelpsHandleIt;
     };
