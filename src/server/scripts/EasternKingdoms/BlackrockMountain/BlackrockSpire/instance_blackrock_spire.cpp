@@ -550,6 +550,8 @@ public:
 			uint32 onyxiaLiftoffTimer = 0;
 		    manyWhelpsCounter   = 0;
 		    achievManyWhelpsHandleIt = false;
+			
+			bool   achievManyWhelpsHandleIt;
     };
 
     InstanceScript* GetInstanceScript(InstanceMap* map) const override
