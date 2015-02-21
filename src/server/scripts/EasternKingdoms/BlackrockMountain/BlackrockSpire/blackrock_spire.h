@@ -51,6 +51,12 @@ enum DataTypes
     DATA_HALL_RUNE_7                = 22
 };
 
+enum InstanceData
+{
+    DATA_LEEROY,	
+	DATA_PHASE_LEEROY
+};
+
 enum CreaturesIds
 {
     NPC_HIGHLORD_OMOKK              = 9196,
@@ -58,6 +64,7 @@ enum CreaturesIds
     NPC_WARMASTER_VOONE             = 9237,
     NPC_MOTHER_SMOLDERWEB           = 10596,
     NPC_UROK_DOOMHOWL               = 10584,
+	NPC_WHELP                       = 10161,
     NPC_QUARTERMASTER_ZIGRIS        = 9736,
     NPC_GIZRUL_THE_SLAVENER         = 10268,
     NPC_HALYCON                     = 10220,
@@ -86,7 +93,7 @@ enum AdditionalData
 
 enum GameObjectsIds
 {
-    GO_WHELP_SPAWNER                = 175622, // trap spawned by go id 175124
+    GO_WHELP_SPAWNER                = 176510, // trap spawned by go id 175124
     // Doors
     GO_EMBERSEER_IN                 = 175244, // First door to Pyroguard Emberseer
     GO_DOORS                        = 175705, // Second door to Pyroguard Emberseer
@@ -116,6 +123,11 @@ enum GameObjectsIds
     GO_DR_PORTCULLIS                = 175185,
     GO_PORTCULLIS_ACTIVE            = 164726,
     GO_PORTCULLIS_TOBOSSROOMS       = 175186
+};
+
+enum AchievementData
+{
+    ACHIEV_CRITERIA_LEEEEROY        = 2188
 };
 
 #endif
