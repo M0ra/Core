@@ -217,6 +217,14 @@ public:
                     if (GetBossState(DATA_GYTH) == DONE)
                         HandleGameObject(ObjectGuid::Empty, true, go);
                     break;
+				case GO_WHELP_SPAWNER:
+                    Position goPos = go->GetPosition();
+                    if (Creature* temp = go->SummonCreature(NPC_WHELP, goPos, TEMPSUMMON_CORPSE_DESPAWN))
+                    {
+                        temp->SetInCombatWithZone();
+                        ++manyWhelpsCounter;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -292,21 +300,6 @@ public:
 					break;
             }
         }
-
-		void OnGameObjectCreate(GameObject* go) override
-        {
-            switch (go->GetEntry())
-            {
-                case GO_WHELP_SPAWNER:
-                    Position goPos = go->GetPosition();
-                    if (Creature* temp = go->SummonCreature(NPC_WHELP, goPos, TEMPSUMMON_CORPSE_DESPAWN))
-                    {
-                        temp->SetInCombatWithZone();
-                        ++manyWhelpsCounter;
-                    }
-                    break;
-            }
-         }
 		
         ObjectGuid GetGuidData(uint32 type) const override
         {
