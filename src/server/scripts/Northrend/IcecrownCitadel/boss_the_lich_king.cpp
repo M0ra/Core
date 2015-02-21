@@ -17,6 +17,7 @@
 
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
+#include "Group.h"
 #include "ScriptedCreature.h"
 #include "SpellScript.h"
 #include "SpellAuraEffects.h"
@@ -1198,8 +1199,11 @@ class npc_tirion_fordring_tft : public CreatureScript
                     SetEquipmentSlots(true);    // remove glow on ashbringer
             }
 
-            void sGossipSelect(Player* /*player*/, uint32 sender, uint32 action) override
+            void sGossipSelect(Player* player, uint32 sender, uint32 action) override
             {
+                if ((!player->GetGroup() || !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
+                me->TextEmote("You are not the raid leader", player, true);
+                else			
                 if (me->GetCreatureTemplate()->GossipMenuId == sender && !action)
                 {
                     _events.SetPhase(PHASE_INTRO);
