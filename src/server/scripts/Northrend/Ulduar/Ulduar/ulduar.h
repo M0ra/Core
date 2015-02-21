@@ -227,6 +227,8 @@ enum UlduarGameObjects
 	GO_THORIM_DARK_IRON_PROTCULLIS          = 194560,
 	DATA_RUNIC_DOOR,
 	DATA_STONE_DOOR,
+	GO_THORIM_CHEST_HERO                    = 194315,
+    GO_THORIM_CHEST                         = 194314,
 
     // Mimiron
     GO_MIMIRON_TRAM                         = 194675,
@@ -445,17 +447,6 @@ class PlayerOrPetCheck
         }
 };
 
-class NoPlayerOrPetCheck
-{
-    public:
-        bool operator() (WorldObject* unit)
-        {
-            if (unit->GetTypeId() != TYPEID_PLAYER)
-                if (!unit->ToCreature()->IsPet())
-                    return false;
 
-            return true;
-        }
-};
 
 #endif
