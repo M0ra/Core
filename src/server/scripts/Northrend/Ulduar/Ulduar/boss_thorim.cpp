@@ -309,7 +309,7 @@ enum ArenaAddEntries
     NPC_IRON_RING_GUARD                         = 32874,
     NPC_IRON_HONOR_GUARD                        = 32875,
     NPC_DARK_RUNE_ACOLYTE_ARENA                 = 32886,
-    NPC_DARK_RUNE_ACOLYTE_TUNNE                L= 33110
+    NPC_DARK_RUNE_ACOLYTE_TUNNEL                = 33110
 };
 
 struct BerserkSelector
