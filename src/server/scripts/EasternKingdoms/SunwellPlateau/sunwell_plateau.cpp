@@ -121,11 +121,7 @@ enum QuelDelarMisc
     ITEM_TAINTED_QUELDANAR_1 = 49879,
     ITEM_TAINTED_QUELDANAR_2 = 49889,
     SPELL_WRATH_QUEL_DANAR   = 70493,
-    SPELL_ICY_PRISON         = 70540,
-	
-	// Quest
-	QUEST_PURIFICATION_QUELDELAR_A = 24553,
-	QUEST_PURIFICATION_QUELDELAR_H = 24564
+    SPELL_ICY_PRISON         = 70540
 };
 
 /*######
@@ -141,9 +137,8 @@ class npc_queldelar_sp : public CreatureScript
         {
             player->PrepareGossipMenu(creature, 0);
 
-            if (player->HasItemCount(ITEM_TAINTED_QUELDANAR_1, 1) || player->HasItemCount(ITEM_TAINTED_QUELDANAR_2, 1));
-			   ((player->GetQuestStatus(QUEST_PURIFICATION_QUELDELAR_H) == QUEST_STATUS_INCOMPLETE) || (player->GetQuestStatus(QUEST_PURIFICATION_QUELDELAR_A) == QUEST_STATUS_INCOMPLETE));
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, CS_GOSSIP5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            if (player->HasItemCount(49879, 1) || player->HasItemCount(49889, 1))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Я принёс Кель'Делар.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
             player->SendPreparedGossip(creature);
 
             return true;
@@ -268,7 +263,7 @@ class npc_queldelar_sp : public CreatureScript
                         {
                             if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayer))
 							// if (Player* player = me->FindNearestCreature(player, 200.0f, true))
-                            rommath->AddAura(SPELL_ICY_PRISON, player);
+                            rommath->AddAura(70540, player);
                             rommath->AI()->Talk(SAY_QUELDELAR_6);
                         }
                         if (Creature* guard = me->FindNearestCreature(NPC_QUEL_GUARD, 200.0f))
@@ -332,14 +327,20 @@ class npc_queldelar_sp : public CreatureScript
                     default:
                         break;
             }
-        }       
+        }
+
+        void SetGUID(const ObjectGuid &uiGuid, int32 /*iId*/)
+        {
+            uiPlayer = uiGuid;
+        }
+		
         private:
             EventMap events;
             ObjectGuid uiRommath;
             ObjectGuid uiTheron;
             ObjectGuid uiAuric;
             ObjectGuid uiQuelDelar;
-			ObjectGuid uiPlayer;
+            ObjectGuid uiPlayer;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
