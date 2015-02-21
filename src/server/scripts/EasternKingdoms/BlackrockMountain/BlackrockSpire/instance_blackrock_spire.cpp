@@ -545,7 +545,8 @@ public:
             ObjectGuid go_portcullis_active;
             ObjectGuid go_portcullis_tobossrooms;
 			
-			uint32 onyxiaLiftoffTimer = 0;
+			uint32 onyxiaLiftoffTimer;
+			uint32 manyWhelpsCounter;
 			
 			bool   achievManyWhelpsHandleIt;
     };
