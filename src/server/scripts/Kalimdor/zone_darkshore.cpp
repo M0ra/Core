@@ -27,6 +27,7 @@ EndScriptData */
 npc_kerlonian
 npc_prospector_remtravel
 npc_threshwackonator
+npc_sentinel_aynasha and quest One shot. One kill.
 EndContentData */
 
 #include "ScriptMgr.h"
@@ -393,9 +394,173 @@ public:
     }
 };
 
+/*####
+# quest One shot One kill
+# NPC_sentinel_aynasha
+# 90% need time and position adjustments
+####*/
+ 
+enum eOneShotOneKill
+{
+    QUEST_ONESHOT_ONEKILL       = 5713,
+
+    SAY_START                   = 1,
+    SAY_OUT_OF_ARROWS           = 2,
+    SAY_END                     = 3,
+    SAY_END2                    = 4,
+
+    SPELL_SHOOT                 = 19767,
+
+    NPC_BLACKWOOD_TRACKER       = 11713,
+    NPC_BOSS_MAROSH             = 11714
+};
+
+class npc_sentinel_aynasha : public CreatureScript
+{
+public:
+    npc_sentinel_aynasha() : CreatureScript("npc_sentinel_aynasha") { }
+
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    {
+        if (quest->GetQuestId() == QUEST_ONESHOT_ONEKILL)
+        {
+            CAST_AI(npc_sentinel_aynasha::npc_sentinel_aynashaAI, creature->AI())->StartEvent();
+            CAST_AI(npc_sentinel_aynasha::npc_sentinel_aynashaAI, creature->AI())->PlayerGUID = (player->GetGUID());
+
+            if (npc_escortAI* pEscortAI = CAST_AI(npc_sentinel_aynasha::npc_sentinel_aynashaAI, creature->AI()))
+                pEscortAI->Start(true, true, player->GetGUID());
+
+        }
+        return true;
+    }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_sentinel_aynashaAI(creature);
+    }
+
+    struct npc_sentinel_aynashaAI : public npc_escortAI
+    {
+        npc_sentinel_aynashaAI(Creature* creature) : npc_escortAI(pCreature)
+        {
+            bArrow_said = 0;
+            uiWait_Controller = 0;
+        }
+
+        uint32 uiWait_Controller;
+        uint32 uiWait_Timer;
+        uint32 uiShoot_Timer;
+        uint32 uiArrow_Timer;
+		
+        bool bArrow_said;
+
+        ObjectGuid PlayerGUID;
+
+        void Reset()
+        {
+            uiShoot_Timer = 1000;
+        }
+
+        void WaypointReached(uint32 uiPoint) //needs to be here even if it is empty
+        {
+
+        }
+
+        void JustSummoned(Creature* summoned)
+        {
+            summoned->AI()->AttackStart(me);
+        }
+
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if(uiWait_Controller)
+            {
+                if(uiWait_Timer <= uiDiff)
+                {
+                    switch(uiWait_Controller)
+                    {
+                        case 1:
+                            me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4371.19f, -33.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+                            me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4376.19f, -33.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+                            me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4371.19f, -38.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+                            ++uiWait_Controller;
+                            uiWait_Timer = 45000;
+                            break;
+
+                        case 2:
+                            me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4371.19f, -33.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+                            me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4376.19f, -33.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+                            me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4371.19f, -38.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+                            me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4376.19f, -38.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+                            ++uiWait_Controller;
+                            uiWait_Timer = 45000;
+                            break;
+                        case 3:
+                            me->SummonCreature(NPC_BOSS_MAROSH, 4376.19f, -38.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
+                            ++uiWait_Controller;
+                            uiWait_Timer = 20000;
+                            break;
+                        case 4:
+                            if (!UpdateVictim())            //wait untill combat ends
+                            {
+                                Talk(SAY_END);
+                                uiWait_Timer = 10000;
+                                ++uiWait_Controller;
+                            }
+                            break;
+                        case 5:
+                            if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
+                            {
+                                 player->GroupEventHappens(QUEST_ONESHOT_ONEKILL,me);
+                            }
+                            Talk(SAY_END2);
+                            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE); //not really neccesary, only removing what i addedfor it to be as it in DB is
+                            uiWait_Controller = 0;
+                            bArrow_said = 0;
+                            break;
+                        default:
+                            break;
+                    }
+                }else uiWait_Timer -= uiDiff;
+            }
+
+            if(!UpdateVictim())
+            {
+                return;
+            }
+
+            if(uiArrow_Timer <= uiDiff && !bArrow_said && uiWait_Controller)
+            {
+                Talk(SAY_OUT_OF_ARROWS);
+                bArrow_said = 1;
+            }else uiArrow_Timer -= uiDiff;
+
+            if(uiShoot_Timer <= uiDiff && !bArrow_said)
+            {
+                DoCast(me->GetVictim(),SPELL_SHOOT);
+                uiShoot_Timer = 1000;
+            }else uiShoot_Timer -= uiDiff;
+
+        }
+
+        void StartEvent()
+        {
+            uiWait_Controller = 1;
+            uiWait_Timer = 5000;
+            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+            Talk(SAY_START);
+            uiArrow_Timer = 60000;
+        }
+    };
+
+};
+
 void AddSC_darkshore()
 {
-    new npc_kerlonian();
+    new npc_sentinel_aynasha();
+	new npc_kerlonian();
     new npc_prospector_remtravel();
     new npc_threshwackonator();
 }
