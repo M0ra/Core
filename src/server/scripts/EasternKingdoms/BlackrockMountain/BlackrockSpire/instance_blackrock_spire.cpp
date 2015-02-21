@@ -52,9 +52,9 @@ public:
         {
             SetHeaders(DataHeader);
             SetBossNumber(EncounterCount);
-			
-		    manyWhelpsCounter   = 0;
-		    achievManyWhelpsHandleIt = false;
+
+            manyWhelpsCounter   = 0;
+            achievManyWhelpsHandleIt = false;
         }
 		
         void OnCreatureCreate(Creature* creature) override
@@ -214,7 +214,7 @@ public:
                     if (GetBossState(DATA_GYTH) == DONE)
                         HandleGameObject(ObjectGuid::Empty, true, go);
                     break;
-				case GO_WHELP_SPAWNER:
+                case GO_WHELP_SPAWNER:
                     Position goPos = go->GetPosition();
                     if (Creature* temp = go->SummonCreature(NPC_WHELP, goPos, TEMPSUMMON_CORPSE_DESPAWN))
                     {
@@ -289,9 +289,9 @@ public:
                     }
                     break;
             }
-			switch (type)
+            switch (type)
             {
-			    case DATA_PHASE_LEEROY:
+                case DATA_PHASE_LEEROY:
                         achievManyWhelpsHandleIt = false;
                         manyWhelpsCounter = 0;
                         onyxiaLiftoffTimer = 15*IN_MILLISECONDS;
@@ -379,7 +379,7 @@ public:
         {
             Events.Update(diff);
 			
-			if (onyxiaLiftoffTimer && onyxiaLiftoffTimer <= diff)
+            if (onyxiaLiftoffTimer && onyxiaLiftoffTimer <= diff)
                 {
                     onyxiaLiftoffTimer = 0;
                     if (manyWhelpsCounter >= 50)
@@ -499,7 +499,7 @@ public:
             }
         }
 		
-		bool CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/ = NULL, uint32 /*miscvalue1*/ = 0) override
+        bool CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/ = NULL, uint32 /*miscvalue1*/ = 0) override
         {
             switch (criteria_id)
             {
@@ -536,10 +536,10 @@ public:
             ObjectGuid go_portcullis_active;
             ObjectGuid go_portcullis_tobossrooms;
 			
-			uint32 onyxiaLiftoffTimer;
-			uint32 manyWhelpsCounter;
+            uint32 onyxiaLiftoffTimer;
+            uint32 manyWhelpsCounter;
 			
-			bool   achievManyWhelpsHandleIt;
+            bool   achievManyWhelpsHandleIt;
     };
 
     InstanceScript* GetInstanceScript(InstanceMap* map) const override

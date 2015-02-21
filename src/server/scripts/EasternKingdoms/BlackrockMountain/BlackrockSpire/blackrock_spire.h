@@ -53,8 +53,8 @@ enum DataTypes
 
 enum InstanceData
 {
-    DATA_LEEROY,	
-	DATA_PHASE_LEEROY
+    DATA_LEEROY,
+    DATA_PHASE_LEEROY
 };
 
 enum CreaturesIds
