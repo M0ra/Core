@@ -208,7 +208,7 @@ class npc_queldelar_sp : public CreatureScript
                         {
                             player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_1, 1, true);
                             player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_2, 1, true);
-							Talk(SAY_QUELDELAR_1)
+							Talk(SAY_QUELDELAR_1);
                         }
                         events.ScheduleEvent(EVENT_QUEST_STEP_2, 2 * IN_MILLISECONDS);
                         break;
