@@ -616,7 +616,7 @@ class boss_warrior_toc5 : public CreatureScript
 };
 
 // Ambrose Boltspark && Eressea Dawnsinger || Mage
-class Tboss_mage_toc5 : public CreatureScript
+class boss_mage_toc5 : public CreatureScript
 {
     public:
         boss_mage_toc5(): CreatureScript("boss_mage_toc5") {}
@@ -1129,7 +1129,7 @@ class boss_hunter_toc5 : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const
     {
-        return GetTrialOfTheChampionAI<_boss_hunter_toc5AI>(creature);
+        return GetTrialOfTheChampionAI<boss_hunter_toc5AI>(creature);
     }
 };
 
