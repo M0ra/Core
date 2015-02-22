@@ -110,11 +110,6 @@ enum Events
     EVENT_RENEW                = 6
 };
 
-enum Data
-{
-    DATA_THE_FACEROLLER
-};
-
 class OrientationCheck
 {
     public:
