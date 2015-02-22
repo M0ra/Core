@@ -976,5 +976,5 @@ void AddSC_boss_argent_challenge()
     new achievement_toc5_argent_confessor("achivement_toc5_argent_confessor_vezax", MEMORY_VEZAX);
     new achievement_toc5_argent_confessor("achivement_toc5_argent_confessor_algalon", MEMORY_ALGALON);
 
-    new achievement_toc5_argent_confessor("achievement_toc5_the_faceroller");
+    new achievement_toc5_the_faceroller("achievement_toc5_the_faceroller");
 }
