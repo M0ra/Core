@@ -131,11 +131,11 @@ class npc_herald_toc5 : public CreatureScript
         if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             player->CLOSE_GOSSIP_MENU();
-            CAST_AI(npc_herald_toc5::npc_herald_toc5AI, creature->AI())->StartEncounter();
+            ENSURE_AI(npc_herald_toc5::npc_herald_toc5AI, creature->AI())->StartEncounter();
         }
 
         return true;
-    }
+    }	
         
     bool OnGossipHello(Player* player, Creature* creature)
     {
