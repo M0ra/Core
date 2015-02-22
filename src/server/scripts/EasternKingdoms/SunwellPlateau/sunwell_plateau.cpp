@@ -312,8 +312,7 @@ class npc_queldelar_sp : public CreatureScript
                         {
                             auric->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
                             auric->AI()->Talk(SAY_QUELDELAR_12);
-                            if (Player* caster = GetPlayer()->ToPlayer());
-                                caster->AddItem(49871, 1);
+                            player->AddItem(49871, 1);
                         }
                         events.ScheduleEvent(EVENT_QUEST_STEP_16, 4 * IN_MILLISECONDS);
                         break;
