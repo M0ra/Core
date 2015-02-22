@@ -64,18 +64,18 @@ enum LiadrinnSpeeches
 
 enum Yells
 {
-    SAY_QUELDELAR_1  = 1,  // Дамы и господа, я представляю $N, носителем Кель'Делара.
-    SAY_QUELDELAR_2  = 2,  // Неужели это Кель'Делар?
-    SAY_QUELDELAR_3  = 3,  // Мы увидим!
-    SAY_QUELDELAR_4  = 4,  // Лор'темар Смотри! Определенно Кель'Делар.
-    SAY_QUELDELAR_5  = 5,  // Так оно и будет. У вас есть моя благодарность $N, Кель'Делар покажет законного владельца.
-    SAY_QUELDELAR_6  = 6,  // Что? Это предательство?
-    SAY_QUELDELAR_7  = 7,  // Бросай оружие и сдавайся, предатель.
-    SAY_QUELDELAR_8  = 8,  // Это не моя вина, Роммат. Там нет предательство.
-    SAY_QUELDELAR_9  = 9,  // Убери своих людей. Глупость самого Лор'темара, причина его повреждения. Кель'Делар не выбрали, он выбирает своего хозяина.
-    SAY_QUELDELAR_10 = 10,  // Охрана, вернитесь на свои места.
-    SAY_QUELDELAR_11 = 11,  // Вы будете иметь то, что вы ищете , $N. Возьмите меч и ступайте. Будьте осторожны, что вы говорите в этом священном месте.
-    SAY_QUELDELAR_12 = 12  // Возьмите меч и идите через портал в Даларан, $N. Вы сделали то, что многие квел'дореи мечтали в течение многих лет. Мы, наконец восстановили Кель'Делар.
+    SAY_QUELDELAR_1  = 1,
+    SAY_QUELDELAR_2  = 2,
+    SAY_QUELDELAR_3  = 3,  
+    SAY_QUELDELAR_4  = 4,
+    SAY_QUELDELAR_5  = 5, 
+    SAY_QUELDELAR_6  = 6,
+    SAY_QUELDELAR_7  = 7,
+    SAY_QUELDELAR_8  = 8,
+    SAY_QUELDELAR_9  = 9,
+    SAY_QUELDELAR_10 = 10,
+    SAY_QUELDELAR_11 = 11,
+    SAY_QUELDELAR_12 = 12
 };
 
 enum QuelDelarEvents
@@ -208,6 +208,7 @@ class npc_queldelar_sp : public CreatureScript
                         {
                             player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_1, 1, true);
                             player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_2, 1, true);
+							Talk(SAY_QUELDELAR_1)
                         }
                         events.ScheduleEvent(EVENT_QUEST_STEP_2, 2 * IN_MILLISECONDS);
                         break;
@@ -263,7 +264,7 @@ class npc_queldelar_sp : public CreatureScript
                         {
                             if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayer))
 							// if (Player* player = me->FindNearestCreature(player, 200.0f, true))
-                            rommath->AddAura(70540, player);
+                            rommath->AddAura(SPELL_ICY_PRISON, player);
                             rommath->AI()->Talk(SAY_QUELDELAR_6);
                         }
                         if (Creature* guard = me->FindNearestCreature(NPC_QUEL_GUARD, 200.0f))
@@ -329,9 +330,9 @@ class npc_queldelar_sp : public CreatureScript
             }
         }
 
-        void SetGUID(const ObjectGuid &uiGuid, int32 /*iId*/)
+        void SetGUID(ObjectGuid guid, int32 /*id*/)
         {
-            uiPlayer = uiGuid;
+            uiPlayer = guid;
         }
 		
         private:
