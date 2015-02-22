@@ -17,6 +17,7 @@
 
 #include "ScriptPCH.h"
 #include "trial_of_the_champion.h"
+#include "Group.h"
 #include "Vehicle.h"
 #include "Player.h"
 
@@ -135,6 +136,12 @@ class npc_herald_toc5 : public CreatureScript
             player->CLOSE_GOSSIP_MENU();
             CAST_AI(npc_herald_toc5::npc_herald_toc5AI, creature->AI())->StartEncounter();
         }
+				
+        if (action == GOSSIP_ACTION_INFO_DEF + 2)
+        {
+            player->CLOSE_GOSSIP_MENU();
+            return true;
+        }
 
         return true;
     }
@@ -142,6 +149,15 @@ class npc_herald_toc5 : public CreatureScript
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         InstanceScript* instance = creature->GetInstanceScript();
+		
+
+            if ((!player->GetGroup() || !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
+            {
+                player->ADD_GOSSIP_ITEM("I'm not the raid leader...", GOSSIP_ACTION_INFO_DEF + 2);
+                player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
+                return true;
+            }
+
 
         if (!player->GetVehicle() && instance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED)
         {
