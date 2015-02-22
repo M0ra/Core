@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -19,7 +18,7 @@
 #ifndef DEF_TOC_H
 #define DEF_TOC_H
 
-#define DataHeader "TC"
+#define TOCHScriptName "instance_trial_of_the_champion"
 
 enum Data
 {
@@ -30,23 +29,23 @@ enum Data
     DATA_MOVEMENT_DONE,
     DATA_LESSER_CHAMPIONS_DEFEATED,
     DATA_START,
-    DATA_IN_POSITION,
     DATA_ARGENT_SOLDIER_DEFEATED,
     DATA_TEAM_IN_INSTANCE,
     DATA_RESET,
     DATA_AGGRO_DONE,
     DATA_AGRO_DONE,
     DATA_BLACK_KNIGHT,
-    DATA_KNIGHT
+    DATA_KNIGHT,
+    DATA_IVE_HAD_WORSE
 };
 
 enum Data64
 {
     DATA_ANNOUNCER,
-	DATA_ARGENT_CHAMPION,
+    DATA_ARGENT_CHAMPION,
     DATA_HIGHLORD,
     DATA_MAIN_GATE,
-	DATA_MAIN_GATE1,
+    DATA_MAIN_GATE1,
 
     DATA_GRAND_CHAMPION_VEHICLE_1,
     DATA_GRAND_CHAMPION_VEHICLE_2,
@@ -72,8 +71,8 @@ enum Npcs
     NPC_COLOSOS                 = 34701,
     NPC_JAELYNE                 = 34657,
     NPC_LANA                    = 34703,
-	
-	// Faction champions horde
+
+    // Faction champions horde
     NPC_ORGRIMAR_CHAMPION       = 35314,
     NPC_SILVERMOON_CHAMPION     = 35326,
     NPC_THUNDER_CHAMPION        = 35325,
@@ -85,7 +84,7 @@ enum Npcs
     NPC_GNOMERAGN_CHAMPION      = 35331,
     NPC_EXODAR_CHAMPION         = 35330,
     NPC_DRNASSUS_CHAMPION       = 35332,
-    NPC_IRONFORGE_CHAMPION      = 35329,
+    NPC_IRONFORGE_CHAMPION      = 35329,    
 
     NPC_EADRIC                  = 35119,
     NPC_PALETRESS               = 34928,
@@ -98,8 +97,8 @@ enum Npcs
 
     NPC_RISEN_JAEREN            = 35545,
     NPC_RISEN_ARELAS            = 35564,
-	
-	// Announcer Start Event
+    
+    // Announcer Start Event
     NPC_JAEREN                  = 35004,
     NPC_ARELAS                  = 35005,
     NPC_HIGHLORD                = 34996,
@@ -133,13 +132,17 @@ enum Npcs
     MEMORY_VANCLEEF             = 35028,
     MEMORY_VASHJ                = 35040,
     MEMORY_VEKNILASH            = 35036,
-    MEMORY_VEZAX                = 35051
+    MEMORY_VEZAX                = 35051,
+
+    // Vehicles
+    NPC_ARGENT_WARHORSE         = 35644,
+    NPC_ARGENT_BATTLEWORG       = 36558
 };
 
 enum GameObjects
 {
     GO_MAIN_GATE                = 195647,
-	GO_MAIN_GATE1               = 195650,
+    GO_MAIN_GATE1               = 195650,
 
     GO_CHAMPIONS_LOOT           = 195709,
     GO_CHAMPIONS_LOOT_H         = 195710,
@@ -180,16 +183,34 @@ enum Vehicles
 
     VEHICLE_ARGENT_WARHORSE                         = 35644,
     VEHICLE_ARGENT_BATTLEWORG                       = 36558,
-	VEHICLE_GR                                      = 35492,
-
+    VEHICLE_GR                                      = 35492, 
     VEHICLE_BLACK_KNIGHT                            = 35491
 };
 
 enum Actions
 {
-    ACTION_OUTRO                        = 0
+    ACTION_OUTRO                        = 0,
+    ACTION_SET_HERALD_IN_POSITION       = 1,
+    ACTION_RESET_GRAND_CHAMPIONS        = 2
+};
+
+enum Criterias
+{
+    CRITERIA_IVE_HAD_WORSE = 11789
 };
 
 void HandleSpellOnPlayersInInstanceToC5(Unit* caller, uint32 spellId);
+void HandleInstanceBind(Creature* source);
+
+
+template<class AI>
+CreatureAI* GetTrialOfTheChampionAI(Creature* creature)
+{
+    if (InstanceMap* instance = creature->GetMap()->ToInstanceMap())
+        if (instance->GetInstanceScript())
+            if (instance->GetScriptId() == sObjectMgr->GetScriptId(TOCHScriptName))
+                return new AI(creature);
+            return NULL;
+}
 
 #endif
