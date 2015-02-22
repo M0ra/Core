@@ -307,7 +307,7 @@ class boss_eadric : public CreatureScript
         EventMap events;
         InstanceScript* instance;
         uint32 uiResetTimer;
-        ObjectGuid uiBasePoints;
+        uint64 uiBasePoints;
         bool bDone;
         bool hasBeenInCombat;
         bool bCredit;
