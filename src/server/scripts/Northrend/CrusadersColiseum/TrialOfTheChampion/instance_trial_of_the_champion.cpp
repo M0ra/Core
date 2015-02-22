@@ -421,7 +421,7 @@ public:
             return 0;
         }
 
-        ObjectGuid GetGuidData(uint32 uiData) const
+        uint64 GetData64(uint32 uiData) const
         {
             switch(uiData)
             {
@@ -437,7 +437,7 @@ public:
                 case DATA_GRAND_CHAMPION_3: return uiGrandChampion3GUID;
             }
 
-            return ObjectGuid::Empty;
+            return 0;
         }
 
         ObjectGuid GetGuidData(uint32 type) const override
