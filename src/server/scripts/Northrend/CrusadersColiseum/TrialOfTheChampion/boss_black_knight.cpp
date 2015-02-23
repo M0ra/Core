@@ -766,7 +766,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const
     {
-        return GeTrialOfTheChampionAI<npc_black_knight_skeletal_gryphonAI>(creature);
+        return GetTrialOfTheChampionAI<npc_black_knight_skeletal_gryphonAI>(creature);
     }
 };
 
