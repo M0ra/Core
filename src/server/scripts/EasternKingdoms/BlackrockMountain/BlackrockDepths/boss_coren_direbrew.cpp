@@ -155,7 +155,7 @@ public:
                 for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
                     if (Player* player = i->GetSource())
                         if (player->IsAtGroupRewardDistance(me))
-                            sLFGMgr->FinishDungeon(287, player);
+                            sLFGMgr->FinishDungeon(player, 287);
         }
         
         void UpdateAI(uint32 const diff)
