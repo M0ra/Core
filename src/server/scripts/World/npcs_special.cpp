@@ -2575,7 +2575,7 @@ public:
 // Achievement: The Turkinator
 enum WildTurkey
 {
-    SPELL_TURKEY_TRACKER        = 62014,
+    SPELL_TURKEY_TRACKER        = 62014
 };
 
 class npc_wild_turkey : public CreatureScript
@@ -2665,6 +2665,6 @@ void AddSC_npcs_special()
     new npc_spring_rabbit();
     new npc_imp_in_a_ball();
     new npc_argent_squire();
-	new npc_wild_turkey();
+    new npc_wild_turkey();
     new npc_lonely_turkey();
 }
