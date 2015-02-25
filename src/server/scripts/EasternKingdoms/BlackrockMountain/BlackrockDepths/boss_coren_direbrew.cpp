@@ -152,10 +152,11 @@ public:
 
             Map::PlayerList const& players = me->GetMap()->GetPlayers();
             if (!players.isEmpty())
-                for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
-                    if (Player* player = i->GetSource())
-                        if (player->IsAtGroupRewardDistance(me))
-                            sLFGMgr->FinishDungeon(player, 287);
+            {
+                if (Group* group = players.begin()->GetSource()->GetGroup())
+                    if (group->isLFGGroup())
+                        sLFGMgr->FinishDungeon(group->GetGUID(), 287);
+            }
         }
         
         void UpdateAI(uint32 const diff)
