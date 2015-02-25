@@ -3717,6 +3717,9 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 49345: // Call Emerald Drake
                 spellInfo->Effects[EFFECT_1].Effect = 0;
                 break;
+            case 62012: // Turkey Caller
+                spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_0_YARDS;    // 0yd
+                break;
             // ENDOF OCULUS SPELLS
             //
             case 40055: // Introspection
