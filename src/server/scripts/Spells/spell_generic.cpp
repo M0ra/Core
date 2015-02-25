@@ -4144,19 +4144,19 @@ class spell_gen_turkey_tracker : public SpellScriptLoader
                     switch (aura->GetStackAmount())
                     {
                     case 10:
-                        target->MonsterTextEmote(THE_THUKINATOR_10, 0, true);
+                        target->TextEmote(THE_THUKINATOR_10, 0, true);
                         GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL);
                         break;
                     case 20:
-                        target->MonsterTextEmote(THE_THUKINATOR_20, 0, true);
+                        target->TextEmote(THE_THUKINATOR_20, 0, true);
                         GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL);
                         break;
                     case 30:
-                        target->MonsterTextEmote(THE_THUKINATOR_30, 0, true);
+                        target->TextEmote(THE_THUKINATOR_30, 0, true);
                         GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL);
                         break;
                     case 40:
-                        target->MonsterTextEmote(THE_THUKINATOR_40, 0, true);
+                        target->TextEmote(THE_THUKINATOR_40, 0, true);
                         GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL);
                         GetCaster()->CastSpell(target, SPELL_KILL_COUNTER_VISUAL_MAX); // Achievement Credit
                         break;
@@ -4241,7 +4241,7 @@ class spell_gen_well_fed_pilgrims_bounty : public SpellScriptLoader
 
         class spell_gen_well_fed_pilgrims_bounty_SpellScript : public SpellScript
         {
-            PrepareSpellScript(spell_gen_well_fed_pilgrims_bounty_SpellScript)
+            PrepareSpellScript(spell_gen_well_fed_pilgrims_bounty_SpellScript);
         private:
             uint32 _triggeredSpellId1;
             uint32 _triggeredSpellId2;
@@ -4326,7 +4326,7 @@ class spell_gen_on_plate_pilgrims_bounty : public SpellScriptLoader
 
         class spell_gen_on_plate_pilgrims_bounty_SpellScript : public SpellScript
         {
-            PrepareSpellScript(spell_gen_on_plate_pilgrims_bounty_SpellScript)
+            PrepareSpellScript(spell_gen_on_plate_pilgrims_bounty_SpellScript);
         private:
             uint32 _triggeredSpellId1;
             uint32 _triggeredSpellId2;
@@ -4429,7 +4429,7 @@ class spell_pilgrims_bounty_buff_food : public SpellScriptLoader
 
         class spell_pilgrims_bounty_buff_food_AuraScript : public AuraScript
         {
-            PrepareAuraScript(spell_pilgrims_bounty_buff_food_AuraScript)
+            PrepareAuraScript(spell_pilgrims_bounty_buff_food_AuraScript);
         private:
             uint32 _triggeredSpellId;
 

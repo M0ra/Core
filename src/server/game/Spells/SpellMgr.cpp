@@ -3718,7 +3718,7 @@ void SpellMgr::LoadSpellInfoCorrections()
                 spellInfo->Effects[EFFECT_1].Effect = 0;
                 break;
             case 62012: // Turkey Caller
-                spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_0_YARDS;    // 0yd
+                spellInfo->Effects[EFFECT_0].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_0_YARDS);    // 0yd
                 break;
             // ENDOF OCULUS SPELLS
             //
