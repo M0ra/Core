@@ -2185,6 +2185,7 @@ class Unit : public WorldObject
         void _UpdateAutoRepeatSpell();
 
         bool m_AutoRepeatFirstCast;
+        bool m_combatwithplayer;
 
         uint32 m_attackTimer[MAX_ATTACK];
 

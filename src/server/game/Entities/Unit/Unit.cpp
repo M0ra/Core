@@ -223,6 +223,10 @@ Unit::Unit(bool isWorldObject) :
 
     for (uint8 i = 0; i < MAX_STATS; ++i)
         m_createStats[i] = 0.0f;
+		
+    // Set when temporarily active due to player combat
+    m_combatwithplayer = false;
+
 
     m_attacking = NULL;
     m_modMeleeHitChance = 0.0f;
@@ -9036,6 +9040,17 @@ void Unit::CombatStop(bool includingCast)
     if (GetTypeId() == TYPEID_PLAYER)
         ToPlayer()->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel
     ClearInCombat();
+
+    // If temporarily active, de-activate since combat is finished
+    if (GetTypeId() != TYPEID_PLAYER)
+    {
+        if (m_combatwithplayer)
+        {
+            TC_LOG_DEBUG("entities.unit", "Setting %u inactive - exiting combat", GetEntry());
+            setActive(false);
+            m_combatwithplayer = false;
+        }
+    }
 }
 
 void Unit::CombatStopWithPets(bool includingCast)
@@ -11732,6 +11747,7 @@ void Unit::CombatStart(Unit* target, bool initialAggro)
         me->UpdatePvP(true);
         me->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT);
     }
+
 }
 
 void Unit::SetInCombatState(bool PvP, Unit* enemy)
@@ -11782,6 +11798,29 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy)
     {
         (*itr)->SetInCombatState(PvP, enemy);
         (*itr)->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PET_IN_COMBAT);
+    }
+
+    // If creature is attacking player, set it active, so player leaving sight doesn't disable updates for the cell
+    // Helps prevent the main cause of stuck in combat bugs.
+    // Only if this unit is NOT a player
+    if (GetTypeId() != TYPEID_PLAYER)
+    {
+        // Check if enemy is a player, or player pet/summon
+        Unit* pOwner = enemy->GetCharmerOrOwner();
+        if ((enemy->GetTypeId() == TYPEID_PLAYER) || ((enemy->IsPet() || enemy->IsSummon() || enemy->IsGuardian() || enemy->IsCharmed()) && pOwner && pOwner->GetTypeId() == TYPEID_PLAYER))
+        {
+            // Check if object is already active (do nothing if so)
+            if (!isActiveObject())
+            {
+                if ((enemy->IsPet() || enemy->IsSummon() || enemy->IsGuardian() || enemy->IsCharmed()) && pOwner)
+                    TC_LOG_DEBUG("entities.unit", "%u In combat with minion %u belonging to player %u", GetEntry(), enemy->GetEntry(), pOwner->GetEntry());
+                else
+                    TC_LOG_DEBUG("entities.unit", "%u In combat with player %u", GetEntry(), enemy->GetEntry());
+
+                setActive(true);
+                m_combatwithplayer = true;
+            }
+        }
     }
 }
 
