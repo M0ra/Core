@@ -20,6 +20,7 @@
 #include "ScriptedGossip.h"
 #include "blackrock_depths.h"
 #include "LFGMgr.h"
+#include "Group.h"
 
 #define GOSSIP_SELECT_INSULT      "Insult Coren Direbrew's brew."
 #define GOSSIP_SELECT_FIGHT       "Fight."
