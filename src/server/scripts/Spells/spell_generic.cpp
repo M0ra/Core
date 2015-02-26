@@ -4469,9 +4469,41 @@ class spell_pilgrims_bounty_buff_food : public SpellScriptLoader
         }
 };
 
-enum LandmineKnockbackAchievement
+enum MineSweeperEntries
 {
-    SPELL_LANDMINE_KNOCKBACK_ACHIEMENT  = 57064
+	SPELL_KNOCK_BACK							= 54402,
+	NPC_LAND_MINE_BUNNY                         = 29397,
+	SPELL_LANDMINE_KNOCKBACK_ACHIEVEMENT		= 57064,
+	SPELL_LANDMINE_KNOCKBACK_ACHIEVEMENT_AURA	= 57099
+};
+
+class npc_mob_land_mine_bunny : public CreatureScript
+{
+public:
+    npc_mob_land_mine_bunny() : CreatureScript("npc_mob_land_mine_bunny") { }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_mob_land_mine_bunnyAI (creature);
+    }
+
+    struct npc_mob_land_mine_bunnyAI : public ScriptedAI
+    {
+        npc_mob_land_mine_bunnyAI(Creature* creature) : ScriptedAI(creature)
+		{
+        }
+		
+        void AttackStart(Unit* /*who*/) {}
+        void MoveInLineOfSight(Unit* who) 
+		{
+			Player* player = who->ToPlayer();
+			me->CastSpell(me,SPELL_KNOCK_BACK);
+			if(player)
+				player->CastSpell(player,SPELL_LANDMINE_KNOCKBACK_ACHIEVEMENT_AURA);
+		}
+        void UpdateAI(const uint32 /*diff*/) {}
+    };
+
 };
 
 class spell_gen_landmine_knockback_achievement_aura : public SpellScriptLoader
@@ -4485,7 +4517,7 @@ class spell_gen_landmine_knockback_achievement_aura : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spell*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_LANDMINE_KNOCKBACK_ACHIEMENT))
+                if (!sSpellMgr->GetSpellInfo(SPELL_LANDMINE_KNOCKBACK_ACHIEVEMENT))
                     return false;
                 return true;
             }
@@ -4498,7 +4530,7 @@ class spell_gen_landmine_knockback_achievement_aura : public SpellScriptLoader
                     if (!(aura && aura->GetStackAmount() == 10))
                         return;
 
-                    target->CastSpell(target, SPELL_LANDMINE_KNOCKBACK_ACHIEMENT, true);
+                    target->CastSpell(target, SPELL_LANDMINE_KNOCKBACK_ACHIEVEMENT, true);
                 }
             }
 
@@ -4511,6 +4543,21 @@ class spell_gen_landmine_knockback_achievement_aura : public SpellScriptLoader
         SpellScript* GetSpellScript() const
         {
             return new spell_gen_landmine_knockback_achievement_aura_SpellScript();
+        }
+};
+
+class achievement_mine_sweeper : public AchievementCriteriaScript
+{
+    public:
+        achievement_mine_sweeper() : AchievementCriteriaScript("achievement_mine_sweeper") { }
+
+        bool OnCheck(Player* source, Unit* /* target */)
+        {
+			Aura const* aura = source->GetAura(SPELL_LANDMINE_KNOCKBACK_ACHIEVEMENT_AURA);
+            if (!(aura && aura->GetStackAmount() == 10))
+				return false;
+
+			return true;
         }
 };
 
@@ -4616,5 +4663,7 @@ void AddSC_generic_spell_scripts()
     new spell_pilgrims_bounty_buff_food("spell_gen_spice_bread_stuffing", SPELL_WELL_FED_HIT_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_gen_pumpkin_pie", SPELL_WELL_FED_SPIRIT_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_gen_candied_sweet_potato", SPELL_WELL_FED_HASTE_TRIGGER);
-    new spell_gen_landmine_knockback_achievement_aura();
+    new npc_mob_land_mine_bunny();
+	new spell_gen_landmine_knockback_achievement_aura();
+	new achievement_mine_sweeper();
 }
