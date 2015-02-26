@@ -4469,6 +4469,51 @@ class spell_pilgrims_bounty_buff_food : public SpellScriptLoader
         }
 };
 
+enum LandmineKnockbackAchievement
+{
+    SPELL_LANDMINE_KNOCKBACK_ACHIEMENT  = 57064
+};
+
+class spell_gen_landmine_knockback_achievement_aura : public SpellScriptLoader
+{
+    public:
+        spell_gen_landmine_knockback_achievement_aura() : SpellScriptLoader("spell_gen_landmine_knockback_achievement_aura") { }
+
+        class spell_gen_landmine_knockback_achievement_aura_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_gen_landmine_knockback_achievement_aura_SpellScript);
+
+            bool Validate(SpellInfo const* /*spell*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_LANDMINE_KNOCKBACK_ACHIEMENT))
+                    return false;
+                return true;
+            }
+
+            void HandleScript(SpellEffIndex /*effIndex*/)
+            {
+                if (Player* target = GetHitPlayer())
+                {
+                    Aura const* aura = target->GetAura(GetSpellInfo()->Id);
+                    if (!(aura && aura->GetStackAmount() == 10))
+                        return;
+
+                    target->CastSpell(target, SPELL_LANDMINE_KNOCKBACK_ACHIEMENT, true);
+                }
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_gen_landmine_knockback_achievement_aura_SpellScript::HandleScript, EFFECT_1, SPELL_EFFECT_APPLY_AURA);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_gen_landmine_knockback_achievement_aura_SpellScript();
+        }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -4552,7 +4597,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_gm_freeze();
     new spell_gen_stand();
     new spell_gen_mixology_bonus();
-	new spell_gen_mount_check();
+    new spell_gen_mount_check();
     new spell_gen_turkey_tracker();
     new spell_gen_feast_on();
     new spell_gen_well_fed_pilgrims_bounty("spell_gen_well_fed_pilgrims_bounty_ap", SPELL_A_SERVING_OF_TURKEY, SPELL_WELL_FED_AP);
@@ -4571,4 +4616,5 @@ void AddSC_generic_spell_scripts()
     new spell_pilgrims_bounty_buff_food("spell_gen_spice_bread_stuffing", SPELL_WELL_FED_HIT_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_gen_pumpkin_pie", SPELL_WELL_FED_SPIRIT_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_gen_candied_sweet_potato", SPELL_WELL_FED_HASTE_TRIGGER);
+    new spell_gen_landmine_knockback_achievement_aura();
 }
