@@ -4664,6 +4664,6 @@ void AddSC_generic_spell_scripts()
     new spell_pilgrims_bounty_buff_food("spell_gen_pumpkin_pie", SPELL_WELL_FED_SPIRIT_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_gen_candied_sweet_potato", SPELL_WELL_FED_HASTE_TRIGGER);
     new npc_mob_land_mine_bunny();
-	new spell_gen_landmine_knockback_achievement_aura();
-	new achievement_mine_sweeper();
+    new spell_gen_landmine_knockback_achievement_aura();
+    new achievement_mine_sweeper();
 }
