@@ -95,7 +95,6 @@ class npc_1v1arena : public CreatureScript
         return true;
 	}
 
-
 	bool CreateArenateam(Player* player, Creature* me)
 	{
         uint8 slot = ArenaTeam::GetSlotByType(ARENA_TEAM_1v1);
@@ -148,18 +147,18 @@ class npc_1v1arena : public CreatureScript
     bool OnGossipHello(Player* player, Creature* me) override
     {
         if(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1)) == NULL)
-			player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Создать 1х1 Команду", GOSSIP_SENDER_MAIN, 1, "Создать 1х1 Команду?", ARENA_1V1_COST, false);
+            player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Создать 1х1 Команду", GOSSIP_SENDER_MAIN, 1, "Создать 1х1 Команду?", ARENA_1V1_COST, false);
         else
         {
-			if(player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_1v1))
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Оставить 1х1 Арена", GOSSIP_SENDER_MAIN, 3);
-			else
-			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_3v3_5:30|t Соединение 1v1 Арена", GOSSIP_SENDER_MAIN, 2);
-				player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Распустить Команду.", GOSSIP_SENDER_MAIN, 5, "Вы уверены?", 0, false);
-			}
+            if(player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_1v1))
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Оставить 1х1 Арена", GOSSIP_SENDER_MAIN, 3);
+            else
+            {
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_3v3_5:30|t Соединение 1v1 Арена", GOSSIP_SENDER_MAIN, 2);
+                player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Распустить Команду.", GOSSIP_SENDER_MAIN, 5, "Вы уверены?", 0, false);
+            }
 
-			player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_01:30|t Показать статистику.", GOSSIP_SENDER_MAIN, 4);
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_01:30|t Показать статистику.", GOSSIP_SENDER_MAIN, 4);
         }
 
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_03:30|t Как использовать NPC?", GOSSIP_SENDER_MAIN, 8);
