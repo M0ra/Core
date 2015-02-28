@@ -56,7 +56,7 @@ std::string SpectatorAddonMsg::GetMsgData()
 
     if (!isFilledIn(SPECTATOR_PREFIX_PLAYER))
     {
-        TC_LOG_INFO(bg.battleground, "SPECTATOR ADDON: player is not filled in.");
+        TC_LOG_INFO("bg.battleground", "SPECTATOR ADDON: player is not filled in.");
         return addonData;
     }
 
@@ -82,7 +82,7 @@ std::string SpectatorAddonMsg::GetMsgData()
                 case SPECTATOR_PREFIX_STATUS:
                 {
                     char buffer[20];
-                    sprintf(buffer, "STA=%d;", isAlive);
+                    sprintf(buffer, "STA=%d;", IsAlive);
                     msg += buffer;
                     break;
                 }
@@ -154,7 +154,7 @@ std::string SpectatorAddonMsg::GetMsgData()
     return addonData;
 }
 
-bool SpectatorAddonMsg::SendPacket(uint32 receiver)
+bool SpectatorAddonMsg::SendPacket(uint64 receiver)
 {
     std::string addonData = GetMsgData();
     if (addonData == "")
