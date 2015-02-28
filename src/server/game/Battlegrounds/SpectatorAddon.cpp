@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "Item.h"
 #include "SpellInfo.h"
-#include "ObjectAccessor.h"
 
 SpectatorAddonMsg::SpectatorAddonMsg()
 {
@@ -161,8 +160,8 @@ bool SpectatorAddonMsg::SendPacket(uint32 receiver)
     if (addonData == "")
         return false;
 
-    Player* rPlayer = ObjectAccessor::FindPlayer(receiver);
-    if (!rPlayer)
+    Player* player = ObjectAccessor::FindPlayer(receiver);
+    if (!player)
         return false;
 
     WorldPacket data(SMSG_MESSAGECHAT, 200);
@@ -174,7 +173,7 @@ bool SpectatorAddonMsg::SendPacket(uint32 receiver)
     data << uint32(addonData.length() + 1);
     data << addonData;
     data << uint8(CHAT_TAG_NONE);
-    rPlayer->GetSession()->SendPacket(&data);
+    player->GetSession()->SendPacket(&data);
 
     return true;
 }
@@ -185,8 +184,8 @@ bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
     if (addonData == "")
         return false;
 
-    Player* rPlayer = ObjectAccessor::FindPlayer(receiver);
-    if (!rPlayer)
+    Player* player = ObjectAccessor::FindPlayer(receiver);
+    if (!player)
         return false;
 
     WorldPacket data(SMSG_MESSAGECHAT, 200);
@@ -198,7 +197,7 @@ bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
     data << uint32(addonData.length() + 1);
     data << addonData;
     data << uint8(CHAT_TAG_NONE);
-    rPlayer->GetSession()->SendPacket(&data);
+    player->GetSession()->SendPacket(&data);
 
     return true;
 }
