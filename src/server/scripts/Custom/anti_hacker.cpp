@@ -16,7 +16,7 @@
  */
  
 
-#include "../../../game/Anticheat/AntiCheat.h"
+#include "../../../game/Anticheat/AnticheatMgr.h"
 #include "Log.h"
 #include "WorldPacket.h"
 #include "Opcodes.h"
