@@ -21,6 +21,7 @@
 
 //custom scripts
 void AddSC_System_Censure();
+void AddSC_arena_spectator_script();
 
 // spells
 void AddSC_deathknight_spell_scripts();
@@ -1473,7 +1474,7 @@ void AddCustomScripts()
     AddSC_PWS_Transmogrification();
     AddSC_CS_Transmogrification();
     AddSC_System_Censure();
-    // 4
+    AddSC_arena_spectator_script();
     // 5
     // 6
     // 7
