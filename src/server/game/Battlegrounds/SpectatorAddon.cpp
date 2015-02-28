@@ -154,12 +154,9 @@ std::string SpectatorAddonMsg::GetMsgData()
     return addonData;
 }
 
-bool SpectatorAddonMsg::SendPacket(uint32 receiver)
+bool SpectatorAddonMsg::SendPacket(ObjectGuid receiver)
 {
-
-    ObjectGuid receiver;
-	
-	std::string addonData = GetMsgData();
+    std::string addonData = GetMsgData();
     if (addonData == "")
         return false;
 
@@ -181,11 +178,8 @@ bool SpectatorAddonMsg::SendPacket(uint32 receiver)
     return true;
 }
 
-bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
+bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, ObjectGuid receiver)
 {
-
-    ObjectGuid receiver;
-
     std::string addonData = msg.GetMsgData();
     if (addonData == "")
         return false;
