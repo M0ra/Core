@@ -762,7 +762,7 @@ BattlegroundQueueTypeId BattlegroundMgr::BGQueueTypeId(BattlegroundTypeId bgType
                     return BATTLEGROUND_QUEUE_3v3;
                 case ARENA_TYPE_5v5:
                     return BATTLEGROUND_QUEUE_5v5;
-				case ARENA_TYPE_1v1:
+                case ARENA_TYPE_1v1:
                     return BATTLEGROUND_QUEUE_1v1;
                 default:
                     return BATTLEGROUND_QUEUE_NONE;
@@ -810,7 +810,7 @@ uint8 BattlegroundMgr::BGArenaType(BattlegroundQueueTypeId bgQueueTypeId)
             return ARENA_TYPE_3v3;
         case BATTLEGROUND_QUEUE_5v5:
             return ARENA_TYPE_5v5;
-		case BATTLEGROUND_QUEUE_1v1:
+        case BATTLEGROUND_QUEUE_1v1:
             return ARENA_TYPE_1v1;
         default:
             return 0;

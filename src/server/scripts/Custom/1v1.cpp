@@ -12,51 +12,48 @@
 
 class npc_1v1arena : public CreatureScript  
 {
-public:
-    npc_1v1arena() : CreatureScript("npc_1v1arena") 
-	{
-	}
+    public:
+        npc_1v1arena() : CreatureScript("npc_1v1arena") { }
 
+    bool JoinQueueArena(Player* player, Creature* me)
+    {
+        if(ARENA_1V1_MIN_LEVEL > player->getLevel())
+            return false;
 
-	bool JoinQueueArena(Player* player, Creature* me)
-	{
-		if(ARENA_1V1_MIN_LEVEL > player->getLevel())
-			return false;
+        ObjectGuid guid = player->GetGUID();
+        uint8 arenaslot = ArenaTeam::GetSlotByType(ARENA_TEAM_1v1);
+        uint8 arenatype = ARENA_TYPE_1v1;
+        uint32 arenaRating = 0;
+        uint32 matchmakerRating = 0;
+        bool isRated = true;
 
-		ObjectGuid guid = player->GetGUID();
-		uint8 arenaslot = ArenaTeam::GetSlotByType(ARENA_TEAM_1v1);
-		uint8 arenatype = ARENA_TYPE_1v1;
-		uint32 arenaRating = 0;
-		uint32 matchmakerRating = 0;
-		bool isRated = true;
+        // ignore if we already in BG or BG queue
+        if (player->InBattleground())
+            return false;
 
-		// ignore if we already in BG or BG queue
-		if (player->InBattleground())
-			return false;
+        //check existance
+        Battleground* bg = sBattlegroundMgr->GetBattlegroundTemplate(BATTLEGROUND_AA);
+        if (!bg)
+        {
+            //TC_LOG_ERROR(LOG_FILTER_NETWORKIO, "Battleground: template bg (all arenas) not found");
+            return false;
+        }
 
-		//check existance
-		Battleground* bg = sBattlegroundMgr->GetBattlegroundTemplate(BATTLEGROUND_AA);
-		if (!bg)
-		{
-			//TC_LOG_ERROR(LOG_FILTER_NETWORKIO, "Battleground: template bg (all arenas) not found");
-			return false;
-		}
+        if (DisableMgr::IsDisabledFor(DISABLE_TYPE_BATTLEGROUND, BATTLEGROUND_AA, NULL))
+        {
+            ChatHandler(player->GetSession()).PSendSysMessage(LANG_ARENA_DISABLED);
+            return false;
+        }
 
-		if (DisableMgr::IsDisabledFor(DISABLE_TYPE_BATTLEGROUND, BATTLEGROUND_AA, NULL))
-		{
-			ChatHandler(player->GetSession()).PSendSysMessage(LANG_ARENA_DISABLED);
-			return false;
-		}
+        BattlegroundTypeId bgTypeId = bg->GetTypeID();
+        BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(bgTypeId, arenatype);
+        PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bg->GetMapId(), player->getLevel());
+        if (!bracketEntry)
+            return false;
 
-		BattlegroundTypeId bgTypeId = bg->GetTypeID();
-		BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(bgTypeId, arenatype);
-		PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bg->GetMapId(), player->getLevel());
-		if (!bracketEntry)
-			return false;
+        GroupJoinBattlegroundResult err = ERR_GROUP_JOIN_BATTLEGROUND_FAIL;
 
-		GroupJoinBattlegroundResult err = ERR_GROUP_JOIN_BATTLEGROUND_FAIL;
-
-		// check if already in queue
+        // check if already in queue
         if (player->GetBattlegroundQueueIndex(bgQueueTypeId) < PLAYER_MAX_BATTLEGROUND_QUEUES)
             //player is already in this queue
             return false;
@@ -64,9 +61,9 @@ public:
         if (!player->HasFreeBattlegroundQueueId())
             return false;
 
-		uint32 ateamId = 0;
+        uint32 ateamId = 0;
 
-		ateamId = player->GetArenaTeamId(arenaslot);
+        ateamId = player->GetArenaTeamId(arenaslot);
         ArenaTeam* at = sArenaTeamMgr->GetArenaTeamById(ateamId);
         if (!at)
         {
@@ -148,8 +145,8 @@ public:
 	}
 
 
-	bool OnGossipHello(Player* player, Creature* me) override
-	{
+    bool OnGossipHello(Player* player, Creature* me) override
+    {
 		if(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1)) == NULL)
 			player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Создать 1х1 Команду", GOSSIP_SENDER_MAIN, 1, "Создать 1х1 Команду?", ARENA_1V1_COST, false);
 		else
@@ -168,56 +165,56 @@ public:
 		player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_03:30|t Как использовать NPC?", GOSSIP_SENDER_MAIN, 8);
 		player->SEND_GOSSIP_MENU(68, me->GetGUID());
 		return true;
-	}
+    }
 
 
 
-	bool OnGossipSelect(Player* player, Creature* me, uint32 /*uiSender*/, uint32 uiAction) override
-	{
-		player->PlayerTalkClass->ClearMenus();
+    bool OnGossipSelect(Player* player, Creature* me, uint32 /*uiSender*/, uint32 uiAction) override
+    {
+        player->PlayerTalkClass->ClearMenus();
 
-		switch (uiAction)
+        switch (uiAction)
         {
-		case 1: // Create new Arenateam
-			{
-				if(ARENA_1V1_MIN_LEVEL <= player->getLevel())
-				{
-					if(player->GetMoney() >= ARENA_1V1_COST && CreateArenateam(player, me))
-						player->ModifyMoney(-(int32)ARENA_1V1_COST);
-				}
-				else
-				{
-					ChatHandler(player->GetSession()).PSendSysMessage("Вам нужен уровень %u+, чтобы создать 1v1 команду Арены..", ARENA_1V1_MIN_LEVEL);
-					player->CLOSE_GOSSIP_MENU();
-					return true;
-				}
-			}
-			break;
+        case 1: // Create new Arenateam
+            {
+                if(ARENA_1V1_MIN_LEVEL <= player->getLevel())
+                {
+                    if(player->GetMoney() >= ARENA_1V1_COST && CreateArenateam(player, me))
+                        player->ModifyMoney(-(int32)ARENA_1V1_COST);
+                }
+                else
+                {
+                    ChatHandler(player->GetSession()).PSendSysMessage("Вам нужен уровень %u+, чтобы создать 1v1 команду Арены..", ARENA_1V1_MIN_LEVEL);
+                    player->CLOSE_GOSSIP_MENU();
+                    return true;
+                }
+            }
+            break;
 
-		case 2: // Join Queue Arena
-			{
+        case 2: // Join Queue Arena
+            {
 				if(JoinQueueArena(player, me) == false)
-					ChatHandler(player->GetSession()).SendSysMessage("Что-то пошло не так при присоединиться к очереди.");
+                    ChatHandler(player->GetSession()).SendSysMessage("Что-то пошло не так при присоединиться к очереди.");
 				player->CLOSE_GOSSIP_MENU();
 				return true;
-			}
-			break;
+            }
+            break;
 
-		case 3: // Leave Queue
-			{
-				WorldPacket Data;
-				Data << (uint8)0x1 << (uint8)0x0 << (uint32)BATTLEGROUND_AA << (uint16)0x0 << (uint8)0x0;
-				player->GetSession()->HandleBattleFieldPortOpcode(Data);
-				player->CLOSE_GOSSIP_MENU();
-				return true;
-			}
-			break;
+        case 3: // Leave Queue
+            {
+                WorldPacket Data;
+                Data << (uint8)0x1 << (uint8)0x0 << (uint32)BATTLEGROUND_AA << (uint16)0x0 << (uint8)0x0;
+                player->GetSession()->HandleBattleFieldPortOpcode(Data);
+                player->CLOSE_GOSSIP_MENU();
+                return true;
+            }
+            break;
 
-		case 4: // get statistics
-			{
-				ArenaTeam* at = sArenaTeamMgr->GetArenaTeamById(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1)));
-				if(at)
-				{
+        case 4: // get statistics
+            {
+                ArenaTeam* at = sArenaTeamMgr->GetArenaTeamById(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1)));
+                if(at)
+                {
 					std::stringstream s;
 					s << "Rating: " << at->GetStats().Rating;
 					s << "\nRank: " << at->GetStats().Rank;
@@ -227,38 +224,38 @@ public:
 					s << "\nWeek Wins: " << at->GetStats().WeekWins;
 
 					ChatHandler(player->GetSession()).PSendSysMessage(s.str().c_str());
-				}
-			}
-			break;
+                }
+            }
+            break;
 
 
-		case 5: // Disband arenateam
-			{
-				WorldPacket Data;
-				Data << (uint32)player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1));
-				player->GetSession()->HandleArenaTeamLeaveOpcode(Data);
-				ChatHandler(player->GetSession()).PSendSysMessage("Команда арены удалена!");
-				player->CLOSE_GOSSIP_MENU();
-				return true;
-			}
-			break;
+        case 5: // Disband arenateam
+            {
+                WorldPacket Data;
+                Data << (uint32)player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1));
+                player->GetSession()->HandleArenaTeamLeaveOpcode(Data);
+                ChatHandler(player->GetSession()).PSendSysMessage("Команда арены удалена!");
+                player->CLOSE_GOSSIP_MENU();
+                return true;
+            }
+            break;
 
-		case 8: // Script Info
-			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Создать новую команду 1х1 Арена", GOSSIP_SENDER_MAIN, uiAction);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Присоединиться 1х1 Арена и вперёд!", GOSSIP_SENDER_MAIN, uiAction);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Наслаждаться!", GOSSIP_SENDER_MAIN, uiAction);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "<- Назад", GOSSIP_SENDER_MAIN, 7);
-				player->SEND_GOSSIP_MENU(68, me->GetGUID());
-				return true;
-			}
-			break;
+        case 8: // Script Info
+            {
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Создать новую команду 1х1 Арена", GOSSIP_SENDER_MAIN, uiAction);
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Присоединиться 1х1 Арена и вперёд!", GOSSIP_SENDER_MAIN, uiAction);
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Наслаждаться!", GOSSIP_SENDER_MAIN, uiAction);
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "<- Назад", GOSSIP_SENDER_MAIN, 7);
+                player->SEND_GOSSIP_MENU(68, me->GetGUID());
+                return true;
+            }
+            break;
 
-		}
+        }
 
-		OnGossipHello(player, me);
-		return true;
-	}
+        OnGossipHello(player, me);
+        return true;
+    }
 };
 
 
