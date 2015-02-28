@@ -79,7 +79,7 @@ public:
             return false;
         }
 
-        if (player->GetMap()->IsBattlegroundOrArena() && !player->IsSpectator())
+        if (player->GetMap()->IsBattlegroundOrArena() && !player->isSpectator())
         {
             handler->PSendSysMessage("You are already in a battleground or arena.");
             handler->SetSentErrorMessage(true);
@@ -108,7 +108,7 @@ public:
             return false;
         }
 
-        if (target->IsSpectator())
+        if (target->isSpectator())
         {
             handler->PSendSysMessage("You can't do that. Your target is a spectator.");
             handler->SetSentErrorMessage(true);
@@ -154,7 +154,7 @@ public:
             for (Battleground::BattlegroundPlayerMap::const_iterator itr = bGround->GetPlayers().begin(); itr != bGround->GetPlayers().end(); ++itr)
                 if (Player* tmpPlayer = ObjectAccessor::FindPlayer(itr->first))
                 {
-                    if (tmpPlayer->IsSpectator())
+                    if (tmpPlayer->isSpectator())
                         continue;
 
                     uint32 tmpID = tmpPlayer->GetArenaTeamId(slot);
@@ -197,7 +197,7 @@ public:
     {
         Player* player =  handler->GetSession()->GetPlayer();
 
-        if (!player->IsSpectator() || player->isSpectateCanceled())
+        if (!player->isSpectator() || player->isSpectateCanceled())
         {
             handler->PSendSysMessage("You are not a spectator.");
             handler->SetSentErrorMessage(true);
@@ -229,14 +229,14 @@ public:
             return false;
         }
 
-        if (!player->IsSpectator())
+        if (!player->isSpectator())
         {
             handler->PSendSysMessage("You are not a spectator, spectate someone first.");
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        if (target->IsSpectator() && target != player)
+        if (target->isSpectator() && target != player)
         {
             handler->PSendSysMessage("You can't do that. Your target is a spectator.");
             handler->SetSentErrorMessage(true);
@@ -278,7 +278,7 @@ public:
     {
         Player* player = handler->GetSession()->GetPlayer();
 
-        if (!player->IsSpectator())
+        if (!player->isSpectator())
         {
             handler->PSendSysMessage("You are not a spectator.");
             handler->SetSentErrorMessage(true);
@@ -295,7 +295,7 @@ public:
         for (Battleground::BattlegroundPlayerMap::const_iterator itr = bGround->GetPlayers().begin(); itr != bGround->GetPlayers().end(); ++itr)
             if (Player* tmpPlayer = ObjectAccessor::FindPlayer(itr->first))
             {
-                if (tmpPlayer->IsSpectator())
+                if (tmpPlayer->isSpectator())
                     continue;
 
                 uint32 tmpID = bGround->GetPlayerTeam(tmpPlayer->GetGUID());
@@ -431,7 +431,7 @@ public:
         for (Battleground::BattlegroundPlayerMap::const_iterator itr = team->GetPlayers().begin(); itr != team->GetPlayers().end(); ++itr)
             if (Player* player = ObjectAccessor::FindPlayer(itr->first))
             {
-                if (player->IsSpectator())
+                if (player->isSpectator())
                     continue;
 
                 if (player->IsGameMaster())
@@ -477,7 +477,7 @@ public:
             if (!sBattlegroundMgr->IsArenaType(BattlegroundTypeId(i)))
                 continue;
 
-            BattlegroundData* arenas = sBattlegroundMgr->GetAllBattlegroundsWithTypeId(BattlegroundTypeId(i));
+            BattlegroundData* arenas = sBattlegroundMgr->GetBattlegroundsByType(BattlegroundTypeId(i));
 
             if (!arenas || arenas->m_Battlegrounds.empty())
                 continue;
