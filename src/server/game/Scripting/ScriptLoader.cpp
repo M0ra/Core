@@ -22,6 +22,7 @@
 //custom scripts
 void AddSC_System_Censure();
 void AddSC_NoFarming();
+void AddSC_Reset();
 
 // spells
 void AddSC_deathknight_spell_scripts();
@@ -1475,7 +1476,7 @@ void AddCustomScripts()
     AddSC_CS_Transmogrification();
     AddSC_System_Censure();
     AddSC_NoFarming();
-    // 5
+    AddSC_Reset();
     // 6
     // 7
     // 8
