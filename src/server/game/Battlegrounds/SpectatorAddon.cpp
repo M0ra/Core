@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Item.h"
 #include "SpellInfo.h"
+#include "ObjectAccessor.h"
 
 SpectatorAddonMsg::SpectatorAddonMsg()
 {
@@ -154,7 +155,7 @@ std::string SpectatorAddonMsg::GetMsgData()
     return addonData;
 }
 
-bool SpectatorAddonMsg::SendPacket(ObjectGuid receiver)
+bool SpectatorAddonMsg::SendPacket(uint32 receiver)
 {
     std::string addonData = GetMsgData();
     if (addonData == "")
@@ -178,7 +179,7 @@ bool SpectatorAddonMsg::SendPacket(ObjectGuid receiver)
     return true;
 }
 
-bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, ObjectGuid receiver)
+bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
 {
     std::string addonData = msg.GetMsgData();
     if (addonData == "")
