@@ -154,7 +154,7 @@ std::string SpectatorAddonMsg::GetMsgData()
     return addonData;
 }
 
-bool SpectatorAddonMsg::SendPacket()
+bool SpectatorAddonMsg::SendPacket(uint32 receiver)
 {
     std::string addonData = GetMsgData();
     if (addonData == "")
@@ -176,9 +176,11 @@ bool SpectatorAddonMsg::SendPacket()
     player->GetSession()->SendPacket(&data);
 
     return true;
+	
+	ObjectGuid receiver;
 }
 
-bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg)
+bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
 {
     std::string addonData = msg.GetMsgData();
     if (addonData == "")
@@ -200,4 +202,6 @@ bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg)
     player->GetSession()->SendPacket(&data);
 
     return true;
+	
+	ObjectGuid receiver;
 }
