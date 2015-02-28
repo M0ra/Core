@@ -332,8 +332,6 @@ class npc_arena_spectator : public CreatureScript
 {
     public:
         npc_arena_spectator() : CreatureScript("npc_arena_spectator") { }
-		
-        ObjectGuid guid;
 
         bool OnGossipHello(Player* player, Creature* pCreature) override
         {
@@ -360,7 +358,7 @@ class npc_arena_spectator : public CreatureScript
             else
             {
                 
-                ObjectGuid guid = action - NPC_SPECTATOR_ACTION_SELECTED_PLAYER;
+                uint64 guid = action - NPC_SPECTATOR_ACTION_SELECTED_PLAYER;
                 if (Player* target = ObjectAccessor::FindPlayer(guid))
                 {
                     ChatHandler handler(player->GetSession());
