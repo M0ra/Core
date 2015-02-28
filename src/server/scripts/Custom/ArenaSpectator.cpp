@@ -344,6 +344,9 @@ class npc_arena_spectator : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
+		
+		    ObjectGuid guid;
+		
             player->PlayerTalkClass->ClearMenus();
             if (action >= NPC_SPECTATOR_ACTION_LIST_GAMES && action < NPC_SPECTATOR_ACTION_LIST_TOP_GAMES)
             {
