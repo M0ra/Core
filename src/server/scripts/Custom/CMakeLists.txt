@@ -18,7 +18,7 @@ set(scripts_STAT_SRCS
   Custom/Transmog/Transmogrification.cpp
   Custom/Transmog/Transmogrifier.cpp
   Custom/chat_censure.cpp
-# 5
+  Custom/1v1.cpp
 # 6
 # 7
 # 8
