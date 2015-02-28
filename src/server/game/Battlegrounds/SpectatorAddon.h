@@ -62,6 +62,8 @@ class SpectatorAddonMsg {
         uint32 castTime;
 
         uint32 team;
+		
+		uint64 receiver;
 
         // aura data
         uint32 aCaster;
