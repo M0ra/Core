@@ -299,8 +299,6 @@ void WorldSession::SendExternalMails()
     SQLTransaction trans = CharacterDatabase.BeginTransaction();
 
     MailDraft* mail = NULL;
-	
-	ObjectGuid receiver_guid;
 
     do
     {
@@ -313,6 +311,7 @@ void WorldSession::SendExternalMails()
         uint32 itemId = fields[5].GetUInt32();
         uint32 itemCount = fields[6].GetUInt32();
 
+		ObjectGuid receiver_guid;
         Player *receiver = ObjectAccessor::FindPlayer(receiver_guid);
 
         mail = new MailDraft(subject, body);
