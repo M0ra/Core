@@ -78,79 +78,79 @@ class npc_1v1arena : public CreatureScript
         if (arenaRating <= 0)
             arenaRating = 1;
 
-		BattlegroundQueue &bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
-		bg->SetRated(isRated);
+        BattlegroundQueue &bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
+        bg->SetRated(isRated);
 
-		GroupQueueInfo* ginfo = bgQueue.AddGroup(player, NULL, bgTypeId, bracketEntry, arenatype, isRated, false, arenaRating, matchmakerRating, ateamId);
+        GroupQueueInfo* ginfo = bgQueue.AddGroup(player, NULL, bgTypeId, bracketEntry, arenatype, isRated, false, arenaRating, matchmakerRating, ateamId);
         uint32 avgTime = bgQueue.GetAverageQueueWaitTime(ginfo, bracketEntry->GetBracketId());
         uint32 queueSlot = player->AddBattlegroundQueueId(bgQueueTypeId);
 
         WorldPacket data;
         // send status packet (in queue)
         sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_QUEUE, avgTime, 0, arenatype, 0);
-		player->GetSession()->SendPacket(&data);
+        player->GetSession()->SendPacket(&data);
 
-		sBattlegroundMgr->ScheduleQueueUpdate(matchmakerRating, arenatype, bgQueueTypeId, bgTypeId, bracketEntry->GetBracketId());
+        sBattlegroundMgr->ScheduleQueueUpdate(matchmakerRating, arenatype, bgQueueTypeId, bgTypeId, bracketEntry->GetBracketId());
 
-		return true;
+        return true;
 	}
 
 
 	bool CreateArenateam(Player* player, Creature* me)
 	{
-		uint8 slot = ArenaTeam::GetSlotByType(ARENA_TEAM_1v1);
-		if (slot >= MAX_ARENA_SLOT)
-			return false;
+        uint8 slot = ArenaTeam::GetSlotByType(ARENA_TEAM_1v1);
+        if (slot >= MAX_ARENA_SLOT)
+            return false;
 
-		// Check if player is already in an arena team
-		if (player->GetArenaTeamId(slot))
-		{
-			player->GetSession()->SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, player->GetName(), "", ERR_ALREADY_IN_ARENA_TEAM);
-			return false;
-		}
+        // Check if player is already in an arena team
+        if (player->GetArenaTeamId(slot))
+        {
+            player->GetSession()->SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, player->GetName(), "", ERR_ALREADY_IN_ARENA_TEAM);
+            return false;
+        }
 
 
-		// Teamname = playername
-		// if teamname exist, we have to choose another name (playername  number)
-		int i = 1;
-		std::stringstream teamName;
-		teamName << player->GetName();
-		do
-		{
-			if(sArenaTeamMgr->GetArenaTeamByName(teamName.str()) != NULL) // teamname exist, so choose another name
-			{
-				teamName.str(std::string());
-				teamName << player->GetName() << i;
-			}
-			else
-				break;
-		} while (i < 100); // should never happen
+        // Teamname = playername
+        // if teamname exist, we have to choose another name (playername  number)
+        int i = 1;
+        std::stringstream teamName;
+        teamName << player->GetName();
+        do
+        {
+            if(sArenaTeamMgr->GetArenaTeamByName(teamName.str()) != NULL) // teamname exist, so choose another name
+            {
+                teamName.str(std::string());
+                teamName << player->GetName() << i;
+            }
+            else
+                break;
+        } while (i < 100); // should never happen
 
-		// Create arena team
-		ArenaTeam* arenaTeam = new ArenaTeam();
+        // Create arena team
+        ArenaTeam* arenaTeam = new ArenaTeam();
 
-		if (!arenaTeam->Create(player->GetGUID(), ARENA_TEAM_1v1, teamName.str(), 0, 0, 0, 0, 0))
-		{
-			delete arenaTeam;
-			return false;
-		}
+        if (!arenaTeam->Create(player->GetGUID(), ARENA_TEAM_1v1, teamName.str(), 0, 0, 0, 0, 0))
+        {
+            delete arenaTeam;
+            return false;
+        }
 
-		// Register arena team
-		sArenaTeamMgr->AddArenaTeam(arenaTeam);
-		arenaTeam->AddMember(player->GetGUID());
+        // Register arena team
+        sArenaTeamMgr->AddArenaTeam(arenaTeam);
+        arenaTeam->AddMember(player->GetGUID());
 
-		ChatHandler(player->GetSession()).SendSysMessage("1х1 команда успешно создана!");
+        ChatHandler(player->GetSession()).SendSysMessage("1х1 команда успешно создана!");
 
-		return true;
+        return true;
 	}
 
 
     bool OnGossipHello(Player* player, Creature* me) override
     {
-		if(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1)) == NULL)
+        if(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1)) == NULL)
 			player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Создать 1х1 Команду", GOSSIP_SENDER_MAIN, 1, "Создать 1х1 Команду?", ARENA_1V1_COST, false);
-		else
-		{
+        else
+        {
 			if(player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_1v1))
 				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Оставить 1х1 Арена", GOSSIP_SENDER_MAIN, 3);
 			else
@@ -160,14 +160,12 @@ class npc_1v1arena : public CreatureScript
 			}
 
 			player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_01:30|t Показать статистику.", GOSSIP_SENDER_MAIN, 4);
-		}
+        }
 
-		player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_03:30|t Как использовать NPC?", GOSSIP_SENDER_MAIN, 8);
-		player->SEND_GOSSIP_MENU(68, me->GetGUID());
-		return true;
+        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_03:30|t Как использовать NPC?", GOSSIP_SENDER_MAIN, 8);
+        player->SEND_GOSSIP_MENU(68, me->GetGUID());
+        return true;
     }
-
-
 
     bool OnGossipSelect(Player* player, Creature* me, uint32 /*uiSender*/, uint32 uiAction) override
     {
@@ -193,10 +191,10 @@ class npc_1v1arena : public CreatureScript
 
         case 2: // Join Queue Arena
             {
-				if(JoinQueueArena(player, me) == false)
+                if(JoinQueueArena(player, me) == false)
                     ChatHandler(player->GetSession()).SendSysMessage("Что-то пошло не так при присоединиться к очереди.");
-				player->CLOSE_GOSSIP_MENU();
-				return true;
+                player->CLOSE_GOSSIP_MENU();
+                return true;
             }
             break;
 
@@ -215,15 +213,15 @@ class npc_1v1arena : public CreatureScript
                 ArenaTeam* at = sArenaTeamMgr->GetArenaTeamById(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1)));
                 if(at)
                 {
-					std::stringstream s;
-					s << "Rating: " << at->GetStats().Rating;
-					s << "\nRank: " << at->GetStats().Rank;
-					s << "\nSeason Games: " << at->GetStats().SeasonGames;
-					s << "\nSeason Wins: " << at->GetStats().SeasonWins;
-					s << "\nWeek Games: " << at->GetStats().WeekGames;
-					s << "\nWeek Wins: " << at->GetStats().WeekWins;
+                    std::stringstream s;
+                    s << "Rating: " << at->GetStats().Rating;
+                    s << "\nRank: " << at->GetStats().Rank;
+                    s << "\nSeason Games: " << at->GetStats().SeasonGames;
+                    s << "\nSeason Wins: " << at->GetStats().SeasonWins;
+                    s << "\nWeek Games: " << at->GetStats().WeekGames;
+                    s << "\nWeek Wins: " << at->GetStats().WeekWins;
 
-					ChatHandler(player->GetSession()).PSendSysMessage(s.str().c_str());
+                    ChatHandler(player->GetSession()).PSendSysMessage(s.str().c_str());
                 }
             }
             break;
