@@ -1142,7 +1142,7 @@ void Battleground::EventPlayerLoggedOut(Player* player)
     m_Players[guid].OfflineRemoveTime = sWorld->GetGameTime() + MAX_OFFLINE_TIME;
     if (GetStatus() == STATUS_IN_PROGRESS)
     {
-        if (!player->IsSpectator())
+        if (!player->isSpectator())
         {
         // drop flag and handle other cleanups
         RemovePlayer(player, guid, GetPlayerTeam(guid));
@@ -1154,7 +1154,7 @@ void Battleground::EventPlayerLoggedOut(Player* player)
         }
     }
 
-    if (!player->IsSpectator())
+    if (!player->isSpectator())
         player->LeaveBattleground();
     else
     {

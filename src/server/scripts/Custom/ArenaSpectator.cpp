@@ -358,7 +358,7 @@ class npc_arena_spectator : public CreatureScript
             else
             {
                 
-                ObjectGuid guid = action - NPC_SPECTATOR_ACTION_SELECTED_PLAYER;
+                uint64 guid = action - NPC_SPECTATOR_ACTION_SELECTED_PLAYER;
                 if (Player* target = ObjectAccessor::FindPlayer(guid))
                 {
                     ChatHandler handler(player->GetSession());
@@ -441,7 +441,7 @@ class npc_arena_spectator : public CreatureScript
                     if (!arena->GetPlayersSize())
                         continue;
 
-                    uint16 mmr = arena->GetArenaMatchmakerRatingByIndex(0) + arena->GetArenaMatchmakerRatingByIndex(1);
+                    uint16 mmr = arena->GetArenaMatchmakerRating(0) + arena->GetArenaMatchmakerRating(1);
                     mmr /= 2;
 
                     if (isTop && mmr >= TopGamesRating)
