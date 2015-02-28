@@ -358,7 +358,7 @@ class npc_arena_spectator : public CreatureScript
             else
             {
                 
-                uint32 guid = action - NPC_SPECTATOR_ACTION_SELECTED_PLAYER;
+                ObjectGuid guid = action - NPC_SPECTATOR_ACTION_SELECTED_PLAYER;
                 if (Player* target = ObjectAccessor::FindPlayer(guid))
                 {
                     ChatHandler handler(player->GetSession());

@@ -160,7 +160,7 @@ bool SpectatorAddonMsg::SendPacket(uint32 receiver)
     if (addonData == "")
         return false;
 
-    Player* player = ObjectAccessor::FindPlayer(guid);
+    Player* player = ObjectAccessor::FindPlayer(receiver);
     if (!player)
         return false;
 
@@ -176,9 +176,6 @@ bool SpectatorAddonMsg::SendPacket(uint32 receiver)
     player->GetSession()->SendPacket(&data);
 
     return true;
-	
-    ObjectGuid guid(HIGHGUID_PLAYER, receiver);
-
 }
 
 bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
@@ -187,7 +184,7 @@ bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
     if (addonData == "")
         return false;
 
-    Player* player = ObjectAccessor::FindPlayer(guid);
+    Player* player = ObjectAccessor::FindPlayer(receiver);
     if (!player)
         return false;
 
@@ -203,7 +200,4 @@ bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
     player->GetSession()->SendPacket(&data);
 
     return true;
-	
-    ObjectGuid guid(HIGHGUID_PLAYER, receiver);
-
 }
