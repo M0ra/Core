@@ -19,7 +19,6 @@ set(scripts_STAT_SRCS
   Custom/Transmog/Transmogrifier.cpp
   Custom/chat_censure.cpp
   Custom/1v1.cpp
-  Custom/ArenaSpectator.cpp
 # 7
 # 8
 # 9
