@@ -19,6 +19,7 @@
 #include "Player.h"
 #include "Item.h"
 #include "SpellInfo.h"
+#include "WorldSession.h"
 
 SpectatorAddonMsg::SpectatorAddonMsg()
 {
@@ -184,6 +185,14 @@ bool SpectatorAddonMsg::SendPacket(uint32 receiver)
         return false;
 
     WorldPacket data(SMSG_MESSAGECHAT, 200);
+    data << uint8(CHAT_MSG_WHISPER);
+    data << uint32(LANG_ADDON);
+    data << uint64(0);
+    data << uint32(LANG_ADDON);                               //language 2.1.0 ?
+    data << uint64(0);
+    data << uint32(addonData.length() + 1);
+    data << addonData;
+    data << uint8(CHAT_TAG_NONE);
     _player->GetSession()->SendPacket(&data);
 
     return true;
