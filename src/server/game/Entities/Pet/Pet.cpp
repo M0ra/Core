@@ -1100,9 +1100,9 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
                     m_modSpellHitChance = m_owner->m_modSpellHitChance;
                     m_modMeleeHitChance = m_owner->m_modMeleeHitChance;
 
-                    SetBonusDamage(int32(GetOwner()->GetTotalAttackPowerValue(BASE_ATTACK) * 0.9f * impurityMod));
-                    SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, float(petlevel - (petlevel / 4)));
-                    SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float(petlevel + (petlevel / 4)));
+                    SetBonusDamage(int32(GetOwner()->GetTotalAttackPowerValue(BASE_ATTACK) * 0.55f));
+                    SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, float(petlevel - (petlevel / 45)));
+                    SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float(petlevel + (petlevel / 49)));
                     break;
                 }
                 case 28017: // Bloodworms
