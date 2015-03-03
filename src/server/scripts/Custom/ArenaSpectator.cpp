@@ -404,6 +404,8 @@ class npc_arena_spectator : public CreatureScript
     bool OnGossipSelect(Player* player, Creature* me, uint32 data, uint32 action) override
     {
         player->PlayerTalkClass->ClearMenus();
+		
+		ObjectGuid action;
 
         if (action >= GOSSIP_ACTION_SPECTATE)
         {
@@ -617,7 +619,7 @@ class npc_arena_spectator : public CreatureScript
             }
         }
         if (arena->isRated())
-            return GetRankIcon(arena->GetArenaMatchmakerRatingByIndex(0)) + teamsMember[0] + "  |TInterface\\RAIDFRAME\\UI-RaidFrame-Threat:26|t  " + teamsMember[1] + GetRankIcon(arena->GetArenaMatchmakerRatingByIndex(1));
+            return GetRankIcon(arena->GetArenaMatchmakerRating(0)) + teamsMember[0] + "  |TInterface\\RAIDFRAME\\UI-RaidFrame-Threat:26|t  " + teamsMember[1] + GetRankIcon(arena->GetArenaMatchmakerRating(1));
         return GetRankIcon(-1) + teamsMember[0] + "  |TInterface\\RAIDFRAME\\UI-RaidFrame-Threat:26|t  " + teamsMember[1] + GetRankIcon(-1);
     }
 
