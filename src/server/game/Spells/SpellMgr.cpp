@@ -2959,6 +2959,9 @@ void SpellMgr::LoadSpellInfoCorrections()
         switch (spellInfo->Id)
         {
             case 53096: // Quetz'lun's Judgment
+            case 24259: // Spell Lock Silence
+                spellInfo->Speed = 80;
+                break;			
             case 70743: // AoD Special
             case 70614: // AoD Special - Vegard
                 spellInfo->MaxAffectedTargets = 1;
