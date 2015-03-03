@@ -1599,6 +1599,15 @@ SpellCastResult SpellInfo::CheckTarget(Unit const* caster, WorldObject const* ta
             return SPELL_FAILED_BAD_TARGETS;
     }
 
+    //Checking LoS : Whirlwind | bladestorm
+	if ((Effects[0].TargetA.GetTarget() == TARGET_SRC_CASTER) && (Effects[0].TargetB.GetTarget() == TARGET_UNIT_SRC_AREA_ENEMY) && !IsPositive())
+		if (!caster->IsWithinLOSInMap(target))
+			return SPELL_FAILED_LINE_OF_SIGHT;
+	// Check LoS for Mass DIspell
+	if ((((Effects[0].TargetB.GetTarget() == TARGET_UNIT_DEST_AREA_ENEMY) || (Effects[0].TargetA.GetTarget() == TARGET_UNIT_DEST_AREA_ENEMY) || (Effects[0].TargetA.GetTarget() == TARGET_UNIT_SRC_AREA_ENEMY) || (Effects[0].TargetB.GetTarget() == TARGET_UNIT_SRC_AREA_ENEMY))) && caster->GetTypeId() == TYPEID_PLAYER)
+		if (!caster->IsWithinLOSInMap(target))
+			return SPELL_FAILED_LINE_OF_SIGHT;
+
     // check GM mode and GM invisibility - only for player casts (npc casts are controlled by AI) and negative spells
     if (unitTarget != caster && (caster->IsControlledByPlayer() || !IsPositive()) && unitTarget->GetTypeId() == TYPEID_PLAYER)
     {
