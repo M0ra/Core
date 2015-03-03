@@ -5090,7 +5090,13 @@ SpellCastResult Spell::CheckCast(bool strict)
                     float objSize = target->GetObjectSize();
                     float range = m_spellInfo->GetMaxRange(true, m_caster, this) * 1.5f + objSize; // can't be overly strict
 
-                    m_preGeneratedPath.SetPathLengthLimit(range);
+					float limit = m_spellInfo->GetMaxRange(true);
+					if (m_caster->HasAura(58097))
+					{
+						limit += 5.0f;
+					}
+
+                    m_preGeneratedPath.SetPathLengthLimit(limit * 1.5f);
                     // first try with raycast, if it fails fall back to normal path
                     bool result = m_preGeneratedPath.CalculatePath(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ() + target->GetObjectSize(), false, true);
                     if (m_preGeneratedPath.GetPathType() & PATHFIND_SHORT)
