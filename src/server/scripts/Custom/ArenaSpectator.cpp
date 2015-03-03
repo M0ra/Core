@@ -351,12 +351,12 @@ class npc_arena_spectator : public CreatureScript
     public:
         npc_arena_spectator() : CreatureScript("npc_arena_spectator") { }
 
-        bool OnGossipHello(Player* player, Creature* pCreature) override
+        bool OnGossipHello(Player* player, Creature* creature) override
         {
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Смотреть: 2v2 Игры", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_LIST_GAMES);
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Смотреть: 3v3 Игры", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_LIST_TOP_GAMES);
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Смотреть конкретного игрока", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_SELECTED_PLAYER);
-        player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pCreature->GetGUID());
+        player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
             return true;
         }
 
