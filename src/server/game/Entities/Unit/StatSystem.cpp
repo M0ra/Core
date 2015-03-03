@@ -1355,6 +1355,9 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
             bonusAP = maximum * 0.57f;
         }
         //water elementals benefit from mage's frost damage
+        if (GetEntry() == ENTRY_FELGUARD && owner->HasAura(56246))
+            bonusAP *= 1.2f;
+
         else if (GetEntry() == ENTRY_WATER_ELEMENTAL)
         {
             int32 frost = int32(owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_FROST)) - owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + SPELL_SCHOOL_FROST);
