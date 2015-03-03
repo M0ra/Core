@@ -236,6 +236,9 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             }
         }
     }
+	
+    if (sender->isGMChat() && sWorld->getBoolConfig(CONFIG_GM_BLUE_CHAT_ENABLE))
+        msg = "|cff2998ff" + msg + "|r";
 
     switch (type)
     {
