@@ -3257,7 +3257,7 @@ bool BattlegroundMap::AddPlayerToMap(Player* player)
 
 void BattlegroundMap::RemovePlayerFromMap(Player* player, bool remove)
 {
-if (player && player->isSpectator() && !player->IsSpectateCanceled())
+if (player && player->isSpectator() && !player->isSpectateCanceled())
     {
         if (GetBG())
             GetBG()->RemoveSpectator(player->GetGUID());
