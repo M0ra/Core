@@ -3675,6 +3675,9 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 72351: // Fury of Frostmourne
             case 72431: // Jump (removes Fury of Frostmourne debuff)
             case 72429: // Mass Resurrection
+                spellInfo->Effects[EFFECT_0].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_50000_YARDS);
+                spellInfo->AttributesEx3 |= SPELL_ATTR3_REQUIRE_DEAD_TARGET;
+                break;
             case 73159: // Play Movie
             case 73582: // Trigger Vile Spirit (Inside, Heroic)
                 spellInfo->Effects[EFFECT_0].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_50000_YARDS); // 50000yd
