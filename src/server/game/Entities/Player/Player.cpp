@@ -1952,7 +1952,7 @@ void Player::setDeathState(DeathState s)
 
 void Player::SetSelection(ObjectGuid guid)
 {
-    m_curSelection = guid;
+    selectionGUID = guid;
     SetUInt64Value(UNIT_FIELD_TARGET, guid);
     if (Player *target = ObjectAccessor::FindPlayer(guid))
         if (HaveSpectators())
@@ -24802,7 +24802,7 @@ void Player::SetViewpoint(WorldObject* target, bool apply)
 
         if (target->isType(TYPEMASK_UNIT) && !GetVehicle())
    		{
-            if (IsSpectator())
+            if (isSpectator())
                 spectateFrom = (Unit*)target;
 
              ((Unit*)target)->AddPlayerToVision(this);
@@ -24810,7 +24810,7 @@ void Player::SetViewpoint(WorldObject* target, bool apply)
     }
     else
     {
-		if (IsSpectator() && !spectateFrom)
+		if (isSpectator() && !spectateFrom)
             return;
         TC_LOG_DEBUG("maps", "Player::CreateViewpoint: Player %s remove seer", GetName().c_str());
 
