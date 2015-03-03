@@ -179,8 +179,8 @@ bool SpectatorAddonMsg::SendPacket(uint32 receiver)
         return false;
 
     ObjectGuid receiverGuid(HIGHGUID_PLAYER, receiver);
-    Player* player = ObjectAccessor::FindPlayer(receiverGuid);
-    if (!player)
+    Player* rPlayer = ObjectAccessor::FindPlayer(receiverGuid);
+    if (!rPlayer)
         return false;
 
     WorldPacket data(SMSG_MESSAGECHAT, 200);
@@ -192,7 +192,7 @@ bool SpectatorAddonMsg::SendPacket(uint32 receiver)
     data << uint32(addonData.length() + 1);
     data << addonData;
     data << uint8(CHAT_TAG_NONE);
-    player->GetSession()->SendPacket(&data);
+    rPlayer->GetSession()->SendPacket(&data);
 
     return true;
 }
@@ -204,8 +204,8 @@ bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
         return false;
 
     ObjectGuid receiverGuid(HIGHGUID_PLAYER, receiver);
-    Player* player = ObjectAccessor::FindPlayer(receiverGuid);
-    if (!player)
+    Player* rPlayer = ObjectAccessor::FindPlayer(receiverGuid);
+    if (!rPlayer)
         return false;
 
     WorldPacket data(SMSG_MESSAGECHAT, 200);
@@ -217,7 +217,7 @@ bool SpectatorAddonMsg::SendPacket(SpectatorAddonMsg msg, uint32 receiver)
     data << uint32(addonData.length() + 1);
     data << addonData;
     data << uint8(CHAT_TAG_NONE);
-    player->GetSession()->SendPacket(&data);
+    rPlayer->GetSession()->SendPacket(&data);
 
     return true;
 }
