@@ -28,6 +28,7 @@
 #include "QuestDef.h"
 #include "SpellMgr.h"
 #include "Unit.h"
+#include "Battleground.h"
 #include "../../scripts/Custom/Transmog/Transmogrification.h"
 
 #include <limits>
@@ -1208,6 +1209,14 @@ class Player : public Unit, public GridObject<Player>
         void SetHas310Flyer(bool on) { if (on) m_ExtraFlags |= PLAYER_EXTRA_HAS_310_FLYER; else m_ExtraFlags &= ~PLAYER_EXTRA_HAS_310_FLYER; }
         void SetPvPDeath(bool on) { if (on) m_ExtraFlags |= PLAYER_EXTRA_PVP_DEATH; else m_ExtraFlags &= ~PLAYER_EXTRA_PVP_DEATH; }
 
+        bool HaveSpectators();
+        void SendSpectatorAddonMsgToBG(SpectatorAddonMsg msg);
+        bool isSpectateCanceled() { return spectateCanceled; }
+        void CancelSpectate() { spectateCanceled = true; }
+        Unit* getSpectateFrom() { return spectateFrom; }
+        bool isSpectator() const { return spectatorFlag; }
+        void SetSpectate(bool on);
+		
         void GiveXP(uint32 xp, Unit* victim, float group_rate=1.0f);
         void GiveLevel(uint8 level);
 
@@ -1580,7 +1589,7 @@ class Player : public Unit, public GridObject<Player>
         Player* GetSelectedPlayer() const;
 
         void SetTarget(ObjectGuid /*guid*/) override { } /// Used for serverside target changes, does not apply to players
-        void SetSelection(ObjectGuid guid) { SetGuidValue(UNIT_FIELD_TARGET, guid); }
+        void SetSelection(ObjectGuid guid);
 
         uint8 GetComboPoints() const { return m_comboPoints; }
         ObjectGuid GetComboTarget() const { return m_comboTarget; }
@@ -2713,6 +2722,9 @@ class Player : public Unit, public GridObject<Player>
         InstanceTimeMap _instanceResetTimes;
         uint32 _pendingBindId;
         uint32 _pendingBindTimer;
+        bool spectatorFlag;
+        bool spectateCanceled;
+        Unit *spectateFrom;
 
         uint32 _activeCheats;
 };

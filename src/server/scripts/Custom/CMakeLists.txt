@@ -21,8 +21,7 @@ set(scripts_STAT_SRCS
   Custom/1v1.cpp
   Custom/anti_farm.cpp
   Custom/duel_reset.cpp
-# 7
-# 8
+  Custom/ArenaSpectator.cpp
 # 9
 # 10
 # 11

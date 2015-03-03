@@ -23,6 +23,7 @@
 void AddSC_System_Censure();
 void AddSC_NoFarming();
 void AddSC_Reset();
+void AddSC_arena_spectator_script();
 
 // spells
 void AddSC_deathknight_spell_scripts();
@@ -1477,7 +1478,7 @@ void AddCustomScripts()
     AddSC_System_Censure();
     AddSC_NoFarming();
     AddSC_Reset();
-    // 6
+    AddSC_arena_spectator_script();
     // 7
     // 8
     // 9
