@@ -2464,17 +2464,17 @@ enum KeristraszaData
     SPELL_FROSTBOLT          = 61461,
     SPELL_KILL_CREDIT        = 37712,
 
-    SAY_KERISTRASZA_1        = 1,
-    YELL_KERISTRASZA_1       = 2,
-    YELL_KERISTRASZA_2       = 3,
-    YELL_KERISTRASZA_3       = 4,
-    SAY_KERISTRASZA_2        = 5,
+    SAY_KERISTRASZA_1        = 0,
+    YELL_KERISTRASZA_1       = 1,
+    YELL_KERISTRASZA_2       = 2,
+    YELL_KERISTRASZA_3       = 3,
+    SAY_KERISTRASZA_2        = 4,
 
     //After Fligth
-    YELL_MALYGOS_1           = 6,
-    SAY_KERISTRASZA_3        = 7,
-    YELL_MALYGOS_2           = 8,
-    YELL_KERISTRASZA_4       = 9
+    YELL_MALYGOS_1           = 5,
+    SAY_KERISTRASZA_3        = 6,
+    YELL_MALYGOS_2           = 7,
+    YELL_KERISTRASZA_4       = 8
 };
 
 const Position posKeristrasza[6] =
