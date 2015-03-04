@@ -64,64 +64,64 @@ enum LiadrinnSpeeches
 
 enum Yells
 {
-    SAY_QUELDELAR_1  = 1,
-    SAY_QUELDELAR_2  = 2,
-    SAY_QUELDELAR_3  = 3,  
-    SAY_QUELDELAR_4  = 4,
-    SAY_QUELDELAR_5  = 5, 
-    SAY_QUELDELAR_6  = 6,
-    SAY_QUELDELAR_7  = 7,
-    SAY_QUELDELAR_8  = 8,
-    SAY_QUELDELAR_9  = 9,
-    SAY_QUELDELAR_10 = 10,
-    SAY_QUELDELAR_11 = 11,
-    SAY_QUELDELAR_12 = 12
+    SAY_QUELDELAR_1           = 1,
+    SAY_QUELDELAR_2           = 2,
+    SAY_QUELDELAR_3           = 3,  
+    SAY_QUELDELAR_4           = 4,
+    SAY_QUELDELAR_5           = 5, 
+    SAY_QUELDELAR_6           = 6,
+    SAY_QUELDELAR_7           = 7,
+    SAY_QUELDELAR_8           = 8,
+    SAY_QUELDELAR_9           = 9,
+    SAY_QUELDELAR_10          = 10,
+    SAY_QUELDELAR_11          = 11,
+    SAY_QUELDELAR_12          = 12
 };
 
 enum QuelDelarEvents
 {
-    EVENT_QUEST_STEP_1  = 1,
-    EVENT_QUEST_STEP_2  = 2,
-    EVENT_QUEST_STEP_3  = 3,
-    EVENT_QUEST_STEP_4  = 4,
-    EVENT_QUEST_STEP_5  = 5,
-    EVENT_QUEST_STEP_6  = 6,
-    EVENT_QUEST_STEP_7  = 7,
-    EVENT_QUEST_STEP_8  = 8,
-    EVENT_QUEST_STEP_9  = 9,
-    EVENT_QUEST_STEP_10 = 10,
-    EVENT_QUEST_STEP_11 = 11,
-    EVENT_QUEST_STEP_12 = 12,
-    EVENT_QUEST_STEP_13 = 13,
-    EVENT_QUEST_STEP_14 = 14,
-    EVENT_QUEST_STEP_15 = 15,
-    EVENT_QUEST_STEP_16 = 16
+    EVENT_QUEST_STEP_1        = 1,
+    EVENT_QUEST_STEP_2        = 2,
+    EVENT_QUEST_STEP_3        = 3,
+    EVENT_QUEST_STEP_4        = 4,
+    EVENT_QUEST_STEP_5        = 5,
+    EVENT_QUEST_STEP_6        = 6,
+    EVENT_QUEST_STEP_7        = 7,
+    EVENT_QUEST_STEP_8        = 8,
+    EVENT_QUEST_STEP_9        = 9,
+    EVENT_QUEST_STEP_10       = 10,
+    EVENT_QUEST_STEP_11       = 11,
+    EVENT_QUEST_STEP_12       = 12,
+    EVENT_QUEST_STEP_13       = 13,
+    EVENT_QUEST_STEP_14       = 14,
+    EVENT_QUEST_STEP_15       = 15,
+    EVENT_QUEST_STEP_16       = 16
 };
 
 enum QuelDelarActions
 {
-    ACTION_START_EVENT  = 1
+    ACTION_START_EVENT        = 1
 };
 
 enum QuelDelarCreatures
 {
-    NPC_ROMMATH         = 37763,
-    NPC_THERON          = 37764,
-    NPC_AURIC           = 37765,
-    NPC_QUEL_GUARD      = 37781,
-    NPC_CASTER_BUNNY    = 37746
+    NPC_ROMMATH               = 37763,
+    NPC_THERON                = 37764,
+    NPC_AURIC                 = 37765,
+    NPC_QUEL_GUARD            = 37781,
+    NPC_CASTER_BUNNY          = 37746
 };
 
 enum QuelDelarGameobjects
 {
-    GO_QUEL_DANAR       = 201794
+    GO_QUEL_DANAR             = 201794
 };
 enum QuelDelarMisc
 {
-    ITEM_TAINTED_QUELDANAR_1 = 49879,
-    ITEM_TAINTED_QUELDANAR_2 = 49889,
-    SPELL_WRATH_QUEL_DANAR   = 70493,
-    SPELL_ICY_PRISON         = 70540
+    ITEM_TAINTED_QUELDANAR_1  = 49879,
+    ITEM_TAINTED_QUELDANAR_2  = 49889,
+    SPELL_WRATH_QUEL_DANAR    = 70493,
+    SPELL_ICY_PRISON          = 70540
 };
 
 /*######
@@ -138,7 +138,7 @@ public:
         player->PrepareGossipMenu(creature, 0);
 
         if (player->HasItemCount(49879, 1) || player->HasItemCount(49889, 1))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Я принёс Кель'Делар.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Я принёс Кель'Делар.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             player->SendPreparedGossip(creature);
 
         return true;
@@ -167,7 +167,7 @@ public:
         {
             Initialize();
         }
-		
+
         void Initialize()
         {
             _events.Reset();
@@ -216,7 +216,7 @@ public:
                     if (GameObject* quelDelar = me->SummonGameObject(GO_QUEL_DANAR, 1683.99f, 620.231f, 29.3599f, 0.410932f, 0, 0, 0, 0, 0))
                     {
                         uiQuelDelarGUID = quelDelar->GetGUID();
-                        quelDelar->SetFlag(GAMEOBJECT_FLAGS, 5);
+                        quelDelar->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                     }
 
                     if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
@@ -328,7 +328,7 @@ public:
                         auric->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
                         auric->AI()->Talk(SAY_QUELDELAR_12);
 					    if (GameObject* quelDelar = me->FindNearestGameObject(GO_QUEL_DANAR, 100.0f))
-                            quelDelar->RemoveFlag(GAMEOBJECT_FLAGS, 5);
+                            quelDelar->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
                     }
                     _events.ScheduleEvent(EVENT_QUEST_STEP_16, 2 * IN_MILLISECONDS);
                     break;
@@ -380,7 +380,7 @@ class item_tainted_queldelar : public ItemScript
     public:
 
         item_tainted_queldelar() : ItemScript("item_tainted_queldelar") { }
-    
+
         bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/) override
         {
             InstanceScript *instance = player->GetInstanceScript();
