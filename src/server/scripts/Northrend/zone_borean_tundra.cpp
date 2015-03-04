@@ -1260,6 +1260,7 @@ public:
         {
             Initialize();
         }
+		
         void MovementInform(uint32 uiType, uint32 /*uiId*/) override
         {
             if (uiType != POINT_MOTION_TYPE)
@@ -2441,6 +2442,273 @@ public:
     }
 };
 
+/*######
+## npc_signal_fire / npc_keristrasza_coldarra
+######*/
+
+enum KeristraszaData
+{
+    QUEST_SPRINGING_TRAP     = 11969,
+
+    NPC_KERISTRASZA          = 26237,
+    NPC_SARAGOSA             = 26299,
+    NPC_MALYGOS              = 26310,
+    GO_SIGNAL_FIRE           = 194151,
+
+    SPELL_RAELORASZ_SPARK    = 62272,
+    SPELL_FIRE_CORPSE        = 39199,
+    SPELL_FIRE_BREATH        = 31962,
+    SPELL_MALYGOS_EARTHQ     = 46853,
+    SPELL_TAXI_KERISTASZA    = 46814,
+    SPELL_ICE_BLOCK          = 56644,
+    SPELL_FROSTBOLT          = 61461,
+	SPELL_KILL_CREDIT        = 37712,
+
+    SAY_KERISTRASZA_1        = 1,
+    YELL_KERISTRASZA_1       = 2,
+    YELL_KERISTRASZA_2       = 3,
+    YELL_KERISTRASZA_3       = 4,
+    SAY_KERISTRASZA_2        = 5,
+
+    //After Fligth
+    YELL_MALYGOS_1           = 6,
+    SAY_KERISTRASZA_3        = 7,
+    YELL_MALYGOS_2           = 8,
+    YELL_KERISTRASZA_4       = 9
+};
+
+const Position posKeristrasza[6] =
+{
+    {4157.00f, 7035.00f, 215.87f, 0.00f}, // Summon position
+    {4063.72f, 7084.12f, 174.86f, 0.00f}, // Land position
+    {4054.51f, 7084.29f, 168.12f, 0.00f}, // Burn Corpse positon
+    {4048.90f, 7083.94f, 168.21f, 0.00f}, // Saragosa Corpse Spawn
+    {3800.47f, 6557.50f, 170.98f, 1.55f}, // Keristrasza Spawn
+    {3791.76f, 6603.61f, 179.91f, 0.00f}  // Malygos Spawn
+};
+
+class npc_signal_fire : public CreatureScript
+{
+public:
+    npc_signal_fire() : CreatureScript("npc_signal_fire") { }
+
+    struct npc_signal_fireAI : public ScriptedAI
+    {
+        npc_signal_fireAI(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            _events.Reset();
+            pKeristrasza, pSaragosa, player = NULL;
+            eventRunning = false;
+            if(GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
+                go->SetGoState(GO_STATE_READY);
+        }
+		
+        EventMap _events;
+        Creature* pKeristrasza;
+        Creature* pSaragosa;
+        Player* player;
+        bool eventRunning;
+
+        void Reset() override
+        {
+            Initialize();
+        }
+		
+        void SpellHit(Unit* caster, const SpellInfo* spell) override
+        {
+            if (eventRunning)
+                return;
+
+            if(spell->Id == SPELL_RAELORASZ_SPARK)
+            {
+                player = caster->ToPlayer();
+                if(GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
+                    go->SetGoState(GO_STATE_ACTIVE);
+                if(Creature* pFind = me->SummonCreature(NPC_KERISTRASZA, posKeristrasza[0]))
+                {
+                    pKeristrasza = pFind;
+                    pFind->SetCanFly(true);
+                    pFind->GetMotionMaster()->MovePoint(1, posKeristrasza[1]);
+                }
+                eventRunning = true;
+                _events.ScheduleEvent(1, 6000);
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            _events.Update(diff);
+
+            switch(_events.ExecuteEvent())
+            {
+            case 1:
+                pKeristrasza->SetCanFly(false);
+                Talk(SAY_KERISTRASZA_1);
+                _events.ScheduleEvent(2, 3000);
+                break;
+            case 2:
+                Talk(YELL_KERISTRASZA_1);
+                pKeristrasza->GetMotionMaster()->MovePoint(1, posKeristrasza[2]);
+                _events.ScheduleEvent(3, 5000);
+                break;
+            case 3:
+                Talk(YELL_KERISTRASZA_2);
+                if(Creature* pCorpse = me->SummonCreature(NPC_SARAGOSA, posKeristrasza[3]))
+                    pSaragosa = pCorpse;
+                _events.ScheduleEvent(4, 3000);
+                break;
+            case 4:
+                Talk(YELL_KERISTRASZA_3);
+                pKeristrasza->CastSpell(pSaragosa, SPELL_FIRE_BREATH, true);
+                _events.ScheduleEvent(5, 1000);
+                break;
+            case 5:
+                me->AddAura(SPELL_FIRE_CORPSE, pSaragosa);
+                _events.ScheduleEvent(6, 1000);
+                break;
+            case 6:
+                player->CastSpell(player, SPELL_MALYGOS_EARTHQ, true);
+                _events.ScheduleEvent(7, 3000);
+                break;
+            case 7:
+                Talk(SAY_KERISTRASZA_2);
+                _events.ScheduleEvent(8, 3000);
+                break;
+            case 8:
+                player->CastSpell(player, SPELL_TAXI_KERISTASZA, true);
+                pKeristrasza->AI()->SetGUID(player->GetGUID());
+                pSaragosa->DespawnOrUnsummon(10000);
+                _events.ScheduleEvent(9, 20000);
+                break;
+            case 9:
+                Reset();
+                break;
+            }
+        }
+
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_signal_fireAI(creature);
+    }
+};
+
+class npc_keristrasza_coldarra : public CreatureScript
+{
+public:
+    npc_keristrasza_coldarra() : CreatureScript("npc_keristrasza_coldarra") { }
+
+    struct npc_keristrasza_coldarraAI : public ScriptedAI
+    {
+        npc_keristrasza_coldarraAI(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+        }
+		
+        void Initialize()
+        {
+            _events.Reset();
+            me->SetSpeed(MOVE_FLIGHT, 3.2f, true);
+            pMalygos = NULL;
+            uiPlayerGUID.Clear();
+            waiting = false;
+            finishedWay = false;
+            me->SetReactState(REACT_PASSIVE);
+        }
+
+        EventMap _events;
+        ObjectGuid uiPlayerGUID;
+        bool waiting;
+        bool finishedWay;
+        Creature* pMalygos;
+
+        void Reset() override
+        {
+            Initialize();
+        }
+		
+        void SetGUID(ObjectGuid uiGuid, int32 /*iId*/) override
+        {
+            me->NearTeleportTo(posKeristrasza[4].GetPositionX(), posKeristrasza[4].GetPositionY(), posKeristrasza[4].GetPositionZ(), posKeristrasza[4].GetOrientation());
+            me->SetVisible(false);
+            uiPlayerGUID = uiGuid;
+            waiting = true;
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if(!waiting)
+                return;
+
+            if(!finishedWay)
+            {
+                if(Player* player = me->GetPlayer(*me, uiPlayerGUID))
+                {
+                    if (!player->IsInFlight())
+                    {
+                        if(me->IsWithinDist(player, 10.0f))
+                        {
+                            finishedWay = true;
+                            me->SetVisible(true);
+                            player->CastSpell(player, SPELL_KILL_CREDIT, true);
+                            _events.ScheduleEvent(1, 0);
+                        }else
+                            me->DespawnOrUnsummon(0);
+                    }
+                    else
+                        return;
+                }
+            }
+
+            _events.Update(diff);
+
+            switch(_events.ExecuteEvent())
+            {
+            case 1:
+                me->SetCanFly(false);
+                if(Player* player = me->GetPlayer(*me, uiPlayerGUID))
+                    Talk(SAY_KERISTRASZA_3);
+                _events.ScheduleEvent(2, 5000);
+                break;
+            case 2:
+                if(Creature* pSumm = me->SummonCreature(NPC_MALYGOS, posKeristrasza[5]))
+                {
+                    pMalygos = pSumm;
+                    pSumm->SetCanFly(true);
+                    pSumm->SetReactState(REACT_PASSIVE);
+                    pSumm->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_IMMUNE_TO_PC);
+                    pSumm->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.4f);
+                    Talk(YELL_MALYGOS_2);
+                    pMalygos->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
+                    me->SetUInt64Value(UNIT_FIELD_TARGET, pMalygos->GetGUID());
+                }
+                _events.ScheduleEvent(3, 6000);
+                break;
+            case 3:
+                Talk(YELL_KERISTRASZA_4);
+                me->AddAura(SPELL_ICE_BLOCK, me);
+
+                if(pMalygos)
+                    pMalygos->DespawnOrUnsummon(7000);
+                me->DespawnOrUnsummon(7000);
+                break;
+            }
+
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_keristrasza_coldarraAI(creature);
+    }
+};
+
 void AddSC_borean_tundra()
 {
     new npc_sinkhole_kill_credit();
@@ -2466,4 +2734,6 @@ void AddSC_borean_tundra()
     new npc_warmage_coldarra();
     new npc_hidden_cultist();
     new spell_windsoul_totem_aura();
+    new npc_signal_fire();
+    new npc_keristrasza_coldarra();
 }
