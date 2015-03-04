@@ -168,6 +168,14 @@ public:
             Initialize();
         }
 
+        EventMap _events;
+
+        ObjectGuid uiRommath;
+        ObjectGuid uiTheron;
+        ObjectGuid uiAuric;
+        ObjectGuid uiQuelDelarGUID;
+        ObjectGuid uiPlayerGUID;
+
         void Initialize()
         {
             _events.Reset();
@@ -342,14 +350,6 @@ public:
                     break;
             }
         }
-    private:
-        EventMap _events;
-        ObjectGuid uiRommath;
-        ObjectGuid uiTheron;
-        ObjectGuid uiAuric;
-        ObjectGuid uiQuelDelarGUID;
-        ObjectGuid uiPlayerGUID;
-		
     };
 
     CreatureAI* GetAI(Creature* creature) const override
