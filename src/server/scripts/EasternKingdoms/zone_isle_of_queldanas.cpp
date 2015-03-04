@@ -426,9 +426,9 @@ public:
                 player->SetPhaseMask(2, true);
                 break;
             default:
-                return false;                                   // nothing defined      -> trinity core handling
+                return false;
             }
-            return true;                                            // no default handling  -> prevent trinity core handling
+            return true;
         }
 };
 

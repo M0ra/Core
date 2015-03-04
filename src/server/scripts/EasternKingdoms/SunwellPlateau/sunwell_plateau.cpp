@@ -211,18 +211,21 @@ public:
             {
                 case EVENT_QUEST_STEP_1:
                     if (Creature* rommath = me->FindNearestCreature(NPC_ROMMATH, 100.0f, true))
+                        rommath->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         uiRommath = rommath->GetGUID();
 
                     if (Creature* theron = me->FindNearestCreature(NPC_THERON, 100.0f, true))
+                        theron->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         uiTheron = theron->GetGUID();
 
                     if (Creature* auric = me->FindNearestCreature(NPC_AURIC, 100.0f, true))
+                        auric->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         uiAuric = auric->GetGUID();
 
                     if (GameObject* quelDelar = me->SummonGameObject(GO_QUEL_DANAR, 1683.99f, 620.231f, 29.3599f, 0.410932f, 0, 0, 0, 0, 0))
                     {
                         uiQuelDelarGUID = quelDelar->GetGUID();
-                        quelDelar->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                        quelDelar->SetFlag(GAMEOBJECT_FLAGS, 5);
                     }
 
                     if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
@@ -284,7 +287,7 @@ public:
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
-				        // if (Player* player = me->FindNearestCreature(player, 200.0f, true))
+                        // if (Player* player = me->FindNearestCreature(player, 200.0f, true))
                         rommath->AddAura(SPELL_ICY_PRISON, player);
                         rommath->AI()->Talk(SAY_QUELDELAR_6);
                     }
@@ -318,13 +321,15 @@ public:
                 case EVENT_QUEST_STEP_14:
                     if (Creature* guard = me->FindNearestCreature(NPC_QUEL_GUARD, 200.0f))
                     {
-                        guard->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_STAND);
+						guard->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_STAND);
+						guard->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         guard->GetMotionMaster()->MovePoint(0, guard->GetHomePosition());
                     }
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
                         rommath->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        rommath->AI()->Talk(SAY_QUELDELAR_11);
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                            rommath->AI()->Talk(SAY_QUELDELAR_11);
                     }
                     _events.ScheduleEvent(EVENT_QUEST_STEP_15, 7 * IN_MILLISECONDS);
                     break;
@@ -332,9 +337,10 @@ public:
                     if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                     {
                         auric->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        auric->AI()->Talk(SAY_QUELDELAR_12);
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                            auric->AI()->Talk(SAY_QUELDELAR_12);
 					    if (GameObject* quelDelar = me->FindNearestGameObject(GO_QUEL_DANAR, 100.0f))
-                            quelDelar->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
+                            quelDelar->RemoveFlag(GAMEOBJECT_FLAGS, 5);
                     }
                     _events.ScheduleEvent(EVENT_QUEST_STEP_16, 2 * IN_MILLISECONDS);
                     break;
