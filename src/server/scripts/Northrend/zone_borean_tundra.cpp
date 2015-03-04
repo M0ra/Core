@@ -2648,7 +2648,7 @@ public:
 
             if(!finishedWay)
             {
-                if(Player* player = me->GetPlayer(*me, uiPlayerGUID))
+                if(Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                 {
                     if (!player->IsInFlight())
                     {
@@ -2672,7 +2672,7 @@ public:
             {
             case 1:
                 me->SetCanFly(false);
-                if(Player* player = me->GetPlayer(*me, uiPlayerGUID))
+                if(Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                     Talk(SAY_KERISTRASZA_3);
                 _events.ScheduleEvent(2, 5000);
                 break;
