@@ -211,17 +211,23 @@ public:
             {
                 case EVENT_QUEST_STEP_1:
                     if (Creature* rommath = me->FindNearestCreature(NPC_ROMMATH, 100.0f, true))
+                    {
                         rommath->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         uiRommath = rommath->GetGUID();
+                    }
 
                     if (Creature* theron = me->FindNearestCreature(NPC_THERON, 100.0f, true))
+                    {
                         theron->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         uiTheron = theron->GetGUID();
+                    }
 
                     if (Creature* auric = me->FindNearestCreature(NPC_AURIC, 100.0f, true))
+                    {
                         auric->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         uiAuric = auric->GetGUID();
-
+                    }
+					
                     if (GameObject* quelDelar = me->SummonGameObject(GO_QUEL_DANAR, 1683.99f, 620.231f, 29.3599f, 0.410932f, 0, 0, 0, 0, 0))
                     {
                         uiQuelDelarGUID = quelDelar->GetGUID();
