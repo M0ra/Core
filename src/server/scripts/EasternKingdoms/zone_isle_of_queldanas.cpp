@@ -172,7 +172,7 @@ class npc_thalorien_dawnseeker : public CreatureScript
 public:
     npc_thalorien_dawnseeker() : CreatureScript("npc_thalorien_dawnseeker") { }
 
-    bool OnGossipHello(Player* player, Creature* creature)
+    bool OnGossipHello(Player* player, Creature* creature) override
     {
         player->PrepareGossipMenu(creature, 0);
 
@@ -182,7 +182,7 @@ public:
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 action)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 action) override
     {
         player->PlayerTalkClass->ClearMenus();
 
@@ -216,7 +216,7 @@ public:
             events.Reset();
         }
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 diff) override
         {
             events.Update(diff);
 
@@ -368,12 +368,12 @@ public:
                 events.ScheduleEvent(EVENT_STEP_13, 3 * IN_MILLISECONDS);
         }
 		
-		void SetGUID(ObjectGuid guid, int32 /*id*/)
-		{
+        void SetGUID(ObjectGuid guid, int32 /*id*/) override
+        {
             uiPlayer = guid;
         }
 
-        void DoAction(int32 action)
+        void DoAction(int32 action) override
         {
             switch (action)
             {
@@ -401,7 +401,7 @@ class npc_sunwell_warder : public CreatureScript
 public:
     npc_sunwell_warder() : CreatureScript("npc_sunwell_warder") { }
 
-    bool OnGossipHello(Player* player, Creature* creature)
+    bool OnGossipHello(Player* player, Creature* creature) override
     {
         player->PrepareGossipMenu(creature, 0);
 
@@ -412,7 +412,7 @@ public:
         return true;
         }
 		
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction) override
     {
         player->PlayerTalkClass->ClearMenus();
 
@@ -435,6 +435,6 @@ public:
 void AddSC_isle_of_queldanas()
 {
     new npc_greengill_slave();
-	new npc_thalorien_dawnseeker();
-	new npc_sunwell_warder();
+    new npc_thalorien_dawnseeker();
+    new npc_sunwell_warder();
 }
