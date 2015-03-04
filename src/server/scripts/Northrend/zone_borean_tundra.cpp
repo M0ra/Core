@@ -56,7 +56,7 @@ enum Sinkhole
     SPELL_SET_CART                = 46797,
     SPELL_EXPLODE_CART            = 46799,
     SPELL_SUMMON_CART             = 46798,
-    SPELL_SUMMON_WORM             = 46800,
+    SPELL_SUMMON_WORM             = 46800
 };
 
 class npc_sinkhole_kill_credit : public CreatureScript
@@ -394,7 +394,7 @@ enum NesingwaryTrapper
     GO_CARIBOU_TRAP_14  = 188007,
     GO_CARIBOU_TRAP_15  = 188008,
 
-    SPELL_TRAPPED       = 46104,
+    SPELL_TRAPPED       = 46104
 };
 
 #define CaribouTrapsNum 15
@@ -1222,7 +1222,7 @@ public:
 enum CounselorTalbot
 {
     SPELL_DEFLECTION    = 51009,
-    SPELL_SOUL_BLAST    = 50992,
+    SPELL_SOUL_BLAST    = 50992
 };
 
 class npc_counselor_talbot : public CreatureScript
@@ -1880,7 +1880,7 @@ enum HelpThemselves
     GO_MAMMOTH_TRAP_19                            = 188041,
     GO_MAMMOTH_TRAP_20                            = 188042,
     GO_MAMMOTH_TRAP_21                            = 188043,
-    GO_MAMMOTH_TRAP_22                            = 188044,
+    GO_MAMMOTH_TRAP_22                            = 188044
 };
 
 #define MammothTrapsNum 22
@@ -2462,7 +2462,7 @@ enum KeristraszaData
     SPELL_TAXI_KERISTASZA    = 46814,
     SPELL_ICE_BLOCK          = 56644,
     SPELL_FROSTBOLT          = 61461,
-	SPELL_KILL_CREDIT        = 37712,
+    SPELL_KILL_CREDIT        = 37712,
 
     SAY_KERISTRASZA_1        = 1,
     YELL_KERISTRASZA_1       = 2,
