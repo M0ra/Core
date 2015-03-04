@@ -172,8 +172,6 @@ public:
         {
             _events.Reset();
             me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-            uiPlayerGUID.Clear();
-            uiQuelDelarGUID.Clear();
         }		
 
         void Reset() override
@@ -344,14 +342,13 @@ public:
                     break;
             }
         }
-	
-        private:
-            EventMap _events;
-            ObjectGuid uiRommath;
-            ObjectGuid uiTheron;
-            ObjectGuid uiAuric;
-            ObjectGuid uiQuelDelarGUID;
-            ObjectGuid uiPlayerGUID;
+    private:
+        EventMap _events;
+        ObjectGuid uiRommath;
+        ObjectGuid uiTheron;
+        ObjectGuid uiAuric;
+        ObjectGuid uiQuelDelarGUID;
+        ObjectGuid uiPlayerGUID;
 		
     };
 
