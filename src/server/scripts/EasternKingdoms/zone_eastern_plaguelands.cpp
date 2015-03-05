@@ -190,55 +190,32 @@ public:
 ## npc_eris_havenfire
 ######*/
 
-enum ErisHavenfire
+enum ErisHavenfireMisc
 {
-    SAY_PHASE_HEAL                      = 1,
-    SAY_EVENT_END                       = 2,
-    SAY_EVENT_FAIL_1                    = 3,
-    SAY_EVENT_FAIL_2                    = 4,
-
-    // SPELL_DEATHS_DOOR                 = 23127,           // damage spells cast on the peasants
-    // SPELL_SEETHING_PLAGUE             = 23072,
-    SPELL_ENTER_THE_LIGHT_DND           = 23107,
-    SPELL_BLESSING_OF_NORDRASSIL        = 23108,
-
-    NPC_INJURED_PEASANT                 = 14484,
-    NPC_PLAGUED_PEASANT                 = 14485,
-    NPC_SCOURGE_ARCHER                  = 14489,
-    NPC_SCOURGE_FOOTSOLDIER             = 14486,
-    NPC_THE_CLEANER                     = 14503,            // can be summoned if the priest has more players in the party for help. requires further research
-
-    QUEST_BALANCE_OF_LIGHT_AND_SHADOW   = 7622,
-
-    MAX_PEASANTS                        = 12,
-    MAX_ARCHERS                         = 8
+    QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW = 7622,
+    NPC_PEASANT                           = 14485,
+    NPC_FOOTSOLDIER                       = 14486,
+    ACTION_START_SPAWN                    = 0,
+    EVENT_SPAWN_PEASANT                   = 1,
+    FAIL_QUEST_EVENT                      = 2,
+    COMPLETE_QUEST_EVENT                  = 3
 };
 
-enum Events
-{
-    EVENT_SPAWN_PEASANT_1               = 1,
-    EVENT_SPAWN_PEASANT_2               = 2
+Position const PeasantsPos[12] =
+{   
+    {3364.47f, -3048.50f, 165.17f, 1.86f},
+    {3363.242f, -3052.06f, 165.264f, 2.095f},
+    {3362.33f, -3049.37f, 165.23f, 1.54f},
+    {3360.13f, -3052.63f, 165.31f, 1.88f},
+    {3361.05f, -3055.49f, 165.31f, 2.041f},
+    {3363.92f, -3046.96f, 165.09f, 2.13f},
+    {3366.83f, -3052.23f, 165.41f, 2.044f},
+    {3367.79f, -3047.80f, 165.16f, 2.08f},
+    {3358.76f, -3050.37f, 165.2f, 2.05f},
+    {3366.63f, -3045.29f, 164.99f, 2.19f},
+    {3357.45f, -3052.82f, 165.50f, 2.006f},
+    {3363.00f, -3044.21f, 164.80f, 2.182f}
 };
-
-enum Actions
-{
-    ACTION_START_EVENT                 = 1
-};
-
-Position const ArcherSpawn[8][4] =
-{
-    {3327.42f, -3021.11f, 170.57f, 6.01f},
-    {3335.4f,  -3054.3f,  173.63f, 0.49f},
-    {3351.3f,  -3079.08f, 178.67f, 1.15f},
-    {3358.93f, -3076.1f,  174.87f, 1.57f},
-    {3371.58f, -3069.24f, 175.20f, 1.99f},
-    {3369.46f, -3023.11f, 171.83f, 3.69f},
-    {3383.25f, -3057.01f, 181.53f, 2.21f},
-    {3380.03f, -3062.73f, 181.90f, 2.31f}
-};
-
-Position const PeasantSpawnLoc[3] = {3360.12f, -3047.79f, 165.26f};
-Position const PeasantMoveLoc[3] = {3335.0f, -2994.04f, 161.14f};
 
 class npc_eris_havenfire : public CreatureScript
 {
@@ -247,42 +224,34 @@ class npc_eris_havenfire : public CreatureScript
 
         bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) 
         {
-            if (quest->GetQuestId() == QUEST_BALANCE_OF_LIGHT_AND_SHADOW)
+            if (quest->GetQuestId() == QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW)
             {
-                creature->AI()->DoAction(ACTION_START_EVENT);
+                creature->AI()->DoAction(ACTION_START_SPAWN);
             }
         return true;
         }
-		
+
     struct npc_eris_havenfireAI : public ScriptedAI
     {
         npc_eris_havenfireAI(Creature* creature) : ScriptedAI(creature)
         {
             Initialize();
         }
-		
-        uint32 uiEventTimer;
-        uint32 uiSadEndTimer;
-        uint8 uiPhase;
-        uint8 uiCurrentWave;
-        uint8 uiKillCounter;
-        uint8 uiSaveCounter;
 
-        ObjectGuid uiPlayerGUID;
-        GuidList summonedGuidList;
+        EventMap _events;
+        uint8 failCounter;
+        uint8 winCounter;
+        uint8 SavePeasants;
+        uint8 DeadPeasants;
 
         void Initialize()
         {
-            uiEventTimer      = 0;
-            uiSadEndTimer     = 0;
-            uiPhase           = 0;
-            uiCurrentWave     = 0;
-            uiKillCounter     = 0;
-            uiSaveCounter     = 0;
+            _events.Reset();
+            failCounter  = 0;
+            winCounter   = 0;
+            SavePeasants = 50;
+            DeadPeasants = 15;
 
-            uiPlayerGUID.Clear();
-            summonedGuidList.clear();
-            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
         }
 		
         void Reset() override
@@ -290,201 +259,113 @@ class npc_eris_havenfire : public CreatureScript
             Initialize();
         }
 
-        void JustSummoned(Creature* summon) override
+        void SpawnPeasants()
         {
-            switch (summon->GetEntry())
-            {
-                case NPC_INJURED_PEASANT:
-                case NPC_PLAGUED_PEASANT:
-                    float fX, fY, fZ;
-                    summon->GetRandomPoint(PeasantMoveLoc[i], 10.0f, fX, fY, fZ);
-                    summon->GetMotionMaster()->MovePoint(1, fX, fY, fZ);
-                    summonedGuidList.push_back(summon->GetObjectGuid());
-                    break;
-                case NPC_SCOURGE_FOOTSOLDIER:
-                case NPC_THE_CLEANER:
-                    if (Player* player = me->GetMap()->GetPlayer(uiPlayerGUID))
-                        summon->AI()->AttackStart(player);
-                    break;
-                case NPC_SCOURGE_ARCHER:
-                    // ToDo: make these ones attack the peasants
-                    break;
-            }
-
-            summonedGuidList.push_back(summon->GetObjectGuid());
+            for (int i = 0; i < 12; ++i)
+                me->SummonCreature(NPC_PEASANT, PeasantsPos[i], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
         }
 
-        void SummonedMovementInform(Creature* summon, uint32 type, uint32 pointId)
+        void CompleteQuest()
         {
-            if (type != POINT_MOTION_TYPE || !pointId)
-                return;
-
-            if (pointId)
+            if (Map *map = me->GetMap())
             {
-                ++uiSaveCounter;
-                summon->GetMotionMaster()->Clear();
-
-                summon->RemoveAllAuras();
-                summon->CastSpell(summon, SPELL_ENTER_THE_LIGHT_DND, false);
-                summon->ForcedDespawn(10000);
-
-                // Event ended
-                if (uiSaveCounter >= 50 && uiCurrentWave == 5)
-                    DoBalanceEventEnd();
-                // Phase ended
-                else if (uiSaveCounter + uiKillCounter == uiCurrentWave * MAX_PEASANTS)
-                    DoHandlePhaseEnd();
-            }
-        }
-
-        void SummonedCreatureJustDied(Creature* summon)
-        {
-            if (summon->GetEntry() == NPC_INJURED_PEASANT || summon->GetEntry() == NPC_PLAGUED_PEASANT)
-            {
-                ++uiKillCounter;
-
-                // If more than 15 peasants have died, then fail the quest
-                if (uiKillCounter == MAX_PEASANTS)
+                Map::PlayerList const &PlayerList = map->GetPlayers();
+                for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
                 {
-                    if (Player* player = me->GetMap()->GetPlayer(uiPlayerGUID))
-                        player->FailQuest(QUEST_BALANCE_OF_LIGHT_AND_SHADOW);
-
-                    Talk(SAY_EVENT_FAIL_1);
-                    uiSadEndTimer = 4000;
-                }
-                else if (uiSaveCounter + uiKillCounter == uiCurrentWave * MAX_PEASANTS)
-                    DoHandlePhaseEnd();
-            }
-        }
-
-        void DoSummonWave(uint32 uiSummonId = 0)
-        {
-            float fX, fY, fZ;
-
-            if (!uiSummonId)
-            {
-                for (uint8 i = 0; i < MAX_PEASANTS; ++i)
-                {
-                    uint32 uiSummonEntry = roll_chance_i(70) ? NPC_INJURED_PEASANT : NPC_PLAGUED_PEASANT;
-                    me->GetRandomPoint(PeasantSpawnLoc[i], 10.0f, fX, fY, fZ);
-                    if (Creature* pTemp = me->SummonCreature(uiSummonEntry, fX, fY, fZ, 0, TEMPSUMMON_DEAD_DESPAWN, 0));
-                }
-
-                ++uiCurrentWave;
-            }
-            else if (uiSummonId == NPC_SCOURGE_FOOTSOLDIER)
-            {
-                uint8 uiRand = urand(2, 3);
-                for (uint8 i = 0; i < uiRand; ++i)
-                {
-                    me->GetRandomPoint(PeasantSpawnLoc[i], 15.0f, fX, fY, fZ);
-                    me->SummonCreature(NPC_SCOURGE_FOOTSOLDIER, fX, fY, fZ, 0, TEMPSUMMON_DEAD_DESPAWN, 0);
+                    if (Player *player = i->GetSource())
+                    {
+                        if (me->IsInRange(player, 0.0f, 200.0f))
+                            player->CompleteQuest(QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW);
+                    }
                 }
             }
-            else if (uiSummonId == NPC_SCOURGE_ARCHER)
+        }
+
+        void FailQuest()
+        {
+            std::list<Player*> players = me->GetNearestPlayersList(200.0f);
+            for (std::list<Player*>::const_iterator pitr = players.begin(); pitr != players.end(); ++pitr)
             {
-                for (uint8 i = 0; i < MAX_ARCHERS; ++i)
-                    me->SummonCreature(NPC_SCOURGE_ARCHER, ArcherSpawn[i], TEMPSUMMON_DEAD_DESPAWN, 0);
+                Player* player = *pitr;
+                if (player->GetQuestStatus(QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW) == QUEST_STATUS_INCOMPLETE)
+                {
+                    player->FailQuest(QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW);
+                }
             }
         }
 
-        void DoHandlePhaseEnd()
+        void DespawnSummons()
         {
-            if (Player* player = me->GetMap()->GetPlayer(uiPlayerGUID))
-                player->CastSpell(player, SPELL_BLESSING_OF_NORDRASSIL, true);
+            std::list<Creature*> SummonList;
+            me->GetCreatureListWithEntryInGrid(SummonList, NPC_PEASANT, 1000.0f);
+            me->GetCreatureListWithEntryInGrid(SummonList, NPC_FOOTSOLDIER, 1000.0f);
+            if (!SummonList.empty())
+                for (std::list<Creature*>::iterator itr = SummonList.begin(); itr != SummonList.end(); itr++)
+                    (*itr)->DespawnOrUnsummon();
+        }
 
-            Talk(SAY_PHASE_HEAL);
+        void SetData(uint32 type, uint32 data) override
+        {
+            if (type == 1 && data == 1)
+            {
+                ++failCounter;
+            }
 
-            // Send next wave
-            if (uiCurrentWave < 5)
-                DoSummonWave();
+            if (type == 2 && data == 2)
+            {
+                ++winCounter;
+            }
         }
 
         void DoAction(int32 action) override
         {
-            switch (action)
+            if (action == ACTION_START_SPAWN)
             {
-                case ACTION_START_EVENT:
-                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-					uiPlayerGUID = player->GetObjectGuid();
-                    uiEventTimer = 5000;
-                    break;
-            }
-        }
-
-        void DoBalanceEventEnd()
-        {
-            if (Player* player = me->GetMap()->GetPlayer(uiPlayerGUID))
-                player->AreaExploredOrEventHappens(QUEST_BALANCE_OF_LIGHT_AND_SHADOW);
-
-            Talk(SAY_EVENT_END);
-            DespawnSummons(true);
-            EnterEvadeMode();
-        }
-
-        void DespawnSummons(bool bIsEventEnd = false)
-        {
-            for (GuidList::const_iterator itr = summonedGuidList.begin(); itr != summonedGuidList.end(); ++itr)
-            {
-                if (Creature* pTemp = me->GetMap()->GetCreature(*itr))
-                {
-                    if (bIsEventEnd && (pTemp->GetEntry() == NPC_INJURED_PEASANT || pTemp->GetEntry() == NPC_PLAGUED_PEASANT))
-                        continue;
-
-                    pTemp->ForcedDespawn();
-                }
+                _events.ScheduleEvent(EVENT_SPAWN_PEASANT, 2*IN_MILLISECONDS);
             }
         }
 
         void UpdateAI(uint32 diff) override
         {
-            if (uiEventTimer)
+
+            if (winCounter == SavePeasants)
             {
-                if (uiEventTimer <= diff)
-                {
-                    switch (uiPhase)
-                    {
-                        case EVENT_SPAWN_PEASANT_1:
-                            DoSummonWave(NPC_SCOURGE_ARCHER);
-                            uiEventTimer = 5000;
-                            break;
-                        case EVENT_SPAWN_PEASANT_2:
-                            DoSummonWave();
-                            uiEventTimer = urand(60000, 80000);
-                            break;
-                        default:
-                            // The summoning timer of the soldiers isn't very clear
-                            DoSummonWave(NPC_SCOURGE_FOOTSOLDIER);
-                            uiEventTimer = urand(5000, 30000);
-                            break;
-                    }
-                    ++uiPhase;
-                }
-                else
-                    uiEventTimer -= diff;
+                EnterEvadeMode();
+                DespawnSummons();
+                CompleteQuest();
             }
 
-            // Handle event end in case of fail
-            if (uiSadEndTimer)
+            if (failCounter == DeadPeasants)
             {
-                if (uiSadEndTimer <= diff)
-                {
-                    Talk(SAY_EVENT_FAIL_2);
-                    me->ForcedDespawn(5000);
-                    DespawnSummons();
-                    uiSadEndTimer = 0;
-                }
-                else
-                    uiSadEndTimer -= diff;
+                EnterEvadeMode();
+                DespawnSummons();
+                FailQuest();
+            }
+
+            _events.Update(diff);
+
+            switch (_events.ExecuteEvent())
+            {
+                case EVENT_SPAWN_PEASANT:
+                    SpawnPeasants();
+                    _events.ScheduleEvent(EVENT_SPAWN_PEASANT, 60*IN_MILLISECONDS);
+                    break;
+                default:
+                    break;
+            }
+
+            if (UpdateVictim())
+            {
+                DoMeleeAttackIfReady();
             }
         }
     };
 
-
-    CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const
     {
         return new npc_eris_havenfireAI(creature);
     }
+
 };
 
 void AddSC_eastern_plaguelands()
