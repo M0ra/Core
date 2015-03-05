@@ -196,9 +196,6 @@ enum ErisHavenfire
     SAY_EVENT_END                       = 2,
     SAY_EVENT_FAIL_1                    = 3,
     SAY_EVENT_FAIL_2                    = 4,
-    SAY_PEASANT_APPEAR_1                = 5,
-    SAY_PEASANT_APPEAR_2                = 6,
-    SAY_PEASANT_APPEAR_3                = 7,
 
     // SPELL_DEATHS_DOOR                 = 23127,           // damage spells cast on the peasants
     // SPELL_SEETHING_PLAGUE             = 23072,
@@ -243,8 +240,6 @@ Position const ArcherSpawn[8][4] =
 Position const PeasantSpawnLoc[3] = {3360.12f, -3047.79f, 165.26f};
 Position const PeasantMoveLoc[3] = {3335.0f, -2994.04f, 161.14f};
 
-Position const int32 PeasantSpawnYells[3] = {SAY_PEASANT_APPEAR_1, SAY_PEASANT_APPEAR_2, SAY_PEASANT_APPEAR_3};
-
 class npc_eris_havenfire : public CreatureScript
 {
     public:
@@ -278,7 +273,6 @@ class npc_eris_havenfire : public CreatureScript
 
         void Initialize()
         {
-            _events.Reset();
             uiEventTimer      = 0;
             uiSadEndTimer     = 0;
             uiPhase           = 0;
@@ -343,7 +337,7 @@ class npc_eris_havenfire : public CreatureScript
             }
         }
 
-        void SummonedCreatureJustDied(Creature* summon) override
+        void SummonedCreatureJustDied(Creature* summon)
         {
             if (summon->GetEntry() == NPC_INJURED_PEASANT || summon->GetEntry() == NPC_PLAGUED_PEASANT)
             {
@@ -373,12 +367,7 @@ class npc_eris_havenfire : public CreatureScript
                 {
                     uint32 uiSummonEntry = roll_chance_i(70) ? NPC_INJURED_PEASANT : NPC_PLAGUED_PEASANT;
                     me->GetRandomPoint(PeasantSpawnLoc[0], PeasantSpawnLoc[1], PeasantSpawnLoc[2], 10.0f, fX, fY, fZ);
-                    if (Creature* pTemp = me->SummonCreature(uiSummonEntry, fX, fY, fZ, 0, TEMPSUMMON_DEAD_DESPAWN, 0))
-                    {
-                        // Only the first mob needs to yell
-                        if (!i)
-                            Talk(PeasantSpawnYells[urand(0, 2)]);
-                    }
+                    if (Creature* pTemp = me->SummonCreature(uiSummonEntry, fX, fY, fZ, 0, TEMPSUMMON_DEAD_DESPAWN, 0));
                 }
 
                 ++uiCurrentWave;
@@ -417,6 +406,7 @@ class npc_eris_havenfire : public CreatureScript
             {
                 case ACTION_START_EVENT:
                     me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+					uiPlayerGUID = player->GetObjectGuid();
                     uiEventTimer = 5000;
                     break;
             }
@@ -428,11 +418,11 @@ class npc_eris_havenfire : public CreatureScript
                 player->AreaExploredOrEventHappens(QUEST_BALANCE_OF_LIGHT_AND_SHADOW);
 
             Talk(SAY_EVENT_END);
-            DoDespawnSummons(true);
+            DespawnSummons(true);
             EnterEvadeMode();
         }
 
-        void DoDespawnSummons(bool bIsEventEnd = false)
+        void DespawnSummons(bool bIsEventEnd = false)
         {
             for (GuidList::const_iterator itr = summonedGuidList.begin(); itr != summonedGuidList.end(); ++itr)
             {
@@ -481,7 +471,7 @@ class npc_eris_havenfire : public CreatureScript
                 {
                     Talk(SAY_EVENT_FAIL_2);
                     me->ForcedDespawn(5000);
-                    DoDespawnSummons();
+                    DespawnSummons();
                     uiSadEndTimer = 0;
                 }
                 else
