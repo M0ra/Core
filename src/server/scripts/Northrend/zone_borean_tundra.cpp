@@ -2448,8 +2448,6 @@ public:
 
 enum KeristraszaData
 {
-    QUEST_SPRINGING_TRAP     = 11969,
-
     NPC_KERISTRASZA          = 26237,
     NPC_SARAGOSA             = 26299,
     NPC_MALYGOS              = 26310,
