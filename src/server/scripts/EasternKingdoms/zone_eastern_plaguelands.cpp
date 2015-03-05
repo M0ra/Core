@@ -283,7 +283,7 @@ class npc_eris_havenfire : public CreatureScript
 
         void FailQuest()
         {
-            std::list<Player*> players = me->GetPlayerListInGrid(200.0f);
+            std::list<Player*> players = me->GetPlayerListInGrid(PlayerList, 200.0f);
             for (std::list<Player*>::const_iterator pitr = players.begin(); pitr != players.end(); ++pitr)
             {
                 Player* player = *pitr;
