@@ -283,7 +283,7 @@ class npc_eris_havenfire : public CreatureScript
 
         void FailQuest()
         {
-            std::list<Player*> players = me->GetNearestPlayersList(200.0f);
+            std::list<Player*> players = me->FindNearestCreature(200.0f);
             for (std::list<Player*>::const_iterator pitr = players.begin(); pitr != players.end(); ++pitr)
             {
                 Player* player = *pitr;
