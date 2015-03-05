@@ -2475,7 +2475,7 @@ enum KeristraszaData
     YELL_KERISTRASZA_4       = 8
 };
 
-const Position posKeristrasza[6] =
+Position const posKeristrasza[6] =
 {
     {4157.00f, 7035.00f, 215.87f, 0.00f}, // Summon position
     {4063.72f, 7084.12f, 174.86f, 0.00f}, // Land position
