@@ -2270,6 +2270,15 @@ void WorldObject::GetPlayerListInGrid(std::list<Player*>& playerList, float maxS
     this->VisitNearbyWorldObject(maxSearchRange, searcher);
 }
 
+std::list<Player*> WorldObject::GetNearestPlayersList(float range, bool alive) 
+{
+    std::list<Player*> players;
+    Trinity::AnyPlayerInObjectRangeCheck checker(this, range, alive);
+    Trinity::PlayerListSearcher<Trinity::AnyPlayerInObjectRangeCheck> searcher(this, players, checker);
+    VisitNearbyWorldObject(range, searcher);
+    return players;
+}
+
 /*
 namespace Trinity
 {
