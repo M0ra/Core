@@ -297,7 +297,7 @@ class npc_eris_havenfire : public CreatureScript
                 case NPC_INJURED_PEASANT:
                 case NPC_PLAGUED_PEASANT:
                     float fX, fY, fZ;
-                    summon->GetRandomPoint(PeasantMoveLoc[0], PeasantMoveLoc[1], PeasantMoveLoc[2], 10.0f, fX, fY, fZ);
+                    summon->GetRandomPoint(PeasantMoveLoc[i], 10.0f, fX, fY, fZ);
                     summon->GetMotionMaster()->MovePoint(1, fX, fY, fZ);
                     summonedGuidList.push_back(summon->GetObjectGuid());
                     break;
@@ -366,7 +366,7 @@ class npc_eris_havenfire : public CreatureScript
                 for (uint8 i = 0; i < MAX_PEASANTS; ++i)
                 {
                     uint32 uiSummonEntry = roll_chance_i(70) ? NPC_INJURED_PEASANT : NPC_PLAGUED_PEASANT;
-                    me->GetRandomPoint(PeasantSpawnLoc[0], PeasantSpawnLoc[1], PeasantSpawnLoc[2], 10.0f, fX, fY, fZ);
+                    me->GetRandomPoint(PeasantSpawnLoc[i], 10.0f, fX, fY, fZ);
                     if (Creature* pTemp = me->SummonCreature(uiSummonEntry, fX, fY, fZ, 0, TEMPSUMMON_DEAD_DESPAWN, 0));
                 }
 
@@ -377,14 +377,14 @@ class npc_eris_havenfire : public CreatureScript
                 uint8 uiRand = urand(2, 3);
                 for (uint8 i = 0; i < uiRand; ++i)
                 {
-                    me->GetRandomPoint(PeasantSpawnLoc[0], PeasantSpawnLoc[1], PeasantSpawnLoc[2], 15.0f, fX, fY, fZ);
+                    me->GetRandomPoint(PeasantSpawnLoc[i], 15.0f, fX, fY, fZ);
                     me->SummonCreature(NPC_SCOURGE_FOOTSOLDIER, fX, fY, fZ, 0, TEMPSUMMON_DEAD_DESPAWN, 0);
                 }
             }
             else if (uiSummonId == NPC_SCOURGE_ARCHER)
             {
                 for (uint8 i = 0; i < MAX_ARCHERS; ++i)
-                    me->SummonCreature(NPC_SCOURGE_ARCHER, ArcherSpawn[i][0], ArcherSpawn[i][1], ArcherSpawn[i][2], ArcherSpawn[i][3], TEMPSUMMON_DEAD_DESPAWN, 0);
+                    me->SummonCreature(NPC_SCOURGE_ARCHER, ArcherSpawn[i], TEMPSUMMON_DEAD_DESPAWN, 0);
             }
         }
 
