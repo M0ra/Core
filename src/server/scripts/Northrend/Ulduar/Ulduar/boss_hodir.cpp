@@ -145,6 +145,7 @@ enum HodirActions
 #define ACHIEVEMENT_THIS_CACHE_WAS_RARE          RAID_MODE<uint32>(3182, 3184)
 #define ACHIEVEMENT_COOLEST_FRIENDS              RAID_MODE<uint32>(2963, 2965)
 #define FRIENDS_COUNT                            RAID_MODE<uint8>(4, 8)
+#define CHEST_CACHE_OF_WINTER                    RAID_MODE<uint32>(194200,194201)
 
 Position const SummonPositions[8] =
 {
@@ -365,7 +366,7 @@ class boss_hodir : public CreatureScript
                 events.ScheduleEvent(EVENT_FREEZE, 25000);
                 events.ScheduleEvent(EVENT_BLOWS, urand(60000, 65000));
                 events.ScheduleEvent(EVENT_FLASH_FREEZE, 45000);
-                events.ScheduleEvent(EVENT_RARE_CACHE, 180000);
+                events.ScheduleEvent(EVENT_RARE_CACHE, 165000);
                 events.ScheduleEvent(EVENT_BERSERK, 480000);
             }
 
@@ -386,7 +387,10 @@ class boss_hodir : public CreatureScript
                     Talk(SAY_DEATH);
 
                     if (iCouldSayThatThisCacheWasRare)
-                        instance->SetData(DATA_HODIR_RARE_CACHE, 1);
+                    {
+                        instance->DoCompleteAchievement(ACHIEVEMENT_THIS_CACHE_WAS_RARE);
+                        me->SummonGameObject(CHEST_CACHE_OF_WINTER, 1973.050049f, -192.887268f, 432.687012f, 5.383457f, 0, 0, 0, 0, 300);
+                    }
 
                     me->RemoveAllAuras();
                     me->RemoveAllAttackers();
@@ -465,7 +469,6 @@ class boss_hodir : public CreatureScript
                         case EVENT_RARE_CACHE:
                             Talk(SAY_HARD_MODE_FAILED);
                             iCouldSayThatThisCacheWasRare = false;
-                            instance->SetData(DATA_HODIR_RARE_CACHE, 0);
                             events.CancelEvent(EVENT_RARE_CACHE);
                             break;
                         case EVENT_BERSERK:
