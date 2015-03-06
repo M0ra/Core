@@ -155,6 +155,7 @@ class boss_steelbreaker : public CreatureScript
                 _Reset();
                 Initialize();
                 me->RemoveAllAuras();
+                instance->SetData(DATA_STUNNED, 1);
             }
 
             void EnterCombat(Unit* /*who*/) override
@@ -223,7 +224,10 @@ class boss_steelbreaker : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
+                {
                     Talk(SAY_STEELBREAKER_SLAY);
+                    instance->SetData(DATA_CRITERIA_ASSEMBLY_OF_IRON, 1);
+                }
 
                 if (phase == 3)
                     DoCast(me, SPELL_ELECTRICAL_CHARGE);
@@ -346,6 +350,7 @@ class boss_runemaster_molgeim : public CreatureScript
 
                 if (instance->GetBossState(BOSS_ASSEMBLY_OF_IRON) == DONE)
                 {
+                    instance->DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, NPC_STEELBREAKER, 1, me);
                     DoCastAOE(SPELL_KILL_CREDIT, true);
                     Talk(SAY_MOLGEIM_ENCOUNTER_DEFEATED);
                 }
@@ -368,7 +373,10 @@ class boss_runemaster_molgeim : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
+                {
+                    instance->SetData(DATA_CRITERIA_ASSEMBLY_OF_IRON, 1);
                     Talk(SAY_MOLGEIM_SLAY);
+                }
             }
 
             void UpdateAI(uint32 diff) override
@@ -519,7 +527,8 @@ class boss_stormcaller_brundir : public CreatureScript
 
                 if (instance->GetBossState(BOSS_ASSEMBLY_OF_IRON) == DONE)
                 {
-                    DoCastAOE(SPELL_KILL_CREDIT, true);
+                    instance->DoUpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, NPC_STEELBREAKER, 1, me);
+					DoCastAOE(SPELL_KILL_CREDIT, true);
                     Talk(SAY_BRUNDIR_ENCOUNTER_DEFEATED);
                 }
                 else
@@ -545,7 +554,16 @@ class boss_stormcaller_brundir : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
+                {
+                    instance->SetData(DATA_CRITERIA_ASSEMBLY_OF_IRON, 1);
                     Talk(SAY_BRUNDIR_SLAY);
+                }
+            }
+
+            void SpellHitTarget(Unit* target, SpellInfo const* spell) override
+            {
+                if ((target && target->GetTypeId() == TYPEID_PLAYER) && (spell->Id == SPELL_CHAIN_LIGHTNING || spell->Id == SPELL_LIGHTNING_WHIRL))
+                    instance->SetData(DATA_STUNNED, 0);
             }
 
             void UpdateAI(uint32 diff) override

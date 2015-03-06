@@ -98,8 +98,9 @@ enum Events
     EVENT_HEART_PHASE,
     EVENT_ENERGY_ORB,
     EVENT_DISPOSE_HEART,
+    EVENT_EXPOSE_HEART,
     EVENT_ENRAGE,
-    EVENT_ENTER_HARD_MODE,
+    EVENT_ENTER_HARD_MODE
 };
 
 enum Timers
@@ -109,6 +110,7 @@ enum Timers
     TIMER_SEARING_LIGHT                         = 20000,
     TIMER_GRAVITY_BOMB                          = 20000,
     TIMER_HEART_PHASE                           = 30000,
+    TIMER_HEART_CHANGE_SEATS                    = 1000,
     TIMER_ENERGY_ORB_MIN                        = 9000,
     TIMER_ENERGY_ORB_MAX                        = 10000,
     TIMER_ENRAGE                                = 600000,
@@ -116,7 +118,7 @@ enum Timers
     TIMER_VOID_ZONE                             = 3000,
 
     // Life Spark
-    TIMER_SHOCK                                 = 12000,
+    TIMER_SHOCK                                 = 1200,
 
     // Pummeller
     // Timers may be off
@@ -124,7 +126,7 @@ enum Timers
     TIMER_TRAMPLE                               = 22000,
     TIMER_UPPERCUT                              = 17000,
 
-    TIMER_SPAWN_ADD                             = 12000,
+    TIMER_SPAWN_ADD                             = 12000
 };
 
 enum Creatures
@@ -134,12 +136,12 @@ enum Creatures
     NPC_XT002_HEART                             = 33329,
     NPC_XS013_SCRAPBOT                          = 33343,
     NPC_XM024_PUMMELLER                         = 33344,
-    NPC_XE321_BOOMBOT                           = 33346,
+    NPC_XE321_BOOMBOT                           = 33346
 };
 
 enum Actions
 {
-    ACTION_ENTER_HARD_MODE,
+    ACTION_ENTER_HARD_MODE
 };
 
 enum XT002Data
@@ -147,7 +149,7 @@ enum XT002Data
     DATA_TRANSFERED_HEALTH,
     DATA_HARD_MODE,
     DATA_HEALTH_RECOVERED,
-    DATA_GRAVITY_BOMB_CASUALTY,
+    DATA_GRAVITY_BOMB_CASUALTY
 };
 
 enum Yells
@@ -168,13 +170,13 @@ enum Yells
 
 enum AchievementCredits
 {
-    ACHIEV_MUST_DECONSTRUCT_FASTER              = 21027,
+    ACHIEV_MUST_DECONSTRUCT_FASTER              = 21027
 };
 
 enum VehicleSeats
 {
     HEART_VEHICLE_SEAT_NORMAL   = 0,
-    HEART_VEHICLE_SEAT_EXPOSED  = 1,
+    HEART_VEHICLE_SEAT_EXPOSED  = 1
 };
 
 /*-------------------------------------------------------
@@ -243,6 +245,8 @@ class boss_xt002 : public CreatureScript
                 {
                     case ACTION_ENTER_HARD_MODE:
                         events.ScheduleEvent(EVENT_ENTER_HARD_MODE, 1);
+                        // Heart is already dead
+                        events.CancelEvent(EVENT_DISPOSE_HEART);
                         break;
                 }
             }
@@ -250,7 +254,10 @@ class boss_xt002 : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
+                {
+                    instance->SetData(DATA_CRITERIA_XT_002, 1);
                     Talk(SAY_SLAY);
+                }
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -261,6 +268,9 @@ class boss_xt002 : public CreatureScript
 
             void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/) override
             {
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
                 if (!_hardMode && _phase == 1 && !HealthAbovePct(100 - 25 * (_heartExposed+1)))
                     ExposeHeart();
             }
@@ -300,6 +310,10 @@ class boss_xt002 : public CreatureScript
                         case EVENT_DISPOSE_HEART:
                             SetPhaseOne();
                             break;
+                        case EVENT_EXPOSE_HEART:
+                            if(Unit* heart = me->GetVehicleKit()->GetPassenger(HEART_VEHICLE_SEAT_EXPOSED))
+                                heart->CastSpell(heart, SPELL_EXPOSED_HEART, false);    // Channeled
+                            break;
                         case EVENT_ENRAGE:
                             Talk(SAY_BERSERK);
                             DoCast(me, SPELL_ENRAGE);
@@ -322,12 +336,16 @@ class boss_xt002 : public CreatureScript
             {
                 if (apply && who->GetEntry() == NPC_XS013_SCRAPBOT)
                 {
-                    // Need this so we can properly determine when to expose heart again in damagetaken hook
-                    if (me->GetHealthPct() > (25 * (4 - _heartExposed)))
-                        ++_heartExposed;
+                    // Heal XT002 for 1% of his max HP
+                    me->ModifyHealth((uint32)(me->GetMaxHealth()/100));
+                    // Unapply vehicle aura again
+                    me->RemoveAurasDueToSpell(SPELL_SCRAPBOT_RIDE_VEHICLE);
+                    who->ToCreature()->DespawnOrUnsummon();
 
                     Talk(EMOTE_SCRAPBOT);
-                    _healthRecovered = true;
+
+                    if(!_healthRecovered)
+                        _healthRecovered = true;
                 }
             }
 
@@ -350,9 +368,6 @@ class boss_xt002 : public CreatureScript
             {
                 switch (type)
                 {
-                    case DATA_TRANSFERED_HEALTH:
-                        _transferHealth = data;
-                        break;
                     case DATA_GRAVITY_BOMB_CASUALTY:
                         _gravityBombCasualty = (data > 0) ? true : false;
                         break;
@@ -374,7 +389,6 @@ class boss_xt002 : public CreatureScript
                     heart->CastSpell(heart, SPELL_HEART_OVERLOAD, false);
                     heart->CastSpell(me, SPELL_HEART_LIGHTNING_TETHER, false);
                     heart->CastSpell(heart, SPELL_HEART_HEAL_TO_FULL, true);
-                    heart->CastSpell(heart, SPELL_EXPOSED_HEART, false);    // Channeled
                     heart->ChangeSeat(HEART_VEHICLE_SEAT_EXPOSED, true);
                     heart->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     heart->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_29);
@@ -383,9 +397,12 @@ class boss_xt002 : public CreatureScript
                 events.CancelEvent(EVENT_SEARING_LIGHT);
                 events.CancelEvent(EVENT_GRAVITY_BOMB);
                 events.CancelEvent(EVENT_TYMPANIC_TANTRUM);
+                
+                // After heart is exposed it should cast a spell
+                events.ScheduleEvent(EVENT_EXPOSE_HEART, TIMER_HEART_CHANGE_SEATS);
 
                 // Start "end of phase 2 timer"
-                events.ScheduleEvent(EVENT_DISPOSE_HEART, TIMER_HEART_PHASE);
+                events.ScheduleEvent(EVENT_DISPOSE_HEART, TIMER_HEART_PHASE + TIMER_HEART_CHANGE_SEATS);
 
                 // Phase 2 has officially started
                 _phase = 2;
@@ -417,12 +434,7 @@ class boss_xt002 : public CreatureScript
                 heart->RemoveAurasDueToSpell(SPELL_EXPOSED_HEART);
 
                 if (!_hardMode)
-                {
-                    if (!_transferHealth)
-                        _transferHealth = (heart->GetMaxHealth() - heart->GetHealth());
-
-                    me->ModifyHealth(-((int32)_transferHealth));
-                }
+                    me->DealDamage(me, heart->GetMaxHealth() - heart->GetHealth());
             }
 
             private:
@@ -433,7 +445,6 @@ class boss_xt002 : public CreatureScript
 
                 uint8 _phase;
                 uint8 _heartExposed;
-                uint32 _transferHealth;
         };
 };
 
@@ -464,7 +475,6 @@ class npc_xt002_heart : public CreatureScript
                 if (!xt002 || !xt002->AI())
                     return;
 
-                xt002->AI()->SetData(DATA_TRANSFERED_HEALTH, me->GetHealth());
                 xt002->AI()->DoAction(ACTION_ENTER_HARD_MODE);
             }
 
@@ -516,20 +526,19 @@ class npc_scrapbot : public CreatureScript
                     me->GetMotionMaster()->MoveFollow(pXT002, 0.0f, 0.0f);
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_XT_002, 1);
+            }
+			
             void UpdateAI(uint32 diff) override
             {
                 if (_rangeCheckTimer <= diff)
                 {
                     if (Creature* xt002 = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(BOSS_XT002)))
-                    {
                         if (me->IsWithinMeleeRange(xt002))
-                        {
                             DoCast(xt002, SPELL_SCRAPBOT_RIDE_VEHICLE);
-                            // Unapply vehicle aura again
-                            xt002->RemoveAurasDueToSpell(SPELL_SCRAPBOT_RIDE_VEHICLE);
-                            me->DespawnOrUnsummon();
-                        }
-                    }
                 }
                 else
                     _rangeCheckTimer -= diff;
@@ -582,6 +591,12 @@ class npc_pummeller : public CreatureScript
                 }
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_XT_002, 1);
+            }
+			
             void UpdateAI(uint32 diff) override
             {
                 if (!UpdateVictim())
@@ -693,6 +708,12 @@ class npc_boombot : public CreatureScript
                     me->GetMotionMaster()->MoveFollow(pXT002, 0.0f, 0.0f);
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_XT_002, 1);
+            }
+			
             void DamageTaken(Unit* /*who*/, uint32& damage) override
             {
                 if (damage >= (me->GetHealth() - me->GetMaxHealth() * 0.5f) && !_boomed)
@@ -714,7 +735,7 @@ class npc_boombot : public CreatureScript
                     // so that can't be the issue
                     // See BoomEvent class
                     // Schedule 1s delayed
-                    me->m_Events.AddEvent(new BoomEvent(me), me->m_Events.CalculateTime(1*IN_MILLISECONDS));
+                    me->m_Events.AddEvent(new BoomEvent(me), me->m_Events.CalculateTime(0.2*IN_MILLISECONDS));
                 }
             }
 
@@ -757,7 +778,16 @@ class npc_life_spark : public CreatureScript
 
             void Initialize()
             {
+                DoCastAOE(RAID_MODE(SPELL_STATIC_CHARGED_10, SPELL_STATIC_CHARGED_25));
                 _shockTimer = 0; // first one is immediate.
+                
+                me->SetInCombatWithZone();
+            }
+
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_XT_002, 1);
             }
 
             void Reset() override
@@ -780,6 +810,8 @@ class npc_life_spark : public CreatureScript
                     }
                 }
                 else _shockTimer -= diff;
+                
+                DoMeleeAttackIfReady();
             }
 
             private:
@@ -808,7 +840,7 @@ class spell_xt002_searing_light_spawn_life_spark : public SpellScriptLoader
                 if (Player* player = GetOwner()->ToPlayer())
                     if (Unit* xt002 = GetCaster())
                         if (xt002->HasAura(aurEff->GetAmount()))   // Heartbreak aura indicating hard mode
-                            player->CastSpell(player, SPELL_SUMMON_LIFE_SPARK, true);
+                            xt002->CastSpell(player, SPELL_SUMMON_LIFE_SPARK, true);
             }
 
             void Register() override
@@ -844,7 +876,7 @@ class spell_xt002_gravity_bomb_aura : public SpellScriptLoader
                 if (Player* player = GetOwner()->ToPlayer())
                     if (Unit* xt002 = GetCaster())
                         if (xt002->HasAura(aurEff->GetAmount()))   // Heartbreak aura indicating hard mode
-                            player->CastSpell(player, SPELL_SUMMON_VOID_ZONE, true);
+                            xt002->CastSpell(player, SPELL_SUMMON_VOID_ZONE, true);
             }
 
             void OnPeriodic(AuraEffect const* aurEff)
@@ -945,14 +977,22 @@ class spell_xt002_heart_overload_periodic : public SpellScriptLoader
 
                             // This should probably be incorporated in a dummy effect handler, but I've had trouble getting the correct target
                             // Weighed randomization (approximation)
-                            uint32 const spells[] = { SPELL_RECHARGE_SCRAPBOT, SPELL_RECHARGE_SCRAPBOT, SPELL_RECHARGE_SCRAPBOT,
-                                SPELL_RECHARGE_PUMMELER, SPELL_RECHARGE_BOOMBOT };
-
-                            for (uint8 i = 0; i < 5; ++i)
+                            for (uint8 i = 0; i <= 7; ++i)
                             {
-                                uint8 a = urand(0, 4);
-                                uint32 spellId = spells[a];
-                                toyPile->CastSpell(toyPile, spellId, true, NULL, NULL, instance->GetGuidData(BOSS_XT002));
+                                switch(i)
+                                {   
+                                    case 1: case 2: case 3: case 4: case 5:
+                                        toyPile->CastSpell(toyPile, SPELL_RECHARGE_SCRAPBOT, true, NULL, NULL, instance->GetGuidData(BOSS_XT002));
+                                        break;
+                                    case 6:
+                                        toyPile->CastSpell(toyPile, SPELL_RECHARGE_BOOMBOT, true, NULL, NULL, instance->GetGuidData(BOSS_XT002));
+                                        break;
+                                    case 7:
+                                        // 50% chance for Pummeler to spawn
+                                        if(urand(0,1))
+                                            toyPile->CastSpell(toyPile, SPELL_RECHARGE_PUMMELER, true, NULL, NULL, instance->GetGuidData(BOSS_XT002));
+                                        break;
+                                }
                             }
                         }
                     }

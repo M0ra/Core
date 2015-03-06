@@ -148,7 +148,9 @@ enum FreyaSpells
     // Attuned To Nature spells
     SPELL_ATTUNED_TO_NATURE_2_DOSE_REDUCTION     = 62524,
     SPELL_ATTUNED_TO_NATURE_10_DOSE_REDUCTION    = 62525,
-    SPELL_ATTUNED_TO_NATURE_25_DOSE_REDUCTION    = 62521
+    SPELL_ATTUNED_TO_NATURE_25_DOSE_REDUCTION    = 62521,
+
+    SPELL_LUMBERJACKED                           = 65296
 };
 
 enum FreyaNpcs
@@ -276,6 +278,10 @@ class boss_freya : public CreatureScript
 
             void Initialize()
             {
+                if (InstanceScript* instance = me->GetInstanceScript())
+                    if (instance->GetBossState(BOSS_FREYA) == DONE)
+                        return;
+			
                 trioWaveCount = 0;
                 trioWaveController = 0;
                 waveCount = 0;
@@ -320,7 +326,10 @@ class boss_freya : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
+                {
+                    instance->SetData(DATA_CRITERIA_FREYA, 1);
                     Talk(SAY_SLAY);
+                }
             }
 
             void DamageTaken(Unit* who, uint32& damage) override
@@ -334,6 +343,10 @@ class boss_freya : public CreatureScript
 
             void EnterCombat(Unit* who) override
             {
+                if (InstanceScript* instance = me->GetInstanceScript())
+                    if (instance->GetBossState(BOSS_FREYA) == DONE)
+                        return;
+			
                 _EnterCombat();
                 DoZoneInCombat();
                 Creature* Elder[3];
@@ -720,6 +733,8 @@ class boss_elder_brightleaf : public CreatureScript
                     if (Creature* Stonebark = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_STONEBARK)))
                         Stonebark->AI()->DoAction(ACTION_ELDER_DEATH);
                 }
+                if (elderCount >= 2 && lumberjackTimer < 15*IN_MILLISECONDS)
+                    DoCastAOE(SPELL_LUMBERJACKED);
             }
 
             void EnterCombat(Unit* /*who*/) override
@@ -827,6 +842,8 @@ class boss_elder_stonebark : public CreatureScript
                     if (Creature* Brightleaf = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_BRIGHTLEAF)))
                         Brightleaf->AI()->DoAction(ACTION_ELDER_DEATH);
                 }
+                if (elderCount >= 2 && lumberjackTimer < 15*IN_MILLISECONDS)
+                    DoCastAOE(SPELL_LUMBERJACKED);
             }
 
             void EnterCombat(Unit* /*who*/) override
@@ -940,6 +957,8 @@ class boss_elder_ironbranch : public CreatureScript
                     if (Creature* Stonebark = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_STONEBARK)))
                         Stonebark->AI()->DoAction(ACTION_ELDER_DEATH);
                 }
+                if (elderCount >= 2 && lumberjackTimer < 15*IN_MILLISECONDS)
+                    DoCastAOE(SPELL_LUMBERJACKED);
             }
 
             void EnterCombat(Unit* /*who*/) override
@@ -1024,6 +1043,12 @@ class npc_detonating_lasher : public CreatureScript
                 Initialize();
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
+            }
+			
             void UpdateAI(uint32 diff) override
             {
                 if (!UpdateVictim())
@@ -1091,6 +1116,12 @@ class npc_ancient_water_spirit : public CreatureScript
                 Initialize();
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
+            }
+			
             void UpdateAI(uint32 diff) override
             {
                 if (!UpdateVictim())
@@ -1159,6 +1190,12 @@ class npc_storm_lasher : public CreatureScript
             {
                 Initialize();
             }
+			
+            void KilledUnit(Unit* who) OVERRIDE
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
+            }
 
             void UpdateAI(uint32 diff) override
             {
@@ -1222,6 +1259,12 @@ class npc_snaplasher : public CreatureScript
                 else
                     waveCount = 0;
             }
+			
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
+            }
 
             void UpdateAI(uint32 /*diff*/) override
             {
@@ -1278,6 +1321,12 @@ class npc_ancient_conservator : public CreatureScript
                 SummonHealthySpores(2);
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
+            }
+			
             void SummonHealthySpores(uint8 sporesCount)
             {
                 for (uint8 n = 0; n < sporesCount; ++n)
@@ -1344,6 +1393,12 @@ class npc_sun_beam : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 DoCastAOE(SPELL_FREYA_UNSTABLE_ENERGY_VISUAL, true);
                 DoCast(SPELL_FREYA_UNSTABLE_ENERGY);
+            }
+
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
             }
         };
 
@@ -1447,6 +1502,12 @@ class npc_nature_bomb : public CreatureScript
                 bombTimer = urand(8000, 10000);
                 DoCast(SPELL_OBJECT_BOMB);
             }
+			
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
+            }
 
             void UpdateAI(uint32 diff) override
             {
@@ -1493,6 +1554,12 @@ class npc_unstable_sun_beam : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
+            }
+			
             void UpdateAI(uint32 diff) override
             {
                 if (despawnTimer <= diff)
