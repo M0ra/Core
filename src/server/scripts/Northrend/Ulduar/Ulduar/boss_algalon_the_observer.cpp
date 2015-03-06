@@ -28,31 +28,31 @@
 
 enum Texts
 {
-    SAY_BRANN_ALGALON_INTRO_1       = 0,
-    SAY_BRANN_ALGALON_INTRO_2       = 1,
-    SAY_BRANN_ALGALON_OUTRO         = 2,
+    SAY_BRANN_ALGALON_INTRO_1           = 0,
+    SAY_BRANN_ALGALON_INTRO_2           = 1,
+    SAY_BRANN_ALGALON_OUTRO             = 2,
 
-    SAY_ALGALON_INTRO_1             = 0,
-    SAY_ALGALON_INTRO_2             = 1,
-    SAY_ALGALON_INTRO_3             = 2,
-    SAY_ALGALON_START_TIMER         = 3,
-    SAY_ALGALON_AGGRO               = 4,
-    SAY_ALGALON_COLLAPSING_STAR     = 5,
-    EMOTE_ALGALON_COLLAPSING_STAR   = 6,
-    SAY_ALGALON_BIG_BANG            = 7,
-    EMOTE_ALGALON_BIG_BANG          = 8,
-    SAY_ALGALON_ASCEND              = 9,
-    EMOTE_ALGALON_COSMIC_SMASH      = 10,
-    SAY_ALGALON_PHASE_TWO           = 11,
-    SAY_ALGALON_OUTRO_1             = 12,
-    SAY_ALGALON_OUTRO_2             = 13,
-    SAY_ALGALON_OUTRO_3             = 14,
-    SAY_ALGALON_OUTRO_4             = 15,
-    SAY_ALGALON_OUTRO_5             = 16,
-    SAY_ALGALON_DESPAWN_1           = 17,
-    SAY_ALGALON_DESPAWN_2           = 18,
-    SAY_ALGALON_DESPAWN_3           = 19,
-    SAY_ALGALON_KILL                = 20,
+    SAY_ALGALON_INTRO_1                 = 0,
+    SAY_ALGALON_INTRO_2                 = 1,
+    SAY_ALGALON_INTRO_3                 = 2,
+    SAY_ALGALON_START_TIMER             = 3,
+    SAY_ALGALON_AGGRO                   = 4,
+    SAY_ALGALON_COLLAPSING_STAR         = 5,
+    EMOTE_ALGALON_COLLAPSING_STAR       = 6,
+    SAY_ALGALON_BIG_BANG                = 7,
+    EMOTE_ALGALON_BIG_BANG              = 8,
+    SAY_ALGALON_ASCEND                  = 9,
+    EMOTE_ALGALON_COSMIC_SMASH          = 10,
+    SAY_ALGALON_PHASE_TWO               = 11,
+    SAY_ALGALON_OUTRO_1                 = 12,
+    SAY_ALGALON_OUTRO_2                 = 13,
+    SAY_ALGALON_OUTRO_3                 = 14,
+    SAY_ALGALON_OUTRO_4                 = 15,
+    SAY_ALGALON_OUTRO_5                 = 16,
+    SAY_ALGALON_DESPAWN_1               = 17,
+    SAY_ALGALON_DESPAWN_2               = 18,
+    SAY_ALGALON_DESPAWN_3               = 19,
+    SAY_ALGALON_KILL                    = 20
 };
 
 enum Spells
@@ -96,7 +96,7 @@ enum Spells
 
     // Worm Hole
     SPELL_WORM_HOLE_TRIGGER             = 65251,
-    SPELL_SUMMON_UNLEASHED_DARK_MATTER  = 64450,
+    SPELL_SUMMON_UNLEASHED_DARK_MATTER  = 64450
 };
 
 uint32 const PhasePunchAlphaId[5] = {64435, 64434, 64428, 64421, 64417};
@@ -104,85 +104,86 @@ uint32 const PhasePunchAlphaId[5] = {64435, 64434, 64428, 64421, 64417};
 enum Events
 {
     // Celestial Planetarium Access
-    EVENT_DESPAWN_CONSOLE           = 1,
+    EVENT_DESPAWN_CONSOLE               = 1,
 
     // Brann Bronzebeard
-    EVENT_BRANN_MOVE_INTRO          = 2,
-    EVENT_SUMMON_ALGALON            = 3,
-    EVENT_BRANN_OUTRO_1             = 4,
-    EVENT_BRANN_OUTRO_2             = 5,
+    EVENT_BRANN_MOVE_INTRO              = 2,
+    EVENT_SUMMON_ALGALON                = 3,
+    EVENT_BRANN_OUTRO_1                 = 4,
+    EVENT_BRANN_OUTRO_2                 = 5,
 
     // Algalon the Observer
-    EVENT_INTRO_1                   = 6,
-    EVENT_INTRO_2                   = 7,
-    EVENT_INTRO_3                   = 8,
-    EVENT_INTRO_FINISH              = 9,
-    EVENT_START_COMBAT              = 10,
-    EVENT_INTRO_TIMER_DONE          = 11,
-    EVENT_QUANTUM_STRIKE            = 12,
-    EVENT_PHASE_PUNCH               = 13,
-    EVENT_SUMMON_COLLAPSING_STAR    = 14,
-    EVENT_BIG_BANG                  = 15,
-    EVENT_RESUME_UPDATING           = 16,
-    EVENT_ASCEND_TO_THE_HEAVENS     = 17,
-    EVENT_EVADE                     = 18,
-    EVENT_COSMIC_SMASH              = 19,
-    EVENT_UNLOCK_YELL               = 20,
-    EVENT_OUTRO_START               = 21,
-    EVENT_OUTRO_1                   = 22,
-    EVENT_OUTRO_2                   = 23,
-    EVENT_OUTRO_3                   = 24,
-    EVENT_OUTRO_4                   = 25,
-    EVENT_OUTRO_5                   = 26,
-    EVENT_OUTRO_6                   = 27,
-    EVENT_OUTRO_7                   = 28,
-    EVENT_OUTRO_8                   = 29,
-    EVENT_OUTRO_9                   = 30,
-    EVENT_OUTRO_10                  = 31,
-    EVENT_OUTRO_11                  = 32,
-    EVENT_OUTRO_12                  = 33,
-    EVENT_OUTRO_13                  = 34,
-    EVENT_OUTRO_14                  = 35,
-    EVENT_DESPAWN_ALGALON_1         = 36,
-    EVENT_DESPAWN_ALGALON_2         = 37,
-    EVENT_DESPAWN_ALGALON_3         = 38,
+    EVENT_INTRO_1                       = 6,
+    EVENT_INTRO_2                       = 7,
+    EVENT_INTRO_3                       = 8,
+    EVENT_INTRO_FINISH                  = 9,
+    EVENT_START_COMBAT                  = 10,
+    EVENT_INTRO_TIMER_DONE              = 11,
+    EVENT_QUANTUM_STRIKE                = 12,
+    EVENT_PHASE_PUNCH                   = 13,
+    EVENT_SUMMON_COLLAPSING_STAR        = 14,
+    EVENT_BIG_BANG                      = 15,
+    EVENT_RESUME_UPDATING               = 16,
+    EVENT_ASCEND_TO_THE_HEAVENS         = 17,
+    EVENT_EVADE                         = 18,
+    EVENT_COSMIC_SMASH                  = 19,
+    EVENT_UNLOCK_YELL                   = 20,
+    EVENT_OUTRO_START                   = 21,
+    EVENT_OUTRO_1                       = 22,
+    EVENT_OUTRO_2                       = 23,
+    EVENT_OUTRO_3                       = 24,
+    EVENT_OUTRO_4                       = 25,
+    EVENT_OUTRO_5                       = 26,
+    EVENT_OUTRO_6                       = 27,
+    EVENT_OUTRO_7                       = 28,
+    EVENT_OUTRO_8                       = 29,
+    EVENT_OUTRO_9                       = 30,
+    EVENT_OUTRO_10                      = 31,
+    EVENT_OUTRO_11                      = 32,
+    EVENT_OUTRO_12                      = 33,
+    EVENT_OUTRO_13                      = 34,
+    EVENT_OUTRO_14                      = 35,
+    EVENT_DESPAWN_ALGALON_1             = 36,
+    EVENT_DESPAWN_ALGALON_2             = 37,
+    EVENT_DESPAWN_ALGALON_3             = 38,
 
     // Living Constellation
-    EVENT_ARCANE_BARRAGE            = 39,
+    EVENT_ARCANE_BARRAGE                = 39,
+    EVENT_SUMMON_CONSTELLATION          = 40
 };
 
 enum Actions
 {
-    ACTION_START_INTRO      = 0,
-    ACTION_FINISH_INTRO     = 1,
-    ACTION_ACTIVATE_STAR    = 2,
-    ACTION_BIG_BANG         = 3,
-    ACTION_ASCEND           = 4,
-    ACTION_OUTRO            = 5,
+    ACTION_START_INTRO                  = 0,
+    ACTION_FINISH_INTRO                 = 1,
+    ACTION_ACTIVATE_STAR                = 2,
+    ACTION_BIG_BANG                     = 3,
+    ACTION_ASCEND                       = 4,
+    ACTION_OUTRO                        = 5
 };
 
 enum Points
 {
-    POINT_BRANN_INTRO           = 0,
-    MAX_BRANN_WAYPOINTS_INTRO   = 10,
-    POINT_BRANN_OUTRO           = 10,
-    POINT_BRANN_OUTRO_END       = 11,
+    POINT_BRANN_INTRO                   = 0,
+    MAX_BRANN_WAYPOINTS_INTRO           = 10,
+    POINT_BRANN_OUTRO                   = 10,
+    POINT_BRANN_OUTRO_END               = 11,
 
-    POINT_ALGALON_LAND          = 1,
-    POINT_ALGALON_OUTRO         = 2,
+    POINT_ALGALON_LAND                  = 1,
+    POINT_ALGALON_OUTRO                 = 2
 };
 
 enum EncounterPhases
 {
-    PHASE_NORMAL             = 0,
-    PHASE_ROLE_PLAY          = 1,
-    PHASE_BIG_BANG           = 2
+    PHASE_NORMAL                        = 0,
+    PHASE_ROLE_PLAY                     = 1,
+    PHASE_BIG_BANG                      = 2
 };
 
 enum AchievmentInfo
 {
-    EVENT_ID_SUPERMASSIVE_START = 21697,
-    DATA_HAS_FED_ON_TEARS       = 30043005,
+    EVENT_ID_SUPERMASSIVE_START         = 21697,
+    DATA_HAS_FED_ON_TEARS               = 30043005
 };
 
 
@@ -198,7 +199,7 @@ Position const BrannIntroWaypoint[MAX_BRANN_WAYPOINTS_INTRO] =
     {1631.497f, -214.2221f, 418.1152f, 0.0f},
     {1632.676f, -190.5927f, 425.8831f, 0.0f},
     {1632.814f, -173.9334f, 427.2621f, 0.0f},
-    {1635.000f, -169.5145f, 427.2523f, 0.0f},
+    {1635.000f, -169.5145f, 427.2523f, 0.0f}
 };
 Position const AlgalonSummonPos = {1632.531f, -304.8516f, 450.1123f, 1.530165f};
 Position const AlgalonLandPos   = {1632.668f, -302.7656f, 417.3211f, 1.530165f};
@@ -216,23 +217,29 @@ Position const ConstellationPos[LIVING_CONSTELLATION_COUNT] =
     {1592.242f, -325.5323f, 446.9508f, 0.226893f},
     {1635.821f, -363.3442f, 424.3459f, 1.466077f},
     {1672.188f, -357.2484f, 436.7337f, 2.338741f},
-    {1615.800f, -348.0065f, 442.9586f, 1.134464f},
+    {1615.800f, -348.0065f, 442.9586f, 1.134464f}
 };
-
+#define LIVING_CONSTELLATION_COUNT1 3
+Position const ConstellationPos1[LIVING_CONSTELLATION_COUNT1] =
+{
+    { 1659.492920f, -287.224304f, 417.321198f, 0.0f },
+    { 1623.465210f, -343.633881f, 417.321198f, 0.0f },
+    { 1596.020020f, -313.642731f, 417.322144f, 0.0f }
+};
 #define COLLAPSING_STAR_COUNT 4
 Position const CollapsingStarPos[COLLAPSING_STAR_COUNT] =
 {
     {1649.438f, -319.8127f, 418.3941f, 1.082104f},
     {1647.005f, -288.6790f, 417.3955f, 3.490659f},
     {1622.451f, -321.1563f, 417.6188f, 4.677482f},
-    {1615.060f, -291.6816f, 417.7796f, 3.490659f},
+    {1615.060f, -291.6816f, 417.7796f, 3.490659f}
 };
 Position const AlgalonOutroPos = {1633.64f, -317.78f, 417.3211f, 0.0f};
 Position const BrannOutroPos[3] =
 {
     {1632.023f, -243.7434f, 417.9118f, 0.0f},
     {1631.986f, -297.7831f, 417.3210f, 0.0f},
-    {1633.832f, -216.2948f, 417.0463f, 0.0f},
+    {1633.832f, -216.2948f, 417.0463f, 0.0f}
 };
 
 class ActivateLivingConstellation : public BasicEvent
@@ -418,6 +425,7 @@ class boss_algalon_the_observer : public CreatureScript
                 events.ScheduleEvent(EVENT_QUANTUM_STRIKE, 3500 + introDelay);
                 events.ScheduleEvent(EVENT_PHASE_PUNCH, 15500 + introDelay);
                 events.ScheduleEvent(EVENT_SUMMON_COLLAPSING_STAR, 18000 + introDelay);
+                events.ScheduleEvent(EVENT_SUMMON_CONSTELLATION, 50000 + introDelay);
                 events.ScheduleEvent(EVENT_BIG_BANG, 90000 + introDelay);
                 events.ScheduleEvent(EVENT_ASCEND_TO_THE_HEAVENS, 360000 + introDelay);
                 events.ScheduleEvent(EVENT_COSMIC_SMASH, 25000 + introDelay);
@@ -517,6 +525,7 @@ class boss_algalon_the_observer : public CreatureScript
                     summons.DespawnEntry(NPC_BLACK_HOLE);
                     summons.DespawnEntry(NPC_ALGALON_VOID_ZONE_VISUAL_STALKER);
                     events.CancelEvent(EVENT_SUMMON_COLLAPSING_STAR);
+                    events.CancelEvent(EVENT_SUMMON_CONSTELLATION);
                     std::list<Creature*> stalkers;
                     me->GetCreatureListWithEntryInGrid(stalkers, NPC_ALGALON_STALKER, 200.0f);
                     for (std::list<Creature*>::iterator itr = stalkers.begin(); itr != stalkers.end(); ++itr)
@@ -615,6 +624,11 @@ class boss_algalon_the_observer : public CreatureScript
                             for (uint32 i = 0; i < COLLAPSING_STAR_COUNT; ++i)
                                 me->SummonCreature(NPC_COLLAPSING_STAR, CollapsingStarPos[i], TEMPSUMMON_CORPSE_DESPAWN);
                             events.ScheduleEvent(EVENT_SUMMON_COLLAPSING_STAR, 60000);
+                            break;
+                        case EVENT_SUMMON_CONSTELLATION:
+                            for (uint32 i = 0; i < LIVING_CONSTELLATION_COUNT1; ++i)
+                                me->SummonCreature(NPC_LIVING_CONSTELLATION, ConstellationPos1[i], TEMPSUMMON_CORPSE_DESPAWN);
+                            events.ScheduleEvent(EVENT_SUMMON_CONSTELLATION, 50000);
                             break;
                         case EVENT_BIG_BANG:
                         {
@@ -790,7 +804,7 @@ class npc_living_constellation : public CreatureScript
                     switch (eventId)
                     {
                         case EVENT_ARCANE_BARRAGE:
-                            DoCastAOE(SPELL_ARCANE_BARRAGE);
+                            DoCast(SPELL_ARCANE_BARRAGE);
                             _events.ScheduleEvent(EVENT_ARCANE_BARRAGE, 2500);
                             break;
                         case EVENT_RESUME_UPDATING:
