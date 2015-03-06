@@ -884,7 +884,7 @@ class instance_ulduar : public InstanceMapScript
                         IsDriveMeCrazyEligible = data ? true : false;
                         break;
                     case DATA_STUNNED:
-                        stunned = bool(data);
+                        stunned = data ? true : false;
                         break;
                     case DATA_CRITERIA_FLAME_LEVIATHAN:
                     case DATA_CRITERIA_IGNIS:
