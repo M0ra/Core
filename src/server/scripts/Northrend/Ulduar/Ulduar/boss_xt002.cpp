@@ -66,9 +66,10 @@ enum Spells
     SPELL_VOID_ZONE                             = 64203,
 
     // Life Spark
-    SPELL_STATIC_CHARGED                        = 64227,
+    SPELL_STATIC_CHARGED_10                     = 64227,
+    SPELL_STATIC_CHARGED_25                     = 64236,
     SPELL_SHOCK                                 = 64230,
-
+	
     //----------------XT-002 HEART-------------------
     SPELL_EXPOSED_HEART                         = 63849,
     // Channeled
@@ -199,7 +200,6 @@ class boss_xt002 : public CreatureScript
             boss_xt002_AI(Creature* creature) : BossAI(creature, BOSS_XT002)
             {
                 Initialize();
-                _transferHealth = 0;
             }
 
             void Initialize()
