@@ -80,7 +80,7 @@ enum Spells
     SPELL_DUSTY_EXPLOSION          = 63360,
     SPELL_DUST_CLOUD_IMPACT        = 54740,
     AURA_STEALTH_DETECTION         = 18950,
-    SPELL_RIDE_VEHICLE             = 46598,
+    SPELL_RIDE_VEHICLE             = 46598
 };
 
 enum Creatures
@@ -100,83 +100,83 @@ enum Creatures
     NPC_LOREKEEPER                 = 33686, // Hard mode starter
     NPC_BRANZ_BRONZBEARD           = 33579,
     NPC_DELORAH                    = 33701,
-    NPC_ULDUAR_GAUNTLET_GENERATOR  = 33571, // Trigger tied to towers
+    NPC_ULDUAR_GAUNTLET_GENERATOR  = 33571 // Trigger tied to towers
 };
 
 enum Towers
 {
-    GO_TOWER_OF_STORMS    = 194377,
-    GO_TOWER_OF_FLAMES    = 194371,
-    GO_TOWER_OF_FROST     = 194370,
-    GO_TOWER_OF_LIFE      = 194375,
+    GO_TOWER_OF_STORMS             = 194377,
+    GO_TOWER_OF_FLAMES             = 194371,
+    GO_TOWER_OF_FROST              = 194370,
+    GO_TOWER_OF_LIFE               = 194375
 };
 
 enum Events
 {
-    EVENT_PURSUE               = 1,
-    EVENT_MISSILE              = 2,
-    EVENT_VENT                 = 3,
-    EVENT_SPEED                = 4,
-    EVENT_SUMMON               = 5,
-    EVENT_SHUTDOWN             = 6,
-    EVENT_REPAIR               = 7,
-    EVENT_THORIM_S_HAMMER      = 8,    // Tower of Storms
-    EVENT_MIMIRON_S_INFERNO    = 9,    // Tower of Flames
-    EVENT_HODIR_S_FURY         = 10,   // Tower of Frost
-    EVENT_FREYA_S_WARD         = 11,   // Tower of Nature
+    EVENT_PURSUE                   = 1,
+    EVENT_MISSILE                  = 2,
+    EVENT_VENT                     = 3,
+    EVENT_SPEED                    = 4,
+    EVENT_SUMMON                   = 5,
+    EVENT_SHUTDOWN                 = 6,
+    EVENT_REPAIR                   = 7,
+    EVENT_THORIM_S_HAMMER          = 8,    // Tower of Storms
+    EVENT_MIMIRON_S_INFERNO        = 9,    // Tower of Flames
+    EVENT_HODIR_S_FURY             = 10,   // Tower of Frost
+    EVENT_FREYA_S_WARD             = 11    // Tower of Nature
 };
 
 enum Seats
 {
-    SEAT_PLAYER    = 0,
-    SEAT_TURRET    = 1,
-    SEAT_DEVICE    = 2,
-    SEAT_CANNON    = 7,
+    SEAT_PLAYER                    = 0,
+    SEAT_TURRET                    = 1,
+    SEAT_DEVICE                    = 2,
+    SEAT_CANNON                    = 7
 };
 
 enum Vehicles
 {
-    VEHICLE_SIEGE         = 33060,
-    VEHICLE_CHOPPER       = 33062,
-    VEHICLE_DEMOLISHER    = 33109,
+    VEHICLE_SIEGE                  = 33060,
+    VEHICLE_CHOPPER                = 33062,
+    VEHICLE_DEMOLISHER             = 33109
 };
 
 enum Misc
 {
-    DATA_SHUTOUT               = 29112912, // 2911, 2912 are achievement IDs
-    DATA_ORBIT_ACHIEVEMENTS    = 1,
-    VEHICLE_SPAWNS             = 5,
-    FREYA_SPAWNS               = 4
+    DATA_SHUTOUT                   = 29112912, // 2911, 2912 are achievement IDs
+    DATA_ORBIT_ACHIEVEMENTS        = 1,
+    VEHICLE_SPAWNS                 = 5,
+    FREYA_SPAWNS                   = 4
 
 };
 
 enum Yells
 {
-    SAY_AGGRO            = 0,
-    SAY_SLAY             = 1,
-    SAY_DEATH            = 2,
-    SAY_TARGET           = 3,
-    SAY_HARDMODE         = 4,
-    SAY_TOWER_NONE       = 5,
-    SAY_TOWER_FROST      = 6,
-    SAY_TOWER_FLAME      = 7,
-    SAY_TOWER_NATURE     = 8,
-    SAY_TOWER_STORM      = 9,
-    SAY_PLAYER_RIDING    = 10,
-    SAY_OVERLOAD         = 11,
-    EMOTE_PURSUE         = 12,
-    EMOTE_OVERLOAD       = 13,
-    EMOTE_REPAIR         = 14
+    SAY_AGGRO                      = 0,
+    SAY_SLAY                       = 1,
+    SAY_DEATH                      = 2,
+    SAY_TARGET                     = 3,
+    SAY_HARDMODE                   = 4,
+    SAY_TOWER_NONE                 = 5,
+    SAY_TOWER_FROST                = 6,
+    SAY_TOWER_FLAME                = 7,
+    SAY_TOWER_NATURE               = 8,
+    SAY_TOWER_STORM                = 9,
+    SAY_PLAYER_RIDING              = 10,
+    SAY_OVERLOAD                   = 11,
+    EMOTE_PURSUE                   = 12,
+    EMOTE_OVERLOAD                 = 13,
+    EMOTE_REPAIR                   = 14
 };
 
 enum MiscellanousData
 {
     // Other Actions are in Ulduar.h
-    ACTION_START_HARD_MODE    = 5,
-    ACTION_SPAWN_VEHICLES     = 6,
+    ACTION_START_HARD_MODE         = 5,
+    ACTION_SPAWN_VEHICLES          = 6,
     // Amount of seats depending on Raid mode
-    TWO_SEATS                 = 2,
-    FOUR_SEATS                = 4,
+    TWO_SEATS                      = 2,
+    FOUR_SEATS                     = 4
 };
 
 Position const Center = { 354.8771f, -12.90240f, 409.803650f, 0.0f };
@@ -188,7 +188,7 @@ Position const PosSiege[VEHICLE_SPAWNS] =
     {-784.37f, -33.31f, 429.92f, 5.096f},
     {-808.99f, -52.10f, 429.92f, 5.668f},
     {-798.59f, -44.00f, 429.92f, 5.663f},
-    {-812.83f, -77.71f, 429.92f, 0.046f},
+    {-812.83f, -77.71f, 429.92f, 0.046f}
 };
 
 Position const PosChopper[VEHICLE_SPAWNS] =
@@ -197,7 +197,7 @@ Position const PosChopper[VEHICLE_SPAWNS] =
     {-717.83f, -114.23f, 430.44f, 0.122f},
     {-717.83f, -109.70f, 430.22f, 0.122f},
     {-718.45f, -118.24f, 430.26f, 0.052f},
-    {-718.45f, -123.58f, 430.41f, 0.085f},
+    {-718.45f, -123.58f, 430.41f, 0.085f}
 };
 
 Position const PosDemolisher[VEHICLE_SPAWNS] =
@@ -206,7 +206,7 @@ Position const PosDemolisher[VEHICLE_SPAWNS] =
     {-766.70f, -225.03f, 430.50f, 1.710f},
     {-729.54f, -186.26f, 430.12f, 1.902f},
     {-756.01f, -219.23f, 430.50f, 2.369f},
-    {-798.01f, -227.24f, 429.84f, 1.446f},
+    {-798.01f, -227.24f, 429.84f, 1.446f}
 };
 
 Position const FreyaBeacons[FREYA_SPAWNS] =
@@ -214,7 +214,7 @@ Position const FreyaBeacons[FREYA_SPAWNS] =
     {377.02f, -119.10f, 409.81f, 0.0f},
     {185.62f, -119.10f, 409.81f, 0.0f},
     {377.02f, 54.78f, 409.81f, 0.0f},
-    {185.62f, 54.78f, 409.81f, 0.0f},
+    {185.62f, 54.78f, 409.81f, 0.0f}
 };
 
 class boss_flame_leviathan : public CreatureScript
@@ -1221,7 +1221,8 @@ class npc_lorekeeper : public CreatureScript
                         {
                             if (Creature* Branz = creature->FindNearestCreature(NPC_BRANZ_BRONZBEARD, 1000, true))
                             {
-                                Delorah->GetMotionMaster()->MovePoint(0, Branz->GetPositionX()-4, Branz->GetPositionY(), Branz->GetPositionZ());
+                                Branz->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+								Delorah->GetMotionMaster()->MovePoint(0, Branz->GetPositionX()-4, Branz->GetPositionY(), Branz->GetPositionZ());
                                 /// @todo Delorah->AI()->Talk(xxxx, Branz->GetGUID()); when reached at branz
                             }
                         }
@@ -1251,55 +1252,57 @@ class npc_lorekeeper : public CreatureScript
         }
 };
 
-//enable hardmode
-////npc_brann_bronzebeard this requires more work involving area triggers. if reached this guy speaks through his radio..
-//#define GOSSIP_ITEM_1  "xxxxx"
-//#define GOSSIP_ITEM_2  "xxxxx"
-//
-/*
+//enable normal mode
+//npc_brann_bronzebeard this requires more work involving area triggers. if reached this guy speaks through his radio..
+//minimum needed to start normal mode flame leviathan
+#define GOSSIP_ITEM_3  "Мы готовы начать штурм." // missing gossip id
+
+enum Brann
+{
+    BRANN_NPC_TEXT = 14369
+};
+
 class npc_brann_bronzebeard : public CreatureScript
 {
 public:
     npc_brann_bronzebeard() : CreatureScript("npc_brann_bronzebeard") { }
 
-    //bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
-    //{
-    //    player->PlayerTalkClass->ClearMenus();
-    //    switch (action)
-    //    {
-    //        case GOSSIP_ACTION_INFO_DEF+1:
-    //            if (player)
-    //            {
-    //                player->PrepareGossipMenu(creature);
-    //
-    //                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
-    //                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-    //            }
-    //            break;
-    //        case GOSSIP_ACTION_INFO_DEF+2:
-    //            if (player)
-    //                player->CLOSE_GOSSIP_MENU();
-    //            if (Creature* Lorekeeper = creature->FindNearestCreature(NPC_LOREKEEPER, 1000, true)) //lore keeper of lorgannon
-    //                Lorekeeper->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-    //            break;
-    //    }
-    //    return true;
-    //}
-    //bool OnGossipHello(Player* player, Creature* creature) override
-    //{
-    //    InstanceScript* instance = creature->GetInstanceScript();
-    //    if (instance && instance->GetData(BOSS_LEVIATHAN) !=DONE)
-    //    {
-    //        player->PrepareGossipMenu(creature);
-    //
-    //        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-    //        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-    //    }
-    //    return true;
-    //}
-    //
-}
-*/
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
+    {
+        player->CLOSE_GOSSIP_MENU();
+        InstanceScript* instance = creature->GetInstanceScript();
+        if (!instance)
+            return true;
+
+        switch (action)
+        {
+            case GOSSIP_ACTION_INFO_DEF + 1:
+                instance->instance->LoadGrid(364, -16); // make sure leviathan is loaded
+                creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+
+                if (Creature* Lorekeeper = creature->FindNearestCreature(NPC_LOREKEEPER, 1000, true)) // lore keeper of lorgannon
+                {
+                    Lorekeeper->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    Lorekeeper->SetVisible(false);
+                }
+            break;
+        }
+        return true;
+    }
+
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        InstanceScript* instance = creature->GetInstanceScript();
+        if (instance && instance->GetData(BOSS_LEVIATHAN) !=DONE)
+        {
+            player->PrepareGossipMenu(creature);
+    
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            player->SEND_GOSSIP_MENU(BRANN_NPC_TEXT, creature->GetGUID());
+        }
+        return true;
+    }
+};
 
 class go_ulduar_tower : public GameObjectScript
 {
@@ -1834,7 +1837,7 @@ void AddSC_boss_flame_leviathan()
     new npc_freyas_ward();
     new npc_freya_ward_summon();
     new npc_lorekeeper();
-    // new npc_brann_bronzebeard();
+    new npc_brann_bronzebeard();
     new go_ulduar_tower();
 
     new achievement_three_car_garage_demolisher();
