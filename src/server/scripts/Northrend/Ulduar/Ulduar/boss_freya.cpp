@@ -781,6 +781,9 @@ class boss_elder_brightleaf : public CreatureScript
                     }
                 }
 
+                if (lumberjack)
+                    lumberjackTimer += diff;
+				
                 DoMeleeAttackIfReady();
             }
 
@@ -794,6 +797,11 @@ class boss_elder_brightleaf : public CreatureScript
                         break;
                 }
             }
+
+        private:
+            uint32 lumberjackTimer;
+            uint8 elderCount;
+            bool lumberjack;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -896,6 +904,9 @@ class boss_elder_stonebark : public CreatureScript
                     }
                 }
 
+                if (lumberjack)
+                    lumberjackTimer += diff;
+				
                 DoMeleeAttackIfReady();
             }
 
@@ -909,6 +920,11 @@ class boss_elder_stonebark : public CreatureScript
                         break;
                 }
             }
+			
+        private:
+            uint32 lumberjackTimer;
+            uint8 elderCount;
+            bool lumberjack;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -998,6 +1014,9 @@ class boss_elder_ironbranch : public CreatureScript
                     }
                 }
 
+                if (lumberjack)
+                    lumberjackTimer += diff;
+				
                 DoMeleeAttackIfReady();
             }
 
@@ -1011,6 +1030,11 @@ class boss_elder_ironbranch : public CreatureScript
                         break;
                 }
             }
+			
+        private:
+            uint32 lumberjackTimer;
+            uint8 elderCount;
+            bool lumberjack;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -1191,7 +1215,7 @@ class npc_storm_lasher : public CreatureScript
                 Initialize();
             }
 			
-            void KilledUnit(Unit* who) OVERRIDE
+            void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
                     me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);

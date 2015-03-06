@@ -231,7 +231,7 @@ class boss_kologarn : public CreatureScript
                 }
             }
 
-            uint32 GetData(uint32 type) override
+            uint32 GetData(uint32 type)
             {
                 switch (type)
                 {
@@ -258,6 +258,7 @@ class boss_kologarn : public CreatureScript
                     default:
                         break;
                 }
+            }
 
             ObjectGuid GetGUID(int32 type /*= 0 */) const override
             {
@@ -355,7 +356,7 @@ class boss_kologarn : public CreatureScript
             }
         };
 
-        CreatureAI* GetAI(Creature* creature) const override
+        CreatureAI* GetAI(Creature* creature) const
         {
             return GetUlduarAI<boss_kologarnAI>(creature);
         }

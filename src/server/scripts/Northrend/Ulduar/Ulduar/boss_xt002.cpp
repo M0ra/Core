@@ -778,7 +778,6 @@ class npc_life_spark : public CreatureScript
 
             void Initialize()
             {
-                DoCastAOE(RAID_MODE(SPELL_STATIC_CHARGED_10, SPELL_STATIC_CHARGED_25));
                 _shockTimer = 0; // first one is immediate.
                 
                 me->SetInCombatWithZone();
@@ -792,7 +791,7 @@ class npc_life_spark : public CreatureScript
 
             void Reset() override
             {
-                DoCast(me, SPELL_STATIC_CHARGED);
+                DoCastAOE(RAID_MODE(SPELL_STATIC_CHARGED_10, SPELL_STATIC_CHARGED_25));
                 Initialize();
             }
 
