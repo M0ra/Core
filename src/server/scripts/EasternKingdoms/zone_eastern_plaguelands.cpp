@@ -187,194 +187,71 @@ public:
 };
 
 /*######
-## npc_eris_heavenfire
+## npc_eris_havenfire
 ######*/
 
-enum BalanceOfLightAndShadow
+enum ErisHavenfireMisc
 {
-    SPELL_BLESSING_OF_NORDRASSIL      = 23108,
-    SPELL_DEATH_DOOR                  = 23127,
-	
-    NPC_ERIS                          = 14494,
-
-    NPC_INJURED_PEASANT               = 14484,
-    // NPC_PLAGUED_PEASANT               = 14485,
-    NPC_SCOURGE_ARCHER                = 14489,
-    NPC_SCOURGE_FOOTSOLDIER           = 14486,
-
-    QUEST_BALANCE_OF_LIGHT_AND_SHADOW = 7622
+    QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW = 7622,
+    NPC_PEASANT                           = 14485,
+    NPC_FOOTSOLDIER                       = 14486,
+    ACTION_START_SPAWN                    = 0,
+    EVENT_SPAWN_PEASANT                   = 1,
+    FAIL_QUEST_EVENT                      = 2,
+    COMPLETE_QUEST_EVENT                  = 3
 };
 
-float bolas_coords[13][4] =
-{
-    // Peasant Spawn Rectangle UpperLeft
-    {3350.240234, -3049.189941, 164.775314, 2.03},
-    // Peasant Spawn Rectangle LowerRight
-    {3368.810059, -3053.790039, 166.264008, 0.0},
-    // Peasant Destination Area Center
-    {3330.746826, -2974.629150, 160.388611, 0.0},
-    // Footsoldiers
-    {3347.603271, -3045.536377, 164.029877, 1.814429},
-    {3363.609131, -3037.187256, 163.541885, 2.277649},
-    {3349.105469, -3056.500977, 168.079468, 1.857460},
-    // Archer
-    {3347.865234, -3070.707275, 177.881882, 1.645396},
-    {3357.144287, -3063.327637, 172.499222, 1.841747},
-    {3371.682373, -3067.965332, 175.233582, 2.144123},
-    {3379.904053, -3059.370117, 181.981873, 2.646778},
-    {3334.646973, -3053.084717, 174.101074, 0.400536},
-    {3368.005371, -3022.475830, 171.617966, 4.268625},
-    {3327.000244, -3021.307861, 170.578796, 5.584163}
-};
-
-#define SAY_SPAWN1   "The Scourge is uppon us! Run! Run for your lives!"
-#define SAY_SPAWN2   "Please help us! The Prince has gone mad!"
-#define SAY_SPAWN3   "Seek sanctuary in Hearthglen! It is our only hope!"
-// #define SAY_SPAWN4 ""
-// #define SAY_SPAWN5 ""
-#define SAY_SAVED1   "Thank you, kind stranger. May your heroism never be forgotten."
-#define SAY_SAVED2   "The power of the light is truly great and merciful."
-#define SAY_SAVED3   "Stranger, find the fallen Prince Menethil and end his reign of terror."
-#define SAY_DEATH1   "Death take me! I cannot go on! I have nothing left..."
-#define SAY_DEATH2   "Should I live through this, I shall make it my live's sole ambition to destroy Arthas..."
-#define SAY_DEATH3   "The pain is unbearable!"
-#define SAY_DEATH4   "I won't make it... go... go on without me..."
-#define SAY_EMPOWER  "Be healed!"
-#define SAY_COMPLETE "We are saved! The peasants have escaped the Scourge!"
-// #define SAY_FAIL ""
-
-class npc_fleeing_peasant : public CreatureScript
-{
-public:
-    npc_fleeing_peasant() : CreatureScript("npc_fleeing_peasant") { }
-
-    struct npc_fleeing_peasantAI : public ScriptedAI
-    {
-    public:
-        npc_fleeing_peasantAI(Creature* creature) : ScriptedAI(creature)
-        {
-            Initialize();
-        }
-
-        uint16 sayTimer;
-        uint8  sayStep;
-
-        void Initialize()
-        {
-            sayTimer = 0;
-            me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
-            me->SetSpeed(MOVE_WALK, 0.45f);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
-            me->SetReactState(REACT_PASSIVE);
-            me->GetMotionMaster()->MovePoint(0, bolas_coords[2][0] + irand(-3, 3),  bolas_coords[2][1] + irand(-3, 3), bolas_coords[2][2]);
-        }
-
-        void Reset() override
-        {
-            Initialize();
-        }
-		
-        void StartOutro()
-        {
-            sayStep = 1;
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!sayStep)
-                return;
-
-            if (sayTimer > diff)
-            {
-                sayTimer -= diff;
-                return;
-            }
-            else
-                sayTimer = 3000;
-
-            switch (sayStep)
-            {
-                case 1: 
-                    me->TextEmote(SAY_SAVED1); 
-                    sayStep++; 
-                    break;
-                case 2: 
-                    me->TextEmote(SAY_SAVED2); 
-                    sayStep++; 
-                    break;
-                case 3: 
-                    me->TextEmote(SAY_SAVED3); 
-                    sayStep++; 
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        void DamageTaken(Unit* /*killer*/, uint32 &damage) override
-        {
-            if (damage < me->GetHealth())
-                return;
-
-            if (Creature* eris = me->FindNearestCreature(NPC_ERIS, 200.0f))
-                eris->AI()->DoAction(1);
-
-            switch (urand(0, 6))
-            {
-                case 0: 
-                    me->TextEmote(SAY_DEATH1); 
-                    break;
-                case 1: 
-                    me->TextEmote(SAY_DEATH2); 
-                    break;
-                case 2: 
-                    me->TextEmote(SAY_DEATH3); 
-                    break;
-                case 3: 
-                    me->TextEmote(SAY_DEATH4); 
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_fleeing_peasantAI(creature);
-    }
+Position const PeasantsPos[12] =
+{   
+    {3364.47f, -3048.50f, 165.17f, 1.86f},
+    {3363.242f, -3052.06f, 165.264f, 2.095f},
+    {3362.33f, -3049.37f, 165.23f, 1.54f},
+    {3360.13f, -3052.63f, 165.31f, 1.88f},
+    {3361.05f, -3055.49f, 165.31f, 2.041f},
+    {3363.92f, -3046.96f, 165.09f, 2.13f},
+    {3366.83f, -3052.23f, 165.41f, 2.044f},
+    {3367.79f, -3047.80f, 165.16f, 2.08f},
+    {3358.76f, -3050.37f, 165.2f, 2.05f},
+    {3366.63f, -3045.29f, 164.99f, 2.19f},
+    {3357.45f, -3052.82f, 165.50f, 2.006f},
+    {3363.00f, -3044.21f, 164.80f, 2.182f}
 };
 
 class npc_eris_havenfire : public CreatureScript
 {
-public:
-    npc_eris_havenfire() : CreatureScript("npc_eris_havenfire") { }
+    public:
+        npc_eris_havenfire() : CreatureScript("npc_eris_havenfire") { }
+
+        bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) 
+        {
+            if (quest->GetQuestId() == QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW)
+            {
+                creature->AI()->DoAction(ACTION_START_SPAWN);
+            }
+        return true;
+        }
 
     struct npc_eris_havenfireAI : public ScriptedAI
     {
-    public:
-        npc_eris_havenfireAI(Creature *creature) : ScriptedAI(creature)
+        npc_eris_havenfireAI(Creature* creature) : ScriptedAI(creature)
         {
             Initialize();
         }
 
-        bool    eventActive;
-        uint32  waveTimer;
-        uint8   waveCount;
-        uint8   saveCount;
-        uint8   killCount;
-        uint32  soldierTimer[3];
-        Player* priest;
+        EventMap _events;
+        uint8 failCounter;
+        uint8 winCounter;
+        uint8 SavePeasants;
+        uint8 DeadPeasants;
 
         void Initialize()
         {
-            priest = NULL;
-            eventActive = false;
-            soldierTimer = {0, 0 ,0};
-            waveTimer = 0;
-            waveCount = 0;
-            saveCount = 0;
-            killCount = 0;
+            _events.Reset();
+            failCounter  = 0;
+            winCounter   = 0;
+            SavePeasants = 50;
+            DeadPeasants = 15;
+
         }
 		
         void Reset() override
@@ -382,237 +259,113 @@ public:
             Initialize();
         }
 
-        void DoAction(int32 action) override
+        void SpawnPeasants()
         {
-            if (!eventActive || !priest || !priest->IsInWorld())
+            for (int i = 0; i < 12; ++i)
+                me->SummonCreature(NPC_PEASANT, PeasantsPos[i], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
+        }
+
+        void CompleteQuest()
+        {
+            if (Map *map = me->GetMap())
             {
-                priest = NULL;
-                eventActive = false;
-                return;
+                Map::PlayerList const &PlayerList = map->GetPlayers();
+                for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                {
+                    if (Player *player = i->GetSource())
+                    {
+                        if (me->IsInRange(player, 0.0f, 200.0f))
+                            player->CompleteQuest(QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW);
+                    }
+                }
+            }
+        }
+
+        void FailQuest()
+        {
+            std::list<Player*> players = me->GetNearestPlayersList(200.0f);
+            for (std::list<Player*>::const_iterator pitr = players.begin(); pitr != players.end(); ++pitr)
+            {
+                Player* player = *pitr;
+                if (player->GetQuestStatus(QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW) == QUEST_STATUS_INCOMPLETE)
+                {
+                    player->FailQuest(QUEST_THE_BALANCE_OF_LIGHT_AND_SHADOW);
+                }
+            }
+        }
+
+        void DespawnSummons()
+        {
+            std::list<Creature*> SummonList;
+            me->GetCreatureListWithEntryInGrid(SummonList, NPC_PEASANT, 1000.0f);
+            me->GetCreatureListWithEntryInGrid(SummonList, NPC_FOOTSOLDIER, 1000.0f);
+            if (!SummonList.empty())
+                for (std::list<Creature*>::iterator itr = SummonList.begin(); itr != SummonList.end(); itr++)
+                    (*itr)->DespawnOrUnsummon();
+        }
+
+        void SetData(uint32 type, uint32 data) override
+        {
+            if (type == 1 && data == 1)
+            {
+                ++failCounter;
             }
 
-            switch (action)
+            if (type == 2 && data == 2)
             {
-                case 0: 
-                    saveCount++; 
-					break;
-                case 1: 
-                    killCount++; 
+                ++winCounter;
+            }
+        }
+
+        void DoAction(int32 action) override
+        {
+            if (action == ACTION_START_SPAWN)
+            {
+                _events.ScheduleEvent(EVENT_SPAWN_PEASANT, 2*IN_MILLISECONDS);
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+
+            if (winCounter == SavePeasants)
+            {
+                EnterEvadeMode();
+                DespawnSummons();
+                CompleteQuest();
+            }
+
+            if (failCounter == DeadPeasants)
+            {
+                EnterEvadeMode();
+                DespawnSummons();
+                FailQuest();
+            }
+
+            _events.Update(diff);
+
+            switch (_events.ExecuteEvent())
+            {
+                case EVENT_SPAWN_PEASANT:
+                    SpawnPeasants();
+                    _events.ScheduleEvent(EVENT_SPAWN_PEASANT, 60*IN_MILLISECONDS);
                     break;
                 default:
                     break;
             }
 
-            if (killCount >= 15)
+            if (UpdateVictim())
             {
-                // FailQuest
-                //me->Talk(SAY_FAIL);
-                priest->FailQuest(QUEST_BALANCE_OF_LIGHT_AND_SHADOW);
-                eventActive = false;
-                priest = NULL;
+                DoMeleeAttackIfReady();
             }
-            else if (saveCount >= 50)
-            {
-                // award Quest
-                me->Talk(SAY_COMPLETE);
-                priest->CompleteQuest(QUEST_BALANCE_OF_LIGHT_AND_SHADOW);
-                eventActive = false;
-                priest = NULL;
-            }
-        }
-
-        void StartEvent(Player* player)
-        {
-            if (eventActive)
-                return;
-
-            // init vars
-            eventActive = true;
-            soldierTimer = {72000, 72000, 72000};
-            waveTimer = 10000;
-            waveCount = 0;
-            saveCount = 0;
-            killCount = 0;
-            priest = player;
-
-            // spawn archer
-            for (uint8 i = 6; i < 13; i++)
-            {
-                Position pos = GetPosition();
-                GetPositionX = bolas_coords[i][0];
-                GetPositionY = bolas_coords[i][1];
-                GetPositionZ = bolas_coords[i][2];
-                GetOrientation = bolas_coords[i][3];
-                if (Creature* player = me->SummonCreature(NPC_SCOURGE_ARCHER, pos, TEMPSUMMON_TIMED_DESPAWN, 5*MINUTE*IN_MILLISECONDS))
-                {
-                    player->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_DISABLE_MOVE);
-                    player->SetReactState(REACT_AGGRESSIVE);
-                }
-            }
-        }
-
-        void MoveInLineOfSight(Unit* who) override
-        {
-            /// out of range or already registered
-            if (!me->IsWithinDist(who, 10.0f) || !who->ToCreature() || who->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE))
-                return;
-
-            // irrelevant creature
-            Creature* player = who->ToCreature();
-            if (player->GetEntry() != NPC_INJURED_PEASANT)
-                return;
-
-            player->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            player->ForcedDespawn(10000);
-
-            // priest lost or event not active
-            if (!eventActive || !priest || !priest->IsInWorld())
-            {
-                priest = NULL;
-                eventActive = false;
-                return;
-            }
-
-            // register survivor
-            DoAction(0);
-
-            if (saveCount == 50)
-                CAST_AI(npc_fleeing_peasant::npc_fleeing_peasantAI, p->AI())->StartOutro();
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!eventActive || !priest || !priest->IsInWorld())
-            {
-                priest = NULL;
-                eventActive = false;
-                return;
-            }
-
-/* strange targeting
-            if (!priest->HasAuraEffect(SPELL_BLESSING_OF_NORDRASSIL, EFFECT_0) && (100.0f * priest->GetPower(POWER_MANA) / priest->GetMaxPower(POWER_MANA)) < 35.0f)
-            {
-                me->CastSpell(priest, SPELL_BLESSING_OF_NORDRASSIL, true);
-                me->Talk(SAY_EMPOWER, );
-            }
-*/
-
-            if (soldierTimer[0] <= diff)
-            {
-                Position pos = GetPosition();
-                GetPositionX = bolas_coords[3][0];
-                GetPositionY = bolas_coords[3][1];
-                GetPositionZ = bolas_coords[3][2];
-                GetOrientation = bolas_coords[3][3];
-
-                for (uint8 i = 0; (waveCount - 1) >= i; i++)
-                    if (Creature* scourge = me->SummonCreature(NPC_SCOURGE_FOOTSOLDIER, pos, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                        scourge->getThreatManager().addThreat(priest, 1.0f);
-
-                soldierTimer[0] = 20000 + urand(0, 20000);
-            }
-            else
-                soldierTimer[0] -= diff;
-
-            if (soldierTimer[1] <= diff)
-            {
-                Position pos = GetPosition();
-                GetPositionX = bolas_coords[4][0];
-                GetPositionY = bolas_coords[4][1];
-                GetPositionZ = bolas_coords[4][2];
-                GetOrientation = bolas_coords[4][3];
-
-                for (uint8 i = 0; (waveCount - 1) >= i; i++)
-                    if (Creature* scourge = me->SummonCreature(NPC_SCOURGE_FOOTSOLDIER, pos, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                        scourge->getThreatManager().addThreat(priest, 1.0f);
-
-                soldierTimer[1] = 20000 + urand(0, 20000);
-            }
-            else
-                soldierTimer[1] -= diff;
-
-            if (soldierTimer[2] <= diff)
-            {
-                Position pos = GetPosition();
-                GetPositionX = bolas_coords[5][0];
-                GetPositionY = bolas_coords[5][1];
-                GetPositionZ = bolas_coords[5][2];
-                GetOrientation = bolas_coords[5][3];
-
-                for (uint8 i = 0; (waveCount - 1) >= i; i++)
-                    if (Creature* scourge = me->SummonCreature(NPC_SCOURGE_FOOTSOLDIER, pos, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000))
-                        scourge->getThreatManager().addThreat(priest, 1.0f);
-
-                soldierTimer[2] = 20000 + urand(0, 20000);
-            }
-            else
-                soldierTimer[2] -= diff;
-
-            if (waveTimer <= diff)
-            {
-                // 6*12 => 72 Peasants sent, 14 may die => 58 are underway
-                if (waveCount >= 6)
-                    return;
-
-                priest->getHostileRefManager().deleteReferences();
-
-                for (uint8 i = 0; i <= 12; i++)
-                {
-                    Position pos = GetPosition();
-                    GetPositionX = bolas_coords[0][0] + (bolas_coords[1][0] - bolas_coords[0][0]) * urand(0, 100) / 100.0f;
-                    GetPositionY = bolas_coords[0][1] + (bolas_coords[1][1] - bolas_coords[0][1]) * urand(0, 100) / 100.0f;
-                    GetPositionZ = bolas_coords[0][2];
-                    GetOrientation = bolas_coords[0][3];
-                    if (Creature* peasant = me->SummonCreature(NPC_INJURED_PEASANT, pos, TEMPSUMMON_MANUAL_DESPAWN, 0))
-                    {
-                        peasant->setFaction(priest->getFaction());
-
-                        if (i == 0)
-                        {
-                            switch (waveCount)
-                            {
-                                case 0: 
-                                    peasant->Talk(SAY_SPAWN1); 
-                                    break;
-                                case 1: 
-                                    peasant->Talk(SAY_SPAWN2); 
-                                    break;
-                                /*case 2:                                                
-                                    break;*/
-                                case 3: 
-                                    peasant->Talk(SAY_SPAWN3); 
-                                    break;
-                                /*case 4:
-                                    break;
-                                case 5:
-                                    break;*/
-                                default:
-                                    break;
-                            }
-                        }
-
-                        if (!urand(0, 3))
-                            peasant->CastSpell(peasant, SPELL_DEATH_DOOR, true);
-                    }
-                }
-                waveCount++;
-                waveTimer = 60000;
-            }
-            else
-                waveTimer -= diff;
         }
     };
 
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const *quest)
-    {
-        if (quest->GetQuestId() == QUEST_BALANCE_OF_LIGHT_AND_SHADOW)
-            CAST_AI(npc_eris_havenfire::npc_eris_havenfireAI, creature->AI())->StartEvent(player);
-    }
-
-    CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const
     {
         return new npc_eris_havenfireAI(creature);
     }
+
 };
 
 void AddSC_eastern_plaguelands()
