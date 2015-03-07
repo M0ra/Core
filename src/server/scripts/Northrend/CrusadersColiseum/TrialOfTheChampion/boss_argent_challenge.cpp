@@ -49,14 +49,15 @@ enum Spells
     SPELL_SUMMON_MEMORY         = 66545,
     
     //Npc_argent_soldier
-    SPELL_STRIKE                = 67237,
-    SPELL_CLEAVE                = 15284,
     SPELL_PUMMEL                = 67235,
-    SPELL_LIGHT_H               = 67290,
-    SPELL_LIGHT                 = 67247,
     SPELL_FLURRY                = 67233,
     SPELL_FINAL                 = 67255,
     SPELL_DIVINE                = 67251,
+	
+    // Lightwielder
+    SPELL_LIGHT                 = 67247,
+    SPELL_CLEAVE                = 15284,
+    SPELL_STRIKE                = 67237,
 	
     // Priest soldier
     SPELL_HOLY_SMITE            = 36176,
@@ -620,14 +621,14 @@ class npc_argent_soldier : public CreatureScript
 
         uint8 uiWaypoint;
 
-        uint32 uiStrikeTimer;
-        uint32 uiCleaveTimer;
+        uint32 timerCleave;
+        uint32 timerUnbalancingStrike;
         uint32 uiPummelTimer;
         uint32 timerShadowWord;
         uint32 timerMindControl;
         uint32 timerSmite;
         uint32 timerFountain;
-        uint32 uiLightTimer;
+        uint32 timerBlazingLight;
         uint32 uiFlurryTimer;
         uint32 uiFinalTimer;
         uint32 uiDivineTimer;
@@ -636,14 +637,14 @@ class npc_argent_soldier : public CreatureScript
 
         void Reset() override
         {
-            uiStrikeTimer = 5000;
-            uiCleaveTimer = 6000;
+            timerCleave = 5000;
+            timerUnbalancingStrike = 6000;
             uiPummelTimer = 10000;
             timerShadowWord = 60000;
             timerMindControl = 70000;
             timerSmite = 6000;
             timerFountain = 9000;
-            uiLightTimer = 3000;
+            timerBlazingLight = 3000;
    	        uiFlurryTimer = 6000;
             uiFinalTimer = 30000;
             uiDivineTimer = 70000;
@@ -759,19 +760,17 @@ class npc_argent_soldier : public CreatureScript
             if (!UpdateVictim())
                 return;
 
-            if (uiCleaveTimer <= uiDiff)
+            if (timerUnbalancingStrike <= uiDiff)
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                    DoCast(target,SPELL_STRIKE);
-                uiCleaveTimer = 20000;
-            } else uiCleaveTimer -= uiDiff;
+                DoCastVictim(SPELL_STRIKE);
+                timerUnbalancingStrike = urand(3000, 6000);
+            } else timerUnbalancingStrike -= uiDiff;
 
-            if (uiStrikeTimer <= uiDiff)
+            if (timerCleave <= uiDiff)
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                    DoCast(target,SPELL_CLEAVE);
-                uiStrikeTimer = 25000;
-            } else uiStrikeTimer -= uiDiff;	
+                DoCastVictim(SPELL_CLEAVE);
+                timerCleave = urand(7000, 8500);
+            } else timerCleave -= uiDiff;	
 
             if (uiPummelTimer <= uiDiff)
             {
@@ -807,11 +806,16 @@ class npc_argent_soldier : public CreatureScript
                 timerSmite = urand(1000, 2000);
             } else timerSmite -= uiDiff;
 
-            if (uiLightTimer <= uiDiff)
+            if (timerBlazingLight <= uiDiff)
             {
-                DoCast(me,DUNGEON_MODE(SPELL_LIGHT,SPELL_LIGHT_H));
-                uiLightTimer = urand (15000, 17000);
-            } else uiLightTimer -= uiDiff;
+                Unit* target = DoSelectLowestHpFriendly(40);
+
+                if(!target || target->GetHealth() > me->GetHealth())
+                    target = me;
+
+                DoCast(target,SPELL_LIGHT);
+                timerBlazingLight = urand(8000, 10000);
+            } else timerBlazingLight -= uiDiff;
 
             if (uiFlurryTimer <= uiDiff)
             {
