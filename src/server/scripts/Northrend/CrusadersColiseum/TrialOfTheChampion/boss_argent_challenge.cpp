@@ -52,14 +52,19 @@ enum Spells
     SPELL_STRIKE                = 67237,
     SPELL_CLEAVE                = 15284,
     SPELL_PUMMEL                = 67235,
-    SPELL_PAIN                  = 34942,
-    SPELL_MIND                  = 67229,
-    SPELL_SSMITE                = 67289,
     SPELL_LIGHT_H               = 67290,
     SPELL_LIGHT                 = 67247,
     SPELL_FLURRY                = 67233,
     SPELL_FINAL                 = 67255,
     SPELL_DIVINE                = 67251,
+	
+    // Priest soldier
+    SPELL_HOLY_SMITE            = 36176,
+    SPELL_HOLY_SMITE_H          = 67289,
+    SPELL_SHADOW_WORD_PAIN      = 34941,
+    SPELL_SHADOW_WORD_PAIN_H    = 34942,
+    SPELL_MIND                  = 67229,
+    SPELL_FOUNTAIN_OF_LIGHT     = 67194,
 
     //Memory
     SPELL_OLD_WOUNDS            = 66620,
@@ -618,9 +623,10 @@ class npc_argent_soldier : public CreatureScript
         uint32 uiStrikeTimer;
         uint32 uiCleaveTimer;
         uint32 uiPummelTimer;
-        uint32 uiPainTimer;
-        uint32 uiMindTimer;
-        uint32 uiSsmiteTimer;
+        uint32 timerShadowWord;
+        uint32 timerMindControl;
+        uint32 timerSmite;
+        uint32 timerFountain;
         uint32 uiLightTimer;
         uint32 uiFlurryTimer;
         uint32 uiFinalTimer;
@@ -633,9 +639,10 @@ class npc_argent_soldier : public CreatureScript
             uiStrikeTimer = 5000;
             uiCleaveTimer = 6000;
             uiPummelTimer = 10000;
-            uiPainTimer = 60000;
-            uiMindTimer = 70000;
-            uiSsmiteTimer = 6000;
+            timerShadowWord = 60000;
+            timerMindControl = 70000;
+            timerSmite = 6000;
+            timerFountain = 9000;
             uiLightTimer = 3000;
    	        uiFlurryTimer = 6000;
             uiFinalTimer = 30000;
@@ -773,26 +780,32 @@ class npc_argent_soldier : public CreatureScript
                 uiPummelTimer = 35000;
             } else uiPummelTimer -= uiDiff;	
 
-            if (uiPainTimer <= uiDiff)
+            if (timerShadowWord <= uiDiff)
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                    DoCast(target,SPELL_PAIN);
-                uiPainTimer = 30000;
-            } else uiPainTimer -= uiDiff;
+                    DoCast(target,DUNGEON_MODE(SPELL_SHADOW_WORD_PAIN,SPELL_SHADOW_WORD_PAIN_H));
+                timerShadowWord = urand(3000, 5000);
+            } else timerShadowWord -= uiDiff;
 
-            if (uiMindTimer <= uiDiff)
+            if (timerFountain <= diff)
+            {
+                DoCast(SPELL_FOUNTAIN_OF_LIGHT);
+                timerFountain = urand(40000, 45000);
+            } else timerFountain -= diff;
+			
+            if (timerMindControl <= uiDiff)
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
                     DoCast(target,SPELL_MIND);
-                uiMindTimer = 90000;
-            } else uiMindTimer -= uiDiff;
+                timerMindControl = urand(12000, 16000);
+            } else timerMindControl -= uiDiff;
 
-            if (uiSsmiteTimer <= uiDiff)
+            if (timerSmite <= uiDiff)
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                    DoCast(target,SPELL_SSMITE);
-                uiSsmiteTimer = 25000;
-            } else uiSsmiteTimer -= uiDiff;
+                    DoCast(target,DUNGEON_MODE(SPELL_HOLY_SMITE,SPELL_HOLY_SMITE_H));
+                timerSmite = urand(1000, 2000);
+            } else timerSmite -= uiDiff;
 
             if (uiLightTimer <= uiDiff)
             {
