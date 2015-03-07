@@ -15,66 +15,96 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Script Data Start
-SDName: Boss Commander Kolurg
-SDAuthor: LordVanMartin
-SD%Complete:
-SDComment:  Only Alliance Heroic
-SDCategory:
-Script Data End */
-
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "nexus.h"
 
 enum Spells
 {
     SPELL_BATTLE_SHOUT           = 31403,
     SPELL_CHARGE                 = 60067,
     SPELL_FRIGHTENING_SHOUT      = 19134,
-    SPELL_WHIRLWIND_1            = 38619,
-    SPELL_WHIRLWIND_2            = 38618
-
+    SPELL_WHIRLWIND              = 38618,
+    SPELL_FROZEN_PRISON          = 47543
 };
 
-//not used
-//Yell
-#define SAY_AGGRO                                          -1576024
-#define SAY_KILL                                           -1576025
-#define SAY_DEATH                                          -1576026
-
-class boss_commander_kolurg : public CreatureScript
+enum Yells
 {
-public:
-    boss_commander_kolurg() : CreatureScript("boss_commander_kolurg") { }
+    SAY_AGGRO                    = 0,
+    SAY_KILL                     = 1,
+    SAY_DEATH                    = 2
+};
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new boss_commander_kolurgAI(creature);
-    }
+enum Events
+{
+    EVENT_CHARGE_COMMANDER      = 1,
+    EVENT_WHIRLWIND,
+    EVENT_FRIGHTENING_SHOUT
+};
 
-    struct boss_commander_kolurgAI : public ScriptedAI
-    {
-        boss_commander_kolurgAI(Creature* creature) : ScriptedAI(creature) { }
+class boss_nexus_commanders : public CreatureScript
+{
+    public:
+        boss_nexus_commanders() : CreatureScript("boss_nexus_commanders") { }
 
-        void Reset() override { }
-        void EnterCombat(Unit* /*who*/) override { }
-        void AttackStart(Unit* /*who*/) override { }
-        void MoveInLineOfSight(Unit* /*who*/) override { }
-
-        void UpdateAI(uint32 /*diff*/) override
+        struct boss_nexus_commandersAI : public BossAI
         {
-            //Return since we have no target
-            if (!UpdateVictim())
-                return;
+            boss_nexus_commandersAI(Creature* creature) : BossAI(creature, DATA_COMMANDER) { }
 
-            DoMeleeAttackIfReady();
+            void EnterCombat(Unit* /*who*/) override
+            {
+                _EnterCombat();
+                Talk(SAY_AGGRO);
+                me->RemoveAurasDueToSpell(SPELL_FROZEN_PRISON);
+                DoCast(me, SPELL_BATTLE_SHOUT);
+
+                events.ScheduleEvent(EVENT_CHARGE_COMMANDER, urand(3000, 4000));
+                events.ScheduleEvent(EVENT_WHIRLWIND, urand(6000, 8000));
+                events.ScheduleEvent(EVENT_FRIGHTENING_SHOUT, urand(13000, 15000));
+            }
+
+            void ExecuteEvent(uint32 eventId) override
+            {
+                switch (eventId)
+                {
+                    case EVENT_CHARGE_COMMANDER:
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
+                            DoCast(target, SPELL_CHARGE);
+                        events.ScheduleEvent(EVENT_CHARGE_COMMANDER, urand(11000, 15000));
+                        break;
+                    case EVENT_WHIRLWIND:
+                        DoCast(me, SPELL_WHIRLWIND);
+                        events.ScheduleEvent(EVENT_WHIRLWIND, urand(19500, 25000));
+                        break;
+                    case EVENT_FRIGHTENING_SHOUT:
+                        DoCastAOE(SPELL_FRIGHTENING_SHOUT);
+                        events.ScheduleEvent(EVENT_FRIGHTENING_SHOUT, urand(45000, 55000));
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            void JustDied(Unit* /*killer*/) override
+            {
+                _JustDied();
+                Talk(SAY_DEATH);
+            }
+
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    Talk(SAY_KILL);
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return GetInstanceAI<boss_nexus_commandersAI>(creature);
         }
-        void JustDied(Unit* /*killer*/)  override { }
-    };
-
 };
 
-void AddSC_boss_commander_kolurg()
+void AddSC_boss_nexus_commanders()
 {
-    new boss_commander_kolurg();
+    new boss_nexus_commanders();
 }
