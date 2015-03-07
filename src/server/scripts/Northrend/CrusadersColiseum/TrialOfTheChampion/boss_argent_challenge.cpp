@@ -48,13 +48,13 @@ enum Spells
     SPELL_CONFESS               = 66680,
     SPELL_SUMMON_MEMORY         = 66545,
     
-    //Npc_argent_soldier
+    // Monk soldier
     SPELL_PUMMEL                = 67235,
     SPELL_FLURRY                = 67233,
     SPELL_FINAL                 = 67255,
     SPELL_DIVINE                = 67251,
 	
-    // Lightwielder
+    // Lightwielder soldier
     SPELL_LIGHT                 = 67247,
     SPELL_CLEAVE                = 15284,
     SPELL_STRIKE                = 67237,
@@ -623,31 +623,29 @@ class npc_argent_soldier : public CreatureScript
 
         uint32 timerCleave;
         uint32 timerUnbalancingStrike;
-        uint32 uiPummelTimer;
+        uint32 timerPummel;
         uint32 timerShadowWord;
         uint32 timerMindControl;
         uint32 timerSmite;
         uint32 timerFountain;
         uint32 timerBlazingLight;
-        uint32 uiFlurryTimer;
-        uint32 uiFinalTimer;
-        uint32 uiDivineTimer;
+        uint32 timerFlurryBlows;
 
+        bool shieldCasted;
+        bool defeated;
         bool bStarted;
 
         void Reset() override
         {
             timerCleave = 5000;
             timerUnbalancingStrike = 6000;
-            uiPummelTimer = 10000;
+            timerPummel = 10000;
             timerShadowWord = 60000;
             timerMindControl = 70000;
             timerSmite = 6000;
             timerFountain = 9000;
             timerBlazingLight = 3000;
-   	        uiFlurryTimer = 6000;
-            uiFinalTimer = 30000;
-            uiDivineTimer = 70000;
+   	    timerFlurryBlows = 6000;
             
             if (bStarted)
             {
@@ -753,11 +751,25 @@ class npc_argent_soldier : public CreatureScript
             uiWaypoint = uiType;
         }
 
+        void DamageTaken(Unit* /*attacker*/, uint32 & damage) override
+        {
+            if(damage >= me->GetHealth() && !shieldCasted)
+            {
+                damage = 0;
+                DoCast(me, SPELL_DIVINE, true);
+                DoCastVictim(SPELL_FINAL);
+                shieldCasted = true;
+            }
+        }
+
         void UpdateAI(uint32 uiDiff) override
         {
             npc_escortAI::UpdateAI(uiDiff);
 
             if (!UpdateVictim())
+                return;
+                
+            if(defeated || me->HasAura(SPELL_DIVINE))
                 return;
 
             if (timerUnbalancingStrike <= uiDiff)
@@ -772,12 +784,11 @@ class npc_argent_soldier : public CreatureScript
                 timerCleave = urand(7000, 8500);
             } else timerCleave -= uiDiff;	
 
-            if (uiPummelTimer <= uiDiff)
+            if (timerPummel <= uiDiff)
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                    DoCast(target,SPELL_PUMMEL);
-                uiPummelTimer = 35000;
-            } else uiPummelTimer -= uiDiff;	
+                DoCastVictim(SPELL_PUMMEL);
+                timerPummel = urand(3000, 6000);
+            } else timerPummel -= uiDiff;	
 
             if (timerShadowWord <= uiDiff)
             {
@@ -817,23 +828,11 @@ class npc_argent_soldier : public CreatureScript
                 timerBlazingLight = urand(8000, 10000);
             } else timerBlazingLight -= uiDiff;
 
-            if (uiFlurryTimer <= uiDiff)
+            if (timerFlurryBlows <= uiDiff)
             {
                 DoCast(me,SPELL_FLURRY);
-                uiFlurryTimer = 22000;
-            } else uiFlurryTimer -= uiDiff;
-
-            if (uiFinalTimer <= uiDiff)
-            {
-                DoCast(me,SPELL_FINAL);
-                uiFinalTimer = 70000;
-            } else uiFinalTimer -= uiDiff;
-
-            if (uiDivineTimer <= uiDiff)
-            {
-                DoCast(me,SPELL_DIVINE);
-                uiDivineTimer = 85000;
-            } else uiDivineTimer -= uiDiff;
+                timerFlurryBlows = urand(7000, 10000);
+            } else timerFlurryBlows -= uiDiff;
 
             DoMeleeAttackIfReady();
         }
