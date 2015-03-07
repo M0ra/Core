@@ -787,11 +787,11 @@ class npc_argent_soldier : public CreatureScript
                 timerShadowWord = urand(3000, 5000);
             } else timerShadowWord -= uiDiff;
 
-            if (timerFountain <= diff)
+            if (timerFountain <= uiDiff)
             {
                 DoCast(SPELL_FOUNTAIN_OF_LIGHT);
                 timerFountain = urand(40000, 45000);
-            } else timerFountain -= diff;
+            } else timerFountain -= uiDiff;
 			
             if (timerMindControl <= uiDiff)
             {
