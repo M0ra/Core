@@ -18,11 +18,11 @@ set(scripts_STAT_SRCS
   Custom/Transmog/Transmogrification.cpp
   Custom/Transmog/Transmogrifier.cpp
   Custom/chat_censure.cpp
-  Custom/1v1.cpp
+#  Custom/1v1.cpp
 #  Custom/anti_farm.cpp
-  Custom/duel_reset.cpp
+#  Custom/duel_reset.cpp
 #  Custom/ArenaSpectator.cpp
-  Custom/mmr.cpp
+#  Custom/mmr.cpp
 # 10
 # 11
 # 12
