@@ -2176,7 +2176,30 @@ Battleground.RewardWinnerArenaLast  = 0
 Battleground.RewardLoserHonorFirst  = 5
 Battleground.RewardLoserHonorLast   = 5
 
+# 
+#     RandomBG.CustomItem.Enable 
+#        Description: Enable or disable random bg custom items 
+#        Default: 0 
+# 
+#     RandomBG.CustomItem.ID 
+#        Description: Custom item ID 
+#        Default: 43228
+# 
+#     RandomBG.CustomItem.WinCount 
+#        Description: Count items winner 
+#        Default: 3
+# 
+#     RandomBG.CustomItem.LosCount 
+#        Description: Count items loser 
+#        Default: 1
 #
+
+RandomBG.CustomItem.Enable = 1 
+RandomBG.CustomItem.ID = 43228 
+RandomBG.CustomItem.WinCount = 3 
+RandomBG.CustomItem.LosCount = 1
+
+# 
 ###################################################################################################
 
 ###################################################################################################

@@ -1279,6 +1279,11 @@ void World::LoadConfigSettings(bool reload)
     m_bool_configs[CONFIG_PDUMP_NO_OVERWRITE] = sConfigMgr->GetBoolDefault("PlayerDump.DisallowOverwrite", true);
     m_bool_configs[CONFIG_UI_QUESTLEVELS_IN_DIALOGS] = sConfigMgr->GetBoolDefault("UI.ShowQuestLevelsInDialogs", false);
 
+    m_bool_configs[CONFIG_RANDOM_BG_ITEM_REW] = sConfigMgr->GetBoolDefault("RandomBG.CustomItem.Enable", false); 
+    m_int_configs[CONFIG_RANDOM_BG_ITEM_ID] = sConfigMgr->GetBoolDefault("RandomBG.CustomItem.ID", 43228); 
+    m_int_configs[CONFIG_RANDOM_BG_WIN_COUNT] = sConfigMgr->GetBoolDefault("RandomBG.CustomItem.WinCount", 3); 
+    m_int_configs[CONFIG_RANDOM_BG_LOS_COUNT] = sConfigMgr->GetBoolDefault("RandomBG.CustomItem.LosCount", 1);
+	
     m_bool_configs[CONFIG_ANTICHEAT_ENABLE] = sConfigMgr->GetBoolDefault("Anticheat.Enable", true);
     m_int_configs[CONFIG_ANTICHEAT_REPORTS_INGAME_NOTIFICATION] = sConfigMgr->GetIntDefault("Anticheat.ReportsForIngameWarnings", 70);
     m_int_configs[CONFIG_ANTICHEAT_DETECTIONS_ENABLED] = sConfigMgr->GetIntDefault("Anticheat.DetectionsEnabled",31);
