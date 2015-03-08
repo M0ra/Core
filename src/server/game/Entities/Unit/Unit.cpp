@@ -292,6 +292,19 @@ Unit::~Unit()
             m_currentSpells[i] = NULL;
         }
 
+	// remove veiw point for spectator
+    if (!m_sharedVision.empty())
+    {
+        for (SharedVisionList::iterator itr = m_sharedVision.begin(); itr != m_sharedVision.end(); ++itr)
+            if ((*itr)->isSpectator() && (*itr)->getSpectateFrom())
+            {
+                (*itr)->SetViewpoint((*itr)->getSpectateFrom(), false);
+                if (m_sharedVision.empty())
+                    break;
+                --itr;
+            }
+    }
+
     _DeleteRemovedAuras();
 
     delete i_motionMaster;
@@ -13436,6 +13449,13 @@ void Unit::SetHealth(uint32 val)
     // group update
     if (Player* player = ToPlayer())
     {
+        if (player->HaveSpectators())
+        {
+            SpectatorAddonMsg msg;
+            msg.SetPlayer(player->GetName());
+            msg.SetCurrentHP(val);
+            player->SendSpectatorAddonMsgToBG(msg);
+        }
         if (player->GetGroup())
             player->SetGroupUpdateFlag(GROUP_UPDATE_FLAG_CUR_HP);
     }
@@ -13461,6 +13481,13 @@ void Unit::SetMaxHealth(uint32 val)
     // group update
     if (GetTypeId() == TYPEID_PLAYER)
     {
+		if (ToPlayer()->HaveSpectators())
+        {
+            SpectatorAddonMsg msg;
+            msg.SetPlayer(ToPlayer()->GetName());
+            msg.SetMaxHP(val);
+            ToPlayer()->SendSpectatorAddonMsgToBG(msg);
+        }
         if (ToPlayer()->GetGroup())
             ToPlayer()->SetGroupUpdateFlag(GROUP_UPDATE_FLAG_MAX_HP);
     }
@@ -13498,6 +13525,14 @@ void Unit::SetPower(Powers power, uint32 val)
     // group update
     if (Player* player = ToPlayer())
     {
+		if (player->HaveSpectators())
+        {
+            SpectatorAddonMsg msg;
+            msg.SetPlayer(player->GetName());
+            msg.SetCurrentPower(val);
+            msg.SetPowerType(power);
+            player->SendSpectatorAddonMsgToBG(msg);
+        }
         if (player->GetGroup())
             player->SetGroupUpdateFlag(GROUP_UPDATE_FLAG_CUR_POWER);
     }
