@@ -484,7 +484,8 @@ class boss_warrior_toc5 : public CreatureScript
 
         void Reset() override
         {
-            uiInterceptTimer  = 7000;                    
+            uiInterceptTimer  = 7000;
+            me->SetReactState(REACT_PASSIVE);			
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             events.SetPhase(PHASE_IDLE);
         }
@@ -513,7 +514,7 @@ class boss_warrior_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             
             if (!UpdateVictim())
                 return;
@@ -526,14 +527,16 @@ class boss_warrior_toc5 : public CreatureScript
                 Talk(WARNING_WEAPONS);
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                if (Creature* warrior = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1)))
-                    warrior->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (Creature* warrior = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_2)))
-                        warrior->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (Creature* warrior = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_3)))
-                        warrior->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->SetReactState(REACT_AGGRESSIVE);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+
                 EnterEvadeMode();
                 bHome = true;
             }
@@ -632,7 +635,7 @@ class boss_mage_toc5 : public CreatureScript
             bCredit = false;
 
             hasBeenInCombat = false;
-
+            me->SetReactState(REACT_PASSIVE);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
 
@@ -674,20 +677,21 @@ class boss_mage_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             if (!bDone && GrandChampionsOutVehicle(me))
             {
                 bDone = true;
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                if (Creature* mage = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1)))
-                    mage->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (Creature* mage = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_2)))
-                        mage->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (Creature* mage = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_3)))
-                        mage->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
-                
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
+
+                me->SetReactState(REACT_AGGRESSIVE);
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -782,7 +786,7 @@ class boss_shaman_toc5 : public CreatureScript
             bHome = false;
             bCredit = false;
             hasBeenInCombat = false;
-            
+            me->SetReactState(REACT_PASSIVE);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);        
         }
 
@@ -830,7 +834,7 @@ class boss_shaman_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             if (!bDone && GrandChampionsOutVehicle(me))
             {
@@ -838,13 +842,14 @@ class boss_shaman_toc5 : public CreatureScript
 
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                if (Creature* shaman = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1)))
-                    shaman->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (Creature* shaman = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_2)))
-                        shaman->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (Creature* shaman = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_3)))
-                        shaman->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
 
+                me->SetReactState(REACT_AGGRESSIVE);
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 EnterEvadeMode();
@@ -944,7 +949,7 @@ class boss_hunter_toc5 : public CreatureScript
             bHome = false;
             hasBeenInCombat = false;
             bCredit = false;
-
+            me->SetReactState(REACT_PASSIVE);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
 
@@ -1009,7 +1014,7 @@ class boss_hunter_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             if (!bDone && GrandChampionsOutVehicle(me))
             {
@@ -1017,13 +1022,14 @@ class boss_hunter_toc5 : public CreatureScript
 
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                if (Creature* hunter = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1)))
-                    hunter->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (Creature* hunter = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_2)))
-                        hunter->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (Creature* hunter = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_3)))
-                        hunter->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
 
+                me->SetReactState(REACT_AGGRESSIVE);
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 EnterEvadeMode();
@@ -1150,7 +1156,7 @@ class boss_rogue_toc5 : public CreatureScript
             bCredit = false;
 
             hasBeenInCombat = false;
-
+            me->SetReactState(REACT_PASSIVE);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
 
@@ -1210,7 +1216,7 @@ class boss_rogue_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             if (!bDone && GrandChampionsOutVehicle(me))
             {
@@ -1219,12 +1225,13 @@ class boss_rogue_toc5 : public CreatureScript
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
                 if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
 
+                me->SetReactState(REACT_AGGRESSIVE);
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
