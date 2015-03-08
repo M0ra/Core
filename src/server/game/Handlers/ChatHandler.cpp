@@ -40,7 +40,7 @@
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
 
-void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
+void WorldSession::HandleMessagechatOpcode(ChatHandler* handler, WorldPacket& recvData)
 {
     uint32 type;
     uint32 lang;
