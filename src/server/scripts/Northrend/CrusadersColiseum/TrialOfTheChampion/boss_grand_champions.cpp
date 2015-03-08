@@ -127,19 +127,19 @@ enum Phases
     PHASE_COMBAT                    = 2
 };
 
-
+/*
 struct Point
 {
     float x,y,z;
 };
 
-const Point MovementGrandPoint[i] =
+const Point MovementPoint[] =
 {
-  {739.678f, 662.541f, 413.395f},
-  {746.71f, 661.02f, 412.695f},
-  {754.34f, 660.70f, 413.395f}
+  {746.84f,623.15f,411.41f},
+  {747.96f,620.29f,411.09f},
+  {750.23f,618.35f,411.09f}
 };
-
+*/
 
 void AggroAllPlayers(Creature* pTemp)
 {
@@ -513,7 +513,7 @@ class boss_warrior_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             
             if (!UpdateVictim())
                 return;
@@ -526,8 +526,9 @@ class boss_warrior_toc5 : public CreatureScript
                 Talk(WARNING_WEAPONS);
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                me->SetHomePosition(MovementGrandPoint[i]);
-
+                if (me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f))
+                else if (me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f))
+                else if (me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f))
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 EnterEvadeMode();
@@ -677,7 +678,9 @@ class boss_mage_toc5 : public CreatureScript
                 bDone = true;
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                me->SetHomePosition(MovementGrandPoint[i]);
+                if (me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f))
+                else if (me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f))
+                else if (me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f))
                 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
@@ -829,7 +832,9 @@ class boss_shaman_toc5 : public CreatureScript
 
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                me->SetHomePosition(MovementGrandPoint[i]);
+                if (me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f))
+                else if (me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f))
+                else if (me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f))
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
@@ -1003,7 +1008,9 @@ class boss_hunter_toc5 : public CreatureScript
 
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                me->SetHomePosition(MovementGrandPoint[i]);
+                if (me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f))
+                else if (me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f))
+                else if (me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f))
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
@@ -1199,7 +1206,9 @@ class boss_rogue_toc5 : public CreatureScript
 
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                me->SetHomePosition(MovementGrandPoint[i]);
+                if (me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f))
+                else if (me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f))
+                else if (me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f))
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
