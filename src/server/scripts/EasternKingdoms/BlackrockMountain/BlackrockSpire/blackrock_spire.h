@@ -18,7 +18,7 @@
 #ifndef DEF_BLACKROCK_SPIRE_H
 #define DEF_BLACKROCK_SPIRE_H
 
-uint32 const EncounterCount         = 23;
+uint32 const EncounterCount         = 25;
 
 #define BRSScriptName "instance_blackrock_spire"
 #define DataHeader    "BRS"
@@ -48,12 +48,15 @@ enum DataTypes
     DATA_HALL_RUNE_4                = 19,
     DATA_HALL_RUNE_5                = 20,
     DATA_HALL_RUNE_6                = 21,
-    DATA_HALL_RUNE_7                = 22
+    DATA_HALL_RUNE_7                = 22,
+	EVENT_LEEEROY                   = 23,
+    WHELP_DEATH_COUNT               = 24
 };
 
 enum CreaturesIds
 {
     NPC_HIGHLORD_OMOKK              = 9196,
+    NPC_ROOKERY_WHELP               = 10161,
     NPC_SHADOW_HUNTER_VOSHGAJIN     = 9236,
     NPC_WARMASTER_VOONE             = 9237,
     NPC_MOTHER_SMOLDERWEB           = 10596,
@@ -116,6 +119,11 @@ enum GameObjectsIds
     GO_DR_PORTCULLIS                = 175185,
     GO_PORTCULLIS_ACTIVE            = 164726,
     GO_PORTCULLIS_TOBOSSROOMS       = 175186
+};
+
+enum Achievements
+{
+    ACHIEV_LEROY_JENKINS            = 2188
 };
 
 #endif

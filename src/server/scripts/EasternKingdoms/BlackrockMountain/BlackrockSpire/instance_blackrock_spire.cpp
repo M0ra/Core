@@ -52,6 +52,11 @@ public:
         {
             SetHeaders(DataHeader);
             SetBossNumber(EncounterCount);
+			
+			uiLeeroyTimer = 15*IN_MILLISECONDS;
+            uiWhelpCount = 0;
+            bLeeeeeeeeroy = true;
+            uiLeroyData = 0;
         }
 
         void OnCreatureCreate(Creature* creature) override
@@ -281,6 +286,19 @@ public:
                         if (GetBossState(DATA_DRAGONSPIRE_ROOM) != DONE)
                             Events.ScheduleEvent(EVENT_DARGONSPIRE_ROOM_STORE, 1000);
                     }
+                    break;
+                case EVENT_LEEEROY:
+                    if (data == DONE)
+                        DoCompleteAchievement(ACHIEV_LEROY_JENKINS);
+                    uiLeroyData = data;
+                    break;
+                case WHELP_DEATH_COUNT:
+                    if (data == 1)
+                    {
+                        SetData(EVENT_LEEEROY, IN_PROGRESS);
+                        DoSendNotifyToInstance("Лиииииироооооой! Начали!");
+                    }
+                uiWhelpCount = data;
                 default:
                     break;
             }
@@ -338,6 +356,10 @@ public:
                     return go_roomrunes[5];
                 case GO_HALL_RUNE_7:
                     return go_roomrunes[6];
+				case EVENT_LEEEROY:      
+				    return uiLeroyData;
+                case WHELP_DEATH_COUNT:  
+				    return uiWhelpCount;
                 case GO_EMBERSEER_RUNE_1:
                     return go_emberseerrunes[0];
                 case GO_EMBERSEER_RUNE_2:
@@ -379,6 +401,21 @@ public:
                         if ((GetBossState(DATA_DRAGONSPIRE_ROOM) != DONE))
                             Events.ScheduleEvent(EVENT_DARGONSPIRE_ROOM_CHECK, 3000);
                         break;
+                    if (GetGuidData(EVENT_LEEEROY) != FAIL && GetGuidData(EVENT_LEEEROY) == IN_PROGRESS)
+                    {
+                        if (uiLeeroyTimer <= diff)
+                        {
+                            SetData(EVENT_LEEEROY, FAIL);
+                            bLeeeeeeeeroy = false;
+                            DoSendNotifyToInstance("Лиииииироооооой! Провалено");
+                        } else uiLeeroyTimer -= diff;
+
+                        if (uiWhelpCount >= 50 && bLeeeeeeeeroy)
+                        {
+                            SetData(EVENT_LEEEROY, DONE);
+                            DoSendNotifyToInstance("Лиииииироооооой! Выполнено");
+                        }
+                    }
                     default:
                          break;
                 }
@@ -505,6 +542,12 @@ public:
             ObjectGuid runecreaturelist[7][5];
             ObjectGuid go_portcullis_active;
             ObjectGuid go_portcullis_tobossrooms;
+			
+			uint32 uiLeeroyTimer;
+            uint32 uiWhelpCount;
+            uint32 uiLeroyData;
+
+            bool bLeeeeeeeeroy;
     };
 
     InstanceScript* GetInstanceScript(InstanceMap* map) const override
@@ -565,9 +608,68 @@ public:
     }
 };
 
+/*#####
+# npc_rookey_whelp
+#####*/
+
+class npc_rookey_whelp : public CreatureScript
+{
+public:
+    npc_rookey_whelp() : CreatureScript("npc_rookey_whelp") { }
+
+    struct npc_rookey_whelpAI : public ScriptedAI
+    {
+        npc_rookey_whelpAI(Creature* creature) : ScriptedAI(creature)
+        {
+            instance = creature->GetInstanceScript();
+        }
+
+        InstanceScript* instance;
+
+        void JustDied(Unit* /*who*/) override
+        {
+            instance->SetData(WHELP_DEATH_COUNT, instance->GetData(WHELP_DEATH_COUNT) + 1);
+        }
+
+        void UpdateAI(uint32 /*diff*/) override
+        {
+            if (!UpdateVictim())
+                return;
+
+            DoMeleeAttackIfReady();
+        }
+    };
+	
+	CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_rookey_whelpAI (creature);
+    }
+};
+
+/*#####
+# go_rookey_egg
+#####*/
+
+class go_rookey_egg : public GameObjectScript
+{
+public:
+    go_rookey_egg() : GameObjectScript("go_rookey_egg") { }
+
+    bool OnGossipHello(Player* player, GameObject* /*go*/) override
+    {
+        player->GetPosition();
+        player->SummonCreature(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetOrientation(), NPC_ROOKERY_WHELP, TEMPSUMMON_TIMED_DESPAWN, 15*IN_MILLISECONDS);
+    //destroy gobject need to be implemented
+
+    return true;
+    }
+};
+
 void AddSC_instance_blackrock_spire()
 {
     new instance_blackrock_spire();
     new at_dragonspire_hall();
     new at_blackrock_stadium();
+	new npc_rookey_whelp();
+    new go_rookey_egg();
 }
