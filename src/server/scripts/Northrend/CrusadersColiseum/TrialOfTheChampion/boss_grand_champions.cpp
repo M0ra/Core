@@ -526,11 +526,11 @@ class boss_warrior_toc5 : public CreatureScript
                 Talk(WARNING_WEAPONS);
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
                          me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
                          me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -681,11 +681,11 @@ class boss_mage_toc5 : public CreatureScript
                 bDone = true;
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
                          me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
                          me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
                 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
@@ -838,11 +838,11 @@ class boss_shaman_toc5 : public CreatureScript
 
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
                          me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
                          me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
@@ -1017,11 +1017,11 @@ class boss_hunter_toc5 : public CreatureScript
 
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
                          me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
                          me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
@@ -1218,11 +1218,11 @@ class boss_rogue_toc5 : public CreatureScript
 
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
                          me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
-                else if (me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
                          me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
