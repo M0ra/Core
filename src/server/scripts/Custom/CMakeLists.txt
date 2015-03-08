@@ -12,7 +12,7 @@
 
 set(scripts_STAT_SRCS
   ${scripts_STAT_SRCS}
-# ${sources_Custom}
+#  ${sources_Custom}
 # Path to files
   Custom/Transmog/Transmogrification.h
   Custom/Transmog/Transmogrification.cpp
@@ -21,7 +21,7 @@ set(scripts_STAT_SRCS
   Custom/1v1.cpp
   Custom/anti_farm.cpp
   Custom/duel_reset.cpp
-#  Custom/ArenaSpectator.cpp
+  Custom/ArenaSpectator.cpp
   Custom/mmr.cpp
 # 10
 # 11
