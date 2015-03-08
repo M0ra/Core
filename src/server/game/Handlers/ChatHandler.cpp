@@ -448,7 +448,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
 
                         if (sender->GetMoney() < cost)
                         {
-                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_NOT_ENOUGHT_MONEY);
+                            ChatHandler(sender->GetSession()).PSendSysMessage(LANG_NOT_ENOUGHT_MONEY);
                             break;
                         }
                         sender->ModifyMoney(-(int32)cost);
