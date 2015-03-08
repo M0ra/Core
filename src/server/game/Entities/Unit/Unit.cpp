@@ -223,6 +223,10 @@ Unit::Unit(bool isWorldObject) :
 
     for (uint8 i = 0; i < MAX_STATS; ++i)
         m_createStats[i] = 0.0f;
+		
+    // Set when temporarily active due to player combat
+    m_combatwithplayer = false;
+
 
     m_attacking = NULL;
     m_modMeleeHitChance = 0.0f;
@@ -2235,9 +2239,9 @@ void Unit::SendMeleeAttackStop(Unit* victim)
     TC_LOG_DEBUG("entities.unit", "WORLD: Sent SMSG_ATTACKSTOP");
 
     if (victim)
-        TC_LOG_INFO("entities.unit", "%s %u stopped attacking %s %u", (GetTypeId() == TYPEID_PLAYER ? "Player" : "Creature"), GetGUIDLow(), (victim->GetTypeId() == TYPEID_PLAYER ? "player" : "creature"), victim->GetGUIDLow());
+        TC_LOG_DEBUG("entities.unit", "%s %u stopped attacking %s %u", (GetTypeId() == TYPEID_PLAYER ? "Player" : "Creature"), GetGUIDLow(), (victim->GetTypeId() == TYPEID_PLAYER ? "player" : "creature"), victim->GetGUIDLow());
     else
-        TC_LOG_INFO("entities.unit", "%s %u stopped attacking", (GetTypeId() == TYPEID_PLAYER ? "Player" : "Creature"), GetGUIDLow());
+        TC_LOG_DEBUG("entities.unit", "%s %u stopped attacking", (GetTypeId() == TYPEID_PLAYER ? "Player" : "Creature"), GetGUIDLow());
 }
 
 bool Unit::isSpellBlocked(Unit* victim, SpellInfo const* spellProto, WeaponAttackType attackType)
@@ -3394,7 +3398,7 @@ void Unit::_ApplyAura(AuraApplication * aurApp, uint8 effMask)
     // apply effects of the aura
     for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
     {
-        if (effMask & 1 << i && (!aurApp->GetRemoveMode()))
+        if (effMask & 1 << i && (!aurApp->GetRemoveMode()) && !IsImmunedToSpellEffect(aura->GetSpellInfo(), i))
             aurApp->_HandleEffect(i, true);
     }
 }
@@ -9036,6 +9040,17 @@ void Unit::CombatStop(bool includingCast)
     if (GetTypeId() == TYPEID_PLAYER)
         ToPlayer()->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel
     ClearInCombat();
+
+    // If temporarily active, de-activate since combat is finished
+    if (GetTypeId() != TYPEID_PLAYER)
+    {
+        if (m_combatwithplayer)
+        {
+            TC_LOG_DEBUG("entities.unit", "Setting %u inactive - exiting combat", GetEntry());
+            setActive(false);
+            m_combatwithplayer = false;
+        }
+    }
 }
 
 void Unit::CombatStopWithPets(bool includingCast)
@@ -9545,6 +9560,7 @@ void Unit::SetCharm(Unit* charm, bool apply)
             || charm->GetOwnerGUID() != GetGUID())
         {
             m_Controlled.erase(charm);
+            charm->GetMotionMaster()->Clear();
         }
     }
 }
@@ -10676,6 +10692,11 @@ uint32 Unit::SpellCriticalDamageBonus(SpellInfo const* spellProto, uint32 damage
 
     if (damage > uint32(crit_bonus))
     {
+       // all these spells should have only 50% bonus damage on crit like a magic spells
+        if (spellProto->Id == 55078 || spellProto->Id == 61840 ||
+            (spellProto->SpellFamilyName == SPELLFAMILY_HUNTER && spellProto->SpellFamilyFlags[0] & 0x4000))
+            crit_bonus /= 2;
+
         // adds additional damage to critBonus (from talents)
         if (Player* modOwner = GetSpellModOwner())
             modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_CRIT_DAMAGE_BONUS, crit_bonus);
@@ -11731,6 +11752,7 @@ void Unit::CombatStart(Unit* target, bool initialAggro)
         me->UpdatePvP(true);
         me->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT);
     }
+
 }
 
 void Unit::SetInCombatState(bool PvP, Unit* enemy)
@@ -11781,6 +11803,29 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy)
     {
         (*itr)->SetInCombatState(PvP, enemy);
         (*itr)->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PET_IN_COMBAT);
+    }
+
+    // If creature is attacking player, set it active, so player leaving sight doesn't disable updates for the cell
+    // Helps prevent the main cause of stuck in combat bugs.
+    // Only if this unit is NOT a player
+    if (GetTypeId() != TYPEID_PLAYER)
+    {
+        // Check if enemy is a player, or player pet/summon
+        Unit* pOwner = enemy->GetCharmerOrOwner();
+        if ((enemy->GetTypeId() == TYPEID_PLAYER) || ((enemy->IsPet() || enemy->IsSummon() || enemy->IsGuardian() || enemy->IsCharmed()) && pOwner && pOwner->GetTypeId() == TYPEID_PLAYER))
+        {
+            // Check if object is already active (do nothing if so)
+            if (!isActiveObject())
+            {
+                if ((enemy->IsPet() || enemy->IsSummon() || enemy->IsGuardian() || enemy->IsCharmed()) && pOwner)
+                    TC_LOG_DEBUG("entities.unit", "%u In combat with minion %u belonging to player %u", GetEntry(), enemy->GetEntry(), pOwner->GetEntry());
+                else
+                    TC_LOG_DEBUG("entities.unit", "%u In combat with player %u", GetEntry(), enemy->GetEntry());
+
+                setActive(true);
+                m_combatwithplayer = true;
+            }
+        }
     }
 }
 
@@ -12336,7 +12381,8 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
         AddPct(speed, slow);
         if (float minSpeedMod = (float)GetMaxPositiveAuraModifier(SPELL_AURA_MOD_MINIMUM_SPEED))
         {
-            float min_speed = minSpeedMod / 100.0f;
+            float baseSpeed = (GetTypeId() == TYPEID_UNIT ? ToCreature()->GetCreatureTemplate()->speed_walk : 1.0f);
+            float min_speed = (minSpeedMod / 100.0f) * baseSpeed;
             if (speed < min_speed)
                 speed = min_speed;
         }
@@ -16300,11 +16346,20 @@ void Unit::ApplyResilience(Unit const* victim, float* crit, int32* damage, bool 
             if (crit)
                 *crit -= target->GetMeleeCritChanceReduction();
             if (source && damage)
-            {
-                if (isCrit)
-                    *damage -= target->GetMeleeCritDamageReduction(*damage);
-                *damage -= target->GetMeleeDamageReduction(*damage);
-            }
+			    {
+				    if (source->getClass() == CLASS_WARRIOR) //Fix Warrior Damage
+				        {
+					    if (isCrit)
+					        *damage -= target->GetMeleeWarriorCritDamageReduction(*damage);
+						    *damage -= target->GetMeleeWarriorDamageReduction(*damage);
+				        }
+				        else
+				        {
+					    if (isCrit)
+						    *damage -= target->GetMeleeCritDamageReduction(*damage);
+						    *damage -= target->GetMeleeDamageReduction(*damage);
+				        }
+			    }
             break;
         case CR_CRIT_TAKEN_RANGED:
             // Crit chance reduction works against nonpets
@@ -16926,6 +16981,11 @@ void Unit::_EnterVehicle(Vehicle* vehicle, int8 seatId, AuraApplication const* a
             return;
         }
     }
+	
+	// Check if there is unit type non move on vehicle
+    // If so, root the vehicle once someone gets in
+    if (vehicle->GetBase()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
+        SetControlled(true, UNIT_STATE_ROOT);
 
     ASSERT(!m_vehicle);
     (void)vehicle->AddPassenger(this, seatId);
@@ -17320,30 +17380,30 @@ void Unit::StopAttackFaction(uint32 faction_id)
 void Unit::OutDebugInfo() const
 {
     TC_LOG_ERROR("entities.unit", "Unit::OutDebugInfo");
-    TC_LOG_INFO("entities.unit", "%s name %s", GetGUID().ToString().c_str(), GetName().c_str());
-    TC_LOG_INFO("entities.unit", "Owner %s, Minion %s, Charmer %s, Charmed %s", GetOwnerGUID().ToString().c_str(), GetMinionGUID().ToString().c_str(), GetCharmerGUID().ToString().c_str(), GetCharmGUID().ToString().c_str());
-    TC_LOG_INFO("entities.unit", "In world %u, unit type mask %u", (uint32)(IsInWorld() ? 1 : 0), m_unitTypeMask);
+    TC_LOG_DEBUG("entities.unit", "%s name %s", GetGUID().ToString().c_str(), GetName().c_str());
+    TC_LOG_DEBUG("entities.unit", "Owner %s, Minion %s, Charmer %s, Charmed %s", GetOwnerGUID().ToString().c_str(), GetMinionGUID().ToString().c_str(), GetCharmerGUID().ToString().c_str(), GetCharmGUID().ToString().c_str());
+    TC_LOG_DEBUG("entities.unit", "In world %u, unit type mask %u", (uint32)(IsInWorld() ? 1 : 0), m_unitTypeMask);
     if (IsInWorld())
-        TC_LOG_INFO("entities.unit", "Mapid %u", GetMapId());
+        TC_LOG_DEBUG("entities.unit", "Mapid %u", GetMapId());
 
     std::ostringstream o;
     o << "Summon Slot: ";
     for (uint32 i = 0; i < MAX_SUMMON_SLOT; ++i)
         o << m_SummonSlot[i].ToString() << ", ";
 
-    TC_LOG_INFO("entities.unit", "%s", o.str().c_str());
+    TC_LOG_DEBUG("entities.unit", "%s", o.str().c_str());
     o.str("");
 
     o << "Controlled List: ";
     for (ControlList::const_iterator itr = m_Controlled.begin(); itr != m_Controlled.end(); ++itr)
         o << (*itr)->GetGUID().ToString() << ", ";
-    TC_LOG_INFO("entities.unit", "%s", o.str().c_str());
+    TC_LOG_DEBUG("entities.unit", "%s", o.str().c_str());
     o.str("");
 
     o << "Aura List: ";
     for (AuraApplicationMap::const_iterator itr = m_appliedAuras.begin(); itr != m_appliedAuras.end(); ++itr)
         o << itr->first << ", ";
-    TC_LOG_INFO("entities.unit", "%s", o.str().c_str());
+    TC_LOG_DEBUG("entities.unit", "%s", o.str().c_str());
     o.str("");
 
     if (IsVehicle())
@@ -17352,11 +17412,11 @@ void Unit::OutDebugInfo() const
         for (SeatMap::iterator itr = GetVehicleKit()->Seats.begin(); itr != GetVehicleKit()->Seats.end(); ++itr)
             if (Unit* passenger = ObjectAccessor::GetUnit(*GetVehicleBase(), itr->second.Passenger.Guid))
                 o << passenger->GetGUID().ToString() << ", ";
-        TC_LOG_INFO("entities.unit", "%s", o.str().c_str());
+        TC_LOG_DEBUG("entities.unit", "%s", o.str().c_str());
     }
 
     if (GetVehicle())
-        TC_LOG_INFO("entities.unit", "On vehicle %u.", GetVehicleBase()->GetEntry());
+        TC_LOG_DEBUG("entities.unit", "On vehicle %u.", GetVehicleBase()->GetEntry());
 }
 
 uint32 Unit::GetRemainingPeriodicAmount(ObjectGuid caster, uint32 spellId, AuraType auraType, uint8 effectIndex) const
