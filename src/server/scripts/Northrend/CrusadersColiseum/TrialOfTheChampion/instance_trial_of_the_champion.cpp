@@ -98,8 +98,6 @@ public:
             GrandChampionList.clear();
 
             memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
-
-            m_auiEncounter[0] = DONE;
         }
 
         bool IsEncounterInProgress() const
