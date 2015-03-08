@@ -526,9 +526,9 @@ class boss_warrior_toc5 : public CreatureScript
                 Talk(WARNING_WEAPONS);
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                if (me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f))
-                else if (me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f))
-                else if (me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f))
+                if (me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f));
+                else if (me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f));
+                else if (me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f));
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 EnterEvadeMode();
