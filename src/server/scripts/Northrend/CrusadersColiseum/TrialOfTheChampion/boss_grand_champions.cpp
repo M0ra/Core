@@ -127,19 +127,19 @@ enum Phases
     PHASE_COMBAT                    = 2
 };
 
-/*
+
 struct Point
 {
     float x,y,z;
 };
 
-const Point MovementPoint[] =
+const Point MovementGrandPoint[3] =
 {
-  {746.84f,623.15f,411.41f},
-  {747.96f,620.29f,411.09f},
-  {750.23f,618.35f,411.09f}
+  {739.678f, 662.541f, 413.395f},
+  {746.71f, 661.02f, 412.695f},
+  {754.34f, 660.70f, 413.395f}
 };
-*/
+
 
 void AggroAllPlayers(Creature* pTemp)
 {
@@ -526,9 +526,8 @@ class boss_warrior_toc5 : public CreatureScript
                 Talk(WARNING_WEAPONS);
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                me->SetHomePosition(MovementGrandPoint[i]);
+
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 EnterEvadeMode();
@@ -671,24 +670,19 @@ class boss_mage_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            
-            if (!UpdateVictim())
-                return;
-
-            events.Update(uiDiff);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             if (!bDone && GrandChampionsOutVehicle(me))
             {
                 bDone = true;
-                Talk(WARNING_WEAPONS);
-                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
+                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                me->SetHomePosition(MovementGrandPoint[i]);
+                
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+
                 EnterEvadeMode();
                 bHome = true;
             }
@@ -827,24 +821,18 @@ class boss_shaman_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            
-            if (!UpdateVictim())
-                return;
-
-            events.Update(uiDiff);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             if (!bDone && GrandChampionsOutVehicle(me))
             {
                 bDone = true;
-                Talk(WARNING_WEAPONS);
-                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->SetHomePosition(MovementGrandPoint[i]);
+
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+
                 EnterEvadeMode();
                 bHome = true;
             }
@@ -1007,24 +995,18 @@ class boss_hunter_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            
-            if (!UpdateVictim())
-                return;
-
-            events.Update(uiDiff);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             if (!bDone && GrandChampionsOutVehicle(me))
             {
                 bDone = true;
-                Talk(WARNING_WEAPONS);
-                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->SetHomePosition(MovementGrandPoint[i]);
+
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+
                 EnterEvadeMode();
                 bHome = true;
             }
@@ -1209,24 +1191,20 @@ class boss_rogue_toc5 : public CreatureScript
         void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            
-            if (!UpdateVictim())
-                return;
-
-            events.Update(uiDiff);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             if (!bDone && GrandChampionsOutVehicle(me))
             {
                 bDone = true;
-                Talk(WARNING_WEAPONS);
-                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
+
+                me->SetHomePosition(MovementGrandPoint[i]);
+
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+
                 EnterEvadeMode();
                 bHome = true;
             }
