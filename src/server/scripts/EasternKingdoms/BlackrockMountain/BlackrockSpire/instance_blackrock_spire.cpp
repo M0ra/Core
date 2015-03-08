@@ -54,7 +54,9 @@ public:
             SetBossNumber(EncounterCount);
 			
             uiLeeroyTimer = 15*IN_MILLISECONDS;
+            uiWhelpCount = 0;
             bLeeeeeeeeroy = true;
+            uiLeroyData = 0;
         }
 
         void OnCreatureCreate(Creature* creature) override
@@ -354,10 +356,6 @@ public:
                     return go_roomrunes[5];
                 case GO_HALL_RUNE_7:
                     return go_roomrunes[6];
-                case EVENT_LEEEROY:      
-                    return uiLeroyData;
-                case WHELP_DEATH_COUNT:  
-                    return uiWhelpCount;
                 case GO_EMBERSEER_RUNE_1:
                     return go_emberseerrunes[0];
                 case GO_EMBERSEER_RUNE_2:
@@ -540,10 +538,10 @@ public:
             ObjectGuid runecreaturelist[7][5];
             ObjectGuid go_portcullis_active;
             ObjectGuid go_portcullis_tobossrooms;
-            ObjectGuid uiWhelpCount;
-            ObjectGuid uiLeroyData;
 			
             uint32 uiLeeroyTimer;
+            uint32 uiWhelpCount;
+            uint32 uiLeroyData;
 
             bool bLeeeeeeeeroy;
     };
