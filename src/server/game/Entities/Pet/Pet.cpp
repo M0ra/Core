@@ -947,12 +947,6 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
             //damage range is then petlevel / 2
             SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float(petlevel + (petlevel / 4)));
             //damage is increased afterwards as strength and pet scaling modify attack power
-            SetModifierValue(UNIT_MOD_STAT_STAMINA, BASE_VALUE, float(m_owner->GetStat(STAT_STAMINA)) * 0.3f);  //  Bonus Stamina (30% of player stamina)
-
-			// Let hunter pets inherit their master's hit rating
-			m_modMeleeHitChance = m_owner->m_modMeleeHitChance;
-			m_modSpellHitChance = m_owner->m_modSpellHitChance;
-
             break;
         }
         default:
@@ -961,8 +955,7 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
             {
                 case 510: // mage Water Elemental
                 {
-                    m_modSpellHitChance = m_owner->m_modSpellHitChance; // Let Water Elementals inherit spell hit from their master
-					SetBonusDamage(int32(GetOwner()->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_FROST) * 0.33f));
+                    SetBonusDamage(int32(GetOwner()->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_FROST) * 0.33f));
                     break;
                 }
                 case 1964: //force of nature
@@ -1004,10 +997,6 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
                     int32 bonus_dmg = int32(GetOwner()->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_SHADOW)* 0.3f);
                     SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, float((petlevel * 4 - petlevel) + bonus_dmg));
                     SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float((petlevel * 4 + petlevel) + bonus_dmg));
-					
-                    // Let summons inherit their master's hit rating.
-					m_modMeleeHitChance = m_owner->m_modMeleeHitChance;
-					m_modSpellHitChance = m_owner->m_modSpellHitChance;
 
                     break;
                 }
@@ -1030,10 +1019,6 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
 
                     // wolf attack speed is 1.5s
                     SetAttackTime(BASE_ATTACK, cinfo->BaseAttackTime);
-					
-                    // Wolf should inherit 100% of the master's hit rating
-					m_modMeleeHitChance = m_owner->m_modMeleeHitChance;
-					m_modSpellHitChance = m_owner->m_modSpellHitChance;
 
                     SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, float((petlevel * 4 - petlevel)));
                     SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float((petlevel * 4 + petlevel)));
@@ -1053,8 +1038,6 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
                         SetCreateMana(28 + 30*petlevel);
                         SetCreateHealth(28 + 10*petlevel);
                     }
-                    // Let mirror images inherit their master's spell hit rating
-					m_modSpellHitChance = m_owner->m_modSpellHitChance;
                     break;
                 }
                 case 27829: // Ebon Gargoyle
