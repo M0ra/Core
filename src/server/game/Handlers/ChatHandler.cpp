@@ -40,7 +40,7 @@
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
 
-void WorldSession::HandleMessagechatOpcode(ChatHandler* handler, WorldPacket& recvData)
+void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
 {
     uint32 type;
     uint32 lang;
@@ -448,7 +448,7 @@ void WorldSession::HandleMessagechatOpcode(ChatHandler* handler, WorldPacket& re
 
                         if (sender->GetMoney() < cost)
                         {
-                            handler->PSendSysMessage(LANG_NOT_ENOUGHT_MONEY);
+                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_NOT_ENOUGHT_MONEY);
                             break;
                         }
                         sender->ModifyMoney(-(int32)cost);
