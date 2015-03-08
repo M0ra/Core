@@ -1187,6 +1187,7 @@ enum TrinityStrings
     LANG_AUTO_BROADCAST                 = 11000,
     LANG_INVALID_REALMID                = 11001,
 	LANG_BAN_CHEATER                    = 11010,
+    LANG_NOT_ENOUGHT_MONEY              = 11011,
 
     // Show Kick in world
     LANG_COMMAND_KICKMESSAGE_WORLD = 11002,

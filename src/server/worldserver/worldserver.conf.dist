@@ -2685,6 +2685,13 @@ LevelReq.Auction = 1
 LevelReq.Mail = 1
 
 #
+#     LFGMsg.Cost
+#        Description: In copper.
+#        Default:     0
+
+LFGMsg.Cost = 0
+
+ #
 #     Anticheat.Enable
 #        Description: Enables or disables the Anticheat System functionality
 #        Default:     1 - (Enabled)
