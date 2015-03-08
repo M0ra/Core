@@ -52,11 +52,8 @@ public:
         {
             SetHeaders(DataHeader);
             SetBossNumber(EncounterCount);
-
-            manyWhelpsCounter   = 0;
-            achievManyWhelpsHandleIt = false;
         }
-		
+
         void OnCreatureCreate(Creature* creature) override
         {
             switch (creature->GetEntry())
@@ -119,6 +116,9 @@ public:
         {
             switch (go->GetEntry())
             {
+                case GO_WHELP_SPAWNER:
+                    go->CastSpell(NULL, SPELL_SUMMON_ROOKERY_WHELP);
+                    break;
                 case GO_EMBERSEER_IN:
                     go_emberseerin = go->GetGUID();
                     if (GetBossState(DATA_DRAGONSPIRE_ROOM) == DONE)
@@ -214,13 +214,7 @@ public:
                     if (GetBossState(DATA_GYTH) == DONE)
                         HandleGameObject(ObjectGuid::Empty, true, go);
                     break;
-                case GO_WHELP_SPAWNER:
-                    Position goPos = go->GetPosition();
-                    if (Creature* temp = go->SummonCreature(NPC_WHELP, goPos, TEMPSUMMON_CORPSE_DESPAWN))
-                    {
-                        temp->SetInCombatWithZone();
-                        ++manyWhelpsCounter;
-                    }
+                default:
                     break;
             }
         }
@@ -287,18 +281,11 @@ public:
                         if (GetBossState(DATA_DRAGONSPIRE_ROOM) != DONE)
                             Events.ScheduleEvent(EVENT_DARGONSPIRE_ROOM_STORE, 1000);
                     }
+                default:
                     break;
             }
-            switch (type)
-            {
-                case DATA_PHASE_LEEROY:
-                        achievManyWhelpsHandleIt = false;
-                        manyWhelpsCounter = 0;
-                        onyxiaLiftoffTimer = 15*IN_MILLISECONDS;
-					break;
-            }					
         }
-		
+
         ObjectGuid GetGuidData(uint32 type) const override
         {
             switch (type)
@@ -378,13 +365,6 @@ public:
         void Update(uint32 diff) override
         {
             Events.Update(diff);
-			
-            if (onyxiaLiftoffTimer && onyxiaLiftoffTimer <= diff)
-                {
-                    onyxiaLiftoffTimer = 0;
-                    if (manyWhelpsCounter >= 50)
-                        achievManyWhelpsHandleIt = true;
-                } else onyxiaLiftoffTimer -= diff;
 
             while (uint32 eventId = Events.ExecuteEvent())
             {
@@ -400,7 +380,7 @@ public:
                             Events.ScheduleEvent(EVENT_DARGONSPIRE_ROOM_CHECK, 3000);
                         break;
                     default:
-                        break;
+                         break;
                 }
             }
         }
@@ -498,16 +478,6 @@ public:
                     HandleGameObject(ObjectGuid::Empty, true, door2);
             }
         }
-		
-        bool CheckAchievementCriteriaMeet(uint32 criteria_id, Player const* /*source*/, Unit const* /*target*/ = NULL, uint32 /*miscvalue1*/ = 0) override
-        {
-            switch (criteria_id)
-            {
-                case ACHIEV_CRITERIA_LEEEEROY:
-                    return achievManyWhelpsHandleIt;
-            }
-            return false;
-        }
 
         protected:
             EventMap Events;
@@ -535,11 +505,6 @@ public:
             ObjectGuid runecreaturelist[7][5];
             ObjectGuid go_portcullis_active;
             ObjectGuid go_portcullis_tobossrooms;
-			
-            uint32 onyxiaLiftoffTimer;
-            uint32 manyWhelpsCounter;
-			
-            bool   achievManyWhelpsHandleIt;
     };
 
     InstanceScript* GetInstanceScript(InstanceMap* map) const override
