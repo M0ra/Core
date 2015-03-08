@@ -53,10 +53,8 @@ public:
             SetHeaders(DataHeader);
             SetBossNumber(EncounterCount);
 			
-			uiLeeroyTimer = 15*IN_MILLISECONDS;
-            uiWhelpCount = 0;
+            uiLeeroyTimer = 15*IN_MILLISECONDS;
             bLeeeeeeeeroy = true;
-            uiLeroyData = 0;
         }
 
         void OnCreatureCreate(Creature* creature) override
@@ -356,10 +354,10 @@ public:
                     return go_roomrunes[5];
                 case GO_HALL_RUNE_7:
                     return go_roomrunes[6];
-				case EVENT_LEEEROY:      
-				    return uiLeroyData;
+                case EVENT_LEEEROY:      
+                    return uiLeroyData;
                 case WHELP_DEATH_COUNT:  
-				    return uiWhelpCount;
+                    return uiWhelpCount;
                 case GO_EMBERSEER_RUNE_1:
                     return go_emberseerrunes[0];
                 case GO_EMBERSEER_RUNE_2:
@@ -542,10 +540,10 @@ public:
             ObjectGuid runecreaturelist[7][5];
             ObjectGuid go_portcullis_active;
             ObjectGuid go_portcullis_tobossrooms;
+            ObjectGuid uiWhelpCount;
+            ObjectGuid uiLeroyData;
 			
-			uint32 uiLeeroyTimer;
-            uint32 uiWhelpCount;
-            uint32 uiLeroyData;
+            uint32 uiLeeroyTimer;
 
             bool bLeeeeeeeeroy;
     };
@@ -670,6 +668,6 @@ void AddSC_instance_blackrock_spire()
     new instance_blackrock_spire();
     new at_dragonspire_hall();
     new at_blackrock_stadium();
-	new npc_rookey_whelp();
+    new npc_rookey_whelp();
     new go_rookey_egg();
 }

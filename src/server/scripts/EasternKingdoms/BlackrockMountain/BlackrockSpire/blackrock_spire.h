@@ -49,7 +49,7 @@ enum DataTypes
     DATA_HALL_RUNE_5                = 20,
     DATA_HALL_RUNE_6                = 21,
     DATA_HALL_RUNE_7                = 22,
-	EVENT_LEEEROY                   = 23,
+    EVENT_LEEEROY                   = 23,
     WHELP_DEATH_COUNT               = 24
 };
 
