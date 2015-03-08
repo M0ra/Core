@@ -380,6 +380,18 @@ public:
             return ObjectGuid::Empty;
         }
 
+        uint32 GetData(uint32 type)
+        {
+            switch(type)
+            {
+                case EVENT_LEEEROY:      
+                    return uiLeroyData;
+                case WHELP_DEATH_COUNT:  
+                    return uiWhelpCount;
+            }
+            return 0;
+        }
+		
         void Update(uint32 diff) override
         {
             Events.Update(diff);
