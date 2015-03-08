@@ -23,7 +23,7 @@
 void AddSC_System_Censure();
 void AddSC_NoFarming();
 void AddSC_Reset();
-void AddSC_arena_spectator_script();
+//void AddSC_arena_spectator_script();
 void AddSC_npc_mmr_reset();
 void AddSC_npc_1v1arena();
 
@@ -1482,7 +1482,7 @@ void AddCustomScripts()
     AddSC_System_Censure();
     AddSC_NoFarming();
     AddSC_Reset();
-    AddSC_arena_spectator_script();
+    //AddSC_arena_spectator_script();
     AddSC_npc_mmr_reset();
     AddSC_npc_1v1arena();
     // 9
