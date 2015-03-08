@@ -21,7 +21,7 @@
 
 //custom scripts
 void AddSC_System_Censure();
-//void AddSC_NoFarming();
+void AddSC_NoFarming();
 void AddSC_Reset();
 //void AddSC_arena_spectator_script();
 void AddSC_npc_mmr_reset();
@@ -1480,7 +1480,7 @@ void AddCustomScripts()
     AddSC_PWS_Transmogrification();
     AddSC_CS_Transmogrification();
     AddSC_System_Censure();
-    //AddSC_NoFarming();
+    AddSC_NoFarming();
     AddSC_Reset();
     //AddSC_arena_spectator_script();
     AddSC_npc_mmr_reset();
