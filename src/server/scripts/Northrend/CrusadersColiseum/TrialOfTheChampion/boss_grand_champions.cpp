@@ -133,7 +133,7 @@ struct Point
     float x,y,z;
 };
 
-const Point MovementGrandPoint[3] =
+const Point MovementGrandPoint[i] =
 {
   {739.678f, 662.541f, 413.395f},
   {746.71f, 661.02f, 412.695f},
