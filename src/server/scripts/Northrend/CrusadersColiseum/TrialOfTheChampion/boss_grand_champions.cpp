@@ -485,7 +485,12 @@ class boss_warrior_toc5 : public CreatureScript
         void Reset() override
         {
             uiInterceptTimer  = 7000;
-            me->SetReactState(REACT_PASSIVE);			
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);			
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             events.SetPhase(PHASE_IDLE);
         }
@@ -635,7 +640,12 @@ class boss_mage_toc5 : public CreatureScript
             bCredit = false;
 
             hasBeenInCombat = false;
-            me->SetReactState(REACT_PASSIVE);
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
 
@@ -786,7 +796,12 @@ class boss_shaman_toc5 : public CreatureScript
             bHome = false;
             bCredit = false;
             hasBeenInCombat = false;
-            me->SetReactState(REACT_PASSIVE);
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);        
         }
 
@@ -949,7 +964,12 @@ class boss_hunter_toc5 : public CreatureScript
             bHome = false;
             hasBeenInCombat = false;
             bCredit = false;
-            me->SetReactState(REACT_PASSIVE);
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
 
@@ -1156,7 +1176,12 @@ class boss_rogue_toc5 : public CreatureScript
             bCredit = false;
 
             hasBeenInCombat = false;
-            me->SetReactState(REACT_PASSIVE);
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 412.393f, 4.49f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                    me->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                    me->SetHomePosition(754.34f, 660.70f, 412.39f, 4.79f);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
 
