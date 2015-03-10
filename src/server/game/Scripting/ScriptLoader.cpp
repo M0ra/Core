@@ -25,7 +25,6 @@ void AddSC_NoFarming();
 void AddSC_Reset();
 void AddSC_arena_spectator_script();
 void AddSC_npc_mmr_reset();
-void AddSC_npc_1v1arena();
 
 // spells
 void AddSC_deathknight_spell_scripts();
@@ -1484,7 +1483,6 @@ void AddCustomScripts()
     AddSC_Reset();
     AddSC_arena_spectator_script();
     AddSC_npc_mmr_reset();
-    AddSC_npc_1v1arena();
     // 9
     // 10
     // 11
