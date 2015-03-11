@@ -367,7 +367,6 @@ public:
 class go_dalaran_portal : public GameObjectScript
 {
     public:
-
         go_dalaran_portal() : GameObjectScript("go_dalaran_portal_sunwell") { }
 
         bool OnGossipHello(Player* player, GameObject* /*go*/) override
@@ -383,13 +382,13 @@ class item_tainted_queldelar : public ItemScript
     public:
         item_tainted_queldelar() : ItemScript("item_tainted_queldelar") { }
 
-        bool OnUse(Player* player, Creature* creature, Item* item, SpellCastTargets const& /*targets*/)
+        bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/)
         {
             InstanceScript* instance = creature->GetInstanceScript();
 
-            if (Creature* introducer = me->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
+            if (Creature* introducer = player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
             {
-                introducer = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_QUELDELAR_INTRODUCER));
+                introducer = ObjectAccessor::GetCreature(*player, instance->GetGuidData(DATA_QUELDELAR_INTRODUCER));
                 introducer->AI()->SetGUID(player->GetGUID());
                 introducer->AI()->DoAction(ACTION_START_EVENT);
                 return true;
