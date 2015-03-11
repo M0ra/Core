@@ -28,9 +28,10 @@ public:
     {
         static ChatCommand premiumCommandTable[] =
         {
+            { "debuff", SEC_PLAYER, false, &HandlePremiumDebuffCommand, "", NULL },
             { "bank",  SEC_PLAYER, false, &HandlePremiumBankCommand,    "", NULL },
             { "mail",  SEC_PLAYER, false, &HandlePremiumMailCommand,    "", NULL },
-            { "auc",  SEC_PLAYER,  false, &HandlePremiumAuctionCommand, "", NULL },
+            //{ "auc",  SEC_PLAYER,  false, &HandlePremiumAuctionCommand, "", NULL },
             { NULL,    0,          false, NULL,                         "", NULL }
         };
 
@@ -79,9 +80,9 @@ public:
         return true;
     }
 
-    static bool HandlePremiumAuctionCommand(ChatHandler* handler, char const* /*args*/)
-    {
-        Creature* player = handler->GetSession()->GetPlayer();
+    //static bool HandlePremiumAuctionCommand(ChatHandler* handler, char const* /*args*/)
+    /*{
+        Player* player = handler->GetSession()->GetPlayer();
         if(player->GetSession()->IsPremium())
         {
             //Different Checks
@@ -92,12 +93,13 @@ public:
                 return false;
             }
 
-            handler->GetSession()->SendAuctionHello(player->GetGUID(),player->getFaction());
+            handler->GetSession()->SendAuctionHello(player->GetGUID());
+            handler->GetSession()->SendAuctionHello(player->getFaction());
 
         }
         return true;
     }
-
+*/
 };
 
 void AddSC_premium_commandscript()
