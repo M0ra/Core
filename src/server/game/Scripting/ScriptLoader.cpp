@@ -19,13 +19,6 @@
 #include "World.h"
 #include "AnticheatMgr.h"
 
-//custom scripts
-void AddSC_System_Censure();
-void AddSC_NoFarming();
-void AddSC_Reset();
-void AddSC_arena_spectator_script();
-void AddSC_npc_mmr_reset();
-
 // spells
 void AddSC_deathknight_spell_scripts();
 void AddSC_druid_spell_scripts();
@@ -1432,13 +1425,12 @@ void AddBattlegroundScripts()
 void AddSC_PWS_Transmogrification();
 void AddSC_CS_Transmogrification();
 void AddSC_premium_commandscript();
-// 4
-// 5
-// 6
-// 7
-// 8
-// 9
-// 10
+void AddSC_npc_teleport();
+void AddSC_System_Censure();
+void AddSC_NoFarming();
+void AddSC_Reset();
+void AddSC_arena_spectator_script();
+void AddSC_npc_mmr_reset();
 // 11
 // 12
 // 13
@@ -1484,7 +1476,7 @@ void AddCustomScripts()
     AddSC_arena_spectator_script();
     AddSC_npc_mmr_reset();
     AddSC_premium_commandscript();
-    // 10
+    AddSC_npc_teleport();
     // 11
     // 12
     // 13
