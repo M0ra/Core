@@ -383,7 +383,7 @@ class item_tainted_queldelar : public ItemScript
     public:
         item_tainted_queldelar() : ItemScript("item_tainted_queldelar") { }
 
-        bool OnUse(Player* player, Creature* creature, Item* item, SpellCastTargets const& /*targets*/) override
+        bool OnUse(Player* player, Creature* creature, Item* item, SpellCastTargets const& /*targets*/)
         {
             InstanceScript* instance = creature->GetInstanceScript();
 
