@@ -391,7 +391,7 @@ class item_tainted_queldelar : public ItemScript
             {
                 if (Creature* introducer = player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
                 {
-                    introducer = ObjectAccessor::GetCreature(player->GetGUID(), instance->GetGuidData(DATA_QUELDELAR_INTRODUCER));
+                    introducer = ObjectAccessor::GetCreature((player), instance->GetGuidData(DATA_QUELDELAR_INTRODUCER));
                     introducer->AI()->SetGUID(player->GetGUID());
                     introducer->AI()->DoAction(ACTION_START_EVENT);
                 }                    
