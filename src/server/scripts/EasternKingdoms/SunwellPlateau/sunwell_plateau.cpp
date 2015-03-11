@@ -409,4 +409,5 @@ void AddSC_sunwell_plateau()
 {
     new npc_queldelar_sp();
     new go_dalaran_portal();
+    new spell_cleanse_queldelar();
 }
