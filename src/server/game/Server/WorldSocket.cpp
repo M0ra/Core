@@ -236,6 +236,7 @@ void WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     uint32 id;
     LocaleConstant locale;
     std::string account;
+    bool isPremium = false;
     SHA1Hash sha;
     uint32 clientBuild;
     uint32 serverId, loginServerType, region, battlegroup, realmIndex;
@@ -421,6 +422,16 @@ void WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
         return;
     }
 
+    // Check premium
+    stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_PREMIUM);
+    stmt->setUInt32(0, id);
+    PreparedQueryResult premresult = LoginDatabase.Query(stmt);
+
+    if (premresult)
+    {
+        isPremium = true;
+    }
+
     // Check locked state for server
     AccountTypes allowedAccountType = sWorld->GetPlayerSecurityLimit();
     TC_LOG_DEBUG("network", "Allowed Level: %u Player Level %u", allowedAccountType, AccountTypes(security));
@@ -459,7 +470,7 @@ void WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     // At this point, we can safely hook a successful login
     sScriptMgr->OnAccountLogin(id);
 
-    _worldSession = new WorldSession(id, shared_from_this(), AccountTypes(security), expansion, mutetime, locale, recruiter, isRecruiter);
+    _worldSession = new WorldSession(id, shared_from_this(), AccountTypes(security), isPremium, expansion, mutetime, locale, recruiter, isRecruiter);
     _worldSession->LoadGlobalAccountData();
     _worldSession->LoadTutorialsData();
     _worldSession->ReadAddonsInfo(recvPacket);

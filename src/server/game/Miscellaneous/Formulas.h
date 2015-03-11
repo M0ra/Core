@@ -20,6 +20,7 @@
 #define TRINITY_FORMULAS_H
 
 #include "World.h"
+#include "WorldSession.h"
 #include "SharedDefines.h"
 #include "ScriptMgr.h"
 #include "Player.h"
@@ -185,6 +186,10 @@ namespace Trinity
                 }
 
                 xpMod *= sWorld->getRate(RATE_XP_KILL);
+
+                if(player->GetSession()->IsPremium())
+                    xpMod *= sWorld->getRate(RATE_XP_KILL_PREMIUM);
+
                 gain = uint32(gain * xpMod);
             }
 

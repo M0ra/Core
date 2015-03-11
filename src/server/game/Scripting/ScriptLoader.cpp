@@ -1431,7 +1431,7 @@ void AddBattlegroundScripts()
 
 void AddSC_PWS_Transmogrification();
 void AddSC_CS_Transmogrification();
-// 3
+void AddSC_premium_commandscript();
 // 4
 // 5
 // 6
@@ -1483,7 +1483,7 @@ void AddCustomScripts()
     AddSC_Reset();
     AddSC_arena_spectator_script();
     AddSC_npc_mmr_reset();
-    // 9
+    AddSC_premium_commandscript();
     // 10
     // 11
     // 12

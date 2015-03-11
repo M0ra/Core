@@ -297,6 +297,9 @@ bool AuthSession::HandleLogonChallenge()
                 //set expired bans to inactive
                 LoginDatabase.DirectExecute(LoginDatabase.GetPreparedStatement(LOGIN_UPD_EXPIRED_ACCOUNT_BANS));
 
+                //set expired premium to inactive
+                LoginDatabase.DirectExecute(LoginDatabase.GetPreparedStatement(LOGIN_UPD_EXPIRED_ACCOUNT_PREMIUM));
+
                 // If the account is banned, reject the logon attempt
                 stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_BANNED);
                 stmt->setUInt32(0, fields[1].GetUInt32());
