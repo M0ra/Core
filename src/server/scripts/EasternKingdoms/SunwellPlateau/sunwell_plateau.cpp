@@ -137,8 +137,8 @@ public:
     {
         player->PrepareGossipMenu(creature, 0);
 
-        if (player->HasItemCount(49879, 1) || player->HasItemCount(49889, 1))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Я принёс Кель'Делар.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        if (player->HasItemCount(ITEM_TAINTED_QUELDANAR_1, 1) || player->HasItemCount(ITEM_TAINTED_QUELDANAR_2, 1))
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, CS_GOSSIP5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             player->SendPreparedGossip(creature);
 
         return true;
@@ -163,44 +163,12 @@ public:
 
     struct npc_queldelar_spAI : public ScriptedAI
     {
-        npc_queldelar_spAI(Creature* creature) : ScriptedAI(creature)
-        {
-            Initialize();
-        }
-
-        EventMap _events;
-
-        ObjectGuid uiRommath;
-        ObjectGuid uiTheron;
-        ObjectGuid uiAuric;
-        ObjectGuid uiQuelDelarGUID;
-        ObjectGuid uiPlayerGUID;
-
-        void Initialize()
-        {
-            _events.Reset();
-            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-        }		
+        npc_queldelar_spAI(Creature* creature) : ScriptedAI(creature) { }	
 
         void Reset() override
         {
-            Initialize();
-        }
-			
-        void SetGUID(ObjectGuid uiGuid, int32 /*iId*/) override
-        {
-            uiPlayerGUID = uiGuid;
-        }
-
-        void DoAction(int32 action) override
-        {
-            switch (action)
-            {
-                case ACTION_START_EVENT:
-                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_1, 0);
-                    break;
-            }
+            _events.Reset();
+            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
         }
 
         void UpdateAI(uint32 diff) override
@@ -231,7 +199,7 @@ public:
                     if (GameObject* quelDelar = me->SummonGameObject(GO_QUEL_DANAR, 1683.99f, 620.231f, 29.3599f, 0.410932f, 0, 0, 0, 0, 0))
                     {
                         uiQuelDelarGUID = quelDelar->GetGUID();
-                        quelDelar->SetFlag(GAMEOBJECT_FLAGS, 5);
+                        quelDelar->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                     }
 
                     if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
@@ -297,6 +265,7 @@ public:
                         rommath->AddAura(SPELL_ICY_PRISON, player);
                         rommath->AI()->Talk(SAY_QUELDELAR_6);
                     }
+
                     if (Creature* guard = me->FindNearestCreature(NPC_QUEL_GUARD, 200.0f))
                     {
                         guard->GetMotionMaster()->MovePoint(0, 1681.1f, 614.955f, 28.4983f);
@@ -327,10 +296,11 @@ public:
                 case EVENT_QUEST_STEP_14:
                     if (Creature* guard = me->FindNearestCreature(NPC_QUEL_GUARD, 200.0f))
                     {
-						guard->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_STAND);
-						guard->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
+                        guard->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_STAND);
+                        guard->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         guard->GetMotionMaster()->MovePoint(0, guard->GetHomePosition());
                     }
+
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
                         rommath->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
@@ -345,8 +315,8 @@ public:
                         auric->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
                         if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                             auric->AI()->Talk(SAY_QUELDELAR_12);
-					    if (GameObject* quelDelar = me->FindNearestGameObject(GO_QUEL_DANAR, 100.0f))
-                            quelDelar->RemoveFlag(GAMEOBJECT_FLAGS, 5);
+                        if (GameObject* quelDelar = me->FindNearestGameObject(GO_QUEL_DANAR, 100.0f))
+                            quelDelar->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                     }
                     _events.ScheduleEvent(EVENT_QUEST_STEP_16, 4000);
                     break;
@@ -362,6 +332,30 @@ public:
                     break;
             }
         }
+		
+        void SetGUID(ObjectGuid uiGuid, int32 /*iId*/) override
+        {
+            uiPlayerGUID = uiGuid;
+        }
+
+        void DoAction(int32 action) override
+        {
+            switch (action)
+            {
+                case ACTION_START_EVENT:
+                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_1, 0);
+                    break;
+            }
+        }
+		
+        private:
+            EventMap _events;
+            ObjectGuid uiRommath;
+            ObjectGuid uiTheron;
+            ObjectGuid uiAuric;
+            ObjectGuid uiQuelDelarGUID;
+            ObjectGuid uiPlayerGUID;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
@@ -392,12 +386,14 @@ class item_tainted_queldelar : public ItemScript
 
         bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/) override
         {
-            InstanceScript *instance = player->GetInstanceScript();
+            InstanceScript* instance = player->GetInstanceScript();
 
             if (instance && player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
             {
-                if (Creature *introducer = player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
+                if (Creature* introducer = player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
                 {
+                    Creature* introducer = NULL;
+                    Introducer = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_QUELDELAR_INTRODUCER));
                     introducer->AI()->SetGUID(player->GetGUID());
                     introducer->AI()->DoAction(ACTION_START_EVENT);
                 }                    
