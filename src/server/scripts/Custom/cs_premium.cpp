@@ -81,7 +81,7 @@ public:
 
     static bool HandlePremiumAuctionCommand(ChatHandler* handler, char const* /*args*/)
     {
-        Player* player = handler->GetSession()->GetPlayer();
+        Creature* player = handler->GetSession()->GetPlayer();
         if(player->GetSession()->IsPremium())
         {
             //Different Checks
