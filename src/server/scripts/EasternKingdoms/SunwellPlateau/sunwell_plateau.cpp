@@ -389,7 +389,6 @@ class spell_cleanse_queldelar : public SpellScriptLoader
 			void HandleSendEvent(SpellEffIndex effIndex)
 			{
 				if (Creature* caster = GetCaster()->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
-                    caster->AI()->SetGUID(caster->GetGUID());
                     caster->AI()->DoAction(ACTION_START_EVENT);
 				
 			}
@@ -410,5 +409,4 @@ void AddSC_sunwell_plateau()
 {
     new npc_queldelar_sp();
     new go_dalaran_portal();
-    new item_tainted_queldelar();
 }
