@@ -22,7 +22,7 @@ set(scripts_STAT_SRCS
   Custom/duel_reset.cpp
   Custom/ArenaSpectator.cpp
   Custom/mmr.cpp
-# 10
+  Custom/cs_premium.cpp
 # 11
 # 12
 # 13
