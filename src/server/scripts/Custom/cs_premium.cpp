@@ -92,8 +92,7 @@ public:
                 return false;
             }
 
-            handler->GetSession()->SendAuctionHello(player->GetGUID());
-            handler->GetSession()->SendAuctionHello(player->getFaction());
+            handler->GetSession()->SendAuctionHello(player->GetGUID(),player->getFaction());
 
         }
         return true;
