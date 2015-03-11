@@ -384,9 +384,9 @@ class item_tainted_queldelar : public ItemScript
 
         bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/)
         {
-            InstanceScript* instance = creature->GetInstanceScript();
+            InstanceScript* instance = player->GetInstanceScript();
 
-            if (Creature* introducer = player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
+            if (Player* introducer = player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
             {
                 introducer = ObjectAccessor::GetCreature(*player, instance->GetGuidData(DATA_QUELDELAR_INTRODUCER));
                 introducer->AI()->SetGUID(player->GetGUID());
@@ -396,6 +396,35 @@ class item_tainted_queldelar : public ItemScript
             else
             return false;
         }
+};
+
+class spell_cleanse_queldelar : public SpellScriptLoader
+{
+	public:
+		spell_cleanse_queldelar() : SpellScriptLoader("spell_cleanse_queldelar") { }
+
+		class spell_cleanse_queldelar_SpellScript : public SpellScript
+		{
+			PrepareSpellScript(spell_cleanse_queldelar_SpellScript);
+
+			void HandleSendEvent(SpellEffIndex effIndex)
+			{
+				if (Creature* caster = GetCaster()->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
+                    caster->AI()->SetGUID(player->GetGUID());
+                    caster->AI()->DoAction(ACTION_START_EVENT);
+				
+			}
+
+			void Register() override
+			{
+				OnEffectHit += SpellEffectFn(spell_cleanse_queldelar_SpellScript::HandleSendEvent, EFFECT_0, SPELL_EFFECT_SEND_EVENT);
+			}
+		};
+
+		SpellScript* GetSpellScript() const override
+		{
+			return new spell_cleanse_queldelar_SpellScript();
+		}
 };
 
 void AddSC_sunwell_plateau()
