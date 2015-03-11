@@ -28,7 +28,6 @@ public:
     {
         static ChatCommand premiumCommandTable[] =
         {
-            { "debuff", SEC_PLAYER, false, &HandlePremiumDebuffCommand, "", NULL },
             { "bank",  SEC_PLAYER, false, &HandlePremiumBankCommand,    "", NULL },
             { "mail",  SEC_PLAYER, false, &HandlePremiumMailCommand,    "", NULL },
             //{ "auc",  SEC_PLAYER,  false, &HandlePremiumAuctionCommand, "", NULL },
