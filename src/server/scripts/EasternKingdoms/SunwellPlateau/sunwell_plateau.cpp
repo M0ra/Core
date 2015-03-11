@@ -383,22 +383,19 @@ class item_tainted_queldelar : public ItemScript
     public:
         item_tainted_queldelar() : ItemScript("item_tainted_queldelar") { }
 
-        bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/) override
+        bool OnUse(Player* player, Creature* creature, Item* item, SpellCastTargets const& /*targets*/) override
         {
-            InstanceScript* instance = player->GetInstanceScript();
+            InstanceScript* instance = creature->GetInstanceScript();
 
-            if (instance && player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
+            if (Creature* introducer = me->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
             {
-                if (Creature* introducer = player->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
-                {
-                    introducer = ObjectAccessor::GetCreature((player), instance->GetGuidData(DATA_QUELDELAR_INTRODUCER));
-                    introducer->AI()->SetGUID(player->GetGUID());
-                    introducer->AI()->DoAction(ACTION_START_EVENT);
-                }                    
+                introducer = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_QUELDELAR_INTRODUCER));
+                introducer->AI()->SetGUID(player->GetGUID());
+                introducer->AI()->DoAction(ACTION_START_EVENT);
                 return true;
-            }
+            }                    
             else
-                return false;
+            return false;
         }
 };
 
