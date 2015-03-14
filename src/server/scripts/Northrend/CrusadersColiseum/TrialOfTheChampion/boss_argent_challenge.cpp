@@ -656,6 +656,7 @@ class npc_argent_soldier : public CreatureScript
         uint32 timerFlurryBlows;
 
         bool bStarted;
+        bool defeated;
 
         void Reset() override
         {
