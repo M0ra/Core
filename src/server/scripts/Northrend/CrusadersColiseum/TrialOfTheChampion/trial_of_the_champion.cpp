@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
+ * Script updated by Fiveofeight
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -35,46 +36,46 @@ const Position SpawnPosition1 = {746.71f, 661.02f, 411.69f, 4.66995f};
 enum Texts
 {
     // Starts when you enter toc
-    SAY_INTRO_HERALD_1              = 27, 
-    SAY_INTRO_HERALD_2              = 50,
-    H_SAY_INTRO_HERALD_3            = 0,
-    A_SAY_INTRO_HERALD_3            = 50,
-    H_SAY_INTRO_HERALD_4            = 50,
-    A_SAY_INTRO_HERALD_4            = 10,
-    SAY_INTRO_HERALD_5              = 52,
-    H_SAY_INTRO_HERALD_6            = 11,
-    A_SAY_INTRO_HERALD_6            = 2,
-    SAY_INTRO_HERALD_7              = 51,
+    SAY_INTRO_HERALD_1          = 27, 
+    SAY_INTRO_HERALD_2          = 50,
+    H_SAY_INTRO_HERALD_3        = 0,
+    A_SAY_INTRO_HERALD_3        = 50,
+    H_SAY_INTRO_HERALD_4        = 50,
+    A_SAY_INTRO_HERALD_4        = 10,
+    SAY_INTRO_HERALD_5          = 52,
+    H_SAY_INTRO_HERALD_6        = 11,
+    A_SAY_INTRO_HERALD_6        = 2,
+    SAY_INTRO_HERALD_7          = 51,
 
     //  Horde - Announcing the fighters
-    H_SAY_WARRIOR_ENTERS            = 6,
-    H_SAY_MAGE_ENTERS               = 5,
-    H_SAY_SHAMAN_ENTERS             = 3,
-    H_SAY_ROGUE_ENTERS              = 7,
+    H_SAY_WARRIOR_ENTERS          = 6,
+    H_SAY_MAGE_ENTERS             = 5,
+    H_SAY_SHAMAN_ENTERS           = 3,
+    H_SAY_ROGUE_ENTERS            = 7,
 
     //  Alliance - Announcing the fighters
-    A_SAY_WARRIOR_ENTERS            = 5,
-    A_SAY_MAGE_ENTERS               = 3,
-    A_SAY_SHAMAN_ENTERS             = 7,
-    A_SAY_ROGUE_ENTERS              = 6,
+    A_SAY_WARRIOR_ENTERS          = 5,
+    A_SAY_MAGE_ENTERS             = 3,
+    A_SAY_SHAMAN_ENTERS           = 7,
+    A_SAY_ROGUE_ENTERS            = 6,
 
     // Shared emotes - announcer
-    SAY_WARRIOR_CHEER               = 20,
-    SAY_MAGE_CHEER                  = 21,
-    SAY_SHAMAN_CHEER                = 22,
-    SAY_HUNTER_CHEER                = 23,
-    SAY_ROGUE_CHEER                 = 24,
-    SAY_HUNTER_ENTERS               = 4,
+    SAY_WARRIOR_CHEER           = 20,
+    SAY_MAGE_CHEER              = 21,
+    SAY_SHAMAN_CHEER            = 22,
+    SAY_HUNTER_CHEER            = 23,
+    SAY_ROGUE_CHEER             = 24,
+    SAY_HUNTER_ENTERS           = 4,
 
     // Argent Champion
-    SAY_ARGENT_CHAMP_ENTERS         = 53,
-    SAY_PALETRESS_INTRO_1           = 1,
-    SAY_PALETRESS_INTRO_2           = 25,
-    SAY_PALETRESS_INTRO_3           = 0,
-    SAY_PALETRESS_INTRO_4           = 1,
-    SAY_EADRIC_INTRO_1              = 0,
-    SAY_EADRIC_INTRO_2              = 26,
-    SAY_EADRIC_INTRO_3              = 0,
+    SAY_ARGENT_CHAMP_ENTERS     = 53,
+    SAY_PALETRESS_INTRO_1       = 1,
+    SAY_PALETRESS_INTRO_2       = 25,
+    SAY_PALETRESS_INTRO_3       = 0,
+    SAY_PALETRESS_INTRO_4       = 1,
+    SAY_EADRIC_INTRO_1          = 0,
+    SAY_EADRIC_INTRO_2          = 26,
+    SAY_EADRIC_INTRO_3          = 0,
 
     // Black Knight
     SAY_INTRO_BLACK_KNIGHT_TIRION   = 55,
@@ -83,54 +84,54 @@ enum Texts
 
 enum Gossip
 {
-    GOSSIP_NOT_MOUNTED_A            = 14757,
-    GOSSIP_NOT_MOUNTED_H            = 15043
+    GOSSIP_NOT_MOUNTED_A  = 14757,
+    GOSSIP_NOT_MOUNTED_H  = 15043
 };
 
 enum Events
 {
-    EVENT_INTRO_1                   = 1,
-    EVENT_INTRO_2                   = 2,
-    EVENT_INTRO_3                   = 3,
-    EVENT_INTRO_4                   = 4,
-    EVENT_INTRO_5                   = 5,
-    EVENT_INTRO_6                   = 6,
-    EVENT_INTRO_7                   = 7,
-    EVENT_INTRO_8                   = 8,
-    EVENT_SUMMON_FACTION_2          = 9,
-    EVENT_SUMMON_FACTION_3          = 10,
-    EVENT_AGGRO_FACTION             = 11,
-    EVENT_PALETRESS_1               = 12,
-    EVENT_PALETRESS_2               = 13,
-    EVENT_PALETRESS_3               = 14,
-    EVENT_EADRIC_1                  = 15,
-    EVENT_EADRIC_2                  = 16
+    EVENT_INTRO_1               = 1,
+    EVENT_INTRO_2               = 2,
+    EVENT_INTRO_3               = 3,
+    EVENT_INTRO_4               = 4,
+    EVENT_INTRO_5               = 5,
+    EVENT_INTRO_6               = 6,
+    EVENT_INTRO_7               = 7,
+    EVENT_INTRO_8               = 8,
+    EVENT_SUMMON_FACTION_2      = 9,
+    EVENT_SUMMON_FACTION_3      = 10,
+    EVENT_AGGRO_FACTION         = 11,
+    EVENT_PALETRESS_1           = 12,
+    EVENT_PALETRESS_2           = 13,
+    EVENT_PALETRESS_3           = 14,
+    EVENT_EADRIC_1              = 15,
+    EVENT_EADRIC_2              = 16
 };
 
 enum Phases
 {
-    PHASE_INTRO                     = 1,
-    PHASE_INPROGRESS                = 2,
+    PHASE_INTRO                 = 1,
+    PHASE_INPROGRESS            = 2,
 
-    PHASE_INTRO_MASK                = 1 << PHASE_INTRO,
-    PHASE_INPROGRESS_MASK           = 2 << PHASE_INPROGRESS
+    PHASE_INTRO_MASK            = 1 << PHASE_INTRO,
+    PHASE_INPROGRESS_MASK       = 2 << PHASE_INPROGRESS
 };
 
 enum Spells
 {
-    SPELL_FACE_BLACKKNIGHT          = 67482,
-    SPELL_HERALD_ARGENT             = 64787
+    SPELL_FACE_BLACKKNIGHT                = 67482,
+    SPELL_HERALD_ARGENT                   = 64787
 };
 
 class npc_herald_toc5 : public CreatureScript
 {
     public:
-        npc_herald_toc5(): CreatureScript("npc_herald_toc5") {}
+        npc_herald_toc5(): CreatureScript("npc_herald_toc5") { }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         player->PlayerTalkClass->ClearMenus();
-        if (action == GOSSIP_ACTION_INFO_DEF+1)
+        if (action == GOSSIP_ACTION_INFO_DEF + 1)
         {
             player->CLOSE_GOSSIP_MENU();
             CAST_AI(npc_herald_toc5::npc_herald_toc5AI, creature->AI())->StartEncounter();
@@ -194,14 +195,6 @@ class npc_herald_toc5 : public CreatureScript
 
             ArgentChampion = 0;
 
-            uiVehicle1GUID.Clear();
-            uiVehicle2GUID.Clear();
-            uiVehicle3GUID.Clear();
-
-            uiGrandChampionBoss1.Clear();
-            uiGrandChampionBoss2.Clear();
-            uiGrandChampionBoss3.Clear();
-
             Champion1List.clear();
             Champion2List.clear();
             Champion3List.clear();
@@ -238,10 +231,6 @@ class npc_herald_toc5 : public CreatureScript
         ObjectGuid uiVehicle3GUID;
         ObjectGuid GrandChampionBoss;
 
-        ObjectGuid uiGrandChampionBoss1;
-        ObjectGuid uiGrandChampionBoss2;
-        ObjectGuid uiGrandChampionBoss3;
-
         GuidList Champion1List;
         GuidList Champion2List;
         GuidList Champion3List;
@@ -273,12 +262,19 @@ class npc_herald_toc5 : public CreatureScript
             switch (uiType)
             {
                 case DATA_START:
-                    if (GameObject* gate = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
-                        instance->HandleGameObject(gate->GetGUID(),true);
-                    if (GameObject* gate = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
-                        instance->HandleGameObject(gate->GetGUID(),false);
+                    if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
+                        instance->HandleGameObject(pGO->GetGUID(),true);
+                    if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
+                        instance->HandleGameObject(pGO->GetGUID(),false);
                     DoSummonGrandChampion(uiFirstBoss);
                     events.ScheduleEvent(EVENT_SUMMON_FACTION_2, 10000, 0, PHASE_INPROGRESS);
+                    break;
+                case DATA_IN_POSITION:
+                    me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
+                    me->GetMotionMaster()->MovePoint(1, 735.898f, 651.961f, 411.93f);
+                    if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
+                        instance->HandleGameObject(pGO->GetGUID(),false);
+                    events.ScheduleEvent(EVENT_AGGRO_FACTION, 15000, 0, PHASE_INPROGRESS);
                     break;
                 case DATA_LESSER_CHAMPIONS_DEFEATED:
                 {
@@ -296,8 +292,8 @@ class npc_herald_toc5 : public CreatureScript
                                 break;
                         }
 
-                        for (GuidList::const_iterator itr = TempList.begin(); itr != TempList.end(); ++itr)
-                        if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
+                        for(GuidList::const_iterator itr = TempList.begin(); itr != TempList.end(); ++itr)
+                            if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
                                 AggroAllPlayers(summon);
                     } else if (uiLesserChampions == 9)
                         StartGrandChampionsAttack();
@@ -334,7 +330,7 @@ class npc_herald_toc5 : public CreatureScript
 
         void JustSummoned(Creature* summon) override
         {
-            if (instance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED)
+            if (instance && instance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED)
             {
                 summon->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
                 summon->SetReactState(REACT_PASSIVE);
@@ -420,38 +416,48 @@ class npc_herald_toc5 : public CreatureScript
                     case 1:
                     {
                         uiVehicle1GUID = pBoss->GetGUID();
+                        uint64 uiGrandChampionBoss1 = 0;
                         if (Creature* pBoss = ObjectAccessor::GetCreature(*me, uiVehicle1GUID))
                             if (Vehicle* pVehicle = pBoss->GetVehicleKit())
                                 if (Unit* pUnit = pVehicle->GetPassenger(0))
                                     uiGrandChampionBoss1 = pUnit->GetGUID();
-                        
-                        instance->SetGuidData(DATA_GRAND_CHAMPION_1, uiGrandChampionBoss1);
+                        if (instance)
+                        {
+                            instance->SetData64(DATA_GRAND_CHAMPION_VEHICLE_1, uiVehicle1GUID);
+                            instance->SetData64(DATA_GRAND_CHAMPION_1, uiGrandChampionBoss1);
+                        }
                         pBoss->AI()->SetData(1,0);
                         break;
                     }
                     case 2:
                     {
                         uiVehicle2GUID = pBoss->GetGUID();
+                        uint64 uiGrandChampionBoss2 = 0;
                         if (Creature* pBoss = ObjectAccessor::GetCreature(*me, uiVehicle2GUID))
                             if (Vehicle* pVehicle = pBoss->GetVehicleKit())
                                 if (Unit* pUnit = pVehicle->GetPassenger(0))
                                     uiGrandChampionBoss2 = pUnit->GetGUID();
-                       
-                        instance->SetGuidData(DATA_GRAND_CHAMPION_2, uiGrandChampionBoss2);
+                        if (instance)
+                        {
+                            instance->SetData64(DATA_GRAND_CHAMPION_VEHICLE_2, uiVehicle2GUID);
+                            instance->SetData64(DATA_GRAND_CHAMPION_2, uiGrandChampionBoss2);
+                        }
                         pBoss->AI()->SetData(2, 0);
                         break;
                     }
                     case 3:
                     {
                         uiVehicle3GUID = pBoss->GetGUID();
+                        uint64 uiGrandChampionBoss3 = 0;
                         if (Creature* pBoss = ObjectAccessor::GetCreature(*me, uiVehicle3GUID))
                             if (Vehicle* pVehicle = pBoss->GetVehicleKit())
                                 if (Unit* pUnit = pVehicle->GetPassenger(0))
                                     uiGrandChampionBoss3 = pUnit->GetGUID();
-                        
                         if (instance)
-                            instance->SetGuidData(DATA_GRAND_CHAMPION_3, uiGrandChampionBoss3);
-
+                        {
+                            instance->SetData64(DATA_GRAND_CHAMPION_VEHICLE_3, uiVehicle3GUID);
+                            instance->SetData64(DATA_GRAND_CHAMPION_3, uiGrandChampionBoss3);
+                        }
                         pBoss->AI()->SetData(3, 0);
                         break;
                     }
@@ -479,13 +485,13 @@ class npc_herald_toc5 : public CreatureScript
                         switch (i)
                         {
                             case 0:
-                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, float(M_PI));
+                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, M_PI);
                                 break;
                             case 1:
-                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, float(M_PI) / 2);
+                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, M_PI / 2);
                                 break;
                             case 2:
-                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, float(M_PI) / 2 + float(M_PI));
+                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, M_PI / 2 + M_PI);
                                 break;
                         }
                     }
@@ -520,30 +526,8 @@ class npc_herald_toc5 : public CreatureScript
         
         void DoAction(int32 actionID)
         {
-            switch (actionID)
-            {
-                case ACTION_SET_HERALD_IN_POSITION:
-                    me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
-                    me->GetMotionMaster()->Clear();
-                    me->GetMotionMaster()->MovePoint(1, 735.898f, 651.961f, 411.93f);
-                    if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
-                        instance->HandleGameObject(pGO->GetGUID(), false);
-                    events.ScheduleEvent(EVENT_AGGRO_FACTION, 15000, 0, PHASE_INPROGRESS);
-                    break;
-                case ACTION_RESET_GRAND_CHAMPIONS:
-                    Champion1List.clear();
-                    Champion2List.clear();
-                    Champion3List.clear();
-                    uiSummonTimes = 0;
-
-                    me->GetMotionMaster()->Clear();
-                    me->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, NOT_STARTED);
-                    break;
-                default:
-                    break;
-            }
+            if (actionID == ACTION_RESET_BLACK_KNIGHT)
+                StartEncounter();
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -597,10 +581,7 @@ class npc_herald_toc5 : public CreatureScript
                 if (instance->GetData(BOSS_ARGENT_CHALLENGE_E) == NOT_STARTED && instance->GetData(BOSS_ARGENT_CHALLENGE_P) == NOT_STARTED)
                 {
                     if (instance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED)
-                    {
-                        instance->SetData(DATA_MOVEMENT_DONE, 0);
-                        me->AI()->SetData(DATA_START, NOT_STARTED);
-                    }
+                        me->AI()->SetData(DATA_START,NOT_STARTED);
 
                     if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE)
                         DoStartArgentChampionEncounter();
@@ -719,7 +700,7 @@ class npc_herald_toc5 : public CreatureScript
                                 thrall->AI()->Talk(H_SAY_INTRO_HERALD_3);
                         }
                         else
-                        if (Creature* varian = ObjectAccessor::GetCreature(*me, varianGUID))
+                            if (Creature* varian = ObjectAccessor::GetCreature(*me, varianGUID))
                                 varian->AI()->Talk(A_SAY_INTRO_HERALD_3);
                         events.ScheduleEvent(EVENT_INTRO_4, 4000, 0, PHASE_INTRO);
                         break;
@@ -730,7 +711,7 @@ class npc_herald_toc5 : public CreatureScript
                                 garrosh->AI()->Talk(H_SAY_INTRO_HERALD_4);
                         }
                         else
-                        if (Creature* proudmoore = ObjectAccessor::GetCreature(*me, proudmooreGUID))
+                            if (Creature* proudmoore = ObjectAccessor::GetCreature(*me, proudmooreGUID))
                                 proudmoore->AI()->Talk(A_SAY_INTRO_HERALD_4);
                         events.ScheduleEvent(EVENT_INTRO_5, 4000, 0, PHASE_INTRO);
                         break;
@@ -741,7 +722,7 @@ class npc_herald_toc5 : public CreatureScript
                                 varian->AI()->Talk(SAY_INTRO_HERALD_5);
                         }
                         else
-                        if (Creature* garrosh = ObjectAccessor::GetCreature(*me, garroshGUID))
+                            if (Creature* garrosh = ObjectAccessor::GetCreature(*me, garroshGUID))
                                 garrosh->AI()->Talk(SAY_INTRO_HERALD_5);
                         events.ScheduleEvent(EVENT_INTRO_6, 6000, 0, PHASE_INTRO);
                         break;
@@ -752,7 +733,7 @@ class npc_herald_toc5 : public CreatureScript
                                 proudmoore->AI()->Talk(H_SAY_INTRO_HERALD_6);
                         }
                         else
-                        if (Creature* thrall = ObjectAccessor::GetCreature(*me, thrallGUID))
+                            if (Creature* thrall = ObjectAccessor::GetCreature(*me, thrallGUID))
                                 thrall->AI()->Talk(A_SAY_INTRO_HERALD_6);
                         events.ScheduleEvent(EVENT_INTRO_7, 6000, 0, PHASE_INTRO);
                         break;
@@ -775,8 +756,8 @@ class npc_herald_toc5 : public CreatureScript
                     case EVENT_AGGRO_FACTION:
                         if (!Champion1List.empty())
                         {
-                            for (GuidList::const_iterator itr = Champion1List.begin(); itr != Champion1List.end(); ++itr)
-                            if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
+                            for(GuidList::const_iterator itr = Champion1List.begin(); itr != Champion1List.end(); ++itr)
+                                if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
                                     AggroAllPlayers(summon);
                         }
                         break;
@@ -808,9 +789,9 @@ class npc_herald_toc5 : public CreatureScript
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfTheChampionAI<npc_herald_toc5AI>(creature);
+        return new npc_herald_toc5AI (creature);
     };
 };
 

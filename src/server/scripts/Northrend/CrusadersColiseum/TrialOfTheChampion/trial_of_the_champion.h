@@ -18,8 +18,6 @@
 #ifndef DEF_TOC_H
 #define DEF_TOC_H
 
-#define TOCHScriptName "instance_trial_of_the_champion"
-
 enum Data
 {
     BOSS_GRAND_CHAMPIONS,
@@ -29,6 +27,7 @@ enum Data
     DATA_MOVEMENT_DONE,
     DATA_LESSER_CHAMPIONS_DEFEATED,
     DATA_START,
+    DATA_IN_POSITION,
     DATA_ARGENT_SOLDIER_DEFEATED,
     DATA_TEAM_IN_INSTANCE,
     DATA_RESET,
@@ -36,8 +35,8 @@ enum Data
     DATA_AGRO_DONE,
     DATA_BLACK_KNIGHT,
     DATA_KNIGHT,
-    DATA_IVE_HAD_WORSE,
-    DATA_THE_FACEROLLER
+    DATA_THE_FACEROLLER,
+    DATA_IVE_HAD_WORSE
 };
 
 enum Data64
@@ -191,8 +190,7 @@ enum Vehicles
 enum Actions
 {
     ACTION_OUTRO                        = 0,
-    ACTION_SET_HERALD_IN_POSITION       = 1,
-    ACTION_RESET_GRAND_CHAMPIONS        = 2
+    ACTION_RESET_BLACK_KNIGHT           = 1
 };
 
 enum Criterias
@@ -201,17 +199,8 @@ enum Criterias
 };
 
 void HandleSpellOnPlayersInInstanceToC5(Unit* caller, uint32 spellId);
+void HandleKillCreditForAllPlayers(Creature* credit);
 void HandleInstanceBind(Creature* source);
 
-
-template<class AI>
-CreatureAI* GetTrialOfTheChampionAI(Creature* creature)
-{
-    if (InstanceMap* instance = creature->GetMap()->ToInstanceMap())
-        if (instance->GetInstanceScript())
-            if (instance->GetScriptId() == sObjectMgr->GetScriptId(TOCHScriptName))
-                return new AI(creature);
-            return NULL;
-}
 
 #endif
