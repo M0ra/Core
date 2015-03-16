@@ -6930,7 +6930,7 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                     {
                         Aura* flameShock  = aurEff->GetBase();
                         int32 maxDuration = flameShock->GetMaxDuration();
-                        int32 newDuration = flameShock->GetDuration() + 2 * aurEff->GetAmplitude();
+                        int32 newDuration = flameShock->GetDuration() + dummySpell->Effects[0].CalcValue() * IN_MILLISECONDS;
 
                         flameShock->SetDuration(newDuration);
                         // is it blizzlike to change max duration for FS?
