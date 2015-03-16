@@ -214,7 +214,6 @@ class boss_kologarn : public CreatureScript
                     {
                         rubbleStalker->CastSpell(rubbleStalker, SPELL_FALLING_RUBBLE, true);
                         rubbleStalker->CastSpell(rubbleStalker, SPELL_SUMMON_RUBBLE, true);
-                        who->ToCreature()->DespawnOrUnsummon();
                     }
 
                     who->ToCreature()->DespawnOrUnsummon();
