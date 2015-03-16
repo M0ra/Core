@@ -410,7 +410,7 @@ void Player::UpdateAttackPowerAndDamage(bool ranged)
                                         if (!proto)
                                             continue;
 
-                                        weapon_bonus = CalculatePct(float(proto->getFeralBonus()), aurEff->GetAmount());
+                                        weapon_bonus = CalculatePct(float(m_baseFeralAP), aurEff->GetAmount());
                                     }
                                     break;
                                 default:
