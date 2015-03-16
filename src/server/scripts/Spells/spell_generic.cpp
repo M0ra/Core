@@ -4566,6 +4566,59 @@ class achievement_mine_sweeper : public AchievementCriteriaScript
         }
 };
 
+enum WeakAlcohol
+{
+    SPELL_SUMMON_PINK_ELEKK_GUARDIAN = 50180,
+    SPELL_PINK_ELEKK_MOUNT           = 49908
+};
+
+class spell_item_draenic_pale_ale : public SpellScriptLoader
+{
+public:
+    spell_item_draenic_pale_ale() : SpellScriptLoader("spell_item_draenic_pale_ale") { }
+
+    class spell_item_draenic_pale_ale_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_item_draenic_pale_ale_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_SUMMON_PINK_ELEKK_GUARDIAN) || !sSpellMgr->GetSpellInfo(SPELL_SUMMON_PINK_ELEKK_GUARDIAN))
+                return false;
+            return true;
+        }
+
+        void HandleScript(SpellEffIndex effIndex)
+        {
+            // If player doesn't already have the mount aura roll for chance of it being applied 
+            if (Player* caster = GetCaster()->ToPlayer())
+            {
+                if (!caster->HasAura(SPELL_PINK_ELEKK_MOUNT))
+                {
+                    // pure guess on 33%
+                    if (roll_chance_i(33))
+                    {
+                        PreventHitDefaultEffect(effIndex);
+                        // prevent client crashes from stacking mounts
+                        caster->RemoveAurasByType(SPELL_AURA_MOUNTED);
+                        caster->CastSpell(caster, SPELL_PINK_ELEKK_MOUNT, true, GetCastItem());
+                    }
+                }
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_item_draenic_pale_ale_SpellScript::HandleScript, EFFECT_1, SPELL_EFFECT_TRIGGER_SPELL);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_item_draenic_pale_ale_SpellScript();
+    }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -4671,4 +4724,5 @@ void AddSC_generic_spell_scripts()
     new npc_mob_land_mine_bunny();
     new spell_gen_landmine_knockback_achievement_aura();
     new achievement_mine_sweeper();
+    new TW_spell_item_draenic_pale_ale();
 }
