@@ -86,7 +86,7 @@ enum Spells
     // Frost Infusion
     SPELL_FROST_INFUSION_CREDIT = 72289,
     SPELL_FROST_IMBUED_BLADE    = 72290,
-    SPELL_FROST_INFUSION        = 72292,
+    SPELL_FROST_INFUSION        = 72292
 };
 
 enum Events
@@ -124,7 +124,7 @@ enum Events
     EVENT_CONCUSSIVE_SHOCK          = 20,
 
     // event groups
-    EVENT_GROUP_LAND_PHASE          = 1,
+    EVENT_GROUP_LAND_PHASE          = 1
 };
 
 enum FrostwingData
@@ -134,6 +134,7 @@ enum FrostwingData
     DATA_WHELP_MARKER           = 2,
     DATA_LINKED_GAMEOBJECT      = 3,
     DATA_TRAPPED_PLAYER         = 4,
+    DATA_AIR_PHASE              = 5
 };
 
 enum MovementPoints
@@ -144,7 +145,7 @@ enum MovementPoints
     POINT_TAKEOFF           = 4,
     POINT_LAND              = 5,
     POINT_AIR_PHASE_FAR     = 6,
-    POINT_LAND_GROUND       = 7,
+    POINT_LAND_GROUND       = 7
 };
 
 enum Shadowmourne
@@ -320,9 +321,15 @@ class boss_sindragosa : public CreatureScript
 
             uint32 GetData(uint32 type) const override
             {
-                if (type == DATA_MYSTIC_BUFFET_STACK)
-                    return _mysticBuffetStack;
-                return 0xFFFFFFFF;
+                switch (type)
+                {
+                    case DATA_MYSTIC_BUFFET_STACK:
+                        return _mysticBuffetStack;
+                    case DATA_AIR_PHASE:
+                        return _isInAirPhase ? 1 : 0;
+                    default:
+                        return 0xFFFFFFFF;
+                }
             }
 
             void MovementInform(uint32 type, uint32 point) override
@@ -577,8 +584,14 @@ class npc_ice_tomb : public CreatureScript
                 {
                     _trappedPlayerGUID = guid;
                     _existenceCheckTimer = 1000;
-                    _asphyxiationTimer = 20000;
                     _asphyxiationTriggered = false;
+                    
+                    // Intentional initialization
+                    _asphyxiationTimer = 20000;
+                    
+                    if (InstanceScript* instance = me->GetInstanceScript())
+                        if (Creature* sindragosa = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_SINDRAGOSA)))
+                            _asphyxiationTimer = sindragosa->AI()->GetData(DATA_AIR_PHASE) ? 30000 : 20000;
                 }
             }
 
