@@ -3260,6 +3260,10 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 50526: // Wandering Plague
                 spellInfo->AttributesEx4 |= SPELL_ATTR4_FIXED_DAMAGE;
                 break;
+            case 53353: // Chimera Shot - Serpent Remove this case when CastCustomSpell without any mods is supported.
+            case 50526: // Wandering Plague (DK) Remove this case when CastCustomSpell without any mods is supported.
+                spellInfo->AttributesEx4 |= SPELL_ATTR4_FIXED_DAMAGE;
+                // Missing break is intentional.
             case 63675: // Improved Devouring Plague
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
                 break;
