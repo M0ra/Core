@@ -485,7 +485,7 @@ class spell_thaddius_pos_neg_charge : public SpellScriptLoader
 
             bool Load() override
             {
-                return GetCaster()->GetTypeId() == TYPEID_UNIT;
+                return GetOriginalCaster()->GetTypeId() == TYPEID_UNIT;
             }
 
             void HandleTargets(std::list<WorldObject*>& targets)
@@ -516,7 +516,7 @@ class spell_thaddius_pos_neg_charge : public SpellScriptLoader
                     return;
 
                 Unit* target = GetHitUnit();
-                Unit* caster = GetCaster();
+                Unit* caster = GetOriginalCaster();
 
                 if (target->HasAura(GetTriggeringSpell()->Id))
                     SetHitDamage(0);
