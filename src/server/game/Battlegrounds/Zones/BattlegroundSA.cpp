@@ -344,6 +344,7 @@ void BattlegroundSA::PostUpdateImpl(uint32 diff)
             TotalTime = 0;
             ToggleTimer();
             DemolisherStartState(false);
+            _gateDestroyed = false;
             Status = BG_SA_ROUND_ONE;
             StartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, (Attackers == TEAM_ALLIANCE) ? 23748 : 21702);
         }
@@ -391,6 +392,8 @@ void BattlegroundSA::PostUpdateImpl(uint32 diff)
         {
             if (TotalTime >= BG_SA_ROUNDLENGTH)
             {
+                CastSpellOnTeam(SPELL_END_OF_ROUND, ALLIANCE);
+                CastSpellOnTeam(SPELL_END_OF_ROUND, HORDE);
                 for (BattlegroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
                     if (Player* p = ObjectAccessor::FindPlayer(itr->first))
                         p->CastSpell(p, 52459, true);
@@ -408,8 +411,6 @@ void BattlegroundSA::PostUpdateImpl(uint32 diff)
                 ToggleTimer();
                 ResetObjs();
                 GetBgMap()->UpdateAreaDependentAuras();
-                CastSpellOnTeam(SPELL_END_OF_ROUND, ALLIANCE);
-                CastSpellOnTeam(SPELL_END_OF_ROUND, HORDE);
                 return;
             }
         }
@@ -421,6 +422,8 @@ void BattlegroundSA::PostUpdateImpl(uint32 diff)
                     if (Player* p = ObjectAccessor::FindPlayer(itr->first))
                         p->CastSpell(p, 52459, true);
 
+                CastSpellOnTeam(SPELL_END_OF_ROUND, ALLIANCE);
+                CastSpellOnTeam(SPELL_END_OF_ROUND, HORDE);
                 RoundScores[1].time = BG_SA_ROUNDLENGTH;
                 RoundScores[1].winner = (Attackers == TEAM_ALLIANCE) ? TEAM_HORDE : TEAM_ALLIANCE;
                 if (RoundScores[0].time == RoundScores[1].time)
