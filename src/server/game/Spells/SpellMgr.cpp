@@ -3160,6 +3160,12 @@ void SpellMgr::LoadSpellInfoCorrections()
                 spellInfo->ProcCharges = 2;
                 spellInfo->StackAmount = 0;
                 break;
+            case 44461: // Living bomb
+            case 55361:
+            case 55362:
+                spellInfo->AttributesEx |= SPELL_ATTR1_CANT_BE_REFLECTED;
+                spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
+                break;
             case 28200: // Ascendance (Talisman of Ascendance trinket)
                 spellInfo->ProcCharges = 6;
                 break;
@@ -3824,6 +3830,11 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             // ENDOF ISLE OF CONQUEST SPELLS
             //
+            case 49224: // Magic Suppression
+            case 49610:
+            case 49611:
+                spellInfo->ProcCharges = 0;
+                break;
             case 28374: // Gluth's Decimate
             case 54426: // Gluth's Decimate
                 spellInfo->AttributesEx |= SPELL_ATTR1_CANT_TARGET_SELF;
