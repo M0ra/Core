@@ -3467,7 +3467,8 @@ class spell_gen_upper_deck_create_foam_sword : public SpellScriptLoader
 
 enum VehicleScaling
 {
-    SPELL_GEAR_SCALING      = 66668
+    SPELL_GEAR_SCALING      = 66668,
+    SPELL_SOTA_DEMO_SCALING = 65636
 };
 
 class spell_gen_vehicle_scaling : public SpellScriptLoader
@@ -3496,6 +3497,10 @@ class spell_gen_vehicle_scaling : public SpellScriptLoader
                     case SPELL_GEAR_SCALING:
                         factor = 1.0f;
                         baseItemLevel = 205;
+                        break;
+                    case SPELL_SOTA_DEMO_SCALING:
+                        factor = 1.0f;
+                        baseItemLevel = 230; // based of ~185k hp for ~270 item lvl
                         break;
                     default:
                         factor = 1.0f;
