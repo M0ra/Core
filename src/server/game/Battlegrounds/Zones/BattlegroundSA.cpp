@@ -401,7 +401,7 @@ void BattlegroundSA::PostUpdateImpl(uint32 diff)
                 Status = BG_SA_SECOND_WARMUP;
                 Attackers = (Attackers == TEAM_ALLIANCE) ? TEAM_HORDE : TEAM_ALLIANCE;
                 UpdateWaitTimer = 5000;
-                gateDestroyed = false;
+                _gateDestroyed = false;
                 SignaledRoundTwo = false;
                 SignaledRoundTwoHalfMin = false;
                 InitSecondRound = true;
