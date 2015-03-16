@@ -97,7 +97,7 @@ public:
             events.ScheduleEvent(EVENT_SUMMON, 15000);
         }
 
-        void SpellHitTarget(Unit* target, SpellInfo const* spell)
+        void SpellHitTarget(Unit* target, SpellInfo const* spell) override
         {
             if (target->GetTypeId() == TYPEID_UNIT && target->GetEntry() == NPC_ZOMBIE && spell->Id == SPELL_DECIMATE)
             {
