@@ -4724,5 +4724,5 @@ void AddSC_generic_spell_scripts()
     new npc_mob_land_mine_bunny();
     new spell_gen_landmine_knockback_achievement_aura();
     new achievement_mine_sweeper();
-    new TW_spell_item_draenic_pale_ale();
+    new spell_item_draenic_pale_ale();
 }
