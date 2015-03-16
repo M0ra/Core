@@ -570,7 +570,7 @@ class achievement_gonna_go_when_the_vulcano_blows : public AchievementCriteriaSc
             if (!target)
                 return false;
 
-            if (GuidList gonnagowhenthevulcanoblowsList = CAST_AI(boss_sartharion::boss_sartharionAI, target->ToCreature()->AI())->gonnagowhenthevulcanoblowsList;)
+            if (GuidList gonnagowhenthevulcanoblowsList = CAST_AI(boss_sartharion::boss_sartharionAI, target->ToCreature()->AI())->gonnagowhenthevulcanoblowsList)
                 if (!gonnagowhenthevulcanoblowsList.empty())
                     for (GuidList::iterator itr = gonnagowhenthevulcanoblowsList.begin(); itr != gonnagowhenthevulcanoblowsList.end(); ++itr)
                         if (player->GetGUID() == *itr)
