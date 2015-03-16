@@ -3368,6 +3368,7 @@ void SpellMgr::LoadSpellInfoCorrections()
                 spellInfo->AttributesEx2 |= SPELL_ATTR2_CANT_CRIT;
                 break;
             case 34471: // The Beast Within
+                spellInfo->Attributes |= SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY;
                 spellInfo->AttributesEx5 |= SPELL_ATTR5_USABLE_WHILE_CONFUSED | SPELL_ATTR5_USABLE_WHILE_FEARED | SPELL_ATTR5_USABLE_WHILE_STUNNED;
                 break;
             case 54402: // Detonation - Mine Sweeper Achieve
