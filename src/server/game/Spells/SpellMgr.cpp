@@ -3257,9 +3257,6 @@ void SpellMgr::LoadSpellInfoCorrections()
                 spellInfo->Effects[EFFECT_1].Effect = SPELL_EFFECT_MODIFY_THREAT_PERCENT;
                 spellInfo->Effects[EFFECT_1].BasePoints = -6; // -5%
                 break;
-            case 50526: // Wandering Plague
-                spellInfo->AttributesEx4 |= SPELL_ATTR4_FIXED_DAMAGE;
-                break;
             case 53353: // Chimera Shot - Serpent Remove this case when CastCustomSpell without any mods is supported.
             case 50526: // Wandering Plague (DK) Remove this case when CastCustomSpell without any mods is supported.
                 spellInfo->AttributesEx4 |= SPELL_ATTR4_FIXED_DAMAGE;
