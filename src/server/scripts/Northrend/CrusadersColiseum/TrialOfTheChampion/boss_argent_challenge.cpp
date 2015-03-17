@@ -120,14 +120,14 @@ class OrientationCheck
         explicit OrientationCheck(Unit* _caster) : caster(_caster) { }
         bool operator() (WorldObject* object)
         {
-            return !object->isInFront(caster, 40.0f) || !object->IsWithinDist(caster, 40.0f);
+            return !object->isInFront(caster, 2.5f) || !object->IsWithinDist(caster, 40.0f);
         }
 
     private:
         Unit* caster;
 };
 
-class spell_eadric_hoj : public SpellScriptLoader
+/*class spell_eadric_hoj : public SpellScriptLoader
 {
     public:
         spell_eadric_hoj() : SpellScriptLoader("spell_eadric_hoj") { }
@@ -157,8 +157,112 @@ class spell_eadric_hoj : public SpellScriptLoader
         {
             return new spell_eadric_hoj_SpellScript();
         }
+};*/
+
+class spell_eadric_radiance: public SpellScriptLoader
+{
+    public:
+        spell_eadric_radiance(): SpellScriptLoader("spell_eadric_radiance") { }
+
+        class spell_eadric_radiance_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_eadric_radiance_SpellScript);
+
+            void FilterTargets(std::list<WorldObject*>& unitList)
+            {
+                unitList.remove_if(OrientationCheck(GetCaster()));
+            }
+
+            void Register()
+            {
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_eadric_radiance_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_eadric_radiance_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_eadric_radiance_SpellScript();
+        }
 };
 
+class spell_eadric_hammer_missile: public SpellScriptLoader
+{
+    public:
+        spell_eadric_hammer_missile(): SpellScriptLoader("spell_eadric_hammer_missile") { }
+
+        class spell_eadric_hammer_missile_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_eadric_hammer_missile_SpellScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_HAMMER_OVERRIDE_BAR))
+                    return false;
+
+                return true;
+            }
+
+            void HandleTriggerMissile(SpellEffIndex /*effIndex*/)
+            {
+                Unit* caster = GetCaster();
+                Unit* target = GetHitUnit();
+
+                if (caster && target && !target->HasAura(SPELL_HAMMER_JUSTICE_STUN))
+                {
+                    PreventHitDefaultEffect(EFFECT_0);
+                    caster->CastSpell(target, SPELL_HAMMER_OVERRIDE_BAR, true);
+                }
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_eadric_hammer_missile_SpellScript::HandleTriggerMissile, EFFECT_0, SPELL_EFFECT_TRIGGER_MISSILE);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_eadric_hammer_missile_SpellScript();
+        }
+};
+
+class spell_eadric_hammer_throw_back: public SpellScriptLoader
+{
+    public:
+        spell_eadric_hammer_throw_back(): SpellScriptLoader("spell_eadric_hammer_throw_back") { }
+
+        class spell_eadric_hammer_throw_back_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_eadric_hammer_throw_back_SpellScript);
+
+            void RemoveAura()
+            {
+                GetCaster()->RemoveAurasDueToSpell(SPELL_HAMMER_OVERRIDE_BAR);
+            }
+
+            void CheckDamage()
+            {
+                Creature* target = GetHitCreature();
+                if (!target)
+                    return;
+
+                if (GetHitDamage() >= int32(target->GetHealth()))
+                    target->AI()->SetData(DATA_FACEROLLER, 1);
+            }
+
+            void Register()
+            {
+                AfterCast += SpellCastFn(spell_eadric_hammer_throw_back_SpellScript::RemoveAura);
+                OnHit += SpellHitFn(spell_eadric_hammer_throw_back_SpellScript::CheckDamage);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_eadric_hammer_throw_back_SpellScript();
+        }
+};
 
 class boss_eadric : public CreatureScript
 {
@@ -956,7 +1060,7 @@ class spell_light_rain: public SpellScriptLoader
         {
             PrepareSpellScript(spell_light_rain_SpellScript);
 
-            void FilterTargets(std::list<WorldObject*>& unitList)
+            void SelectTarget(std::list<WorldObject*>& unitList)
             {
                 if (unitList.empty())
                     return;
@@ -967,7 +1071,7 @@ class spell_light_rain: public SpellScriptLoader
 
             void Register()
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_light_rain_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ALLY);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_light_rain_SpellScript::SelectTarget, EFFECT_0, TARGET_UNIT_SRC_AREA_ALLY);
             }
         };
 
@@ -980,12 +1084,14 @@ class spell_light_rain: public SpellScriptLoader
 void AddSC_boss_argent_challenge()
 {
     new boss_eadric();
-    new spell_eadric_hoj();
     new boss_paletress();
     new npc_memory();
     new npc_argent_soldier();
     new spell_gen_reflective_shield();
     new spell_light_rain();
+    new spell_eadric_radiance();
+    new spell_eadric_hammer_missile();
+    new spell_eadric_hammer_throw_back();
     new achievement_toc5_argent_challenge("achievement_toc5_paletress", NPC_PALETRESS);
     new achievement_toc5_argent_challenge("achievement_toc5_eadric", NPC_EADRIC);
     
