@@ -69,7 +69,7 @@ public:
 
     struct boss_mal_ganisAI : public BossAI
     {
-        boss_mal_ganisAI(Creature* creature) : BossAI(creature, DATA_MAL_GANIS_EVENT)
+        boss_mal_ganisAI(Creature* creature) : BossAI(creature, DATA_MAL_GANIS)
         {
             Initialize();
             instance = creature->GetInstanceScript();

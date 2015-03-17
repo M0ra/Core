@@ -281,7 +281,7 @@ public:
             Summons.Despawn(summoned);
         }
 
-        uint32 GetData(uint32 type) override
+        uint32 GetData(uint32 type)
         {
             if (type == DATA_MGLTS)
                 return m_myGirlLovesToSkadi;

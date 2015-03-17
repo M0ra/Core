@@ -57,7 +57,7 @@ public:
 
     struct boss_epochAI : public BossAI
     {
-        boss_epochAI(Creature* creature) : BossAI(creature, DATA_EPOCH_EVENT)
+        boss_epochAI(Creature* creature) : BossAI(creature, DATA_EPOCH)
         {
             Initialize();
             instance = creature->GetInstanceScript();

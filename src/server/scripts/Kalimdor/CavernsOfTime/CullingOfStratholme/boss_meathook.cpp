@@ -48,7 +48,7 @@ class boss_meathook : public CreatureScript
 
         struct boss_meathookAI : public BossAI
         {
-            boss_meathookAI(Creature* creature) : BossAI(creature, DATA_MEATHOOK_EVENT)
+            boss_meathookAI(Creature* creature) : BossAI(creature, DATA_MEATHOOK)
             {
                 Talk(SAY_SPAWN);
             }
