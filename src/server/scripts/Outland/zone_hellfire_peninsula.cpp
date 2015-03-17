@@ -181,6 +181,9 @@ public:
                 if (Creature* temp = who->ToCreature())
                     ryga = temp;
 
+            if (!me->HasAura(SPELL_ANCESTRAL_WOLF_BUFF))
+                DoCast(me, SPELL_ANCESTRAL_WOLF_BUFF, true);
+
             npc_escortAI::MoveInLineOfSight(who);
         }
 
