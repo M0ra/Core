@@ -120,7 +120,7 @@ static Position Location[]=
     // Breach Zone
     {485.4577f, -511.2515f, 115.3011f, 0},      //69
     {435.1892f, -514.5232f, 118.6719f, 0},      //70
-    {413.9327f, -540.9407f, 138.2614f, 0},      //71
+    {413.9327f, -540.9407f, 138.2614f, 0}       //71
 };
 
 enum CombatPhase
@@ -132,12 +132,12 @@ enum CombatPhase
 enum Spells
 {
     // Skadi Spells
-    SPELL_CRUSH             = 50234,
-    SPELL_POISONED_SPEAR    = 50225, //isn't being cast
-    SPELL_WHIRLWIND         = 50228, //random target, but not the tank approx. every 20s
-    SPELL_RAPID_FIRE        = 56570,
-    SPELL_HARPOON_DAMAGE    = 56578,
-    SPELL_FREEZING_CLOUD    = 47579,
+    SPELL_CRUSH               = 50234,
+    SPELL_POISONED_SPEAR      = 50225, //isn't being cast
+    SPELL_WHIRLWIND           = 50228, //random target, but not the tank approx. every 20s
+    SPELL_RAPID_FIRE          = 56570,
+    SPELL_HARPOON_DAMAGE      = 56578,
+    SPELL_FREEZING_CLOUD      = 47579
 };
 
 enum Creatures
@@ -147,12 +147,17 @@ enum Creatures
     NPC_YMIRJAR_HARPOONER     = 26692,
     NPC_GRAUF                 = 26893,
     NPC_TRIGGER               = 28351,
-    DATA_MOUNT                     = 27043,
+    DATA_MOUNT                = 27043
 };
 
 enum Achievments
 {
-    ACHIEV_TIMED_START_EVENT                      = 17726,
+    ACHIEV_TIMED_START_EVENT                      = 17726
+};
+
+enum Data
+{
+    DATA_MGLTS
 };
 
 class boss_skadi : public CreatureScript
@@ -184,6 +189,7 @@ public:
             m_uiWaypointId = 0;
             m_bSaidEmote = false;
             m_uiSpellHitCount = 0;
+            m_myGirlLovesToSkadi = true;
 
             Phase = SKADI;
         }
@@ -201,6 +207,7 @@ public:
         uint32 m_uiSummonTimer;
         uint8  m_uiSpellHitCount;
         bool   m_bSaidEmote;
+        bool   m_myGirlLovesToSkadi;
 
         CombatPhase Phase;
 
@@ -272,6 +279,14 @@ public:
             if (summoned->GetEntry() == NPC_GRAUF)
                 m_uiGraufGUID.Clear();
             Summons.Despawn(summoned);
+        }
+
+        uint32 GetData(uint32 type) override
+        {
+            if (type == DATA_MGLTS)
+                return m_myGirlLovesToSkadi;
+
+            return 0;
         }
 
         void SpellHit(Unit* /*caster*/, const SpellInfo* spell) override
@@ -356,6 +371,9 @@ public:
                                 me->GetMotionMaster()->MovePoint(0, Location[69].GetPositionX(), Location[69].GetPositionY(), Location[69].GetPositionZ());
                                 Talk(SAY_DRAKE_BREATH);
                                 Talk(EMOTE_BREATH);
+                                // ! Hack - Because the encounter doesn't work as it should, should check Grauf's health instead!
+                                if (me->HealthBelowPct(100))
+                                    m_myGirlLovesToSkadi = false;
                                 m_uiMovementTimer = 2500;
                                 break;
                             case 4:
@@ -481,8 +499,29 @@ public:
 
 };
 
+class achievement_my_girl_loves_to_skadi_all_the_time : public AchievementCriteriaScript
+{
+    public:
+        achievement_my_girl_loves_to_skadi_all_the_time() : AchievementCriteriaScript("achievement_my_girl_loves_to_skadi_all_the_time")
+        {
+        }
+
+        bool OnCheck(Player* /*player*/, Unit* target) override
+        {
+            if (!target)
+                return false;
+
+            if (Creature* skadi = target->ToCreature())
+                if (skadi->AI()->GetData(DATA_MGLTS) && skadi->GetMap()->ToInstanceMap()->IsHeroic())
+                    return true;
+
+            return false;
+        }
+};
+
 void AddSC_boss_skadi()
 {
     new boss_skadi();
     new go_harpoon_launcher();
+    new achievement_my_girl_loves_to_skadi_all_the_time();
 }
