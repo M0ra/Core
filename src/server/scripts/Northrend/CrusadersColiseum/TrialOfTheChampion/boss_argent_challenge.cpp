@@ -74,7 +74,7 @@ enum Spells
 
 enum Misc
 {
-    ACHIEV_FACEROLLER           = 3803,
+    DATA_FACEROLLER             = 1,
     ACHIEV_CONF                 = 3802
 };
 
@@ -126,38 +126,6 @@ class OrientationCheck
     private:
         Unit* caster;
 };
-
-/*class spell_eadric_hoj : public SpellScriptLoader
-{
-    public:
-        spell_eadric_hoj() : SpellScriptLoader("spell_eadric_hoj") { }
-
-        class spell_eadric_hoj_SpellScript: public SpellScript
-        {
-            PrepareSpellScript(spell_eadric_hoj_SpellScript);
-
-            void HandleOnHit()
-            {
-                if (GetHitUnit() && GetHitUnit()->GetTypeId() == TYPEID_PLAYER)
-                    if (!GetHitUnit()->HasAura(SPELL_HAMMER_JUSTICE_STUN)) // FIXME: Has Catched Hammer...
-                    {
-                        SetHitDamage(0);
-                        GetHitUnit()->AddAura(SPELL_HAMMER_OVERRIDE_BAR, GetHitUnit());
-                    }
-
-            }
-
-            void Register() override
-            {
-                OnHit += SpellHitFn(spell_eadric_hoj_SpellScript::HandleOnHit);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_eadric_hoj_SpellScript();
-        }
-};*/
 
 class spell_eadric_radiance: public SpellScriptLoader
 {
@@ -368,6 +336,12 @@ class boss_eadric : public CreatureScript
             me->SetHomePosition(746.843f, 665.000f, 412.339f, 4.670f);
             Talk(SAY_EADRIC_AGGRO);
             hasBeenInCombat = true;
+        }
+
+        void SetData(uint32 type, uint32 /*value*/)
+        {
+            if (type == DATA_FACEROLLER)
+                _theFaceRoller = true;
         }
 
         void SpellHit(Unit* caster, SpellInfo const* spell)
