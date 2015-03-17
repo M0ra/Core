@@ -88,7 +88,7 @@ public:
             uiSleepTimer = urand(15000, 20000);
             uiOutroTimer = 1000;
 
-            instance->SetData(DATA_MAL_GANIS_EVENT, NOT_STARTED);
+            instance->SetData(DATA_MAL_GANIS, NOT_STARTED);
         }
 
         uint32 uiCarrionSwarmTimer;
