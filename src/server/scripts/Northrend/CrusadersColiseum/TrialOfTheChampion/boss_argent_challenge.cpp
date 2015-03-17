@@ -947,6 +947,36 @@ class achievement_toc5_the_faceroller : public AchievementCriteriaScript
         }
 };
 
+class spell_light_rain: public SpellScriptLoader
+{
+    public:
+        spell_light_rain(): SpellScriptLoader("spell_light_rain") { }
+
+        class spell_light_rain_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_light_rain_SpellScript);
+
+            void FilterTargets(std::list<WorldObject*>& unitList)
+            {
+                if (unitList.empty())
+                    return;
+
+                unitList.sort(Trinity::HealthPctOrderPred());
+                unitList.resize(1);
+            }
+
+            void Register()
+            {
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_light_rain_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ALLY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_light_rain_SpellScript();
+        }
+};
+
 void AddSC_boss_argent_challenge()
 {
     new boss_eadric();
@@ -955,6 +985,7 @@ void AddSC_boss_argent_challenge()
     new npc_memory();
     new npc_argent_soldier();
     new spell_gen_reflective_shield();
+    new spell_light_rain();
     new achievement_toc5_argent_challenge("achievement_toc5_paletress", NPC_PALETRESS);
     new achievement_toc5_argent_challenge("achievement_toc5_eadric", NPC_EADRIC);
     
