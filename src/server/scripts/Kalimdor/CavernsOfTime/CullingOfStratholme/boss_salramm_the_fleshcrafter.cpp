@@ -55,7 +55,7 @@ class boss_salramm : public CreatureScript
 
         struct boss_salrammAI : public BossAI
         {
-            boss_salrammAI(Creature* creature) : BossAI(creature, DATA_SALRAMM)
+            boss_salrammAI(Creature* creature) : BossAI(creature, DATA_SALRAMM_EVENT)
             {
                 Talk(SAY_SPAWN);
             }
