@@ -15,13 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: Argent Challenge Encounter.
-SD%Complete: 90 %
-SDComment: AI from bosses need more improvements. Need AI for lightwell
-SDCategory: Trial of the Champion
-EndScriptData */
-
 #include "ScriptPCH.h"
 #include "trial_of_the_champion.h"
 #include "ScriptedEscortAI.h"
@@ -105,6 +98,19 @@ enum Talk
     SAY_EADRIC_HAMMER           = 4,
     SAY_EADRIC_PLAYER_DIES      = 5,
     SAY_EADRIC_DEFEATED         = 6
+};
+
+enum Events
+{
+    // Argent Soldiers
+    EVENT_CLEAVE,
+    EVENT_STRIKE,
+    EVENT_BLAZINGLIGHT,
+    EVENT_FLURRY,
+    EVENT_PUMMEL,
+    EVENT_MINDCONTROL,
+    EVENT_PAIN,
+    EVENT_FOUNTAIN
 };
 
 class OrientationCheck
@@ -624,242 +630,214 @@ class npc_memory : public CreatureScript
 class npc_argent_soldier : public CreatureScript
 {
     public:
-        npc_argent_soldier(): CreatureScript("npc_argent_soldier") {}
+        npc_argent_soldier(): CreatureScript("npc_argent_soldier") { }
 
-    struct npc_argent_soldierAI : public npc_escortAI
-    {
-        npc_argent_soldierAI(Creature* creature) : npc_escortAI(creature)
+        struct npc_argent_soldierAI : public npc_escortAI
         {
-            instance = creature->GetInstanceScript();
-            me->SetReactState(REACT_PASSIVE);
-            me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-            if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
-                instance->HandleGameObject(pGO->GetGUID(),true);
-            SetDespawnAtEnd(false);
-            uiWaypoint = 0;
-            bStarted = false;
-        }
-
-        InstanceScript* instance;
-
-        uint8 uiWaypoint;
-
-        uint32 timerCleave;
-        uint32 timerUnbalancingStrike;
-        uint32 timerPummel;
-        uint32 timerShadowWord;
-        uint32 timerMindControl;
-        uint32 timerSmite;
-        uint32 timerFountain;
-        uint32 timerBlazingLight;
-        uint32 timerFlurryBlows;
-
-        bool bStarted;
-        bool defeated;
-
-        void Reset() override
-        {
-            timerCleave = 5000;
-            timerUnbalancingStrike = 6000;
-            timerPummel = 10000;
-            timerShadowWord = 60000;
-            timerMindControl = 70000;
-            timerSmite = 6000;
-            timerFountain = 9000;
-            timerBlazingLight = 3000;
-   	        timerFlurryBlows = 6000;
-            
-            if (bStarted)
+            npc_argent_soldierAI(Creature* creature) : npc_escortAI(creature)
             {
-                me->SetReactState(REACT_AGGRESSIVE);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                instance = creature->GetInstanceScript();
+                me->SetReactState(REACT_DEFENSIVE);
+                SetDespawnAtEnd(false);
+                uiWaypoint = 0;
             }
-        }
 
-        void WaypointReached(uint32 uiPoint) override
-        {
-            if (uiPoint == 0)
+            void Reset()
             {
-                switch(uiWaypoint)
+                _shielded = false;
+                _events.Reset();
+            }
+
+            void EnterCombat(Unit* /*who*/)
+            {
+                switch (me->GetEntry())
                 {
-                    case 1:
-                        me->SetOrientation(4.60f);
-                        me->SetReactState(REACT_AGGRESSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                        bStarted = true;
+                    case NPC_ARGENT_LIGHWIELDER:
+                        _events.ScheduleEvent(EVENT_CLEAVE, urand(4000, 8000));
+                        _events.ScheduleEvent(EVENT_BLAZINGLIGHT, urand(7000, 10000));
+                        if (IsHeroic())
+                            _events.ScheduleEvent(EVENT_STRIKE, urand(9000, 12000));
+                        break;
+                    case NPC_ARGENT_MONK:
+                        _events.ScheduleEvent(EVENT_FLURRY, urand(8000, 12000));
+                        _events.ScheduleEvent(EVENT_PUMMEL, urand(5000, 6000));
+                        break;
+                    case NPC_PRIESTESS:
+                        _events.ScheduleEvent(EVENT_PAIN, urand(3000, 6000));
+                        _events.ScheduleEvent(EVENT_FOUNTAIN, urand(15000, 20000));
+                        _events.ScheduleEvent(EVENT_HOLYSMITE, urand(4000, 8000));
+                        if (IsHeroic())
+                            _events.ScheduleEvent(EVENT_MINDCONTROL, urand(17000, 25000));
                         break;
                 }
             }
 
-            if (uiPoint == 1)
+            void WaypointReached(uint32 uiPoint) override
             {
-                switch(uiWaypoint)
+                if (uiPoint == 0)
                 {
-                    case 0:
-                        me->SetOrientation(5.81f);
-                        me->SetReactState(REACT_AGGRESSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                        bStarted = true;
+                    switch (uiWaypoint)
+                    {
+                        case 0:
+                            me->SetOrientation(5.81f);
+                            break;
+                        case 1:
+                            me->SetOrientation(4.60f);
+                            break;
+                        case 2:
+                            me->SetOrientation(2.79f);
+                            break;
+                    }
+
+                    me->SendMovementFlagUpdate();
+                }
+            }
+
+            void SetData(uint32 uiType, uint32 /*uiData*/) override
+            {
+                switch (me->GetEntry())
+                {
+                    case NPC_ARGENT_LIGHWIELDER:
+                        switch (uiType)
+                        {
+                            case 0:
+                                AddWaypoint(0, 712.14f, 628.42f, 411.88f);
+                                break;
+                            case 1:
+                                AddWaypoint(0, 742.44f, 650.29f, 411.79f);
+                                break;
+                            case 2:
+                                AddWaypoint(0, 783.33f, 615.29f, 411.84f);
+                                break;
+                        }
                         break;
-                    case 2:
-                        me->SetOrientation(3.39f);
-                        me->SetReactState(REACT_AGGRESSIVE);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                        bStarted = true;
-                        if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
-                            instance->HandleGameObject(pGO->GetGUID(),false);
+                    case NPC_ARGENT_MONK:
+                        switch (uiType)
+                        {
+                            case 0:
+                                AddWaypoint(0, 713.12f, 632.97f, 411.90f);
+                                break;
+                            case 1:
+                                AddWaypoint(0, 746.73f, 650.24f, 411.56f);
+                                break;
+                            case 2:
+                                AddWaypoint(0, 781.32f, 610.54f, 411.82f);
+                                break;
+                        }
+                        break;
+                    case NPC_PRIESTESS:
+                        switch (uiType)
+                        {
+                            case 0:
+                                AddWaypoint(0, 715.06f, 637.07f, 411.91f);
+                                break;
+                            case 1:
+                                AddWaypoint(0, 750.72f, 650.20f, 411.77f);
+                                break;
+                            case 2:
+                                AddWaypoint(0, 779.77f, 607.03f, 411.81f);
+                                break;
+                        }
                         break;
                 }
 
-                me->SendMovementFlagUpdate();
-            }  
-        }
-
-        void SetData(uint32 uiType, uint32 uiData) override
-        {
-            switch(me->GetEntry())
-            {
-                case NPC_ARGENT_LIGHWIELDER:
-                    switch(uiType)
-                    {
-                        case 0:
-                            AddWaypoint(0, 737.14f,655.42f,412.88f);
-                            AddWaypoint(1, 712.14f,628.42f,411.88f);
-                            break;
-                        case 1:
-                            AddWaypoint(0, 742.44f, 650.29f, 411.79f);
-                            break;
-                        case 2:
-                            AddWaypoint(0, 756.14f, 655.42f, 411.88f);
-                            AddWaypoint(1, 775.912f, 639.033f, 411.907f);
-                            break;
-                    }
-                    break;
-                case NPC_ARGENT_MONK:
-                    switch(uiType)
-                    {
-                        case 0:
-                            AddWaypoint(0, 737.14f, 655.42f, 412.88f);
-                            AddWaypoint(1, 713.12f, 632.97f, 411.90f);
-                            break;
-                        case 1:
-                            AddWaypoint(0, 746.73f, 650.24f, 411.56f);
-                            break;
-                        case 2:
-                            AddWaypoint(0, 756.14f, 655.42f, 411.88f);
-                            AddWaypoint(1, 784.817f, 629.883f, 411.908f);
-                            break;
-                    }
-                    break;
-                case NPC_PRIESTESS:
-                    switch(uiType)
-                    {
-                        case 0:
-                            AddWaypoint(0, 737.14f, 655.42f, 412.88f);
-                            AddWaypoint(1, 715.06f, 637.07f, 411.91f);
-                            break;
-                        case 1:
-                            AddWaypoint(0, 750.72f, 650.20f, 411.77f);
-                            break;
-                        case 2:
-                            AddWaypoint(0, 756.14f, 655.42f, 411.88f);
-                            AddWaypoint(1, 779.942f, 634.061f, 411.905f);
-                            break;
-                    }
-                    break;
+                Start(false, true);
+                uiWaypoint = uiType;
             }
 
-            Start(false,true);
-            uiWaypoint = uiType;
-        }
+            void DamageTaken(Unit* /*attacker*/, uint32 &damage)
+            {
+                if (!IsHeroic() || _shielded || me->GetEntry() != NPC_ARGENT_MONK)
+                    return;
 
-        void UpdateAI(uint32 uiDiff) override
+                if (damage >= me->GetHealth())
+                {
+                    DoCast(me, SPELL_FINAL_MEDITATION);
+                    DoCast(me, SPELL_DIVINE_SHIELD, true);
+                    me->SetHealth(1);
+                    damage = 0;
+                    _shielded = true;
+                }
+            }
+
+            void UpdateAI(uint32 uiDiff) override
+            {
+                npc_escortAI::UpdateAI(uiDiff);
+
+                if (!UpdateVictim())
+                    return;
+
+                _events.Update(uiDiff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        case EVENT_CLEAVE:
+                            DoCastVictim(SPELL_CLEAVE);
+                            _events.ScheduleEvent(EVENT_CLEAVE, urand(5000, 8000));
+                            break;
+                        case EVENT_STRIKE:
+                            DoCastVictim(SPELL_STRIKE);
+                            _events.ScheduleEvent(EVENT_STRIKE, urand(10000, 12000));
+                            break;
+                        case EVENT_BLAZINGLIGHT:
+                            DoCast(me, SPELL_LIGHT);
+                            _events.ScheduleEvent(EVENT_BLAZINGLIGHT, urand(9000, 13000));
+                            break;
+                        case EVENT_FLURRY:
+                            DoCast(me, SPELL_FLURRY);
+                            _events.ScheduleEvent(EVENT_FLURRY, urand(13000, 15000));
+                            break;
+                        case EVENT_PUMMEL:
+                            DoCastVictim(SPELL_PUMMEL);
+                            _events.ScheduleEvent(EVENT_PUMMEL, urand(4000, 7000));
+                            break;
+                        case EVENT_HOLYSMITE:
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f))
+                                DoCast(target, DUNGEON_MODE(SPELL_HOLY_SMITE, SPELL_HOLY_SMITE_H));
+                            _events.ScheduleEvent(EVENT_HOLYSMITE, urand(5000, 7000));
+                            break;
+                        case EVENT_MINDCONTROL:
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 30.0f))
+                                DoCast(target, SPELL_MIND);
+                            _events.ScheduleEvent(EVENT_MINDCONTROL, urand(20000, 25000));
+                            break;
+                        case EVENT_PAIN:
+                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 30.0f, false, DUNGEON_MODE(-SPELL_SHADOW_WORD_PAIN, -SPELL_SHADOW_WORD_PAIN_H)))
+                                DoCast(target, DUNGEON_MODE(SPELL_SHADOW_WORD_PAIN, SPELL_SHADOW_WORD_PAIN_H));
+                            _events.ScheduleEvent(EVENT_PAIN, urand(7000, 90000));
+                            break;
+                        case EVENT_FOUNTAIN:
+                            DoCast(SPELL_FOUNTAIN_OF_LIGHT);
+                            _events.ScheduleEvent(EVENT_FOUNTAIN, urand(20000, 30000));
+                            break;
+                    }
+                }
+
+                DoMeleeAttackIfReady();
+            }
+
+            void JustDied(Unit* killer) override
+            {
+                if (instance)
+                    instance->SetData(DATA_ARGENT_SOLDIER_DEFEATED, instance->GetData(DATA_ARGENT_SOLDIER_DEFEATED) + 1);
+            }
+
+        private:
+            InstanceScript* instance;
+            EventMap _events;
+            bool _shielded;
+            uint8 uiWaypoint;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const
         {
-            npc_escortAI::UpdateAI(uiDiff);
-
-            if (!UpdateVictim())
-                return;
-                
-            if(defeated || me->HasAura(SPELL_DIVINE))
-                return;
-
-            if (timerUnbalancingStrike <= uiDiff)
-            {
-                DoCastVictim(SPELL_STRIKE);
-                timerUnbalancingStrike = urand(3000, 6000);
-            } else timerUnbalancingStrike -= uiDiff;
-
-            if (timerCleave <= uiDiff)
-            {
-                DoCastVictim(SPELL_CLEAVE);
-                timerCleave = urand(7000, 8500);
-            } else timerCleave -= uiDiff;	
-
-            if (timerPummel <= uiDiff)
-            {
-                DoCastVictim(SPELL_PUMMEL);
-                timerPummel = urand(3000, 6000);
-            } else timerPummel -= uiDiff;	
-
-            if (timerShadowWord <= uiDiff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                    DoCast(target, DUNGEON_MODE(SPELL_SHADOW_WORD_PAIN, SPELL_SHADOW_WORD_PAIN_H));
-                timerShadowWord = urand(3000, 5000);
-            } else timerShadowWord -= uiDiff;
-
-            if (timerFountain <= uiDiff)
-            {
-                DoCast(SPELL_FOUNTAIN_OF_LIGHT);
-                timerFountain = urand(40000, 45000);
-            } else timerFountain -= uiDiff;
-			
-            if (timerMindControl <= uiDiff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                    DoCast(target, SPELL_MIND);
-                timerMindControl = urand(12000, 16000);
-            } else timerMindControl -= uiDiff;
-
-            if (timerSmite <= uiDiff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                    DoCast(target, DUNGEON_MODE(SPELL_HOLY_SMITE, SPELL_HOLY_SMITE_H));
-                timerSmite = urand(1000, 2000);
-            } else timerSmite -= uiDiff;
-
-            if (timerBlazingLight <= uiDiff)
-            {
-                Unit* target = DoSelectLowestHpFriendly(40);
-
-                if(!target || target->GetHealth() > me->GetHealth())
-                    target = me;
-
-                DoCast(target,SPELL_LIGHT);
-                timerBlazingLight = urand(8000, 10000);
-            } else timerBlazingLight -= uiDiff;
-
-            if (timerFlurryBlows <= uiDiff)
-            {
-                DoCast(me,SPELL_FLURRY);
-                timerFlurryBlows = urand(7000, 10000);
-            } else timerFlurryBlows -= uiDiff;
-
-            DoMeleeAttackIfReady();
+            return new npc_argent_soldierAI(creature);
         }
-
-        void JustDied(Unit* killer) override
-        {
-            if (instance)
-                instance->SetData(DATA_ARGENT_SOLDIER_DEFEATED, instance->GetData(DATA_ARGENT_SOLDIER_DEFEATED) + 1);
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_argent_soldierAI(creature);
-    };
 };
 
 enum ReflectiveShield
