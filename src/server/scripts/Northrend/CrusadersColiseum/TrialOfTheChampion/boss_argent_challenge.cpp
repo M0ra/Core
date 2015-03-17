@@ -102,6 +102,7 @@ enum Talk
 
 enum Events
 {
+    EVENT_HOLYSMITE,
     // Argent Soldiers
     EVENT_CLEAVE,
     EVENT_STRIKE,
@@ -752,8 +753,8 @@ class npc_argent_soldier : public CreatureScript
 
                 if (damage >= me->GetHealth())
                 {
-                    DoCast(me, SPELL_FINAL_MEDITATION);
-                    DoCast(me, SPELL_DIVINE_SHIELD, true);
+                    DoCast(me, SPELL_FINAL);
+                    DoCast(me, SPELL_DIVINE, true);
                     me->SetHealth(1);
                     damage = 0;
                     _shielded = true;
