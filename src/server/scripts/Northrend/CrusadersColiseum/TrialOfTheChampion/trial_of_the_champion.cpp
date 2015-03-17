@@ -21,8 +21,8 @@
 #include "Vehicle.h"
 #include "Player.h"
 
-#define GOSSIP_START_EVENT1     "I'm ready to start challenge."
-#define GOSSIP_START_EVENT2     "I'm ready for the next challenge."
+#define GOSSIP_START_EVENT1     "Я готов начать испытание."
+#define GOSSIP_START_EVENT2     "Я готов к следующему испытанию."
 
 #define ORIENTATION             4.714f
 
@@ -270,7 +270,6 @@ class npc_herald_toc5 : public CreatureScript
                     events.ScheduleEvent(EVENT_SUMMON_FACTION_2, 10000, 0, PHASE_INPROGRESS);
                     break;
                 case DATA_IN_POSITION:
-                    me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                     me->GetMotionMaster()->MovePoint(1, 735.898f, 651.961f, 411.93f);
                     if (GameObject* pGO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
                         instance->HandleGameObject(pGO->GetGUID(),false);
