@@ -55,7 +55,8 @@ enum CreatureIds
     NPC_GENERIC_BUNNY    = 28960,
 
     NPC_TIME_RIFT        = 28409,
-    NPC_GUARDIAN_OF_TIME = 32281
+    NPC_GUARDIAN_OF_TIME = 32281,
+    NPC_RISEN_ZOMBIE     = 27737
 };
 
 enum GameObjectIds
@@ -97,7 +98,13 @@ enum Texts
 
 enum InstanceEvents
 {
-    EVENT_INFINITE_TIMER    = 1
+    EVENT_INFINITE_TIMER       = 1,
+    EVENT_RESET_ZOMBIE_COUNTER = 2
+};
+
+enum Criterias
+{
+    CRITERIA_ZOMBIEFEST        = 7180
 };
 
 #endif
