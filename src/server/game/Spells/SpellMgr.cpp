@@ -3867,6 +3867,9 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 52212: // Death Knight's Death and Decay triggered spell
                 spellInfo->AttributesEx6 |= SPELL_ATTR6_CAN_TARGET_INVISIBLE;
                 break;
+            case 49575: // Death Grip
+                spellInfo->Effects[EFFECT_0].MiscValue = 20;
+                break;
             default:
                 break;
         }
