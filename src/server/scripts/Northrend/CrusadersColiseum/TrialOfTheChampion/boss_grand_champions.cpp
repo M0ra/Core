@@ -1315,11 +1315,11 @@ class boss_rogue_toc5 : public CreatureScript
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
+                    me->GetMotionMaster()->MovePoint(739.678f,662.541f,413.395f,4.49f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
+                        me->GetMotionMaster()->MovePoint(746.71f,661.02f,412.695f,4.6f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
+                        me->GetMotionMaster()->MovePoint(754.34f,660.70f,413.395f,4.79f);
 
                 if (instance)
                     instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
