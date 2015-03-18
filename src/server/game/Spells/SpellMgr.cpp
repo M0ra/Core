@@ -3873,6 +3873,9 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 49575: // Death Grip
                 spellInfo->Effects[EFFECT_0].MiscValue = 20;
                 break;
+            case 60103: // Lava Lash
+                spellInfo->Effects[EFFECT_1].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
+                break;
             default:
                 break;
         }
