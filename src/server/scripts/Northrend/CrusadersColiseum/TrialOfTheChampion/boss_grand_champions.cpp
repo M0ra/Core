@@ -556,7 +556,7 @@ class boss_warrior_toc5 : public CreatureScript
 
         void Reset() override
         {
-            uiInterceptTimer  = 7000;                    
+            uiInterceptTimer  = 7000;
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             events.SetPhase(PHASE_IDLE);
         }
@@ -865,7 +865,7 @@ class boss_shaman_toc5 : public CreatureScript
             bHome = false;
             bCredit = false;
             hasBeenInCombat = false;
-            
+
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);        
         }
 
@@ -1231,7 +1231,7 @@ class boss_hunter_toc5 : public CreatureScript
 class boss_rogue_toc5 : public CreatureScript
 {
     public:
-        boss_rogue_toc5(): CreatureScript("boss_rogue_toc5") {}
+        boss_rogue_toc5(): CreatureScript("boss_rogue_toc5") { }
 
     struct boss_rogue_toc5AI : public BossAI
     {
@@ -1308,9 +1308,6 @@ class boss_rogue_toc5 : public CreatureScript
 
         void UpdateAI(uint32 uiDiff) override
         {
-            if (!me->GetVehicle())
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-
             if (!bDone && GrandChampionsOutVehicle(me))
             {
                 bDone = true;
@@ -1326,8 +1323,6 @@ class boss_rogue_toc5 : public CreatureScript
 
                 if (instance)
                     instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
-
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
                 EnterEvadeMode();
                 bHome = true;

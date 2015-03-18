@@ -3387,21 +3387,25 @@ class spell_gen_turkey_marker : public SpellScriptLoader
             {
                 // store stack apply times, so we can pop them while they expire
                 _applyTimes.push_back(getMSTime());
+            }
+
+            void OnPeriodic(AuraEffect const* aurEff)
+            {
+                if (_applyTimes.empty())
+                    return;
+               
                 Unit* target = GetTarget();
 
                 // on stack 15 cast the achievement crediting spell
                 if (GetStackAmount() >= 15)
+                {
                     target->CastSpell(target, SPELL_TURKEY_VENGEANCE, true, NULL, aurEff, GetCasterGUID());
-            }
-
-            void OnPeriodic(AuraEffect const* /*aurEff*/)
-            {
-                if (_applyTimes.empty())
-                    return;
+                    target->RemoveAurasDueToSpell(GetId());
+                }
 
                 // pop stack if it expired for us
                 if (_applyTimes.front() + GetMaxDuration() < getMSTime())
-                    ModStackAmount(-1, AURA_REMOVE_BY_EXPIRE);
+                    target->RemoveAurasDueToSpell(GetId());
             }
 
             void Register() override
