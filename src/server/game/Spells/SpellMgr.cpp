@@ -3031,6 +3031,9 @@ void SpellMgr::LoadSpellInfoCorrections()
                 // because of bug in dbc
                 spellInfo->ProcChance = 0;
                 break;
+            case 14892: // Inspiration (Rank 1)
+            case 15362: // Inspiration (Rank 2)
+            case 15363: // Inspiration (Rank 3)
             case 20335: // Heart of the Crusader
             case 20336:
             case 20337:
