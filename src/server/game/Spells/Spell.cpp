@@ -3877,7 +3877,7 @@ void Spell::SendSpellGo()
     if (m_CastItem)
         data << m_CastItem->GetPackGUID();
     else
-        data << m_caster->GetPackGUID();
+        data << m_caster->GetUnitOrTotemOwner()->GetPackGUID();
 
     data << m_caster->GetPackGUID();
     data << uint8(m_cast_count);                            // pending spell cast?

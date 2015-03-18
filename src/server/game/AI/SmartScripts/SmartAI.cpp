@@ -479,7 +479,15 @@ void SmartAI::MoveInLineOfSight(Unit* who)
             else/* if (me->GetMap()->IsDungeon())*/
             {
                 who->SetInCombatWith(me);
-                me->AddThreat(who, 0.0f);
+
+                Unit* victim = who;
+                //For totems add threat to the owner if he is in combat range.
+                if (who->GetTypeId() == TYPEID_UNIT && who->IsTotem())
+                    if (Unit* owner = who->GetOwner())
+                        if (me->IsInCombat())
+                            victim = owner;
+
+                me->AddThreat(victim, 0.0f);
             }
         }
     }
