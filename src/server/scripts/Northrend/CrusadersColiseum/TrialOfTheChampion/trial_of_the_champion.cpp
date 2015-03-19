@@ -188,6 +188,7 @@ class npc_herald_toc5 : public CreatureScript
             uiSummonTimes = 0;
             uiPosition = 0;
             uiLesserChampions = 0;
+            uiDefeatedGrandChampions = 0;
 
             uiFirstBoss = 0;
             uiSecondBoss = 0;
@@ -213,6 +214,7 @@ class npc_herald_toc5 : public CreatureScript
         uint8 uiPosition;
         uint8 uiLesserChampions;
         uint8 uiIntroPhase;
+        uint8 uiDefeatedGrandChampions;
 
         uint32 ArgentChampion;
         uint32 uiFirstBoss;
@@ -298,7 +300,40 @@ class npc_herald_toc5 : public CreatureScript
                         StartGrandChampionsAttack();
                     break;
                 }
+                case DATA_GRAND_CHAMPIONS_DEFEATED:
+                    uiDefeatedGrandChampions = data;
+                    if (uiDefeatedGrandChampions == 3)
+                    {
+                        for (uint8 i = 0; i < 3; ++i)
+                            if (Creature* GrandChampion = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1 + i)))
+                            {
+                                switch (i)
+                                {
+                                    case 0:
+                                        GrandChampion->SetHomePosition(739.678f, 662.541f, 412.393f, 4.6f);
+                                        break;
+                                    case 1:
+                                        GrandChampion->SetHomePosition(746.71f, 661.02f, 411.69f, 4.6f);
+                                        break;
+                                    case 2:
+                                        GrandChampion->SetHomePosition(754.34f, 660.70f, 412.39f, 4.6f);
+                                        break;
+                                }
+                                GrandChampion->AI()->SetData(10, 0);
+                            }
+
+                        instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+                    }
+                    break;
             }
+        }
+
+        uint32 GetData(uint32 type)
+        {
+            if (type == DATA_GRAND_CHAMPIONS_DEFEATED)
+                return uiDefeatedGrandChampions;
+
+            return 0;
         }
 
         void StartGrandChampionsAttack()
