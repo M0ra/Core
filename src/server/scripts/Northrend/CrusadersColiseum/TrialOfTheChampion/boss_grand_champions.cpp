@@ -557,6 +557,7 @@ class boss_warrior_toc5 : public CreatureScript
         void Reset() override
         {
             uiInterceptTimer  = 7000;
+            me->SetReactState(REACT_PASSIVE);			
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             events.SetPhase(PHASE_IDLE);
         }
@@ -598,14 +599,11 @@ class boss_warrior_toc5 : public CreatureScript
                 Talk(WARNING_WEAPONS);
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                if (Creature* announcer = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ANNOUNCER)))
+                    announcer->AI()->SetData(DATA_GRAND_CHAMPIONS_DEFEATED, announcer->AI()->GetData(DATA_GRAND_CHAMPIONS_DEFEATED) - 1);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->SetReactState(REACT_AGGRESSIVE);				
                 EnterEvadeMode();
                 bHome = true;
             }
