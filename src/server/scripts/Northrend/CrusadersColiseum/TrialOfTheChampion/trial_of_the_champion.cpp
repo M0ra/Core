@@ -259,7 +259,7 @@ class npc_herald_toc5 : public CreatureScript
             }
         }
 
-        void SetData(uint32 uiType, uint32 /*uiData*/) override
+        void SetData(uint32 uiType, uint32 uiData) override
         {
             switch (uiType)
             {
@@ -301,7 +301,7 @@ class npc_herald_toc5 : public CreatureScript
                     break;
                 }
                 case DATA_GRAND_CHAMPIONS_DEFEATED:
-                    uiDefeatedGrandChampions = data;
+                    uiDefeatedGrandChampions = uiData;
                     if (uiDefeatedGrandChampions == 3)
                     {
                         for (uint8 i = 0; i < 3; ++i)
