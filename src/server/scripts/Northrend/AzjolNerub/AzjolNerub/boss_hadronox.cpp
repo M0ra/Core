@@ -571,7 +571,7 @@ struct npc_hadronox_trashAI : public npc_escortAI
 {
     npc_hadronox_trashAI(Creature* creature) : npc_escortAI(creature)
     {
-        _instance = creature->GetInstanceScript();
+        instance = creature->GetInstanceScript();
         SetDespawnAtEnd(false);
     }
 
@@ -657,7 +657,7 @@ struct npc_hadronox_trashAI : public npc_escortAI
 
 protected:
     EventMap _events;
-    InstanceScript* _instance;
+    InstanceScript* instance;
 };
 
 class npc_anub_ar_crusher : public CreatureScript
@@ -671,7 +671,7 @@ class npc_anub_ar_crusher : public CreatureScript
 
             void EnterCombat(Unit* /*who*/) override
             {
-                if (Creature* hadronox = _instance->GetCreature(DATA_HADRONOX))
+                if (Creature* hadronox = instance->GetCreature(DATA_HADRONOX))
                 {
                     if (hadronox->AI()->GetData(DATA_EVENT_STATUS) == NOT_STARTED)
                     {
@@ -685,7 +685,7 @@ class npc_anub_ar_crusher : public CreatureScript
 
             void EnterEvadeMode() override
             {
-                if (Creature* hadronox = _instance->GetCreature(DATA_HADRONOX))
+                if (Creature* hadronox = instance->GetCreature(DATA_HADRONOX))
                     hadronox->AI()->DoAction(ACTION_RESET_EVENT);
             }
 
@@ -1015,9 +1015,6 @@ class spell_hadronox_leech_poison : public SpellScriptLoader
             {
                 AfterEffectRemove += AuraEffectRemoveFn(spell_hadronox_leech_poison_AuraScript::HandleEffectRemove, EFFECT_0, SPELL_AURA_PERIODIC_LEECH, AURA_EFFECT_HANDLE_REAL);
             }
-
-        private:
-            InstanceScript* _instance;
         };
 
         AuraScript* GetAuraScript() const override
@@ -1038,13 +1035,13 @@ class spell_trigger_large_aoi_summon_anubar_champion_periodic : public SpellScri
 
             bool Load() override
             {
-                _instance = GetCaster()->GetInstanceScript();
-                return _instance != nullptr;
+                instance = GetCaster()->GetInstanceScript();
+                return instance != nullptr;
             }
 
             void PeriodicTick(AuraEffect const* aurEff)
             {
-                if (_instance->GetBossState(DATA_KRIKTHIR_THE_GATEWATCHER) != DONE || _instance->GetBossState(DATA_HADRONOX) == DONE)
+                if (instance->GetBossState(DATA_KRIKTHIR_THE_GATEWATCHER) != DONE || instance->GetBossState(DATA_HADRONOX) == DONE)
                     return;
 
                 uint32 tick = aurEff->GetTickNumber() % 3;
@@ -1084,7 +1081,7 @@ class spell_trigger_large_aoi_summon_anubar_champion_periodic : public SpellScri
             }
 
         private:
-            InstanceScript* _instance;
+            InstanceScript* instance;
         };
 
         AuraScript* GetAuraScript() const override
@@ -1105,13 +1102,13 @@ class spell_trigger_large_aoi_summon_anubar_crypt_fiend_periodic : public SpellS
 
             bool Load() override
             {
-                _instance = GetCaster()->GetInstanceScript();
-                return _instance != nullptr;
+                instance = GetCaster()->GetInstanceScript();
+                return instance != nullptr;
             }
 
             void PeriodicTick(AuraEffect const* aurEff)
             {
-                if (_instance->GetBossState(DATA_KRIKTHIR_THE_GATEWATCHER) != DONE || _instance->GetBossState(DATA_HADRONOX) == DONE)
+                if (instance->GetBossState(DATA_KRIKTHIR_THE_GATEWATCHER) != DONE || instance->GetBossState(DATA_HADRONOX) == DONE)
                     return;
 
                 uint32 tick = aurEff->GetTickNumber() % 3;
@@ -1151,7 +1148,7 @@ class spell_trigger_large_aoi_summon_anubar_crypt_fiend_periodic : public SpellS
             }
 
         private:
-            InstanceScript* _instance;
+            InstanceScript* instance;
         };
 
         AuraScript* GetAuraScript() const override
@@ -1172,13 +1169,13 @@ class spell_trigger_large_aoi_summon_anubar_necromancer_periodic : public SpellS
 
             bool Load() override
             {
-                _instance = GetCaster()->GetInstanceScript();
-                return _instance != nullptr;
+                instance = GetCaster()->GetInstanceScript();
+                return instance != nullptr;
             }
 
             void PeriodicTick(AuraEffect const* aurEff)
             {
-                if (_instance->GetBossState(DATA_KRIKTHIR_THE_GATEWATCHER) != DONE || _instance->GetBossState(DATA_HADRONOX) == DONE)
+                if (instance->GetBossState(DATA_KRIKTHIR_THE_GATEWATCHER) != DONE || instance->GetBossState(DATA_HADRONOX) == DONE)
                     return;
 
                 uint32 tick = aurEff->GetTickNumber() % 3;
@@ -1218,7 +1215,7 @@ class spell_trigger_large_aoi_summon_anubar_necromancer_periodic : public SpellS
             }
 
         private:
-            InstanceScript* _instance;
+            InstanceScript* instance;
         };
 
         AuraScript* GetAuraScript() const override
@@ -1254,8 +1251,8 @@ class spell_hadronox_web_front_doors : public SpellScriptLoader
 
             bool Load() override
             {
-                _instance = GetCaster()->GetInstanceScript();
-                return _instance != nullptr;
+                instance = GetCaster()->GetInstanceScript();
+                return instance != nullptr;
             }
 
             void FilterTargets(std::list<WorldObject*>& targets)
@@ -1267,10 +1264,10 @@ class spell_hadronox_web_front_doors : public SpellScriptLoader
             void HandleSendEvent(SpellEffIndex /*effIndex*/)
             {
                 std::list<Creature*> triggersList;
-                if (Creature* frontTriggerA = _instance->GetCreature(DATA_FRONT_DOOR_TRIGGER_A))
+                if (Creature* frontTriggerA = instance->GetCreature(DATA_FRONT_DOOR_TRIGGER_A))
                     triggersList.push_back(frontTriggerA);
 
-                if (Creature* frontTriggerB = _instance->GetCreature(DATA_FRONT_DOOR_TRIGGER_B))
+                if (Creature* frontTriggerB = instance->GetCreature(DATA_FRONT_DOOR_TRIGGER_B))
                     triggersList.push_back(frontTriggerB);
 
                 for (Creature* creature : triggersList)
@@ -1289,7 +1286,7 @@ class spell_hadronox_web_front_doors : public SpellScriptLoader
             }
 
         private:
-            InstanceScript* _instance;
+            InstanceScript* instance;
         };
 
         SpellScript* GetSpellScript() const override
@@ -1310,8 +1307,8 @@ class spell_hadronox_web_side_door : public SpellScriptLoader
 
             bool Load() override
             {
-                _instance = GetCaster()->GetInstanceScript();
-                return _instance != nullptr;
+                instance = GetCaster()->GetInstanceScript();
+                return instance != nullptr;
             }
 
             void FilterTargets(std::list<WorldObject*>& targets)
@@ -1322,7 +1319,7 @@ class spell_hadronox_web_side_door : public SpellScriptLoader
 
             void HandleSendEvent(SpellEffIndex /*effIndex*/)
             {
-                if (Creature* trigger = _instance->GetCreature(DATA_SIDE_DOOR_TRIGGER))
+                if (Creature* trigger = instance->GetCreature(DATA_SIDE_DOOR_TRIGGER))
                 {
                     // There can be aura from being webbed so can't risk to remove all auras.
                     trigger->RemoveAurasDueToSpell(SPELL_SUMMON_ANUB_AR_CHAMPION_PERIODIC);
@@ -1338,7 +1335,7 @@ class spell_hadronox_web_side_door : public SpellScriptLoader
             }
 
         private:
-            InstanceScript* _instance;
+            InstanceScript* instance;
         };
 
         SpellScript* GetSpellScript() const override
@@ -1359,15 +1356,15 @@ class spell_hadronox_event_check_reset : public SpellScriptLoader
 
             bool Load() override
             {
-                _instance = GetCaster()->GetInstanceScript();
-                return _instance != nullptr && GetCaster()->GetTypeId() == TYPEID_UNIT;
+                instance = GetCaster()->GetInstanceScript();
+                return instance != nullptr && GetCaster()->GetTypeId() == TYPEID_UNIT;
             }
 
             void ResetEncounter(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
                 Creature* creature = GetCaster()->ToCreature();
                 if (!creature->SelectNearestPlayer(200.0f))
-                    if (Creature* hadronox = _instance->GetCreature(DATA_HADRONOX))
+                    if (Creature* hadronox = instance->GetCreature(DATA_HADRONOX))
                         hadronox->AI()->DoAction(ACTION_RESET_EVENT);
             }
 
@@ -1378,7 +1375,7 @@ class spell_hadronox_event_check_reset : public SpellScriptLoader
             }
 
         private:
-            InstanceScript* _instance;
+            InstanceScript* instance;
         };
 
         AuraScript* GetAuraScript() const override
