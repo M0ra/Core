@@ -202,7 +202,7 @@ public:
                         quelDelar->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                     }
 
-                    if (Player* player = me->FindNearestCreature(200.0f))
+                    if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                     {
                         player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_1, 1, true);
                         player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_2, 1, true);
@@ -260,7 +260,7 @@ public:
                 case EVENT_QUEST_STEP_9:
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
-                        if (Player* player = me->FindNearestPlayer(200.0f))
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                             rommath->AddAura(SPELL_ICY_PRISON, player);
                         rommath->AI()->Talk(SAY_QUELDELAR_6);
                     }
@@ -330,6 +330,11 @@ public:
             }
         }
 
+        void SetGUID(ObjectGuid uiGuid, int32 /*id*/) override
+        {
+            uiPlayerGUID = uiGuid;
+        }
+
         void DoAction(int32 action) override
         {
             switch (action)
@@ -347,6 +352,7 @@ public:
             ObjectGuid uiTheron;
             ObjectGuid uiAuric;
             ObjectGuid uiQuelDelarGUID;
+            ObjectGuid uiPlayerGUID;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
