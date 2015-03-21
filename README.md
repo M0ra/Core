@@ -1,7 +1,8 @@
 # ![logo](http://www.trinitycore.org/f/public/style_images/1_trinitycore.png) TrinityCore
 
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/4593/badge.svg)](https://scan.coverity.com/projects/4593) 
-`3.3.5`: [![3.3.5 Build Status](https://travis-ci.org/M0ra/Core.svg?branch=master)](https://travis-ci.org/M0ra/Core)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/4593/badge.svg)](https://scan.coverity.com/projects/4593)
+
+[![3.3.5 Build Status](https://travis-ci.org/M0ra/Core.svg?branch=master)](https://travis-ci.org/M0ra/Core)
 
 ## Introduction
 

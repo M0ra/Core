@@ -30,3 +30,19 @@ script:
   - mysql -uroot < sql/create/drop_mysql.sql
   - cd bin
   - make -j 10
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "DaBstL555EaiEdNK0R1GElE3pplKteFZZFcmm727ROTBufb5ScuRFYVoQA/h5V0TsJVuAUftlKtVbfl9E7xi8qsXxFssd4NJhusVD3fouKljb+IQIhVMBH9OAPugjZdTszFGKVpuhCkr8w7c1vmOz68tI3Cj/HQ2kqJ9249Wv2M="
+
+addons:
+  coverity_scan:
+    project:
+      name: "M0ra/Core"
+      description: "Build submitted via Travis CI"
+    notification_email: proakwer@gmail.com
+    build_command_prepend: "./configure; make clean"
+    build_command:   "make -j 10"
+    branch_pattern: coverity_scan
