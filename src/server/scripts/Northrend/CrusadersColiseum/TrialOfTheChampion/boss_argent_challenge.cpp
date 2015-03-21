@@ -936,7 +936,7 @@ class spell_gen_reflective_shield : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spell*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_REFLECTIVE_SHIELD_TRIGGERED)) // Is this correct?  I honestly don't know anything about AuraScript, so I took this from class spell_blood_queen_pact_of_the_darkfallen_dmg 
+                if (!sSpellStore.LookupEntry(SPELL_REFLECTIVE_SHIELD_TRIGGERED))
                     return false;
 
                 return true;
@@ -998,7 +998,7 @@ class achievement_toc5_argent_confessor : public AchievementCriteriaScript
             creature_entry = original_entry;
         }
 
-        bool OnCheck(Player* source, Unit* target) override
+        bool OnCheck(Player* /*source*/, Unit* target) override
         {
             if (!target)
                 return false;
