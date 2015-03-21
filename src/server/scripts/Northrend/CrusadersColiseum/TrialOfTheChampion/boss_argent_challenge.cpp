@@ -323,13 +323,13 @@ class boss_eadric : public CreatureScript
             }
         }
 
-        void MovementInform(uint32 MovementType, uint32 Data)
+        void MovementInform(uint32 MovementType, uint32 /*Data*/)
         {
             if (MovementType != POINT_MOTION_TYPE)
                 return;
         }
 
-        void EnterCombat(Unit* pWho)
+        void EnterCombat(Unit* /*who*/)
         {
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             _EnterCombat();
@@ -494,7 +494,7 @@ class boss_paletress : public CreatureScript
             }
         }
 
-        void EnterCombat(Unit* pWho)
+        void EnterCombat(Unit* /*who*/)
         {
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             _EnterCombat();
@@ -503,7 +503,7 @@ class boss_paletress : public CreatureScript
             Talk(SAY_PALETRESS_AGGRO);
         }
 
-        void SetData(uint32 uiId, uint32 uiValue)
+        void SetData(uint32 uiId, uint32 /*uiValue*/)
         {
             if (uiId == 1)
                 me->RemoveAura(SPELL_SHIELD);
@@ -538,7 +538,7 @@ class boss_paletress : public CreatureScript
             }
         }
 
-        void MovementInform(uint32 MovementType, uint32 Data)
+        void MovementInform(uint32 MovementType, uint32 /*Data*/)
         {
             if (MovementType != POINT_MOTION_TYPE)
                 return;
@@ -687,7 +687,7 @@ class npc_memory : public CreatureScript
             DoMeleeAttackIfReady();
         }
 
-        void JustDied(Unit* killer) override
+        void JustDied(Unit* /*killer*/) override
         {
             if (me->IsSummon())
             {
@@ -900,7 +900,7 @@ class npc_argent_soldier : public CreatureScript
                 DoMeleeAttackIfReady();
             }
 
-            void JustDied(Unit* killer) override
+            void JustDied(Unit* /*killer*/) override
             {
                 if (instance)
                     instance->SetData(DATA_ARGENT_SOLDIER_DEFEATED, instance->GetData(DATA_ARGENT_SOLDIER_DEFEATED) + 1);
@@ -975,7 +975,7 @@ class achievement_toc5_argent_challenge : public AchievementCriteriaScript
             creature_entry = original_entry;
         }
 
-        bool OnCheck(Player* source, Unit* target) override
+        bool OnCheck(Player* /*source*/, Unit* target) override
         {
             if (!target)
                 return false;

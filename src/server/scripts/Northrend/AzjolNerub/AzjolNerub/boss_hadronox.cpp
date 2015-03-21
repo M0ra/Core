@@ -996,7 +996,7 @@ class spell_hadronox_leech_poison : public SpellScriptLoader
         {
             PrepareAuraScript(spell_hadronox_leech_poison_AuraScript);
 
-            bool Validate(SpellInfo const* spellInfo) override
+            bool Validate(SpellInfo const* /*spellInfo*/) override
             {
                 if (!sSpellMgr->GetSpellInfo(SPELL_LEECH_POISON_HEAL))
                     return false;

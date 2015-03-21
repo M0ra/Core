@@ -44,25 +44,12 @@ class npc_mmr_reset : public CreatureScript
             mmr[0] = 0;
             mmr[1] = 0;
             mmr[2] = 0;
-
             for(int x = 0; x < 3; x++)
             {
                 if (ArenaTeam *twos = sArenaTeamMgr->GetArenaTeamById(player->GetArenaTeamId(x)))
-                {
-                    ArenaTeamMember *member = twos->GetMember(player->GetGUID());
-                    if (player->GetGUID() == twos->GetCaptain())
-                    {
-                        mmr[x] = 0;
-                    }
-                    else
-                    {
-                        mmr[x] = twos->GetMember(player->GetGUID())->MatchMakerRating;
-                    }
-                }
+                    mmr[x] = twos->GetMember(player->GetGUID())->MatchMakerRating;
                 else
-                {
                     mmr[x] = 0;
-                }
             }
             return mmr;
         }

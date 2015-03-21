@@ -304,7 +304,7 @@ public:
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
                         rommath->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                        if (Player* rommath = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                             rommath->AI()->Talk(SAY_QUELDELAR_11);
                     }
                     _events.ScheduleEvent(EVENT_QUEST_STEP_15, 11000);
@@ -313,7 +313,7 @@ public:
                     if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                     {
                         auric->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                        if (Player* auric = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                             auric->AI()->Talk(SAY_QUELDELAR_12);
                         if (GameObject* quelDelar = me->FindNearestGameObject(GO_QUEL_DANAR, 100.0f))
                             quelDelar->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
@@ -333,7 +333,7 @@ public:
             }
         }
 		
-        void SetGUID(ObjectGuid uiGuid, int32 /*iId*/) override
+        void SetGUID(ObjectGuid uiGuid, int32 /*id*/) override
         {
             uiPlayerGUID = uiGuid;
         }
@@ -379,30 +379,29 @@ class go_dalaran_portal : public GameObjectScript
 
 class spell_cleanse_queldelar : public SpellScriptLoader
 {
-	public:
-		spell_cleanse_queldelar() : SpellScriptLoader("spell_cleanse_queldelar") { }
+    public:
+        spell_cleanse_queldelar() : SpellScriptLoader("spell_cleanse_queldelar") { }
 
-		class spell_cleanse_queldelar_SpellScript : public SpellScript
-		{
-			PrepareSpellScript(spell_cleanse_queldelar_SpellScript);
+    class spell_cleanse_queldelar_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_cleanse_queldelar_SpellScript);
 
-			void HandleSendEvent(SpellEffIndex effIndex)
-			{
-				if (Creature* caster = GetCaster()->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
-                    caster->AI()->DoAction(ACTION_START_EVENT);
-				
-			}
+        void HandleSendEvent(SpellEffIndex /*effIndex*/)
+        {
+            if (Creature* caster = GetCaster()->FindNearestCreature(NPC_CASTER_BUNNY, 200.0f, true))
+                caster->AI()->DoAction(ACTION_START_EVENT);
+        }
 
-			void Register() override
-			{
-				OnEffectHit += SpellEffectFn(spell_cleanse_queldelar_SpellScript::HandleSendEvent, EFFECT_0, SPELL_EFFECT_SEND_EVENT);
-			}
-		};
+        void Register() override
+        {
+            OnEffectHit += SpellEffectFn(spell_cleanse_queldelar_SpellScript::HandleSendEvent, EFFECT_0, SPELL_EFFECT_SEND_EVENT);
+        }
+    };
 
-		SpellScript* GetSpellScript() const override
-		{
-			return new spell_cleanse_queldelar_SpellScript();
-		}
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_cleanse_queldelar_SpellScript();
+    }
 };
 
 void AddSC_sunwell_plateau()
