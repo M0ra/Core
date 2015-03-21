@@ -161,7 +161,7 @@ void AnticheatMgr::ClimbHackDetection(Player *player, MovementInfo movementInfo,
         return;
 
     Position playerPos;
-    player->GetPosition(&playerPos);
+    Position = player->GetPosition(&playerPos);
 
     float deltaZ = fabs(playerPos.GetPositionZ() - movementInfo.pos.GetPositionZ());
     float deltaXY = movementInfo.pos.GetExactDist2d(&playerPos);
@@ -339,7 +339,7 @@ void AnticheatMgr::BuildReport(Player* player,uint8 reportType)
             if (m_Players[key].GetAverage() > 0.5f)
             {
                 str = "Possible cheater found: " + std::string(player->GetName());
-                sWorld->BanCharacter(player->GetName(), "1h", str, "Anticheat");
+                sWorld->BanCharacter(player->GetName(), "48h", str, "Anticheat");
                 sWorld->SendWorldText(LANG_BAN_CHEATER, player->GetName().c_str());
             }
         }
