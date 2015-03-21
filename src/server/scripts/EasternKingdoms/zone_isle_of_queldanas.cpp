@@ -408,7 +408,7 @@ enum Misc
 {
     ITEM_SW_1                  = 49879,
     ITEM_SW_2                  = 49889
-}
+};
 
 #define GOSSIP_TELE "Привести меня к Солнечному Колодцу."
 

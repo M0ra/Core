@@ -31,6 +31,8 @@
 #include "ObjectAccessor.h"
 #include "Unit.h"
 
+#define GOSSIP_BYE "До свидания."
+
 class npc_mmr_reset : public CreatureScript
 {
     public:
@@ -42,6 +44,7 @@ class npc_mmr_reset : public CreatureScript
             mmr[0] = 0;
             mmr[1] = 0;
             mmr[2] = 0;
+
             for(int x = 0; x < 3; x++)
             {
                 if (ArenaTeam *twos = sArenaTeamMgr->GetArenaTeamById(player->GetArenaTeamId(x)))
@@ -79,7 +82,7 @@ class npc_mmr_reset : public CreatureScript
             return false;
         }
 
-        bool OnGossipHello(Player *player, Creature *_creature) override
+        bool OnGossipHello(Player *player, Creature *creature) override
         {
             uint16 *mmr = GetMmr(player);
 
@@ -107,12 +110,12 @@ class npc_mmr_reset : public CreatureScript
                     player->ADD_GOSSIP_ITEM(0, "Reset 5v5 MMR to 1500 and leave team!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
             }
 
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "До свидания.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
-            player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_BYE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
+            player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
             return true;
         }
 
-        bool OnGossipSelect(Player *player, Creature *_creature, uint32 sender, uint32 action) override
+        bool OnGossipSelect(Player *player, uint32 sender, uint32 action) override
         {
             if (action < GOSSIP_ACTION_INFO_DEF + 7)
             {

@@ -1952,7 +1952,6 @@ void Player::setDeathState(DeathState s)
 
 void Player::SetSelection(ObjectGuid guid)
 {
-    ObjectGuid selectionGUID = guid;
     SetUInt64Value(UNIT_FIELD_TARGET, guid);
     if (Player *target = ObjectAccessor::FindPlayer(guid))
         if (HaveSpectators())

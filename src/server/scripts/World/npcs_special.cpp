@@ -2442,7 +2442,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 /*diff*/)
         {
             Player* player = me->GetOwner()->ToPlayer();
 
@@ -2459,7 +2459,7 @@ public:
             }
         }
 
-        void sGossipSelect (Player* player, uint32 /*sender*/, uint32 action)
+        void GossipSelect (Player* player, uint32 /*sender*/, uint32 action)
         {
             switch (action)
             {
@@ -2585,7 +2585,7 @@ public:
 
     struct npc_wild_turkeyAI : public ScriptedAI
     {
-        npc_wild_turkeyAI(Creature* creature) : ScriptedAI(creature) {}
+        npc_wild_turkeyAI(Creature* creature) : ScriptedAI(creature) { }
 
         void JustDied(Unit* killer)
         {

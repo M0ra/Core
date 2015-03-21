@@ -106,7 +106,6 @@ WorldSession::WorldSession(uint32 id, std::shared_ptr<WorldSocket> sock, Account
     m_Socket(sock),
     _security(sec),
     _accountId(id),
-    _ispremium(ispremium),
     m_expansion(expansion),
     _warden(NULL),
     _logoutTime(0),
@@ -125,6 +124,7 @@ WorldSession::WorldSession(uint32 id, std::shared_ptr<WorldSocket> sock, Account
     _RBACData(NULL),
     expireTime(60000), // 1 min after socket loss, session is deleted
     forceExit(false),
+    _ispremium(ispremium),
     m_currentBankerGUID()
 {
     memset(m_Tutorials, 0, sizeof(m_Tutorials));
