@@ -201,7 +201,7 @@ class arena_spectator_commands : public CommandScript
             return true;
         }
 
-        static bool HandleSpectateFromCommand(ChatHandler* handler, const char *args)
+        static bool HandleSpectateFromCommand(ChatHandler* handler, const char* args)
         {
             Player* target;
             ObjectGuid target_guid;
@@ -253,7 +253,7 @@ class arena_spectator_commands : public CommandScript
             return true;
         }
 
-        static bool HandleSpectateResetCommand(ChatHandler* handler, const char *args)
+        static bool HandleSpectateResetCommand(ChatHandler* handler, const char* /*args*/)
         {
             Player* player = handler->GetSession()->GetPlayer();
 

@@ -82,7 +82,7 @@ class npc_mmr_reset : public CreatureScript
             return false;
         }
 
-        bool OnGossipHello(Player *player, Creature *creature) override
+        bool OnGossipHello(Player *player, Creature *creature)
         {
             uint16 *mmr = GetMmr(player);
 
