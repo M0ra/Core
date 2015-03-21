@@ -195,14 +195,14 @@ public:
                         auric->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                         uiAuric = auric->GetGUID();
                     }
-					
+				
                     if (GameObject* quelDelar = me->SummonGameObject(GO_QUEL_DANAR, 1683.99f, 620.231f, 29.3599f, 0.410932f, 0, 0, 0, 0, 0))
                     {
                         uiQuelDelarGUID = quelDelar->GetGUID();
                         quelDelar->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                     }
 
-                    if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                    if (Player* player = me->FindNearestPlayer(200.0f))
                     {
                         player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_1, 1, true);
                         player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_2, 1, true);
@@ -213,19 +213,19 @@ public:
                 case EVENT_QUEST_STEP_2:
                     if (Creature* guard = me->FindNearestCreature(NPC_QUEL_GUARD, 100.0f, true))
                         guard->AI()->Talk(SAY_QUELDELAR_2);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_3, 2000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_3, 2 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_3:
                     if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                         theron->AI()->Talk(SAY_QUELDELAR_3);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_4, 8000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_4, 8 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_4:
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         rommath->GetMotionMaster()->MovePoint(1, 1675.8f, 617.19f, 28.0504f);
-                    if (Creature*auric = ObjectAccessor::GetCreature(*me, uiAuric))
+                    if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                         auric->GetMotionMaster()->MovePoint(1, 1681.77f, 612.084f, 28.4409f);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_5, 10000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_5, 10 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_5:
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
@@ -237,7 +237,7 @@ public:
                         auric->SetOrientation(1.29057f);
                     if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                         theron->GetMotionMaster()->MovePoint(1, 1677.07f, 613.122f, 28.0504f);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_6, 13000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_6, 13 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_6:
                     if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
@@ -245,24 +245,23 @@ public:
                         theron->AI()->Talk(SAY_QUELDELAR_5);
                         theron->GetMotionMaster()->MovePoint(1, 1682.3f, 618.459f, 27.9581f);
                     }
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_7, 7000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_7, 7 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_7:
                     if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                         theron->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_8, 800);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_8, 0.8 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_8:
                     if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
                         theron->CastSpell(theron, SPELL_WRATH_QUEL_DANAR, true);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_9, 2000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_9, 2 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_9:
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
-                        if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
-                        // if (Player* player = me->FindNearestCreature(player, 200.0f, true))
-                        rommath->AddAura(SPELL_ICY_PRISON, player);
+                        if (Player* player = me->FindNearestPlayer(200.0f))
+                            rommath->AddAura(SPELL_ICY_PRISON, player);
                         rommath->AI()->Talk(SAY_QUELDELAR_6);
                     }
 
@@ -271,27 +270,27 @@ public:
                         guard->GetMotionMaster()->MovePoint(0, 1681.1f, 614.955f, 28.4983f);
                         guard->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_READY1H);
                     }
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_10, 5000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_10, 5 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_10:
                     if (Creature* guard = me->FindNearestCreature(NPC_QUEL_GUARD, 200.0f))
                         guard->AI()->Talk(SAY_QUELDELAR_7);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_11, 4000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_11, 4 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_11:
                     if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                         auric->AI()->Talk(SAY_QUELDELAR_8);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_12, 9000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_12, 9 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_12:
                     if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                         auric->AI()->Talk(SAY_QUELDELAR_9);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_13, 8000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_13, 8 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_13:
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         rommath->AI()->Talk(SAY_QUELDELAR_10);
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_14, 4000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_14, 4 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_14:
                     if (Creature* guard = me->FindNearestCreature(NPC_QUEL_GUARD, 200.0f))
@@ -304,21 +303,19 @@ public:
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                     {
                         rommath->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        if (Player* rommath = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
-                            rommath->AI()->Talk(SAY_QUELDELAR_11);
+                        rommath->AI()->Talk(SAY_QUELDELAR_11);
                     }
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_15, 11000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_15, 11 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_15:
                     if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
                     {
                         auric->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        if (Player* auric = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
-                            auric->AI()->Talk(SAY_QUELDELAR_12);
+                        auric->AI()->Talk(SAY_QUELDELAR_12);
                         if (GameObject* quelDelar = me->FindNearestGameObject(GO_QUEL_DANAR, 100.0f))
                             quelDelar->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                     }
-                    _events.ScheduleEvent(EVENT_QUEST_STEP_16, 4000);
+                    _events.ScheduleEvent(EVENT_QUEST_STEP_16, 4 * IN_MILLISECONDS);
                     break;
                 case EVENT_QUEST_STEP_16:
                     if (Creature* auric = ObjectAccessor::GetCreature(*me, uiAuric))
@@ -326,16 +323,11 @@ public:
                     if (Creature* rommath = ObjectAccessor::GetCreature(*me, uiRommath))
                         rommath->GetMotionMaster()->MovePoint(0, rommath->GetHomePosition());
                     if (Creature* theron = ObjectAccessor::GetCreature(*me, uiTheron))
-                        theron->DespawnOrUnsummon(5000);
+                        theron->DespawnOrUnsummon(5 * IN_MILLISECONDS);
                     break;
                 default:
                     break;
             }
-        }
-		
-        void SetGUID(ObjectGuid uiGuid, int32 /*id*/) override
-        {
-            uiPlayerGUID = uiGuid;
         }
 
         void DoAction(int32 action) override
@@ -355,7 +347,6 @@ public:
             ObjectGuid uiTheron;
             ObjectGuid uiAuric;
             ObjectGuid uiQuelDelarGUID;
-            ObjectGuid uiPlayerGUID;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
