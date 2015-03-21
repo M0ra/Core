@@ -202,7 +202,7 @@ public:
                         quelDelar->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                     }
 
-                    if (Player* player = me->FindNearestPlayer(200.0f))
+                    if (Player* player = me->FindNearestCreature(200.0f))
                     {
                         player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_1, 1, true);
                         player->DestroyItemCount(ITEM_TAINTED_QUELDANAR_2, 1, true);
