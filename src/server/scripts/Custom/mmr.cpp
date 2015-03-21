@@ -115,7 +115,7 @@ class npc_mmr_reset : public CreatureScript
             return true;
         }
 
-        bool OnGossipSelect(Player *player, uint32 sender, uint32 action) override
+        bool OnGossipSelect(Player *player, uint32 sender, uint32 action)
         {
             if (action < GOSSIP_ACTION_INFO_DEF + 7)
             {
