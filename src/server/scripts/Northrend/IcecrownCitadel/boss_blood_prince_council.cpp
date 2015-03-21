@@ -1366,6 +1366,11 @@ class npc_dark_nucleus : public CreatureScript
                     _targetAuraCheck -= diff;
             }
 
+            void JustDied(Unit* /*killer*/) override
+            {
+                me->DespawnOrUnsummon();
+            }
+
         private:
             uint32 _targetAuraCheck;
             bool _lockedTarget;
