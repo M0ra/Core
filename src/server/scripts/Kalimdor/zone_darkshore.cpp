@@ -461,7 +461,7 @@ public:
             uiShoot_Timer = 1000;
         }
 
-        void WaypointReached(uint32 uiPoint) //needs to be here even if it is empty
+        void WaypointReached(uint32 /*uiPoint*/) //needs to be here even if it is empty
         {
 
         }

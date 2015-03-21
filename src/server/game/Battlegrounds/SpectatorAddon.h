@@ -17,7 +17,7 @@
  */
 
 #define SPECTATOR_ADDON_SPELL_INTERUPTED 99999 // specific addons
-#define SPECTATOR_ADDON_SPELL_CANCELED 99998   // numbers =\
+#define SPECTATOR_ADDON_SPELL_CANCELED 99998   // numbers
 
 enum SpectatorPrefix {
     SPECTATOR_PREFIX_PLAYER,

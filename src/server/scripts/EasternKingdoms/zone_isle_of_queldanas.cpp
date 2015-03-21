@@ -88,6 +88,10 @@ public:
     }
 };
 
+/*######
+## npc_thalorien_dawnseeker
+######*/
+
 enum ThalorienDawnseekerSays
 {
     SAY_THALORIEN_1 = 0,
@@ -396,6 +400,18 @@ public:
     }
 };
 
+/*######
+## npc_sunwell_warder
+######*/
+
+enum Misc
+{
+    ITEM_SW_1                  = 49879,
+    ITEM_SW_2                  = 49889
+}
+
+#define GOSSIP_TELE "Привести меня к Солнечному Колодцу."
+
 class npc_sunwell_warder : public CreatureScript
 {
 public:
@@ -405,14 +421,14 @@ public:
     {
         player->PrepareGossipMenu(creature, 0);
 
-        if (player->HasItemCount(49879, 1) || player->HasItemCount(49889, 1))
-        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Привести меня к Солнечному Колодцу.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-		
+        if (player->HasItemCount(ITEM_SW_1, 1) || player->HasItemCount(ITEM_SW_2, 1))
+        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TELE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+
         player->SendPreparedGossip(creature);
         return true;
-        }
-		
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction) override
+    }
+
+    bool OnGossipSelect(Player* player, uint32 /*uiSender*/, uint32 uiAction) override
     {
         player->PlayerTalkClass->ClearMenus();
 
@@ -427,9 +443,9 @@ public:
                 break;
             default:
                 return false;
-            }
-            return true;
         }
+        return true;
+    }
 };
 
 void AddSC_isle_of_queldanas()

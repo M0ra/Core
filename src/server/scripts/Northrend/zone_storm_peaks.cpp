@@ -762,11 +762,11 @@ public:
 
     struct npc_column_ornamentAI : public ScriptedAI
     {
-        npc_column_ornamentAI(Creature* creature) : ScriptedAI(creature) {}
+        npc_column_ornamentAI(Creature* creature) : ScriptedAI(creature) { }
 
         void Reset() { } 
   
-        void SpellHit(Unit* hitter, SpellInfo* spell)
+        void SpellHit(Unit* hitter, const SpellInfo* spell) override
         {
             if (!hitter || !spell)
                 return;
@@ -800,5 +800,5 @@ void AddSC_storm_peaks()
     new spell_jokkum_scriptcast();
     new spell_veranus_summon();
     new spell_close_rift();
-	new npc_column_ornament();
+    new npc_column_ornament();
 }
