@@ -31,18 +31,3 @@ script:
   - cd bin
   - make -j 10
 
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "K0YjGA4J8PQSO9IlHoCBcrh6+Zb+jp1i3d7uuR6pk5/22EqCyAtjg2Eq0mMiNQmtE0n3wS7k1KA7rs1uvUWmFt/e+JK93dE6VkulD6QJUsH2OGDIrPDy6sIjHjV36XjKGDqDs9emdarRzxgbQ0wy34J26Ad9re0V6ji/bSVrmQE="
-
-addons:
-  coverity_scan:
-    project:
-      name: "M0ra/Core"
-      description: "Build submitted via Travis CI"
-    notification_email: proakwer@gmail.com
-    build_command_prepend: "make"
-    build_command:   "make -j 10"
-    branch_pattern: master

@@ -1190,10 +1190,10 @@ enum TrinityStrings
     LANG_BAN_CHEATER                              = 11010,
     LANG_NOT_ENOUGHT_MONEY                        = 11011,
 
-	// Vip Commands
- 	LANG_PLAYER_NOT_VIP                           = 11012,
- 	LANG_VIP_COMMAND_DISABLED                     = 11013,
- 	LANG_VIP_ERROR                                = 11014,
+    // Vip Commands
+    LANG_PLAYER_NOT_VIP                           = 11012,
+    LANG_VIP_COMMAND_DISABLED                     = 11013,
+    LANG_VIP_ERROR                                = 11014,
 
     // Show Kick in world
     LANG_COMMAND_KICKMESSAGE_WORLD                = 11002,
