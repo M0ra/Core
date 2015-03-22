@@ -313,6 +313,7 @@ public:
                 return;
 
             if (bEventInProgress)
+            {
                 if (uiResurrectTimer <= uiDiff)
                 {
                     me->SetFullHealth();
@@ -335,7 +336,7 @@ public:
                     bEventInProgress = false;
                     me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
                 } else uiResurrectTimer -= uiDiff;
-
+            }
 
             switch (uiPhase)
             {
@@ -371,6 +372,7 @@ public:
                     }
 
                     if (!bDeathArmyDone)
+                    {
                         if (uiDeathArmyCheckTimer <= uiDiff)
                         {
                             me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
@@ -378,7 +380,8 @@ public:
                             uiDeathArmyCheckTimer = 0;
                             bDeathArmyDone = true;
                         } else uiDeathArmyCheckTimer -= uiDiff;
-                    
+                    }
+							
                     if (uiDesecrationTimer <= uiDiff)
                     {
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
@@ -474,7 +477,7 @@ public:
                 DoMeleeAttackIfReady();
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             bEventInBattle = true;
             Talk(SAY_AGGRO);
