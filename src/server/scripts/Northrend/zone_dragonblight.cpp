@@ -741,7 +741,7 @@ public:
             sarath->DespawnOrUnsummon();
  
         Creature *sarath = player->SummonCreature(CREATURE_SARATHSTRA, 4412.329f, 857.795f, 170.0f, 2.28f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
-        sarath->SetFlying(true);
+        sarath->SetCanFly(true);
         sarath->GetMotionMaster()->MovePoint(0, 4362.881f, 946.37f, 87.94f);
         player->GetMotionMaster()->MovePoint(0, 4362.881f, 946.37f, 82.94f);
         player->Attack(sarath, true);
