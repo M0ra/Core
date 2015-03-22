@@ -777,7 +777,7 @@ public:
             if (spell->Id == 54933)
             {
                 hitter->ToPlayer()->ExitVehicle();
-    hitter->ToPlayer()->JumpTo(me,25.0f);        
+                hitter->ToPlayer()->JumpTo(me,25.0f);        
             }
         }
     };

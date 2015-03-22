@@ -2507,7 +2507,7 @@ public:
             pSaragosa = NULL; 
             player = NULL;
             eventRunning = false;
-            if(GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
+            if (GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
                 go->SetGoState(GO_STATE_READY);
         }
 		
@@ -2527,12 +2527,12 @@ public:
             if (eventRunning)
                 return;
 
-            if(spell->Id == SPELL_RAELORASZ_SPARK)
+            if (spell->Id == SPELL_RAELORASZ_SPARK)
             {
                 player = caster->ToPlayer();
-                if(GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
+                if (GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
                     go->SetGoState(GO_STATE_ACTIVE);
-                if(Creature* pFind = me->SummonCreature(NPC_KERISTRASZA, posKeristrasza[0]))
+                if (Creature* pFind = me->SummonCreature(NPC_KERISTRASZA, posKeristrasza[0]))
                 {
                     pKeristrasza = pFind;
                     pFind->SetCanFly(true);
@@ -2636,7 +2636,7 @@ public:
             Initialize();
         }
 		
-        void SetGUID(ObjectGuid uiGuid, int32 /*iId*/) override
+        void SetGUID(ObjectGuid uiGuid, int32 /*id*/) override
         {
             me->NearTeleportTo(posKeristrasza[4].GetPositionX(), posKeristrasza[4].GetPositionY(), posKeristrasza[4].GetPositionZ(), posKeristrasza[4].GetOrientation());
             me->SetVisible(false);
@@ -2646,16 +2646,16 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            if(!waiting)
+            if (!waiting)
                 return;
 
-            if(!finishedWay)
+            if (!finishedWay)
             {
-                if(Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                if( Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                 {
                     if (!player->IsInFlight())
                     {
-                        if(me->IsWithinDist(player, 10.0f))
+                        if (me->IsWithinDist(player, 10.0f))
                         {
                             finishedWay = true;
                             me->SetVisible(true);
@@ -2675,12 +2675,12 @@ public:
             {
             case 1:
                 me->SetCanFly(false);
-                if(Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                     Talk(SAY_KERISTRASZA_3);
                 _events.ScheduleEvent(2, 5000);
                 break;
             case 2:
-                if(Creature* pSumm = me->SummonCreature(NPC_MALYGOS, posKeristrasza[5]))
+                if (Creature* pSumm = me->SummonCreature(NPC_MALYGOS, posKeristrasza[5]))
                 {
                     pMalygos = pSumm;
                     pSumm->SetCanFly(true);
@@ -2697,7 +2697,7 @@ public:
                 Talk(YELL_KERISTRASZA_4);
                 me->AddAura(SPELL_ICE_BLOCK, me);
 
-                if(pMalygos)
+                if (pMalygos)
                     pMalygos->DespawnOrUnsummon(7000);
                 me->DespawnOrUnsummon(7000);
                 break;

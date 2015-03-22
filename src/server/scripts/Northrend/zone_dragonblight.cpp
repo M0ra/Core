@@ -733,11 +733,11 @@ public:
         return true;
     }
  
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 /*uiAction*/) override
+    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 /*uiAction*/) override
     {
         player->CLOSE_GOSSIP_MENU();
        
-        if(Creature* sarath = player->FindNearestCreature(CREATURE_SARATHSTRA, 200, false))
+        if (Creature* sarath = player->FindNearestCreature(CREATURE_SARATHSTRA, 200, false))
             sarath->DespawnOrUnsummon();
  
         Creature *sarath = player->SummonCreature(CREATURE_SARATHSTRA, 4412.329f, 857.795f, 170.0f, 2.28f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
