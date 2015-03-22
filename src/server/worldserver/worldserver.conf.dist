@@ -1796,8 +1796,22 @@ Rate.XP.Quest.Premium    = 1
 Rate.XP.Explore.Premium  = 1
 Rate.Honor.Premium       = 1
 Rate.Reputation.Premium  = 1
+
+#
+#    Command.Debuff.Premium = 1
+#    Command.Bank.Premium   = 1
+#    Command.Repair.Premium = 1
+#    Command.Taxi.Premium   = 1
+#    Command.Reset.Talents.Premium = 1
+#        Description: Here you can enable or disable some VIP commands.
+#        Default: 1
+
+Command.Debuff.Premium   = 1
 Command.Bank.Premium     = 1
 Command.Mail.Premium     = 1
+Command.Repair.Premium   = 1
+Command.Taxi.Premium     = 1
+Command.Reset.Talents.Premium = 1
 
 #
 #    Rate.Quest.Money.Reward

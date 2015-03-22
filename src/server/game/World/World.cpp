@@ -460,13 +460,18 @@ void World::LoadConfigSettings(bool reload)
     rate_values[RATE_XP_QUEST]    = sConfigMgr->GetFloatDefault("Rate.XP.Quest", 1.0f);
     rate_values[RATE_XP_EXPLORE]  = sConfigMgr->GetFloatDefault("Rate.XP.Explore", 1.0f);
 
+    // Vip Commands
     rate_values[RATE_XP_KILL_PREMIUM]    = sConfigMgr->GetFloatDefault("Rate.XP.Kill.Premium", 1.0f);
     rate_values[RATE_XP_QUEST_PREMIUM]   = sConfigMgr->GetFloatDefault("Rate.XP.Quest.Premium", 1.0f);
     rate_values[RATE_XP_EXPLORE_PREMIUM] = sConfigMgr->GetFloatDefault("Rate.XP.Explore.Premium", 1.0f);
     rate_values[RATE_REPUTATION_PREMIUM] = sConfigMgr->GetFloatDefault("Rate.Reputation.Premium", 1.0f);
     rate_values[RATE_HONOR_PREMIUM]      = sConfigMgr->GetFloatDefault("Rate.Honor.Premium", 1.0f);
-    m_bool_configs[COMMAND_BANK_PREMIUM] = sConfigMgr->GetFloatDefault("Command.Bank.Premium", false);
-    m_bool_configs[COMMAND_MAIL_PREMIUM] = sConfigMgr->GetFloatDefault("Command.Mail.Premium", false);
+    m_bool_configs[COMMAND_DEBUFF_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Debuff.Premium", true);
+    m_bool_configs[COMMAND_BANK_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Bank.Premium", true);
+    m_bool_configs[COMMAND_REPAIR_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Repair.Premium", true);
+    m_bool_configs[COMMAND_RESET_TALENTS_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Reset.Talents.Premium", true);
+    m_bool_configs[COMMAND_TAXI_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Taxi.Premium", true);
+    m_bool_configs[COMMAND_MAIL_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Mail.Premium", true);
 
     rate_values[RATE_REPAIRCOST]  = sConfigMgr->GetFloatDefault("Rate.RepairCost", 1.0f);
     if (rate_values[RATE_REPAIRCOST] < 0.0f)

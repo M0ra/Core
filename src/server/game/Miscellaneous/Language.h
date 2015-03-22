@@ -1133,69 +1133,73 @@ enum TrinityStrings
     LANG_MAIL_RECEIVER_REQ              = 6612,
 
     // Used for GM Announcements
-    LANG_GM_BROADCAST                    = 6613,
-    LANG_GM_NOTIFY                       = 6614,
-    LANG_GM_ANNOUNCE_COLOR               = 6615,
+    LANG_GM_BROADCAST                             = 6613,
+    LANG_GM_NOTIFY                                = 6614,
+    LANG_GM_ANNOUNCE_COLOR                        = 6615,
 
-    LANG_GM_SILENCE                      = 6616,              // "Silence is ON for %s" - Spell 1852
+    LANG_GM_SILENCE                               = 6616,              // "Silence is ON for %s" - Spell 1852
 
-    LANG_WORLD_CLOSED                    = 7523,
-    LANG_WORLD_OPENED                    = 7524,
+    LANG_WORLD_CLOSED                             = 7523,
+    LANG_WORLD_OPENED                             = 7524,
 
-    LANG_LFG_PLAYER_INFO                = 9980,
-    LANG_LFG_GROUP_INFO                 = 9981,
-    LANG_LFG_NOT_IN_GROUP               = 9982,
-    LANG_LFG_CLEAN                      = 9983,
-    LANG_LFG_OPTIONS                    = 9984,
-    LANG_LFG_OPTIONS_CHANGED            = 9985,
-    LANG_LFG_STATE_NONE                 = 9986,
-    LANG_LFG_STATE_ROLECHECK            = 9987,
-    LANG_LFG_STATE_QUEUED               = 9988,
-    LANG_LFG_STATE_PROPOSAL             = 9989,
-    LANG_LFG_STATE_BOOT                 = 9990,
-    LANG_LFG_STATE_DUNGEON              = 9991,
-    LANG_LFG_STATE_FINISHED_DUNGEON     = 9992,
-    LANG_LFG_STATE_RAIDBROWSER          = 9993,
-    LANG_LFG_ROLE_TANK                  = 9994,
-    LANG_LFG_ROLE_HEALER                = 9995,
-    LANG_LFG_ROLE_DAMAGE                = 9996,
-    LANG_LFG_ROLE_LEADER                = 9997,
-    LANG_LFG_ROLE_NONE                  = 9998,
-    LANG_LFG_ERROR                      = 9999,
+    LANG_LFG_PLAYER_INFO                          = 9980,
+    LANG_LFG_GROUP_INFO                           = 9981,
+    LANG_LFG_NOT_IN_GROUP                         = 9982,
+    LANG_LFG_CLEAN                                = 9983,
+    LANG_LFG_OPTIONS                              = 9984,
+    LANG_LFG_OPTIONS_CHANGED                      = 9985,
+    LANG_LFG_STATE_NONE                           = 9986,
+    LANG_LFG_STATE_ROLECHECK                      = 9987,
+    LANG_LFG_STATE_QUEUED                         = 9988,
+    LANG_LFG_STATE_PROPOSAL                       = 9989,
+    LANG_LFG_STATE_BOOT                           = 9990,
+    LANG_LFG_STATE_DUNGEON                        = 9991,
+    LANG_LFG_STATE_FINISHED_DUNGEON               = 9992,
+    LANG_LFG_STATE_RAIDBROWSER                    = 9993,
+    LANG_LFG_ROLE_TANK                            = 9994,
+    LANG_LFG_ROLE_HEALER                          = 9995,
+    LANG_LFG_ROLE_DAMAGE                          = 9996,
+    LANG_LFG_ROLE_LEADER                          = 9997,
+    LANG_LFG_ROLE_NONE                            = 9998,
+    LANG_LFG_ERROR                                = 9999,
 
     // Use for not-in-offcial-sources patches
     //                                    10000-10999
     // opvp si
-    LANG_OPVP_SI_CAPTURE_H              = 10049,
-    LANG_OPVP_SI_CAPTURE_A              = 10050,
+    LANG_OPVP_SI_CAPTURE_H                        = 10049,
+    LANG_OPVP_SI_CAPTURE_A                        = 10050,
     // opvp gossips
-    LANG_OPVP_EP_FLIGHT_NPT             = 10051,
-    LANG_OPVP_EP_FLIGHT_EWT             = 10052,
-    LANG_OPVP_EP_FLIGHT_CGT             = 10053,
-    LANG_OPVP_ZM_GOSSIP_ALLIANCE        = 10054,
-    LANG_OPVP_ZM_GOSSIP_HORDE           = 10055,
+    LANG_OPVP_EP_FLIGHT_NPT                       = 10051,
+    LANG_OPVP_EP_FLIGHT_EWT                       = 10052,
+    LANG_OPVP_EP_FLIGHT_CGT                       = 10053,
+    LANG_OPVP_ZM_GOSSIP_ALLIANCE                  = 10054,
+    LANG_OPVP_ZM_GOSSIP_HORDE                     = 10055,
 
-    LANG_BG_SA_START_TWO_MINUTES            = 10056,
-    LANG_BG_SA_START_ONE_MINUTE             = 10057,
-    LANG_BG_SA_START_HALF_MINUTE            = 10058,
+    LANG_BG_SA_START_TWO_MINUTES                  = 10056,
+    LANG_BG_SA_START_ONE_MINUTE                   = 10057,
+    LANG_BG_SA_START_HALF_MINUTE                  = 10058,
     // unused                                 10059-10062
-    LANG_BG_SA_ALLIANCE_CAPTURED_RELIC      = 10063, //The Alliance captured the titan portal!
-    LANG_BG_SA_HORDE_CAPTURED_RELIC         = 10064, //The Horde captured the titan portal!
-    LANG_BG_SA_ROUND_TWO_ONE_MINUTE         = 10065, //Round 2 of the Battle for the Strand of the Ancients begins in 1 minute.
-    LANG_BG_SA_ROUND_TWO_START_HALF_MINUTE  = 10066, //Round 2 begins in 30 seconds. Prepare yourselves!
+    LANG_BG_SA_ALLIANCE_CAPTURED_RELIC            = 10063, //The Alliance captured the titan portal!
+    LANG_BG_SA_HORDE_CAPTURED_RELIC               = 10064, //The Horde captured the titan portal!
+    LANG_BG_SA_ROUND_TWO_ONE_MINUTE               = 10065, //Round 2 of the Battle for the Strand of the Ancients begins in 1 minute.
+    LANG_BG_SA_ROUND_TWO_START_HALF_MINUTE        = 10066, //Round 2 begins in 30 seconds. Prepare yourselves!
 
     // Use for custom patches             11000-11999
-    LANG_AUTO_BROADCAST                 = 11000,
-    LANG_INVALID_REALMID                = 11001,
-    LANG_BAN_CHEATER                    = 11010,
-    LANG_NOT_ENOUGHT_MONEY              = 11011,
-    LANG_PREMIUM_CANT_DO                = 11012,
+    LANG_AUTO_BROADCAST                           = 11000,
+    LANG_INVALID_REALMID                          = 11001,
+    LANG_BAN_CHEATER                              = 11010,
+    LANG_NOT_ENOUGHT_MONEY                        = 11011,
+
+	// Vip Commands
+ 	LANG_PLAYER_NOT_VIP                           = 11012,
+ 	LANG_VIP_COMMAND_DISABLED                     = 11013,
+ 	LANG_VIP_ERROR                                = 11014,
 
     // Show Kick in world
-    LANG_COMMAND_KICKMESSAGE_WORLD = 11002,
+    LANG_COMMAND_KICKMESSAGE_WORLD                = 11002,
 
     // Show Mute in world
-    LANG_COMMAND_MUTEMESSAGE_WORLD = 11003,
+    LANG_COMMAND_MUTEMESSAGE_WORLD                = 11003,
 
     // Show Ban in world
     LANG_BAN_CHARACTER_YOUBANNEDMESSAGE_WORLD     = 11004,
