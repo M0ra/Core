@@ -183,7 +183,7 @@ public:
             return false;
         }
 
-        player->resetTalents(true);
+        player->ResetTalents(true);
         player->SendTalentsInfoData(false);
 		handler->PSendSysMessage(LANG_RESET_TALENTS_ONLINE, handler->GetNameLink(handler->GetSession()->GetPlayer()).c_str());
         return true;
