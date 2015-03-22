@@ -1032,8 +1032,8 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
                     SetAttackTime(BASE_ATTACK, cinfo->BaseAttackTime);
 					
                     // Wolf should inherit 100% of the master's hit rating
-					m_modMeleeHitChance = m_owner->m_modMeleeHitChance;
-					m_modSpellHitChance = m_owner->m_modSpellHitChance;
+                    m_modMeleeHitChance = m_owner->m_modMeleeHitChance;
+                    m_modSpellHitChance = m_owner->m_modSpellHitChance;
 
                     SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, float((petlevel * 4 - petlevel)));
                     SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float((petlevel * 4 + petlevel)));

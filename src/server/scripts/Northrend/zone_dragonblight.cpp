@@ -701,37 +701,52 @@ class npc_torturer_lecraft : public CreatureScript
         }
 };
 
-/* Sarathstra, Scourge of the North */
-#define QUEST_SARATHSTRA_SCOURGE_OF_THE_NORTH    12097
-#define NPC_SARATHSTRA                           26858
-#define GOSSIP_ITEM_SARATHSTRA                   "Призвать Сарастру."
-
+/*######
+## npc_rokhan
+######*/
+ 
+#define ROKHAN_GOSSIP_ITEM1 "Призвать Сарастру, чтобы я вырвал у неё сердце!"
+ 
+enum Rokhan
+{
+    QUEST_SARATHSTRA_COURGE_OF_THE_NORTH   = 12097,
+    QUEST_TO_DRAGONS_FALL                  = 12095,
+    NPC_ROKHAN                             = 26859,
+    CREATURE_SARATHSTRA                    = 26858
+};
+ 
 class npc_rokhan : public CreatureScript
 {
 public:
     npc_rokhan() : CreatureScript("npc_rokhan") { }
-
-bool OnGossipHello(Player* player, Creature* creature)
+ 
+    bool OnGossipHello(Player* player, Creature* creature) override
     {
-    if (creature->IsQuestGiver())
-        player->PrepareQuestMenu(creature->GetGUID());
-
-    if (player->GetQuestStatus(QUEST_SARATHSTRA_SCOURGE_OF_THE_NORTH) == QUEST_STATUS_INCOMPLETE)
-        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SARATHSTRA, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-
-    player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-    return true;
+        if (creature->IsQuestGiver())
+            player->PrepareQuestMenu(creature->GetGUID());
+ 
+        if (player->GetQuestStatus(QUEST_SARATHSTRA_COURGE_OF_THE_NORTH) == QUEST_STATUS_INCOMPLETE && !player->FindNearestCreature(CREATURE_SARATHSTRA, 200, true))
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ROKHAN_GOSSIP_ITEM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+       
+        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+       
+        return true;
     }
-
-bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+ 
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 /*uiAction*/) override
     {
-        player->PlayerTalkClass->ClearMenus();
-        if (action == GOSSIP_ACTION_INFO_DEF+1)
-        {
-            player->CLOSE_GOSSIP_MENU();
-            Creature* sarathstra = creature->SummonCreature(NPC_SARATHSTRA, 4329, 998, 95.3, 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60000) ;
-            }
-            return true;
+        player->CLOSE_GOSSIP_MENU();
+       
+        if(Creature* sarath = player->FindNearestCreature(CREATURE_SARATHSTRA, 200, false))
+            sarath->DespawnOrUnsummon();
+ 
+        Creature *sarath = player->SummonCreature(CREATURE_SARATHSTRA, 4412.329f, 857.795f, 170.0f, 2.28f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
+        sarath->SetFlying(true);
+        sarath->GetMotionMaster()->MovePoint(0, 4362.881f, 946.37f, 87.94f);
+        player->GetMotionMaster()->MovePoint(0, 4362.881f, 946.37f, 82.94f);
+        player->Attack(sarath, true);
+
+        return true;
     }
 };
 

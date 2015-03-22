@@ -2503,7 +2503,9 @@ public:
         void Initialize()
         {
             _events.Reset();
-            pKeristrasza, pSaragosa, player = NULL;
+            pKeristrasza = NULL;
+            pSaragosa = NULL; 
+            player = NULL;
             eventRunning = false;
             if(GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
                 go->SetGoState(GO_STATE_READY);
