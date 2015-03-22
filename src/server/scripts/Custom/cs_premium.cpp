@@ -99,7 +99,7 @@ public:
         {
             if (player->IsInCombat() || player->IsInFlight() || player->GetMap()->IsBattlegroundOrArena() || player->HasStealthAura() || player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || player->isDead())
             {
-                handler->SendSysMessage(LANG_PREMIUM_CANT_DO);
+                handler->SendSysMessage(LANG_PLAYER_NOT_VIP);
                 handler->SetSentErrorMessage(true);
                 return false;
             }
@@ -117,7 +117,7 @@ public:
             //Different Checks
             if (player->IsInCombat() || player->IsInFlight() || player->GetMap()->IsBattlegroundOrArena() || player->HasStealthAura() || player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || player->isDead())
             {
-                handler->SendSysMessage(LANG_PREMIUM_CANT_DO);
+                handler->SendSysMessage(LANG_PLAYER_NOT_VIP);
                 handler->SetSentErrorMessage(true);
                 return false;
             }
@@ -228,7 +228,7 @@ public:
             //Different Checks
             if(player->IsInCombat() || player->IsInFlight() || player->GetMap()->IsBattlegroundOrArena() || player->HasStealthAura() || player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || player->isDead())
             {
-                handler->SendSysMessage(LANG_PREMIUM_CANT_DO);
+                handler->SendSysMessage(LANG_PLAYER_NOT_VIP);
                 handler->SetSentErrorMessage(true);
                 return false;
             }
