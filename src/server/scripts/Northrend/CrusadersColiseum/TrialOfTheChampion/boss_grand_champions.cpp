@@ -592,7 +592,7 @@ class boss_warrior_toc5 : public CreatureScript
 
             events.Update(uiDiff);
 
-            if (!bDone && TW_GrandChampionsOutVehicle(me))
+            if (!bDone && GrandChampionsOutVehicle(me))
             {
                 bDone = true;
                 Talk(WARNING_WEAPONS);
