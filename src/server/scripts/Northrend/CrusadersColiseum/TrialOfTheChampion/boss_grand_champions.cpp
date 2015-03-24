@@ -304,7 +304,7 @@ class generic_vehicleAI_toc5 : public CreatureScript
             }
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             hasBeenInCombat = true;
             DoCastSpellDefend();
@@ -556,8 +556,7 @@ class boss_warrior_toc5 : public CreatureScript
 
         void Reset() override
         {
-            uiInterceptTimer  = 7000;
-            me->SetReactState(REACT_PASSIVE);			
+            uiInterceptTimer  = 7000;		
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             events.SetPhase(PHASE_IDLE);
         }
@@ -574,7 +573,7 @@ class boss_warrior_toc5 : public CreatureScript
             bHome = false;
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             _EnterCombat();
             hasBeenInCombat = true;
@@ -593,17 +592,20 @@ class boss_warrior_toc5 : public CreatureScript
 
             events.Update(uiDiff);
 
-            if (!bDone && GrandChampionsOutVehicle(me))
+            if (!bDone && TW_GrandChampionsOutVehicle(me))
             {
                 bDone = true;
                 Talk(WARNING_WEAPONS);
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
-                if (Creature* announcer = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ANNOUNCER)))
-                    announcer->AI()->SetData(DATA_GRAND_CHAMPIONS_DEFEATED, announcer->AI()->GetData(DATA_GRAND_CHAMPIONS_DEFEATED) - 1);
+                if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
+                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
+                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
+                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->SetReactState(REACT_AGGRESSIVE);				
                 EnterEvadeMode();
                 bHome = true;
             }
@@ -738,7 +740,7 @@ class boss_mage_toc5 : public CreatureScript
             bHome = false;
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             _EnterCombat();
             hasBeenInCombat = true;
@@ -922,9 +924,9 @@ class boss_shaman_toc5 : public CreatureScript
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
+                        me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
+                        me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
 
                 if (instance)
                     instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
@@ -1085,7 +1087,7 @@ class boss_hunter_toc5 : public CreatureScript
             bHome = false;
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             _EnterCombat();
             hasBeenInCombat = true;
@@ -1293,7 +1295,7 @@ class boss_rogue_toc5 : public CreatureScript
             bHome = false;
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             _EnterCombat();
             hasBeenInCombat = true;
@@ -1312,11 +1314,11 @@ class boss_rogue_toc5 : public CreatureScript
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
-                    me->GetMotionMaster()->MovePoint(0, 739.678f,662.541f,413.395f);
+                    me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
-                        me->GetMotionMaster()->MovePoint(0, 746.71f,661.02f,412.695f);
+                        me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
-                        me->GetMotionMaster()->MovePoint(0, 754.34f,660.70f,413.395f);
+                        me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
 
                 if (instance)
                     instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
@@ -1403,7 +1405,7 @@ class achievement_toc5_grand_champions : public AchievementCriteriaScript
             creature_entry = original_entry;
         }
 
-        bool OnCheck(Player* source, Unit* target) override
+        bool OnCheck(Player* /*source*/, Unit* target) override
         {
             if (!target)
                 return false;

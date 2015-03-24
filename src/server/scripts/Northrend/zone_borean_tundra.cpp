@@ -2503,18 +2503,19 @@ public:
         void Initialize()
         {
             _events.Reset();
-            pKeristrasza = NULL;
-            pSaragosa = NULL; 
-            player = NULL;
+            uiKeristrasza = 0;
+            uiSaragosa = 0; 
+            player = 0;
             eventRunning = false;
             if (GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
                 go->SetGoState(GO_STATE_READY);
         }
 		
         EventMap _events;
-        Creature* pKeristrasza;
-        Creature* pSaragosa;
+        Creature* uiKeristrasza;
+        Creature* uiSaragosa;
         Player* player;
+
         bool eventRunning;
 
         void Reset() override
@@ -2532,11 +2533,11 @@ public:
                 player = caster->ToPlayer();
                 if (GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
                     go->SetGoState(GO_STATE_ACTIVE);
-                if (Creature* pFind = me->SummonCreature(NPC_KERISTRASZA, posKeristrasza[0]))
+                if (Creature* find = me->SummonCreature(NPC_KERISTRASZA, posKeristrasza[0]))
                 {
-                    pKeristrasza = pFind;
-                    pFind->SetCanFly(true);
-                    pFind->GetMotionMaster()->MovePoint(1, posKeristrasza[1]);
+                    uiKeristrasza = find;
+                    find->SetCanFly(true);
+                    find->GetMotionMaster()->MovePoint(1, posKeristrasza[1]);
                 }
                 eventRunning = true;
                 _events.ScheduleEvent(1, 6000);
@@ -2549,48 +2550,48 @@ public:
 
             switch(_events.ExecuteEvent())
             {
-            case 1:
-                pKeristrasza->SetCanFly(false);
-                Talk(SAY_KERISTRASZA_1);
-                _events.ScheduleEvent(2, 3000);
-                break;
-            case 2:
-                Talk(YELL_KERISTRASZA_1);
-                pKeristrasza->GetMotionMaster()->MovePoint(1, posKeristrasza[2]);
-                _events.ScheduleEvent(3, 5000);
-                break;
-            case 3:
-                Talk(YELL_KERISTRASZA_2);
-                if(Creature* pCorpse = me->SummonCreature(NPC_SARAGOSA, posKeristrasza[3]))
-                    pSaragosa = pCorpse;
-                _events.ScheduleEvent(4, 3000);
-                break;
-            case 4:
-                Talk(YELL_KERISTRASZA_3);
-                pKeristrasza->CastSpell(pSaragosa, SPELL_FIRE_BREATH, true);
-                _events.ScheduleEvent(5, 1000);
-                break;
-            case 5:
-                me->AddAura(SPELL_FIRE_CORPSE, pSaragosa);
-                _events.ScheduleEvent(6, 1000);
-                break;
-            case 6:
-                player->CastSpell(player, SPELL_MALYGOS_EARTHQ, true);
-                _events.ScheduleEvent(7, 3000);
-                break;
-            case 7:
-                Talk(SAY_KERISTRASZA_2);
-                _events.ScheduleEvent(8, 3000);
-                break;
-            case 8:
-                player->CastSpell(player, SPELL_TAXI_KERISTASZA, true);
-                pKeristrasza->AI()->SetGUID(player->GetGUID());
-                pSaragosa->DespawnOrUnsummon(10000);
-                _events.ScheduleEvent(9, 20000);
-                break;
-            case 9:
-                Reset();
-                break;
+                case 1:
+                    uiKeristrasza->SetCanFly(false);
+                    Talk(SAY_KERISTRASZA_1);
+                    _events.ScheduleEvent(2, 3000);
+                    break;
+                case 2:
+                    Talk(YELL_KERISTRASZA_1);
+                    uiKeristrasza->GetMotionMaster()->MovePoint(1, posKeristrasza[2]);
+                    _events.ScheduleEvent(3, 5000);
+                    break;
+                case 3:
+                    Talk(YELL_KERISTRASZA_2);
+                    if (Creature* corpse = me->SummonCreature(NPC_SARAGOSA, posKeristrasza[3]))
+                    uiSaragosa = corpse;
+                    _events.ScheduleEvent(4, 3000);
+                    break;
+                case 4:
+                    Talk(YELL_KERISTRASZA_3);
+                    uiKeristrasza->CastSpell(uiSaragosa, SPELL_FIRE_BREATH, true);
+                    _events.ScheduleEvent(5, 1000);
+                    break;
+                case 5:
+                    me->AddAura(SPELL_FIRE_CORPSE, uiSaragosa);
+                    _events.ScheduleEvent(6, 1000);
+                    break;
+                case 6:
+                    player->CastSpell(player, SPELL_MALYGOS_EARTHQ, true);
+                    _events.ScheduleEvent(7, 3000);
+                    break;
+                case 7:
+                    Talk(SAY_KERISTRASZA_2);
+                    _events.ScheduleEvent(8, 3000);
+                    break;
+                case 8:
+                    player->CastSpell(player, SPELL_TAXI_KERISTASZA, true);
+                    uiKeristrasza->AI()->SetGUID(player->GetGUID());
+                    uiSaragosa->DespawnOrUnsummon(10000);
+                    _events.ScheduleEvent(9, 20000);
+                    break;
+                case 9:
+                    Reset();
+                    break;
             }
         }
 
@@ -2618,7 +2619,7 @@ public:
         {
             _events.Reset();
             me->SetSpeed(MOVE_FLIGHT, 3.2f, true);
-            pMalygos = NULL;
+            uiMalygos = 0;
             uiPlayerGUID.Clear();
             waiting = false;
             finishedWay = false;
@@ -2627,9 +2628,10 @@ public:
 
         EventMap _events;
         ObjectGuid uiPlayerGUID;
+        Creature* uiMalygos;
+
         bool waiting;
         bool finishedWay;
-        Creature* pMalygos;
 
         void Reset() override
         {
@@ -2651,7 +2653,7 @@ public:
 
             if (!finishedWay)
             {
-                if( Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                 {
                     if (!player->IsInFlight())
                     {
@@ -2673,36 +2675,34 @@ public:
 
             switch(_events.ExecuteEvent())
             {
-            case 1:
-                me->SetCanFly(false);
-                if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                case 1:
+                    me->SetCanFly(false);
                     Talk(SAY_KERISTRASZA_3);
-                _events.ScheduleEvent(2, 5000);
-                break;
-            case 2:
-                if (Creature* pSumm = me->SummonCreature(NPC_MALYGOS, posKeristrasza[5]))
-                {
-                    pMalygos = pSumm;
-                    pSumm->SetCanFly(true);
-                    pSumm->SetReactState(REACT_PASSIVE);
-                    pSumm->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_IMMUNE_TO_PC);
-                    pSumm->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.4f);
-                    Talk(YELL_MALYGOS_2);
-                    pMalygos->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
-                    me->SetUInt64Value(UNIT_FIELD_TARGET, pMalygos->GetGUID());
-                }
-                _events.ScheduleEvent(3, 6000);
-                break;
-            case 3:
-                Talk(YELL_KERISTRASZA_4);
-                me->AddAura(SPELL_ICE_BLOCK, me);
+                    _events.ScheduleEvent(2, 5000);
+                    break;
+                case 2:
+                    if (Creature* summ = me->SummonCreature(NPC_MALYGOS, posKeristrasza[5]))
+                    {
+                        uiMalygos = summ;
+                        summ->SetCanFly(true);
+                        summ->SetReactState(REACT_PASSIVE);
+                        summ->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        summ->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.4f);
+                        Talk(YELL_MALYGOS_2);
+                        uiMalygos->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
+                        me->SetUInt64Value(UNIT_FIELD_TARGET, uiMalygos->GetGUID());
+                    }
+                    _events.ScheduleEvent(3, 6000);
+                    break;
+                case 3:
+                    Talk(YELL_KERISTRASZA_4);
+                    me->AddAura(SPELL_ICE_BLOCK, me);
 
-                if (pMalygos)
-                    pMalygos->DespawnOrUnsummon(7000);
-                me->DespawnOrUnsummon(7000);
-                break;
+                    if (uiMalygos)
+                        uiMalygos->DespawnOrUnsummon(7000);
+                    me->DespawnOrUnsummon(7000);
+                    break;
             }
-
         }
     };
 
