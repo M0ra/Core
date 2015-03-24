@@ -380,7 +380,7 @@ public:
             return ObjectGuid::Empty;
         }
 
-        uint32 GetData(uint32 type)
+        uint32 GetData(uint32 type) const override
         {
             switch(type)
             {

@@ -839,48 +839,40 @@ class npc_frostbrood_skytalon : public CreatureScript
         }
 };
 
-/*######
-## npc_Keritose Quest Support 13172
--- Quest Support Seeds of Chaos (13172)
-UPDATE creature_template SET type_flags=8, spell1=59234, spell2=53112, VehicleId=156, unk16=25, unk17=20, movementId=199, RegenHealth=1 WHERE entry=31157;
-UPDATE creature_template SET `ScriptName` = 'npc_keritose', npcflag='3' WHERE entry=30946;
-UPDATE creature_template SET KillCredit2=31555 WHERE entry IN (31554, 30949 , 30951)
-######*/
-
-#define GOSSIP_KERITOSE_I  "Я готов присоединиться к нападению!"
-
 enum Keritose
 {
 	QUEST_SEEDS_OF_CHAOS	          = 13172,
 	SPELL_TAXI_KERITOSE	       		  = 58698 
 };
 
+#define GOSSIP_KERITOSE_I  "Я готов присоединиться к нападению!"
+
 class npc_keritose : public CreatureScript
 {
 public:
     npc_keritose() : CreatureScript("npc_keritose") { }
 
-    bool OnGossipHello(Player* player, Creature* creature)
+    bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (creature->IsQuestGiver())
             player->PrepareQuestMenu(creature->GetGUID());
 
-        if(player->GetQuestStatus(QUEST_SEEDS_OF_CHAOS) == QUEST_STATUS_INCOMPLETE)
+        if (player->GetQuestStatus(QUEST_SEEDS_OF_CHAOS) == QUEST_STATUS_INCOMPLETE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_KERITOSE_I, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction) override
     {
         player->PlayerTalkClass->ClearMenus();
         switch(uiAction)
         {
-        case GOSSIP_ACTION_INFO_DEF + 1:
-            player->CastSpell(player, SPELL_TAXI_KERITOSE, true);
-            player->CLOSE_GOSSIP_MENU();
-            break;
+            case GOSSIP_ACTION_INFO_DEF + 1:
+                player->CastSpell(player, SPELL_TAXI_KERITOSE, true);
+                player->CLOSE_GOSSIP_MENU();
+                break;
         }
         return true;
     }
@@ -889,11 +881,6 @@ public:
 /*######
 ## npc_faction_valiant_champion
 ######*/
-
-/*
-UPDATE creature_template SET scriptname = 'npc_faction_valiant_champion' WHERE entry IN (33559,33562,33558,33564,33306,33285,33382,33561,33383,33384);
-UPDATE creature_template SET scriptname = 'npc_faction_valiant_champion' WHERE entry IN (33738,33739,33740,33743,33744,33745,33746,33747,33748,33749);
-*/
 
 enum FactionValiantChampion
 {
@@ -947,9 +934,7 @@ public:
 
     struct npc_faction_valiant_championAI : public ScriptedAI
     {
-        npc_faction_valiant_championAI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
+        npc_faction_valiant_championAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint32 uiChargeTimer;
         uint32 uiShieldBreakerTimer;
