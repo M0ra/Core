@@ -822,35 +822,33 @@ enum InfectedWorgenBite
     SPELL_WORGENS_CALL         = 53095
 };
 
-class spell_infected_worgen_bite : public SpellScriptLoader
+class spell_q12414_hand_over_reins : public SpellScriptLoader
 {
     public:
-        spell_infected_worgen_bite() : SpellScriptLoader("spell_infected_worgen_bite") { }
+        spell_q12414_hand_over_reins() : SpellScriptLoader("spell_q12414_hand_over_reins") { }
         
-        class spell_infected_worgen_bite_AuraScript : public AuraScript
+        class spell_q12414_hand_over_reins_SpellScript : public SpellScript
         {
-            PrepareAuraScript(spell_infected_worgen_bite_AuraScript);
+            PrepareSpellScript(spell_q12414_hand_over_reins_SpellScript);
             
-            void HandleAfterEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            void HandleScript(SpellEffIndex /*effIndex*/)
             {
-                Unit* target = GetTarget();
-                if (target->GetTypeId() == TYPEID_PLAYER)
-                    if (GetStackAmount() == GetSpellInfo()->StackAmount)
-                    {
-                        Remove();
-                        target->CastSpell(target, SPELL_WORGENS_CALL, true);
-                    }
+                Creature* caster = GetCaster()->ToCreature();
+                GetHitUnit()->ExitVehicle();
+
+                if (caster)
+                    caster->DespawnOrUnsummon();
             }
             
             void Register() override
             {
-                AfterEffectApply += AuraEffectApplyFn(spell_infected_worgen_bite_AuraScript::HandleAfterEffectApply, EFFECT_1, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAPPLY);
+                OnEffectHitTarget += SpellEffectFn(spell_q12414_hand_over_reins_SpellScript::HandleScript, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
             }
         };
-
-        AuraScript* GetAuraScript() const override
+        
+        SpellScript* GetSpellScript() const override
         {
-            return new spell_infected_worgen_bite_AuraScript();
+            return new spell_q12414_hand_over_reins_SpellScript();
         }
 };
 
@@ -865,5 +863,5 @@ void AddSC_grizzly_hills()
     new npc_venture_co_straggler();
     new npc_lake_frog();
     new spell_shredder_delivery();
-	new spell_infected_worgen_bite();
+	new spell_q12414_hand_over_reins();
 }
