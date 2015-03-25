@@ -56,6 +56,7 @@ set(scripts_STAT_SRCS
   Kalimdor/CavernsOfTime/TheBlackMorass/the_black_morass.cpp
   Kalimdor/CavernsOfTime/TheBlackMorass/boss_aeonus.cpp
   Kalimdor/CavernsOfTime/TheBlackMorass/boss_temporus.cpp
+  Kalimdor/DireMaul/npc_pusillin.cpp
   Kalimdor/BlackfathomDeeps/boss_kelris.cpp
   Kalimdor/BlackfathomDeeps/instance_blackfathom_deeps.cpp
   Kalimdor/BlackfathomDeeps/boss_gelihast.cpp
