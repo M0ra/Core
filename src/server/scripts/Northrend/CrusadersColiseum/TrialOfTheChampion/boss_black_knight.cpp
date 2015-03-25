@@ -34,7 +34,6 @@ enum Talk
    SAY_DEATH                               = 7  // No! I must not fail...again...
 };
 
-
 enum Spells
 {
     //phase 1
@@ -83,7 +82,7 @@ enum Models
 
 enum Equip
 {
-     EQUIP_SWORD   = 40343
+    EQUIP_SWORD   = 40343
 };
 
 enum IntroPhase

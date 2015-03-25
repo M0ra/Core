@@ -952,8 +952,8 @@ public:
         void EnterCombat(Unit* attacker)
         {
             guidAttacker = attacker->GetGUID();
-            DoCast(me,SPELL_DEFEND_AURA_PERIODIC,true);
-            if(Aura* aur = me->AddAura(SPELL_DEFEND,me))
+            DoCast(me, SPELL_DEFEND_AURA_PERIODIC, true);
+            if(Aura* aur = me->AddAura(SPELL_DEFEND, me))
                 aur->ModStackAmount(1);
         }
 

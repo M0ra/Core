@@ -88,12 +88,12 @@ public:
         {
             Initialize();
         }
-        
+
         void SetHoldState(bool bOnHold)
         {
             SetEscortPaused(bOnHold);
         }
-        
+
         void WaypointReached(uint32 uiPointId) override
         {
             switch(uiPointId)
@@ -126,7 +126,7 @@ public:
         {
 
             npc_escortAI::UpdateAI(diff);
-                
+
             if (uiPhase)
             {
                 switch(uiPhase)
@@ -231,14 +231,14 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* сreature) const
+    CreatureAI* GetAI(Creature* сreature) const override
     {
         return new npc_pusillinAI(сreature);
     }
 
     bool OnGossipHello(Player* player, Creature* сreature) override
     {
-       npc_pusillinAI* pAI = CAST_AI(npc_pusillinAI, сreature->AI());
+        npc_pusillinAI* pAI = CAST_AI(npc_pusillinAI, сreature->AI());
         
         switch (pAI->uiGossipStep)
         {
@@ -262,7 +262,7 @@ public:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, Gossip_5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
                 player->SEND_GOSSIP_MENU(6881, сreature->GetGUID());
                 break;
-            }
+        }
             return true;
     }
 
