@@ -765,7 +765,7 @@ public:
 class achievement_ive_had_worse : public AchievementCriteriaScript
 {
     public:
-        achievement_ive_had_worse() : AchievementCriteriaScript("TW_achievement_ive_had_worse") { }
+        achievement_ive_had_worse() : AchievementCriteriaScript("achievement_ive_had_worse") { }
 
         bool OnCheck(Player* /*player*/, Unit* target) override
         {
