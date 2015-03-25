@@ -853,6 +853,9 @@ class npc_mole_machine_trigger : public CreatureScript
             void JustSummoned(Creature* summoned) override
             {
                 summoned->AI()->DoZoneInCombat();
+
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true))
+                    summoned->AI()->AttackStart(target);
             }
         };
 
@@ -924,7 +927,12 @@ class npc_darkrune_watcher : public CreatureScript
                 if (who->GetTypeId() == TYPEID_PLAYER)
                     me->GetInstanceScript()->SetData(DATA_CRITERIA_RAZORSCALE, 1);
             }
-			
+
+            void MoveInLineOfSight(Unit* who) override
+            {
+                who = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true, 0);
+            }
+
             void UpdateAI(uint32 Diff) override
             {
                 if (!UpdateVictim())
@@ -979,6 +987,11 @@ class npc_darkrune_guardian : public CreatureScript
             void Reset() override
             {
                 Initialize();
+            }
+
+            void MoveInLineOfSight(Unit* who) override
+            {
+                who = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true, 0);
             }
 
             uint32 GetData(uint32 type) const override
@@ -1057,7 +1070,12 @@ class npc_darkrune_sentinel : public CreatureScript
                 if (who->GetTypeId() == TYPEID_PLAYER)
                     me->GetInstanceScript()->SetData(DATA_CRITERIA_RAZORSCALE, 1);
             }
-			
+
+            void MoveInLineOfSight(Unit* who) override
+            {
+                who = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true, 0);
+            }
+
             void UpdateAI(uint32 Diff) override
             {
                 if (!UpdateVictim())

@@ -295,11 +295,11 @@ class achievement_food_fight : public AchievementCriteriaScript
     public:
         achievement_food_fight() : AchievementCriteriaScript("achievement_food_fight") { }
 
-        bool OnCheck(Player* /*source*/, Unit* target)
+        bool OnCheck(Player* /*source*/, Unit* target) override
         {
             if (!target)
                 return false;
-        
+
             if (Player* victim = target->ToPlayer())
             {
                 if (Vehicle* vehicle = victim->GetVehicle())
@@ -313,18 +313,18 @@ class achievement_food_fight : public AchievementCriteriaScript
 
 class achievement_piligrims_peril : public AchievementCriteriaScript
 {
-	public:
-		achievement_piligrims_peril() : AchievementCriteriaScript("achievement_piligrims_peril") { }
+    public:
+        achievement_piligrims_peril() : AchievementCriteriaScript("achievement_piligrims_peril") { }
 
-		bool OnCheck(Player* source, Unit* /*target*/)
-		{
-			if (source->HasItemOrGemWithIdEquipped(44785, 1) || source->HasItemOrGemWithIdEquipped(46824, 1) || source->HasItemOrGemWithIdEquipped(46800, 1))
-			{
-				return true;
-			}
+        bool OnCheck(Player* source, Unit* /*target*/) override
+        {
+            if (source->HasItemOrGemWithIdEquipped(44785, 1) || source->HasItemOrGemWithIdEquipped(46824, 1) || source->HasItemOrGemWithIdEquipped(46800, 1))
+            {
+                return true;
+                }
 
-			return false;
-		}
+            return false;
+        }
 };
 
 void AddSC_achievement_scripts()
@@ -347,6 +347,6 @@ void AddSC_achievement_scripts()
     new achievement_not_even_a_scratch();
     new achievement_flirt_with_disaster_perf_check();
     new achievement_killed_exp_or_honor_target();
-	new achievement_food_fight();
-	new achievement_piligrims_peril();	
+    new achievement_food_fight();
+    new achievement_piligrims_peril();	
 }
