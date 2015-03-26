@@ -762,7 +762,7 @@ enum NpcDimensius
     NPC_REG_DIMES       = 21783,
     NPC_AVENG_DIMES     = 21805,
     NPC_DEV_DIMES       = 19554,
-	NPC_CAP_SAEED       = 20985,
+    NPC_CAP_SAEED       = 20985,
     NPC_SPAWN_DIMES     = 21780
 };
 
@@ -806,6 +806,7 @@ public:
         uint32 uiTorturaMental;
         uint32 uiChoqueSagr;
         uint32 uiGuja;
+
         bool bNoMove;
 
         void Reset() override
@@ -874,7 +875,7 @@ public:
             uiShadowVault = 10000;
             uiSummonTiempo = 30000;
             uiTimerPhase = 1;
-            TimerCount = 2500;
+            uiTimerCount = 2500;
             SetCombatMovement(false);
             bBerkMode = false;
         }
@@ -882,8 +883,8 @@ public:
         uint32 uiShadowSpiral;
         uint32 uiShadowVault;
         uint32 uiSummonTiempo;
+        uint32 uiTimerCount
         uint32 uiTimerPhase;
-        uint32 TimerPhase;
 
         bool bComienzoEv;
         bool bBerkMode;
@@ -1014,8 +1015,8 @@ public:
 
                         if (uiSummonTiempo <= uiDiff)
                         {
-                            uiTimerPhase = 4000;
-                            TimerPhase = 1;
+                            uiTimerCount = 4000;
+                            uiTimerPhase = 1;
                             me->SummonCreature(NPC_SPAWN_DIMES, 3904.895f, 2013.1589f, 257.812f, TEMPSUMMON_MANUAL_DESPAWN);
                             me->SummonCreature(NPC_SPAWN_DIMES, 3923.9f, 1972.766f, 257.812f, TEMPSUMMON_MANUAL_DESPAWN);
                             me->SummonCreature(NPC_SPAWN_DIMES, 3966.4f, 1988.784f, 257.812f, TEMPSUMMON_MANUAL_DESPAWN);
@@ -1036,53 +1037,53 @@ public:
                     }
                     else{
 
-                            if (uiTimerPhase <= uiDiff)
+                            if (uiTimerCount <= uiDiff)
                             {
-                                switch (TimerPhase)
+                                switch (uiTimerPhase)
                                 {
                                     case 1:
                                         if (me->HasAura(SPELL_SHADOW_RAIN_2))
                                             me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_2);
                                         me->CastSpell(me, SPELL_SHADOW_RAIN, true);
                                         uiSummonTiempo = 78000;
-                                        uiTimerPhase = 6500;
-                                        TimerPhase = 2;
+                                        uiTimerCount = 6500;
+                                        uiTimerPhase = 2;
                                         break;
                                     case 2:
                                         if (me->HasAura(SPELL_SHADOW_RAIN))
                                             me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN);
                                         me->CastSpell(me, SPELL_SHADOW_RAIN_3, true);
                                         uiSummonTiempo = 78000;
-                                        uiTimerPhase = 5000;
-                                        TimerPhase = 3;
+                                        uiTimerCount = 5000;
+                                        uiTimerPhase = 3;
                                         break;
                                     case 3:
                                         if (me->HasAura(SPELL_SHADOW_RAIN_3))
                                             me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_3);
                                         me->CastSpell(me, SPELL_SHADOW_RAIN_4, true);
                                         uiSummonTiempo = 78000;
-                                        uiTimerPhase = 4000;
-                                        TimerPhase = 4;
+                                        uiTimerCount = 4000;
+                                        uiTimerPhase = 4;
                                         break;
                                     case 4:
                                         if (me->HasAura(SPELL_SHADOW_RAIN_4))
                                             me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_4);
                                         me->CastSpell(me, SPELL_SHADOW_RAIN_5, true);
                                         uiSummonTiempo = 78000;
-                                        uiTimerPhase = 4000;
-                                        TimerPhase = 5;
+                                        uiTimerCount = 4000;
+                                        uiTimerPhase = 5;
                                         break;
                                     case 5:
                                         if (me->HasAura(SPELL_SHADOW_RAIN_5))
                                             me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_5);
                                         me->CastSpell(me, SPELL_SHADOW_RAIN_2, true);
                                         uiSummonTiempo = 78000;
-                                        uiTimerPhase = 2500;
-                                        TimerPhase = 1;
+                                        uiTimerCount = 2500;
+                                        uiTimerPhase = 1;
                                         break;
                                 }
 
-                            } else uiTimerPhase -= uiDiff;
+                            } else uiTimerCount -= uiDiff;
                         }
                 } else
                 me->DespawnOrUnsummon();
