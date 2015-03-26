@@ -32,7 +32,8 @@ enum DataTypes
     DATA_ZULJINEVENT                    = 6,
     DATA_CHESTLOOTED                    = 7,
     TYPE_RAND_VENDOR_1                  = 8,
-    TYPE_RAND_VENDOR_2                  = 9
+    TYPE_RAND_VENDOR_2                  = 9,
+    DATA_STARTDOOR                      = 10
 };
 
 enum CreatureIds
@@ -53,6 +54,7 @@ enum GameobjectIds
     GO_MASSIVE_GATE                     = 186728,
     GO_DOOR_AKILZON                     = 186858,
     GO_DOOR_ZULJIN                      = 186859,
+    GO_GATE_START                       = 186728,
     GO_HARKORS_SATCHEL                  = 187021,
     GO_TANZARS_TRUNK                    = 186648,
     GO_ASHLIS_BAG                       = 186672,
