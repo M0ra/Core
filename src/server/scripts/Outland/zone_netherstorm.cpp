@@ -1122,15 +1122,15 @@ public:
         {
             case GOSSIP_ACTION_INFO_DEF + 1: 
                 player->CLOSE_GOSSIP_MENU();
-                ENSURE_AI(npc_capitan_saeed::npc_capitan_saeedAI, creature->AI())->Initiation();
+                CAST_AI(npc_capitan_saeed::npc_capitan_saeedAI, creature->AI())->Initiation();
                 break;                
         }
         return true;
     }
 
-    struct npc_capitan_saeed : public ScriptedAI
+    struct npc_capitan_saeedAI : public ScriptedAI
     {
-        npc_capitan_saeed(Creature* creature) : ScriptedAI(creature)
+        npc_capitan_saeedAI(Creature* creature) : ScriptedAI(creature)
         {
             Initialize();
             me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
