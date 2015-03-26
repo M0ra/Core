@@ -31,6 +31,7 @@ EndContentData */
 #include "ScriptedEscortAI.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "PassiveAI.h"
 #include "Player.h"
 
 /*######
@@ -50,13 +51,17 @@ class npc_webbed_creature : public CreatureScript
 public:
     npc_webbed_creature() : CreatureScript("npc_webbed_creature") { }
 
-    struct npc_webbed_creatureAI : public ScriptedAI
+    struct npc_webbed_creatureAI : public NullCreatureAI
     {
-        npc_webbed_creatureAI(Creature* creature) : ScriptedAI(creature) { }
+        npc_webbed_creatureAI(Creature* creature) : NullCreatureAI(creature) { }
 
         void Reset() override { }
 
         void EnterCombat(Unit* /*who*/) override { }
+
+        void AttackStart(Unit* /*who*/) override { }
+
+        void MoveInLineOfSight(Unit* /*who*/) override { }
 
         void JustDied(Unit* killer) override
         {
@@ -242,20 +247,20 @@ public:
     {
         npc_sironasAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void Reset()
+        void Reset() override
         {
             _events.Reset();
             me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
         }
 
-        void EnterCombat(Unit* /*who*/)
+        void EnterCombat(Unit* /*who*/) override
         {
             _events.ScheduleEvent(EVENT_UPPERCUT,      15 * IN_MILLISECONDS);
             _events.ScheduleEvent(EVENT_IMMOLATE,      10 * IN_MILLISECONDS);
             _events.ScheduleEvent(EVENT_CURSE_OF_BLOOD, 5 * IN_MILLISECONDS);
         }
 
-        void JustDied(Unit* killer)
+        void JustDied(Unit* killer) override
         {
             me->SetObjectScale(1.0f);
             _events.Reset();
@@ -270,7 +275,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 diff) override
         {
             if (!UpdateVictim())
                 return;
@@ -301,7 +306,7 @@ public:
             DoMeleeAttackIfReady();
         }
 
-        void DoAction(int32 param)
+        void DoAction(int32 param) override
         {
             switch (param)
             {
@@ -356,7 +361,7 @@ public:
     {
         npc_demolitionist_legosoAI(Creature* creature) : npc_escortAI(creature) { }
 
-        void sQuestAccept(Player* player, Quest const* quest)
+        void sQuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_ENDING_THEIR_WORLD)
             {
@@ -365,7 +370,7 @@ public:
             }
         }
 
-        uint32 GetData(uint32 id) const
+        uint32 GetData(uint32 id) const override
         {
             switch (id)
             {
@@ -376,7 +381,7 @@ public:
             }
         }
 
-        void SetData(uint32 data, uint32 value)
+        void SetData(uint32 data, uint32 value) override
         {
             switch (data)
             {
@@ -388,7 +393,7 @@ public:
             }
         }
 
-        void Reset()
+        void Reset() override
         {
             _phase = PHASE_NONE;
             _moveTimer = 0;
@@ -402,7 +407,7 @@ public:
             _events.ScheduleEvent(EVENT_STRENGTH_OF_EARTH_TOTEM, 20 * IN_MILLISECONDS);
         }
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 diff) override
         {
             _events.Update(diff);
 
@@ -528,8 +533,8 @@ public:
                             {
                                 if (GameObject* explosive = sObjectAccessor->GetGameObject(*me, *itr))
                                     me->RemoveGameObject(explosive, true);
-                                _explosivesGuids.erase(itr);
                             }
+                            _explosivesGuids.clear();
                             me->HandleEmoteCommand(EMOTE_ONESHOT_CHEER);
                             _moveTimer = 2 * IN_MILLISECONDS;
                             _phase = PHASE_PLANT_FIRST_SPEECH;
@@ -625,8 +630,8 @@ public:
                             {
                                 if (GameObject* explosive = sObjectAccessor->GetGameObject(*me, *itr))                                
                                     me->RemoveGameObject(explosive, true);
-                                _explosivesGuids.erase(itr);
                             }
+                            _explosivesGuids.clear();
                             if (Creature* sironas = me->FindNearestCreature(NPC_SIRONAS, SIZE_OF_GRIDS))
                             {
                                 sironas->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
@@ -699,7 +704,7 @@ public:
             }
         }
 
-        void WaypointReached(uint32 waypointId)
+        void WaypointReached(uint32 waypointId) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -777,7 +782,7 @@ public:
             }
         }
 
-        void DoAction(int32 param)
+        void DoAction(int32 param) override
         {
             switch (param)
             {
