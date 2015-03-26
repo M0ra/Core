@@ -997,7 +997,7 @@ public:
             {
                 if (me->IsInCombat())
                 {
-                    if (!me->HasAura(SPELL_DIMENSIUS_FEEDING))
+                    if (!me->HasAura(SPELL_DIM_FEED))
                     {
                         if (uiShadowSpiral <= uiDiff)
                         {
@@ -1122,7 +1122,7 @@ public:
         {
             case GOSSIP_ACTION_INFO_DEF + 1: 
                 player->CLOSE_GOSSIP_MENU();
-                CAST_AI(npc_capitan_saeed::npc_capitan_saeedAI, creature->AI())->Initiation();
+                ENSURE_AI(npc_capitan_saeed::npc_capitan_saeedAI, creature->AI())->Initiation();
                 break;                
         }
         return true;
