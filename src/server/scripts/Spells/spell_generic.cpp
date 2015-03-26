@@ -4723,6 +4723,38 @@ public:
         int32 passiveId;
 };
 
+class spell_icc_valk_charge : public SpellScriptLoader
+{
+public:
+    spell_icc_valk_charge() : SpellScriptLoader("spell_icc_valk_charge") { }
+
+    class spell_icc_valk_charge_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_icc_valk_charge_SpellScript);
+
+        void ChargeDest(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
+            Position pos = GetHitDest()->GetPosition();
+            float angle = GetCaster()->GetRelativeAngle(pos.GetPositionX(), pos.GetPositionY());
+            float dist = GetCaster()->GetDistance2d(pos.GetPositionX(), pos.GetPositionY());
+            pos = GetCaster()->GetFirstCollisionPosition(dist, angle, pos.m_positionZ);
+
+            GetCaster()->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ);
+        }
+
+        void Register() override
+        {
+            OnEffectLaunch += SpellEffectFn(spell_icc_valk_charge_SpellScript::ChargeDest, EFFECT_0, SPELL_EFFECT_CHARGE_DEST);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_icc_valk_charge_SpellScript();
+    }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -4835,4 +4867,5 @@ void AddSC_generic_spell_scripts()
     new spell_vanity_pet_focus("spell_scorchling_focus");
     new spell_vanity_pet_focus("spell_toxic_wasteling_focus");
     new spell_vanity_pet_focus("spell_rocket_bot_focus", SPELL_ROCKET_BOT_PASSIVE);
+    new spell_icc_valk_charge();
 }
