@@ -4738,7 +4738,7 @@ public:
             Position pos = GetHitDest()->GetPosition();
             float angle = GetCaster()->GetRelativeAngle(pos.GetPositionX(), pos.GetPositionY());
             float dist = GetCaster()->GetDistance2d(pos.GetPositionX(), pos.GetPositionY());
-            pos = GetCaster()->GetFirstCollisionPosition(dist, angle, pos.m_positionZ);
+            pos = GetCaster()->GetFirstCollisionPosition(dist, angle);
 
             GetCaster()->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ);
         }
