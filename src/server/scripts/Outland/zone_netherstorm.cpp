@@ -788,7 +788,7 @@ class npc_defensores_dimens : public CreatureScript
 public:
     npc_defensores_dimens() : CreatureScript("npc_defensores_dimens") { }
 	
-    struct qnpc_defensores_dimensAI : public ScriptedAI
+    struct npc_defensores_dimensAI : public ScriptedAI
     {
         npc_defensores_dimensAI(Creature* creature) : ScriptedAI(creature)
         {
@@ -1229,7 +1229,7 @@ public:
         void LinealDefenser(uint32 entry, bool Mass)
         {
             std::list<Creature*> DefList;
-            me->GetCreatureListWithEntryInGrid(DefList,entry,40.0f);
+            me->GetCreatureListWithEntryInGrid(DefList, entry, 40.0f);
             if (!DefList.empty())
             {
                 for (std::list<Creature*>::iterator itr = DefList.begin(); itr != DefList.end(); itr++)
