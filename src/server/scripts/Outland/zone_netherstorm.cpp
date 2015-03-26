@@ -1386,7 +1386,7 @@ public:
                         case 15:
                             me->GetMotionMaster()->MovePoint(0, 3949.692f, 2023.207f, 256.697f);
                             uiPhaseTimer = 7700;
-                            Phase = 16;
+                            uiPhase = 16;
                             break;
                         case 16:
                             uiIsm = 0;
