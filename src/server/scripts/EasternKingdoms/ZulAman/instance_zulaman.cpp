@@ -108,8 +108,8 @@ class instance_zulaman : public InstanceMapScript
             uint32 m_auiEncounter[MAX_ENCOUNTER];
             uint32 RandVendor[RAND_VENDOR];
 
-			bool opendoor;
-			bool control;
+            bool opendoor;
+            bool control;
 
             bool IsEncounterInProgress() const override
             {
@@ -553,18 +553,24 @@ public:
             }
 
             if (attack)
-            {				
+            {
                 if (hit)
                 {
                     me->HandleEmoteCommand(51);
                 }
 
                 if (attacktime <= uiDiff)
-                    {attack = false; opendoor = true;}
+                {
+                    attack = false;
+                    opendoor = true;
+                    final = true;
+                }
                 else attacktime -= uiDiff;
 
                 if (timehit <= uiDiff)
-                    {hit = false;}
+                {
+                    hit = false;
+                }
                 else timehit -= uiDiff;
             }
 
@@ -582,12 +588,11 @@ public:
                         timehit = 13000;
                         wait = 10000;
                         attack = true;
-                        final = true;
                     }
                 }
             }
 
-            if (opendoor  && final)
+            if (opendoor && final)
             {
                 me->GetMotionMaster()->MovePoint(0, 120.58f, 1610.43f, 43.48f);
             }
@@ -650,6 +655,7 @@ public:
         {
             player->CLOSE_GOSSIP_MENU();
             creature->GetMotionMaster()->MovePoint(0, 132.80f, 1641.21f, 42.02f);
+            creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
         }
         return true;
     }
