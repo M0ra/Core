@@ -727,7 +727,7 @@ public:
 enum CaptainTyralius
 {
     NPC_CAPTAIN_TYRALIUS    = 20787,
-    SAY_FREE                = 0,
+    SAY_FREE                = 0
 };
 
 class go_captain_tyralius_prison : public GameObjectScript
@@ -748,6 +748,750 @@ class go_captain_tyralius_prison : public GameObjectScript
         }
 };
 
+enum TextDimensius
+{
+    SAY_EVENT_1         = 1,
+    SAY_EVENT_2         = 2,
+    SAY_EVENT_3         = 3,
+    SAY_EVENT_4         = 4
+};
+
+enum NpcDimensius
+{
+    NPC_DEFENS_DIMES    = 20984,
+    NPC_REG_DIMES       = 21783,
+    NPC_AVENG_DIMES     = 21805,
+    NPC_DEV_DIMES       = 19554,
+	NPC_CAP_SAEED       = 20985,
+    NPC_SPAWN_DIMES     = 21780
+};
+
+enum SpellDimensius
+{
+    SPELL_DIM_FEED      = 37450,
+    SPELL_MIND_FLAY     = 23953,
+    SPELL_HOLY_BOLT     = 34232,
+    SPELL_THROW         = 38560,
+    SPELL_SHADOW_RAIN   = 37409,
+    SPELL_SHADOW_RAIN_2 = 37399,
+    SPELL_SHADOW_RAIN_3 = 37396,
+    SPELL_SHADOW_RAIN_4 = 37397,
+    SPELL_SHADOW_RAIN_5 = 37405,
+    SPELL_SHADOW_SPIRAL = 37500,
+    SPELL_SHADOW_VAULT  = 37412
+};
+
+#define GOSSIP_TEXT1    "Я готов пойти на Пространствуса."
+
+class npc_defensores_dimens : public CreatureScript
+{
+public:
+    npc_defensores_dimens() : CreatureScript("npc_defensores_dimens") { }
+	
+    struct qnpc_defensores_dimensAI : public ScriptedAI
+    {
+        npc_defensores_dimensAI(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            bNoMove = false;
+            uiTorturaMental = urand(3000, 5000);
+            uiChoqueSagr = 3000;
+            uiGuja = 3000;
+        }
+
+        uint32 uiTorturaMental;
+        uint32 uiChoqueSagr;
+        uint32 uiGuja;
+        bool bNoMove;
+
+        void Reset() override
+        {
+            Initialize(); 
+        }
+
+        void UpdateAI(uint32 uiDiff) override
+        {
+            if (!UpdateVictim())
+                return;
+				
+            switch (me->GetEntry())
+            {
+                case NPC_DEFENS_DIMES:
+                    if (uiTorturaMental <= uiDiff)
+                    {
+                        if (me->GetVictim())
+                            me->CastSpell(me->GetVictim(), SPELL_MIND_FLAY, true);
+                        uiTorturaMental = urand(16000, 19000);
+                    } else uiTorturaMental -= uiDiff;
+                    break;
+                case NPC_REG_DIMES:
+                    if (uiChoqueSagr <= uiDiff)
+                    {
+                        if (me->GetVictim())
+                            DoCast(me->GetVictim(), SPELL_HOLY_BOLT);
+                        uiChoqueSagr = urand(2700, 3000);
+                    } else uiChoqueSagr -= uiDiff;
+                    break;
+                case NPC_AVENG_DIMES:
+                    if (uiGuja <= uiDiff)
+                    {
+                        if (me->GetVictim())
+                            me->CastSpell(me->GetVictim(), SPELL_THROW, true);
+                        uiGuja = urand(3000, 5000);
+                    } else uiGuja -= uiDiff;
+                    break;
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_defensores_dimensAI (creature);
+    }
+};
+
+class npc_q_dimensius : public CreatureScript
+{
+public:
+    npc_q_dimensius() : CreatureScript("npc_q_dimensius") { }
+
+    struct npc_q_dimensiusAI : public ScriptedAI
+    {
+        npc_q_dimensiusAI(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
+            bComienzoEv = false;
+            uiShadowSpiral = urand(8000, 12000);
+            uiShadowVault = 10000;
+            uiSummonTiempo = 30000;
+            uiTimerPhase = 1;
+            TimerCount = 2500;
+            SetCombatMovement(false);
+            bBerkMode = false;
+        }
+
+        uint32 uiShadowSpiral;
+        uint32 uiShadowVault;
+        uint32 uiSummonTiempo;
+        uint32 uiTimerPhase;
+        uint32 TimerPhase;
+
+        bool bComienzoEv;
+        bool bBerkMode;
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        void DespawnDefs(uint32 entry, uint32 segs)
+        {
+            std::list<Creature*> DefList;
+            me->GetCreatureListWithEntryInGrid(DefList, entry, 40.0f);
+            if (!DefList.empty())
+            {
+                for (std::list<Creature*>::iterator itr = DefList.begin(); itr != DefList.end(); itr++)
+                {
+                    if (Creature* dimens = *itr)
+                    {
+                        dimens->DespawnOrUnsummon(segs);
+                    }
+                }
+            }
+        }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            DespawnDefs(NPC_CAP_SAEED, 15000);
+            DespawnDefs(NPC_DEFENS_DIMES, 10000);
+            DespawnDefs(NPC_AVENG_DIMES, 10000);
+            DespawnDefs(NPC_REG_DIMES, 10000);
+        }
+
+        void AgroDefensores(uint32 entry, uint32 /*mudf*/)
+        {
+            std::list<Creature*> DefList;
+            me->GetCreatureListWithEntryInGrid(DefList, entry, 40.0f);
+            if (!DefList.empty())
+            {
+                for (std::list<Creature*>::iterator itr = DefList.begin(); itr != DefList.end(); itr++)
+                {
+                    if (Creature* dimens = *itr)
+                    {
+                        switch (dimens->GetEntry())
+                        {
+                            case NPC_CAP_SAEED:
+                                if (Creature* creat = me->SummonCreature(NPC_CAP_SAEED, dimens->GetPositionX(), dimens->GetPositionY(), dimens->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 0))
+                                {
+                                    dimens->DespawnOrUnsummon();
+                                    creat->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                                    creat->CombatStart(me);
+                                    creat->AddThreat(me, 1000.0f);
+                                    creat->DespawnOrUnsummon(300000);
+                                    // creat->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+                                    me->AddThreat(creat, 100.0f);
+                                }
+                                break;
+                            case NPC_DEFENS_DIMES:
+                                if (Creature* creat = me->SummonCreature(NPC_DEFENS_DIMES, dimens->GetPositionX(), dimens->GetPositionY(), dimens->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 0))
+                                {
+                                    dimens->DespawnOrUnsummon();
+                                    creat->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+                                    creat->CombatStart(me);
+                                    creat->AddThreat(me, 1000.0f);
+                                    creat->DespawnOrUnsummon(300000);
+                                    me->AddThreat(creat, 1000.0f);
+                                }
+                                break;
+                            case NPC_AVENG_DIMES:
+                                if (Creature* creat = me->SummonCreature(NPC_AVENG_DIMES, dimens->GetPositionX(), dimens->GetPositionY(), dimens->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 0))
+                                {
+                                    dimens->DespawnOrUnsummon();
+                                    creat->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+                                    creat->CombatStart(me);
+                                    creat->AddThreat(me, 1000.0f);
+                                    creat->DespawnOrUnsummon(300000);
+                                    me->AddThreat(creat, 1000.0f);
+                                }
+                                break;
+                            case NPC_REG_DIMES:
+                                if (Creature* creat = me->SummonCreature(NPC_REG_DIMES, dimens->GetPositionX(), dimens->GetPositionY(), dimens->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 0))
+                                {
+                                    dimens->DespawnOrUnsummon();
+                                    creat->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+                                    creat->CombatStart(me);
+                                    creat->AddThreat(me, 1000.0f);
+                                    creat->DespawnOrUnsummon(300000);
+                                    me->AddThreat(creat, 1000.0f);
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        void Battle()
+        {
+            AgroDefensores(NPC_CAP_SAEED, 1);
+            AgroDefensores(NPC_DEFENS_DIMES, 1);
+            AgroDefensores(NPC_AVENG_DIMES, 2);
+            AgroDefensores(NPC_REG_DIMES, 2);
+            bComienzoEv = true;
+            me->DespawnOrUnsummon(300000);
+        }
+
+        void UpdateAI(uint32 uiDiff) override
+        {
+            if (bComienzoEv)
+            {
+                if (me->IsInCombat())
+                {
+                    if (!me->HasAura(SPELL_DIMENSIUS_FEEDING))
+                    {
+                        if (uiShadowSpiral <= uiDiff)
+                        {
+                            if (me->GetVictim())
+                                DoCast(me->GetVictim(), SPELL_SHADOW_SPIRAL);
+                            uiShadowSpiral = urand(4000, 8000);
+                        } else uiShadowSpiral -= uiDiff;
+
+                        if (uiShadowVault <= uiDiff)
+                        {
+                            if (me->GetVictim())
+                                DoCast(me->GetVictim(), SPELL_SHADOW_VAULT);
+                            uiShadowVault = urand(5000, 14000);
+                        } else uiShadowVault -= uiDiff;
+
+                        if (uiSummonTiempo <= uiDiff)
+                        {
+                            uiTimerPhase = 4000;
+                            TimerPhase = 1;
+                            me->SummonCreature(NPC_SPAWN_DIMES, 3904.895f, 2013.1589f, 257.812f, TEMPSUMMON_MANUAL_DESPAWN);
+                            me->SummonCreature(NPC_SPAWN_DIMES, 3923.9f, 1972.766f, 257.812f, TEMPSUMMON_MANUAL_DESPAWN);
+                            me->SummonCreature(NPC_SPAWN_DIMES, 3966.4f, 1988.784f, 257.812f, TEMPSUMMON_MANUAL_DESPAWN);
+                            me->SummonCreature(NPC_SPAWN_DIMES, 3948.91f, 2034.351f, 257.812f, TEMPSUMMON_MANUAL_DESPAWN);
+                            uiSummonTiempo = 60000;
+                        } else uiSummonTiempo -= uiDiff;
+
+                        if (me->HasAura(SPELL_SHADOW_RAIN_2))
+                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_2);
+                        if (me->HasAura(SPELL_SHADOW_RAIN))
+                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN);
+                        if (me->HasAura(SPELL_SHADOW_RAIN_3))
+                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_3);
+                        if (me->HasAura(SPELL_SHADOW_RAIN_4))
+                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_4);
+                        if (me->HasAura(SPELL_SHADOW_RAIN_5))
+                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_5);
+                    }
+                    else{
+
+                            if (uiTimerPhase <= uiDiff)
+                            {
+                                switch (TimerPhase)
+                                {
+                                    case 1:
+                                        if (me->HasAura(SPELL_SHADOW_RAIN_2))
+                                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_2);
+                                        me->CastSpell(me, SPELL_SHADOW_RAIN, true);
+                                        uiSummonTiempo = 78000;
+                                        uiTimerPhase = 6500;
+                                        TimerPhase = 2;
+                                        break;
+                                    case 2:
+                                        if (me->HasAura(SPELL_SHADOW_RAIN))
+                                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN);
+                                        me->CastSpell(me, SPELL_SHADOW_RAIN_3, true);
+                                        uiSummonTiempo = 78000;
+                                        uiTimerPhase = 5000;
+                                        TimerPhase = 3;
+                                        break;
+                                    case 3:
+                                        if (me->HasAura(SPELL_SHADOW_RAIN_3))
+                                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_3);
+                                        me->CastSpell(me, SPELL_SHADOW_RAIN_4, true);
+                                        uiSummonTiempo = 78000;
+                                        uiTimerPhase = 4000;
+                                        TimerPhase = 4;
+                                        break;
+                                    case 4:
+                                        if (me->HasAura(SPELL_SHADOW_RAIN_4))
+                                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_4);
+                                        me->CastSpell(me, SPELL_SHADOW_RAIN_5, true);
+                                        uiSummonTiempo = 78000;
+                                        uiTimerPhase = 4000;
+                                        TimerPhase = 5;
+                                        break;
+                                    case 5:
+                                        if (me->HasAura(SPELL_SHADOW_RAIN_5))
+                                            me->RemoveAurasDueToSpell(SPELL_SHADOW_RAIN_5);
+                                        me->CastSpell(me, SPELL_SHADOW_RAIN_2, true);
+                                        uiSummonTiempo = 78000;
+                                        uiTimerPhase = 2500;
+                                        TimerPhase = 1;
+                                        break;
+                                }
+
+                            } else uiTimerPhase -= uiDiff;
+                        }
+                } else
+                me->DespawnOrUnsummon();
+
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_q_dimensiusAI (creature);
+    }
+};
+
+class npc_capitan_saeed : public CreatureScript
+{
+public:
+    npc_capitan_saeed() : CreatureScript("npc_capitan_saeed") { }
+
+    bool OnGossipHello(Player* player, Creature* creature) override
+    { 
+        if (player->GetQuestStatus(QUEST_DIMENSIUS) == QUEST_STATUS_INCOMPLETE)
+        {
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TEXT1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        }
+
+        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    {
+        player->PlayerTalkClass->ClearMenus();
+
+        switch(action)
+        {
+            case GOSSIP_ACTION_INFO_DEF + 1: 
+                player->CLOSE_GOSSIP_MENU();
+                CAST_AI(npc_capitan_saeed::npc_capitan_saeedAI, creature->AI())->Initiation();
+                break;                
+        }
+        return true;
+    }
+
+    struct npc_capitan_saeed : public ScriptedAI
+    {
+        npc_capitan_saeed(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+        }
+
+        void Initialize()
+        {
+            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            uiPhaseTimer = 2000;
+            uiPhase = 0;
+            bBattle = false;
+            bSldbt = false;
+            bEvent = false;
+        }
+
+        uint8 uiIsm;
+        uint32 uiPhaseTimer;
+        uint32 uiPhase;
+        uint32 uiFtar;
+
+        bool bEvent;
+        bool bBattle;
+        bool bSldbt;
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        void Initiation()
+        {
+            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            bEvent = true;
+            uiPhaseTimer = 2000;
+            uiIsm = 0;
+            uiPhase = 1;
+        }
+
+        void SeguirDefensores(uint32 entry, uint32 mult)
+        {
+            std::list<Creature*> DefList;
+            me->GetCreatureListWithEntryInGrid(DefList, entry, 40.0f);
+            if (!DefList.empty())
+            {
+                for (std::list<Creature*>::iterator itr = DefList.begin(); itr != DefList.end(); itr++)
+                {
+                    if (Creature* dimens = *itr)
+                    {
+                        dimens->SetWalk(false);
+                        dimens->SetSpeed(MOVE_RUN, 1.2f, true);
+                        dimens->setFaction(35);
+
+                        uiIsm++;
+
+                        switch (uiIsm)
+                        {
+                            case 1:
+                                dimens->GetMotionMaster()->MoveFollow(me, 1.0f + mult, M_PI);
+                                break;
+                            case 2:
+                                dimens->GetMotionMaster()->MoveFollow(me, 2.0f + 2*mult, M_PI);
+                                break;
+                            case 3:
+                                dimens->GetMotionMaster()->MoveFollow(me, 3.0f + 3*mult, M_PI);
+                                break;
+                            case 4:
+                                dimens->GetMotionMaster()->MoveFollow(me, 1.0f + mult, M_PI / 2);
+                                break;
+                            case 5:
+                                dimens->GetMotionMaster()->MoveFollow(me, 2.0f + 2*mult, M_PI / 2);
+                                break;
+                            case 6:
+                                dimens->GetMotionMaster()->MoveFollow(me, 3.0f + 3*mult, M_PI / 2);
+                                break;
+                            case 7:
+                                dimens->GetMotionMaster()->MoveFollow(me, 1.0f + mult, M_PI / 2 + M_PI);
+                                break;
+                            case 8:
+                                dimens->GetMotionMaster()->MoveFollow(me, 2.0f + 2*mult, M_PI / 2 + M_PI);
+                                break;
+                            case 9:
+                                dimens->GetMotionMaster()->MoveFollow(me, 3.0f + 3*mult, M_PI / 2 + M_PI);
+                                break;
+                            case 10:
+                                dimens->GetMotionMaster()->MoveFollow(me, 5.0f + 2*mult, M_PI);
+                                break;
+                            case 11:
+                                dimens->GetMotionMaster()->MoveFollow(me, 7.0f, M_PI);
+                                break;
+                        }	
+                    }
+                }
+            }
+        }
+
+        void LinealDefenser(uint32 entry, bool Mass)
+        {
+            std::list<Creature*> DefList;
+            me->GetCreatureListWithEntryInGrid(DefList,entry,40.0f);
+            if (!DefList.empty())
+            {
+                for (std::list<Creature*>::iterator itr = DefList.begin(); itr != DefList.end(); itr++)
+                {
+                    if (Creature* dimens = *itr)
+                    {
+                        if (!Mass)
+                        {
+                            uiIsm++;
+
+                            switch (uiIsm)
+                            {
+                                case 1:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 1.0f, M_PI);
+                                    break;
+                                case 2:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 2.0f, M_PI);
+                                    break;
+                                case 3:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 3.0f, M_PI);
+                                    break;
+                                case 4:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 4.0f, M_PI);
+                                    break;
+                                case 5:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 5.0f, M_PI);
+                                    break;
+                                case 6:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 6.0f, M_PI);
+                                    break;
+                                case 7:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 7.0f, M_PI); 
+                                    break;
+                                case 8:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 8.0f, M_PI);
+                                    break;
+                                case 9:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 9.0f, M_PI);
+                                    break;
+                                case 10:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 10.0f, M_PI);
+                                    break;
+                                case 11:
+                                    dimens->GetMotionMaster()->MoveFollow(me, 11.0f, M_PI);
+                                    break;
+                            }	
+                        }
+                    }
+                }
+            }
+        }
+
+        void UpdateAI(uint32 uiDiff) override
+        {		
+            if (bEvent)
+            {
+
+                if (!bSldbt && !bBattle && me->IsInCombat())
+                { 
+                    uiFtar = uiPhase;
+                    bSldbt = true;
+                }
+
+                if (bSldbt && !bBattle && !me->IsInCombat())
+                {
+                    uiPhase = uiFtar;
+                    uiPhaseTimer = 7000;
+                }
+
+                if (uiPhaseTimer <= uiDiff)
+                {
+                    switch (uiPhase)
+                    {
+                        case 1:
+                            Talk(SAY_EVENT_1);
+                            me->setFaction(35);
+                            uiPhaseTimer = 8000;
+                            uiPhase = 2;
+                            break;
+                        case 2:
+                            me->SetWalk(false);
+                            me->SetSpeed(MOVE_RUN, 1.2f, true);
+                            me->GetMotionMaster()->MovePoint(0, 4242.35f, 2124.63f, 145.41f);
+                            uiPhaseTimer = 1000;
+                            uiPhase = 3;
+                            break;
+                        case 3:
+                            uiIsm = 0;
+                            SeguirDefensores(NPC_DEFENS_DIMES, 0);
+                            SeguirDefensores(NPC_AVENG_DIMES, 0);
+                            SeguirDefensores(NPC_REG_DIMES, 0);
+                            uiPhaseTimer = 6000;
+                            uiPhase = 4;
+                            break;
+                        case 4:
+                            me->GetMotionMaster()->MovePoint(0, 4201.36f, 2172.486f, 151.077f);
+                            uiPhaseTimer = 8000;
+                            uiPhase = 5;
+                            break;
+                        case 5:
+                            me->GetMotionMaster()->MovePoint(0, 4187.68f, 2137.94f, 155.111f);
+                            uiPhaseTimer = 7000;
+                            uiPhase = 6;
+                            break;	  
+                        case 6:
+                            me->GetMotionMaster()->MovePoint(0, 4187.95f, 2092.789f, 159.177f);
+                            uiPhaseTimer = 7000;
+                            uiPhase = 7;
+                            break;	 
+                        case 7:
+                            me->GetMotionMaster()->MovePoint(0, 4172.53f, 2062.655f, 167.302f);
+                            uiPhaseTimer = 6000;
+                            uiPhase = 8;
+                            break;
+                        case 8:
+                            me->GetMotionMaster()->MovePoint(0, 4187.749f, 2028.315f, 182.627f);
+                            uiPhaseTimer = 5000;
+                            uiPhase = 9;
+                            break;	
+                        case 9:
+                            me->GetMotionMaster()->MovePoint(0, 4173.355f, 1990.116f, 205.659f);
+                            uiPhaseTimer = 7000;
+                            uiPhase = 10;
+                            break;	
+                        case 10:
+                            me->GetMotionMaster()->MovePoint(0, 4129.799f, 1969.9f, 221.14f);
+                            uiPhaseTimer = 8000;
+                            uiPhase = 11;
+                            break;
+                        case 11:
+                            me->GetMotionMaster()->MovePoint(0, 4093.86f, 2026.225f, 236.116f);
+                            uiPhaseTimer = 8000;
+                            uiPhase = 12;
+                            break;
+                        case 12:
+                            me->GetMotionMaster()->MovePoint(0, 4054.147f, 2060.93f, 251.453f);
+                            uiPhaseTimer = 12000;
+                            uiPhase = 13;
+                            break;
+                        case 13:
+                            me->GetMotionMaster()->MovePoint(0, 4008.409f, 2096.97f, 254.302f);
+                            uiPhaseTimer = 7000;
+                            uiPhase = 14;
+                            break;
+                        case 14:
+                            me->GetMotionMaster()->MovePoint(0, 3988.82f, 2083.117f, 256.404f);
+                            uiIsm = 0;
+                            LinealDefenser(NPC_DEFENS_DIMES, false);
+                            LinealDefenser(NPC_AVENG_DIMES, false);
+                            LinealDefenser(NPC_REG_DIMES, false);
+                            uiPhaseTimer = 4000;
+                            uiPhase = 15;
+                            break;
+                        case 15:
+                            me->GetMotionMaster()->MovePoint(0, 3949.692f, 2023.207f, 256.697f);
+                            uiPhaseTimer = 7700;
+                            Phase = 16;
+                            break;
+                        case 16:
+                            uiIsm = 0;
+                            SeguirDefensores(NPC_DEFENS_DIMES, 1);
+                            SeguirDefensores(NPC_AVENG_DIMES, 1);
+                            SeguirDefensores(NPC_REG_DIMES, 1);
+                            uiPhaseTimer = 6000;
+                            uiPhase = 17;
+                            break;
+                        case 17:
+                            Talk(SAY_EVENT_2);
+                            uiPhaseTimer = 6000;
+                            uiPhase = 18;
+                            break;
+                        case 18:
+                            if (Creature* dimensius = me->FindNearestCreature(NPC_DEV_DIMES, 60.0f))
+                                Talk(SAY_EVENT_3);
+                            uiPhaseTimer = 5000;
+                            uiPhase = 19;
+                            break;
+                        case 19:
+                            Talk(SAY_EVENT_4);
+                            if (Creature* dimensius = me->FindNearestCreature(NPC_DEV_DIMES, 60.0f))
+                               dimensius->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
+                            uiPhaseTimer = 2000;
+                            uiPhase = 20;
+                            break;
+                        case 20:
+                            bBattle = true;
+                            me->setFaction(1806);
+                            if (Creature* dimensius = me->FindNearestCreature(NPC_DEV_DIMES, 60.0f))
+                                CAST_AI(npc_q_dimensius::npc_q_dimensiusAI, dimensius->AI())->Battle();
+                            uiPhaseTimer = 100;
+                            uiPhase = 21;
+                            break;
+                    }
+                } else uiPhaseTimer -= uiDiff;
+            }
+            DoMeleeAttackIfReady();
+
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_capitan_saeedAI (creature);
+    }
+};
+
+class npc_spawn_dimensius : public CreatureScript
+{
+public:
+    npc_spawn_dimensius() : CreatureScript("npc_spawn_dimensius") { }
+
+    struct npc_spawn_dimensiusAI : public ScriptedAI
+    {
+        npc_spawn_dimensiusAI(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_GRIP, true);
+            me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_STUN, true);
+            me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_INTERRUPT, true);
+            me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_FEAR, true);
+            SetCombatMovement(false);
+            uiChannel = 500;
+            bChannel = false;
+        }
+
+        uint32 uiChannel;
+
+        bool bChannel;
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        void UpdateAI(uint32 uiDiff) override
+        {
+            if (uiChannel <= uiDiff)
+            {
+                if (Creature* dimensius = me->FindNearestCreature(NPC_DEV_DIMES, 60.0f))
+                { 
+                    if (!bChannel)
+                    {
+                        me->CastSpell(dimensius, SPELL_DIM_FEED, true);
+                        bChannel = true;
+                    }
+                } else
+
+                me->DespawnOrUnsummon();
+                uiChannel = 5000;
+            } else uiChannel -= uiDiff;
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_spawn_dimensiusAI (creature);
+    }
+};
+
 void AddSC_netherstorm()
 {
     new npc_commander_dawnforge();
@@ -757,4 +1501,8 @@ void AddSC_netherstorm()
     new npc_bessy();
     new npc_maxx_a_million_escort();
     new go_captain_tyralius_prison();
+    new npc_defensores_dimens();
+    new npc_q_dimensius();
+    new npc_capitan_saeed();
+    new npc_spawn_dimensius();
 }
