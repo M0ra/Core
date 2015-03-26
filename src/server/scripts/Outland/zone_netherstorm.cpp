@@ -883,7 +883,7 @@ public:
         uint32 uiShadowSpiral;
         uint32 uiShadowVault;
         uint32 uiSummonTiempo;
-        uint32 uiTimerCount
+        uint32 uiTimerCount;
         uint32 uiTimerPhase;
 
         bool bComienzoEv;
