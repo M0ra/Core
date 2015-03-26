@@ -217,7 +217,7 @@ enum ArgentTournamentAreas
     AREA_RING_OF_ARGENT_VALIANTS   = 4671,
     AREA_RING_OF_ALLIANCE_VALIANTS = 4672,
     AREA_RING_OF_HORDE_VALIANTS    = 4673,
-    AREA_RING_OF_CHAMPIONS         = 4669,
+    AREA_RING_OF_CHAMPIONS         = 4669
 };
 
 class achievement_tilted : public AchievementCriteriaScript
@@ -321,7 +321,7 @@ class achievement_piligrims_peril : public AchievementCriteriaScript
             if (source->HasItemOrGemWithIdEquipped(44785, 1) || source->HasItemOrGemWithIdEquipped(46824, 1) || source->HasItemOrGemWithIdEquipped(46800, 1))
             {
                 return true;
-                }
+            }
 
             return false;
         }
@@ -348,5 +348,5 @@ void AddSC_achievement_scripts()
     new achievement_flirt_with_disaster_perf_check();
     new achievement_killed_exp_or_honor_target();
     new achievement_food_fight();
-    new achievement_piligrims_peril();	
+    new achievement_piligrims_peril();
 }
