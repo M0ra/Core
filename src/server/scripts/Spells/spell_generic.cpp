@@ -4755,6 +4755,83 @@ public:
     }
 };
 
+enum TauntFlagSpells
+{
+    SPELL_TAUNT_FLAG_SUMMON = 51657,
+    EMOTE_TAUNT             = 28008
+};
+
+class TauntFlagFilter
+{
+public:
+    bool operator()(WorldObject* target) const
+    {
+        return target->ToPlayer()->IsAlive();
+    }
+};
+
+class spell_taunt_flag : public SpellScriptLoader
+{
+public:
+    spell_taunt_flag() : SpellScriptLoader("spell_taunt_flag") { }
+
+    class spell_taunt_flag_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_taunt_flag_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_TAUNT_FLAG_SUMMON))
+                return false;
+            return true;
+        }
+
+        SpellCastResult CheckIfCorpseNear()
+        {
+            Unit* caster = GetCaster();
+            float max_range = GetSpellInfo()->GetMaxRange(false);
+            WorldObject* result = NULL;
+            // search for nearby enemy corpse in range
+            Trinity::AnyDeadUnitSpellTargetInRangeCheck check(caster, max_range, GetSpellInfo(), TARGET_CHECK_ENEMY);
+            Trinity::WorldObjectSearcher<Trinity::AnyDeadUnitSpellTargetInRangeCheck> searcher(caster, result, check);
+            caster->GetMap()->VisitFirstFound(caster->m_positionX, caster->m_positionY, max_range, searcher);
+            if (!result)
+                return SPELL_FAILED_BAD_TARGETS;
+            return SPELL_CAST_OK;
+        }
+
+        void SelectTarget(std::list<WorldObject*>& targets)
+        {
+            targets.remove_if(TauntFlagFilter());
+            targets.remove_if(Trinity::UnitAuraCheck(true, SPELL_TAUNT_FLAG_SUMMON));
+            if (targets.empty())
+                return;
+
+            WorldObject* _target = Trinity::Containers::SelectRandomContainerElement(targets);
+            targets.clear();
+            targets.push_back(_target);
+        }
+
+        void HandleDummy(SpellEffIndex /*effIndex*/)
+        {
+            GetCaster()->TextEmote(EMOTE_TAUNT, GetHitUnit());
+            GetCaster()->CastSpell(GetHitUnit(), SPELL_TAUNT_FLAG_SUMMON, true);
+        }
+
+        void Register() override
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_taunt_flag_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+            OnCheckCast += SpellCheckCastFn(spell_taunt_flag_SpellScript::CheckIfCorpseNear);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_taunt_flag_SpellScript::SelectTarget, EFFECT_0, TARGET_CORPSE_SRC_AREA_ENEMY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_taunt_flag_SpellScript();
+    }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -4868,4 +4945,5 @@ void AddSC_generic_spell_scripts()
     new spell_vanity_pet_focus("spell_toxic_wasteling_focus");
     new spell_vanity_pet_focus("spell_rocket_bot_focus", SPELL_ROCKET_BOT_PASSIVE);
     new spell_icc_valk_charge();
+    new spell_taunt_flag();
 }
