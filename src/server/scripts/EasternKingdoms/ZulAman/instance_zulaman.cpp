@@ -99,7 +99,6 @@ class instance_zulaman : public InstanceMapScript
             ObjectGuid AkilzonDoorGUID;
             ObjectGuid ZulJinDoorGUID;
             ObjectGuid HalazziDoorGUID;
-            ObjectGuid StartGateGUID;
 
             uint32 QuestTimer;
             uint16 BossKilled;
@@ -157,17 +156,14 @@ class instance_zulaman : public InstanceMapScript
                     case GO_GATE_HEXLORD:
                         HexLordGateGUID = go->GetGUID();
                         break;
-                    case GO_MASSIVE_GATE:
-                        MassiveGateGUID = go->GetGUID();
-                        break;
                     case GO_DOOR_AKILZON:
                         AkilzonDoorGUID = go->GetGUID();
                         break;
                     case GO_DOOR_ZULJIN:
                         ZulJinDoorGUID = go->GetGUID();
                         break;
-                    case GO_GATE_START:
-                        StartGateGUID = go->GetGUID();
+                    case GO_MASSIVE_GATE:
+                        MassiveGateGUID = go->GetGUID();
                         break;
                     case GO_HARKORS_SATCHEL:
                         HarkorsSatchelGUID = go->GetGUID();
@@ -213,7 +209,7 @@ class instance_zulaman : public InstanceMapScript
             void CheckInstanceStatus()
             {
                 if (opendoor)
-                    HandleGameObject(StartGateGUID, true);			
+                    HandleGameObject(MassiveGateGUID, true);			
 
                 if (BossKilled >= DATA_HALAZZIEVENT)
                     HandleGameObject(HexLordGateGUID, true);
