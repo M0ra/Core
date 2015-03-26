@@ -4655,6 +4655,74 @@ public:
     }
 };
 
+enum VanityPetSpells
+{
+    SPELL_ROCKET_BOT_PASSIVE    = 45266,
+    SPELL_ROCKET_BOT_ATTACK     = 45269
+};
+
+class spell_vanity_pet_focus : public SpellScriptLoader
+{
+public:
+    spell_vanity_pet_focus(const char* name, uint32 _passiveId = 0) : SpellScriptLoader(name), passiveId(_passiveId) { }
+
+    class spell_vanity_pet_focus_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_vanity_pet_focus_SpellScript);
+
+    public:
+        spell_vanity_pet_focus_SpellScript(int32 _passiveId) : SpellScript(), passiveId(_passiveId) { }
+
+        bool Validate(SpellInfo const* spellInfo) override
+        {
+            if (!sSpellMgr->GetSpellInfo(spellInfo->Effects[EFFECT_0].BasePoints))
+                return false;
+            if (!sSpellMgr->GetSpellInfo(SPELL_ROCKET_BOT_ATTACK))
+                return false;
+            return true;
+        }
+
+        void FilterTargets(std::list<WorldObject*>& targets)
+        {
+            if (passiveId == SPELL_ROCKET_BOT_PASSIVE)
+                targets.remove_if(Trinity::UnitAuraCheck(false, SPELL_ROCKET_BOT_PASSIVE));
+
+            if (targets.empty())
+                return;
+
+            WorldObject* target = Trinity::Containers::SelectRandomContainerElement(targets);
+            targets.clear();
+            targets.push_back(target);
+        }
+
+        void HandleScript(SpellEffIndex /*effIndex*/)
+        {
+            // bit of a work around the orange clockwork robot doesn't fire 49058 correctly
+            if (passiveId == SPELL_ROCKET_BOT_PASSIVE)
+                GetCaster()->CastSpell(GetHitUnit(), SPELL_ROCKET_BOT_ATTACK, true);
+            else
+                GetCaster()->CastSpell(GetHitUnit(), uint32(GetEffectValue()), true);
+        }
+
+        void Register() override
+        {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_vanity_pet_focus_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+            OnEffectHitTarget += SpellEffectFn(spell_vanity_pet_focus_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+        }
+
+    private:
+        int32 passiveId;
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_vanity_pet_focus_SpellScript(passiveId);
+    }
+
+    private:
+        int32 passiveId;
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -4762,4 +4830,9 @@ void AddSC_generic_spell_scripts()
     new spell_gen_landmine_knockback_achievement_aura();
     new achievement_mine_sweeper();
     new spell_item_draenic_pale_ale();
+    new spell_vanity_pet_focus("spell_lil_kt_focus");
+    new spell_vanity_pet_focus("spell_willy_focus");
+    new spell_vanity_pet_focus("spell_scorchling_focus");
+    new spell_vanity_pet_focus("spell_toxic_wasteling_focus");
+    new spell_vanity_pet_focus("spell_rocket_bot_focus", SPELL_ROCKET_BOT_PASSIVE);
 }
