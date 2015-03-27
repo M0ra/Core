@@ -3,6 +3,7 @@
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/4593/badge.svg)](https://scan.coverity.com/projects/4593)
 
 [![3.3.5 Build Status](https://travis-ci.org/M0ra/Core.svg?branch=master)](https://travis-ci.org/M0ra/Core)
+[![AppVeyor CI Build Status](https://ci.appveyor.com/api/projects/status/sdf1o4kh3g1e68m9?svg=true)](https://ci.appveyor.com/project/M0ra/core)
 
 ## Introduction
 
