@@ -1402,7 +1402,7 @@ public:
                             uiPhase = 18;
                             break;
                         case 18:
-                            me->FindNearestCreature(NPC_DEV_DIMES, 60.0f)
+                            me->FindNearestCreature(NPC_DEV_DIMES, 60.0f);
                             Talk(SAY_EVENT_3);
                             uiPhaseTimer = 5000;
                             uiPhase = 19;
@@ -1410,7 +1410,7 @@ public:
                         case 19:
                             Talk(SAY_EVENT_4);
                             if (Creature* dimensius = me->FindNearestCreature(NPC_DEV_DIMES, 60.0f))
-                               dimensius->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
+                                dimensius->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
                             uiPhaseTimer = 2000;
                             uiPhase = 20;
                             break;
