@@ -19,6 +19,7 @@
 #include "ScriptPCH.h"
 #include "trial_of_the_champion.h"
 #include "Vehicle.h"
+#include "Group.h"
 #include "Player.h"
 
 #define GOSSIP_START_EVENT1     "Я готов начать испытание."
