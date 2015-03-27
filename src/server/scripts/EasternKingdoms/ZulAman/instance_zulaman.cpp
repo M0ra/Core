@@ -37,6 +37,12 @@ enum Misc
     WORLDSTATE_TIME_TO_SACRIFICE   = 3106
 };
 
+enum Npc
+{
+    NPC_AMANISHI_GUAR              = 23597,
+    NPC_AMANISHI_SAVAGE            = 23889,
+    NPC_DOOR_TRIGGER               = 25173
+};
 // Chests spawn at bear/eagle/dragonhawk/lynx bosses
 // The loots depend on how many bosses have been killed, but not the entries of the chests
 // But we cannot add loots to gameobject, so we have to use the fixed loot_template
@@ -435,8 +441,8 @@ public:
         {
             definitiveopen = false;
             checksummon = false;
-            attack 	= false;
-            hit 	= true;
+            attack = false;
+            hit = true;
             final = false;
             segundoevento = false;
             muere = false;
@@ -473,79 +479,79 @@ public:
 
             if (segundoevento)
             {
-                if (Creature* trigger = me->SummonCreature(23597, 129.7857f, 1587.3504f, 43.5458f, 3.0740f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_GUAR, 129.7857f, 1587.3504f, 43.5458f, 3.0740f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23597, 110.8877f, 1586.6760f, 43.5278f, 0.0659f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_GUAR, 110.8877f, 1586.6760f, 43.5278f, 0.0659f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 108.92f, 1573.36f, 43.52f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 108.92f, 1573.36f, 43.52f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 113.24f, 1573.12f, 43.50f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 113.24f, 1573.12f, 43.50f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 118.01f, 1572.85f, 43.49f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 118.01f, 1572.85f, 43.49f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 122.78f, 1572.59f, 43.49f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 122.78f, 1572.59f, 43.49f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 127.80f, 1572.31f, 43.51f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 127.80f, 1572.31f, 43.51f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 131.88f, 1572.08f, 43.53f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 131.88f, 1572.08f, 43.53f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 111.15f, 1576.76f, 43.49f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 111.15f, 1576.76f, 43.49f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 115.58f, 1576.78f, 43.47f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 115.58f, 1576.78f, 43.47f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 120.71f, 1576.80f, 43.46f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 120.71f, 1576.80f, 43.46f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 125.37f, 1576.82f, 43.47f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 125.37f, 1576.82f, 43.47f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
                 }
 
-                if (Creature* trigger = me->SummonCreature(23889, 129.92f, 1576.84f, 43.49f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                if (Creature* trigger = me->SummonCreature(NPC_AMANISHI_SAVAGE, 129.92f, 1576.84f, 43.49f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                 {
                     trigger->SetInCombatWithZone();
                     trigger->DespawnOrUnsummon(3000000);
@@ -578,7 +584,7 @@ public:
             {
                 if (!checksummon)
                 {
-                    if (Creature* trigger = me->SummonCreature(25173, 133.5937f, 1641.2270f, 42.0216f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
+                    if (Creature* trigger = me->SummonCreature(NPC_DOOR_TRIGGER, 133.5937f, 1641.2270f, 42.0216f, 0.0f, TEMPSUMMON_MANUAL_DESPAWN))
                     {
                         me->Yell(GONG, LANG_UNIVERSAL);
                         checksummon = true;

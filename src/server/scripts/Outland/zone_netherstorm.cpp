@@ -1402,8 +1402,8 @@ public:
                             uiPhase = 18;
                             break;
                         case 18:
-                            if (Creature* dimensius = me->FindNearestCreature(NPC_DEV_DIMES, 60.0f))
-                                Talk(SAY_EVENT_3);
+                            me->FindNearestCreature(NPC_DEV_DIMES, 60.0f)
+                            Talk(SAY_EVENT_3);
                             uiPhaseTimer = 5000;
                             uiPhase = 19;
                             break;
