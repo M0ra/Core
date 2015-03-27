@@ -137,12 +137,24 @@ class npc_herald_toc5 : public CreatureScript
             CAST_AI(npc_herald_toc5::npc_herald_toc5AI, creature->AI())->StartEncounter();
         }
 
+        if (action == GOSSIP_ACTION_INFO_DEF + 2)
+        {
+            player->CLOSE_GOSSIP_MENU();
+            return true;
+        }
         return true;
     }
         
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         InstanceScript* instance = creature->GetInstanceScript();
+
+        if ((!player->GetGroup() || !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
+        {
+            player->ADD_GOSSIP_ITEM(0, "Вы не лидер рейда...", 650, GOSSIP_ACTION_INFO_DEF + 2);
+            player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
+            return true;
+        }
 
         if (!player->GetVehicle() && instance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED)
         {
@@ -265,16 +277,16 @@ class npc_herald_toc5 : public CreatureScript
             {
                 case DATA_START:
                     if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
-                        instance->HandleGameObject(go->GetGUID(),true);
+                        instance->HandleGameObject(go->GetGUID(), true);
                     if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
-                        instance->HandleGameObject(go->GetGUID(),false);
+                        instance->HandleGameObject(go->GetGUID(), false);
                     DoSummonGrandChampion(uiFirstBoss);
                     events.ScheduleEvent(EVENT_SUMMON_FACTION_2, 10000, 0, PHASE_INPROGRESS);
                     break;
                 case DATA_IN_POSITION:
                     me->GetMotionMaster()->MovePoint(1, 735.898f, 651.961f, 411.93f);
                     if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
-                        instance->HandleGameObject(go->GetGUID(),false);
+                        instance->HandleGameObject(go->GetGUID(), false);
                     events.ScheduleEvent(EVENT_AGGRO_FACTION, 15000, 0, PHASE_INPROGRESS);
                     break;
                 case DATA_LESSER_CHAMPIONS_DEFEATED:
@@ -366,7 +378,7 @@ class npc_herald_toc5 : public CreatureScript
         {
             if (instance && instance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED)
             {
-                summon->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+                summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 summon->SetReactState(REACT_PASSIVE);
             }
         }
@@ -545,15 +557,15 @@ class npc_herald_toc5 : public CreatureScript
 
             if (Creature* pBoss = me->SummonCreature(ArgentChampion, SpawnPosition))
             {
-                pBoss->GetMotionMaster()->MovePoint(1,746.71f,661.02f,411.69f);
+                pBoss->GetMotionMaster()->MovePoint(1, 746.71f, 661.02f, 411.69f);
                 for (uint8 i = 0; i < 3; ++i)
                 {
                     if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_LIGHWIELDER, SpawnPosition))
-                        pTrash->AI()->SetData(i,0);
+                        pTrash->AI()->SetData(i, 0);
                     if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_MONK, SpawnPosition))
-                        pTrash->AI()->SetData(i,0);
+                        pTrash->AI()->SetData(i, 0);
                     if (Creature* pTrash = me->SummonCreature(NPC_PRIESTESS, SpawnPosition))
-                        pTrash->AI()->SetData(i,0);
+                        pTrash->AI()->SetData(i, 0);
                 }
             }
         }
@@ -608,7 +620,7 @@ class npc_herald_toc5 : public CreatureScript
 
             me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
-                instance->HandleGameObject(go->GetGUID(),false);
+                instance->HandleGameObject(go->GetGUID(), false);
 
             if (instance->GetData(BOSS_BLACK_KNIGHT) == NOT_STARTED)
             {
