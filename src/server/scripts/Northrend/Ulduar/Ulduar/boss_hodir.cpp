@@ -24,7 +24,6 @@
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
 #include "ulduar.h"
-#include "AchievementMgr.h"
 
 /* @todo Achievements
           Storm Cloud (Shaman ability)
@@ -145,7 +144,6 @@ enum HodirActions
 #define ACHIEVEMENT_THIS_CACHE_WAS_RARE          RAID_MODE<uint32>(3182, 3184)
 #define ACHIEVEMENT_COOLEST_FRIENDS              RAID_MODE<uint32>(2963, 2965)
 #define FRIENDS_COUNT                            RAID_MODE<uint8>(4, 8)
-#define CHEST_CACHE_OF_WINTER                    RAID_MODE<uint32>(194200,194201)
 
 Position const SummonPositions[8] =
 {
@@ -335,7 +333,7 @@ class boss_hodir : public CreatureScript
             bool cheeseTheFreeze;
             bool iHaveTheCoolestFriends;
             bool iCouldSayThatThisCacheWasRare;
-			
+
             std::list<Creature*> flashfreeze;
 
             void Reset() override
@@ -366,7 +364,7 @@ class boss_hodir : public CreatureScript
                 events.ScheduleEvent(EVENT_FREEZE, 25000);
                 events.ScheduleEvent(EVENT_BLOWS, urand(60000, 65000));
                 events.ScheduleEvent(EVENT_FLASH_FREEZE, 45000);
-                events.ScheduleEvent(EVENT_RARE_CACHE, 165000);
+                events.ScheduleEvent(EVENT_RARE_CACHE, 180000);
                 events.ScheduleEvent(EVENT_BERSERK, 480000);
             }
 
@@ -387,10 +385,7 @@ class boss_hodir : public CreatureScript
                     Talk(SAY_DEATH);
 
                     if (iCouldSayThatThisCacheWasRare)
-                    {
-                        instance->DoCompleteAchievement(ACHIEVEMENT_THIS_CACHE_WAS_RARE);
-                        me->SummonGameObject(CHEST_CACHE_OF_WINTER, 1973.050049f, -192.887268f, 432.687012f, 5.383457f, 0, 0, 0, 0, 300);
-                    }
+                        instance->SetData(DATA_HODIR_RARE_CACHE, 1);
 
                     me->RemoveAllAuras();
                     me->RemoveAllAttackers();
@@ -404,7 +399,7 @@ class boss_hodir : public CreatureScript
                     me->CombatStop(true);
 
                     DoCastAOE(SPELL_KILL_CREDIT);
-					me->setFaction(35);
+                    me->setFaction(FACTION_FRIENDLY);
                     me->DespawnOrUnsummon(10000);
 
                     GetCreatureListWithEntryInGrid(flashfreeze, me, NPC_FLASH_FREEZE, 500.0f);
@@ -413,7 +408,7 @@ class boss_hodir : public CreatureScript
                         (*itr)->DisappearAndDie();
 
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_DISABLE_MOVE);
-					_JustDied();
+                    _JustDied();
                 }
             }
 
@@ -469,6 +464,7 @@ class boss_hodir : public CreatureScript
                         case EVENT_RARE_CACHE:
                             Talk(SAY_HARD_MODE_FAILED);
                             iCouldSayThatThisCacheWasRare = false;
+                            instance->SetData(DATA_HODIR_RARE_CACHE, 0);
                             events.CancelEvent(EVENT_RARE_CACHE);
                             break;
                         case EVENT_BERSERK:
@@ -521,9 +517,10 @@ class boss_hodir : public CreatureScript
                     case DATA_GETTING_COLD_IN_HERE:
                         return gettingColdInHere;
                 }
+
                 return 0;
             }
-			
+
             void FlashFreeze()
             {
                 std::list<Unit*> TargetList;
@@ -776,10 +773,10 @@ class npc_hodir_shaman : public CreatureScript
             }
 
             void JustDied(Unit* /*killer*/) override
-             {
+            {
                 if (Creature* Hodir = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_HODIR)))
                     Hodir->AI()->DoAction(ACTION_I_HAVE_THE_COOLEST_FRIENDS);
-              }
+            }
 
         private:
             InstanceScript* instance;
@@ -1070,12 +1067,12 @@ public:
         void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             if (Unit* target = GetTarget())
-                if (target->GetTypeId() == TYPEID_PLAYER)   
+                if (target->GetTypeId() == TYPEID_PLAYER)
                 {
-                    AchievementEntry const* achiev = target->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL 
-                        ? sAchievementStore.LookupEntry(2969) : sAchievementStore.LookupEntry(2970);
+                    AchievementEntry const* achiev = target->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL
+                        ? sAchievementStore.LookupEntry(STAYING_BUFFED_WINTER_10) : sAchievementStore.LookupEntry(STAYING_BUFFED_WINTER_25);
 
-                    if (target->HasAura(62821) && (target->HasAura(65134) || target->HasAura(63711)))                                                 
+                    if (target->HasAura(SPELL_SINGED) && (target->HasAura(SPELL_STORM_POWER_25) || target->HasAura(SPELL_STORM_POWER_10)))
                         target->ToPlayer()->CompletedAchievement(achiev);
                 }
         }
@@ -1104,12 +1101,12 @@ public:
         void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             if (Unit* target = GetTarget())
-                if (target->GetTypeId() == TYPEID_PLAYER)   
+                if (target->GetTypeId() == TYPEID_PLAYER)
                 {
-                    AchievementEntry const* achiev = target->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL 
-                        ? sAchievementStore.LookupEntry(2969) : sAchievementStore.LookupEntry(2970);
+                    AchievementEntry const* achiev = target->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL
+                        ? sAchievementStore.LookupEntry(STAYING_BUFFED_WINTER_10) : sAchievementStore.LookupEntry(STAYING_BUFFED_WINTER_25);
 
-                    if ((target->HasAura(65134) || target->HasAura(63711)) && target->HasAura(62807))                       
+                    if ((target->HasAura(SPELL_STORM_POWER_25) || target->HasAura(SPELL_STORM_POWER_10)) && target->HasAura(SPELL_STARLIGHT))
                         target->ToPlayer()->CompletedAchievement(achiev);
                 }
         }
@@ -1138,12 +1135,12 @@ public:
         void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             if (Unit* target = GetTarget())
-                if (target->GetTypeId() == TYPEID_PLAYER)   
+                if (target->GetTypeId() == TYPEID_PLAYER)
                 {
-                    AchievementEntry const* achiev = target->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL 
-                        ? sAchievementStore.LookupEntry(2969) : sAchievementStore.LookupEntry(2970);
+                    AchievementEntry const* achiev = target->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL
+                        ? sAchievementStore.LookupEntry(STAYING_BUFFED_WINTER_10) : sAchievementStore.LookupEntry(STAYING_BUFFED_WINTER_25);
 
-                    if (target->HasAura(62821) && target->HasAura(62807))                   
+                    if (target->HasAura(SPELL_SINGED) && target->HasAura(SPELL_STARLIGHT))
                         target->ToPlayer()->CompletedAchievement(achiev);
                 }
         }

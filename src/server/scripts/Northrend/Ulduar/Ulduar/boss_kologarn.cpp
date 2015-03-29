@@ -214,6 +214,7 @@ class boss_kologarn : public CreatureScript
                     {
                         rubbleStalker->CastSpell(rubbleStalker, SPELL_FALLING_RUBBLE, true);
                         rubbleStalker->CastSpell(rubbleStalker, SPELL_SUMMON_RUBBLE, true);
+                        who->ToCreature()->DespawnOrUnsummon();
                     }
 
                     who->ToCreature()->DespawnOrUnsummon();
@@ -230,7 +231,7 @@ class boss_kologarn : public CreatureScript
                 }
             }
 
-            uint32 GetData(uint32 type)
+            uint32 GetData(uint32 type) const override
             {
                 switch (type)
                 {
@@ -259,10 +260,11 @@ class boss_kologarn : public CreatureScript
                 }
             }
 
-            ObjectGuid GetGUID(int32 type /*= 0 */) const override
+            ObjectGuid GetGUID(int32 /*type*/) const override
             {
                 if (DATA_EYEBEAM_TARGET)
                     return eyebeamTarget;
+
                 return ObjectGuid::Empty;
             }
 
@@ -366,15 +368,11 @@ class npc_focused_eyebeam : public CreatureScript
 public:
     npc_focused_eyebeam() : CreatureScript("npc_focused_eyebeam") { }
 
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_focused_eyebeamAI(creature);
-    }
-
     struct npc_focused_eyebeamAI : public ScriptedAI
     {
         npc_focused_eyebeamAI(Creature* creature) : ScriptedAI(creature)
         {
+            Initialize();
             instance = me->GetInstanceScript();
             kologarn = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_KOLOGARN));
             if (me->GetEntry() == NPC_FOCUSED_EYEBEAM)
@@ -387,26 +385,37 @@ public:
             me->ClearUnitState(UNIT_STATE_CASTING);
         }
 
-        InstanceScript* instance;
-        Creature* kologarn;
-        bool inChase;
-
-        void Reset()
+        void Initialize()
         {
-            inChase = false;
+            bInChase = false;
+            kologarn = 0;
         }
 
-        void UpdateAI(uint32 diff) override
+        InstanceScript* instance;
+        Creature* kologarn;
+        bool bInChase;
+
+        void Reset() override
         {
-            if (!inChase)
+            Initialize();
+        }
+
+        void UpdateAI(uint32 /*diff*/) override
+        {
+            if (!bInChase)
             {
                 Player* target = ObjectAccessor::GetPlayer(*me, kologarn->GetAI()->GetGUID(DATA_EYEBEAM_TARGET));
                 me->Attack(target, false);
                 me->GetMotionMaster()->MoveChase(target);
-                inChase = true;
+                bInChase = true;
             }
         }
     };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_focused_eyebeamAI(creature);
+    }
 };
 
 class spell_ulduar_rubble_summon : public SpellScriptLoader
@@ -781,7 +790,7 @@ public:
 class achievement_rubble_and_roll : public AchievementCriteriaScript
 {
     public:
-        achievement_rubble_and_roll(const char* name) : AchievementCriteriaScript(name) {}
+        achievement_rubble_and_roll(const char* name) : AchievementCriteriaScript(name) { }
 
         bool OnCheck(Player* /*source*/, Unit* target) override
         {
@@ -795,7 +804,7 @@ class achievement_rubble_and_roll : public AchievementCriteriaScript
 class achievement_with_open_arms : public AchievementCriteriaScript
 {
     public:
-        achievement_with_open_arms(const char* name) : AchievementCriteriaScript(name) {}
+        achievement_with_open_arms(const char* name) : AchievementCriteriaScript(name) { }
 
         bool OnCheck(Player* /*source*/, Unit* target) override
         {
@@ -809,7 +818,7 @@ class achievement_with_open_arms : public AchievementCriteriaScript
 class achievement_if_looks_could_kill : public AchievementCriteriaScript
 {
 public:
-    achievement_if_looks_could_kill(const char* name) : AchievementCriteriaScript(name) {}
+    achievement_if_looks_could_kill(const char* name) : AchievementCriteriaScript(name) { }
 
     bool OnCheck(Player* /*source*/, Unit* target) override
     {
@@ -832,7 +841,6 @@ void AddSC_boss_kologarn()
     new spell_kologarn_stone_shout();
     new spell_kologarn_summon_focused_eyebeam();
     new spell_kologarn_focused_eyebeam_damage();
-
     new achievement_rubble_and_roll("achievement_rubble_and_roll");
     new achievement_rubble_and_roll("achievement_rubble_and_roll_25");
     new achievement_with_open_arms("achievement_with_open_arms");

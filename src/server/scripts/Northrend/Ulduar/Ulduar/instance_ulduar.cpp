@@ -89,7 +89,7 @@ class instance_ulduar : public InstanceMapScript
                 _CoUAchivePlayerDeathMask = 0;
 
                 memset(champConqOfUlduar, 0, sizeof(champConqOfUlduar));
-				memset(_summonObservationRingKeeper, 0, sizeof(_summonObservationRingKeeper));
+                memset(_summonObservationRingKeeper, 0, sizeof(_summonObservationRingKeeper));
                 memset(_summonYSKeeper, 0, sizeof(_summonYSKeeper));
             }
 
@@ -912,7 +912,7 @@ class instance_ulduar : public InstanceMapScript
                         IsDriveMeCrazyEligible = data ? true : false;
                         break;
                     case DATA_STUNNED:
-                        stunned = data ? true : false;
+                        stunned = bool(data);
                         break;
                     case DATA_CRITERIA_FLAME_LEVIATHAN:
                     case DATA_CRITERIA_IGNIS:
@@ -1160,14 +1160,17 @@ class instance_ulduar : public InstanceMapScript
                     case CRITERIA_COOLEST_FRIENDS_25:
                         if (Creature* Hodir = instance->GetCreature(HodirGUID))
                             return Hodir->AI()->GetData(DATA_COOLEST_FRIENDS);
+                        return false;
                     case CRITERIA_CHEESE_THE_FREEZE_10:
                     case CRITERIA_CHEESE_THE_FREEZE_25:
                         if (Creature* Hodir = instance->GetCreature(HodirGUID))
                             return Hodir->AI()->GetData(DATA_CHEESE_THE_FREEZE);
+                        return false;
                     case CRITERIA_GETTING_COLD_IN_HERE_10:
                     case CRITERIA_GETTING_COLD_IN_HERE_25:
                         if (Creature* Hodir = instance->GetCreature(HodirGUID))
                             return Hodir->AI()->GetData(DATA_GETTING_COLD_IN_HERE);
+                        return false;
                     case CRITERIA_LUMBERJACKED_10:
                     case CRITERIA_LUMBERJACKED_25:
                         return lumberjacked == 1;
