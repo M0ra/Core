@@ -423,10 +423,478 @@ public:
     }
 };
 
+enum ExorcismSpells
+{
+    SPELL_JULES_GOES_PRONE     = 39283,
+    SPELL_JULES_THREATENS_AURA = 39284,
+    SPELL_JULES_GOES_UPRIGHT   = 39294,
+    SPELL_JULES_VOMITS_AURA    = 39295,
+
+    SPELL_BARADAS_COMMAND      = 39277,
+    SPELL_BARADA_FALTERS       = 39278,
+};
+
+enum ExorcismTexts
+{
+    SAY_BARADA_1 = 0,
+    SAY_BARADA_2 = 1,
+    SAY_BARADA_3 = 2,
+    SAY_BARADA_4 = 3,
+    SAY_BARADA_5 = 4,
+    SAY_BARADA_6 = 5,
+    SAY_BARADA_7 = 6,
+    SAY_BARADA_8 = 7,
+
+    SAY_JULES_1  = 0,
+    SAY_JULES_2  = 1,
+    SAY_JULES_3  = 2,
+    SAY_JULES_4  = 3,
+    SAY_JULES_5  = 4,
+};
+
+Position const exorcismPos[11] =
+{
+    { -707.123f, 2751.686f, 101.592f, 4.577416f }, //Barada Waypoint-1      0
+    { -710.731f, 2749.075f, 101.592f, 1.513286f }, //Barada Cast position   1
+    { -710.332f, 2754.394f, 102.948f, 3.207566f }, //Jules 					2
+    { -714.261f, 2747.754f, 103.391f, 0.0f },      //Jules Waypoint-1       3
+    { -713.113f, 2750.194f, 103.391f, 0.0f },      //Jules Waypoint-2       4
+    { -710.385f, 2750.896f, 103.391f, 0.0f },      //Jules Waypoint-3       5
+    { -708.309f, 2750.062f, 103.391f, 0.0f },      //Jules Waypoint-4       6
+    { -707.401f, 2747.696f, 103.391f, 0.0f },      //Jules Waypoint-5       7  
+    { -708.591f, 2745.266f, 103.391f, 0.0f },      //Jules Waypoint-6       8
+    { -710.597f, 2744.035f, 103.391f, 0.0f },      //Jules Waypoint-7       9
+    { -713.089f, 2745.302f, 103.391f, 0.0f },      //Jules Waypoint-8      10
+};
+
+enum ExorcismMisc
+{
+    NPC_DARKNESS_RELEASED               = 22507,
+    NPC_FOUL_PURGE                      = 22506,
+    NPC_COLONEL_JULES                   = 22432,
+
+    BARADAS_GOSSIP_MESSAGE              = 10683,
+
+    QUEST_THE_EXORCISM_OF_COLONEL_JULES = 10935,
+
+    ACTION_START_EVENT                  = 1,
+    ACTION_JULES_HOVER                  = 2,
+    ACTION_JULES_FLIGH                  = 3,
+    ACTION_JULES_MOVE_HOME              = 4,
+};
+
+enum ExorcismEvents
+{
+    EVENT_BARADAS_TALK                  = 1,
+
+    //Colonel Jules
+    EVENT_SUMMON_SKULL                  = 1,
+};
+
+class npc_barada : public CreatureScript
+{
+public:
+    npc_barada() : CreatureScript("npc_barada") { }
+       
+    struct npc_baradaAI : public ScriptedAI
+    {
+        npc_baradaAI(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            uiStep = 0;
+            jules = 0;
+        }
+
+        void Reset() override
+        {
+            _events.Reset();
+
+            playerGUID.Clear();
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
+        }
+
+        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+        {
+            player->PlayerTalkClass->ClearMenus();
+            switch (gossipListId)
+            {
+                case 1:
+                    player->PlayerTalkClass->SendCloseGossip();
+                    me->AI()->Talk(SAY_BARADA_1);
+                    me->AI()->DoAction(ACTION_START_EVENT);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        void DoAction(int32 uiAction) override
+        {
+            if (uiAction == ACTION_START_EVENT)
+            {
+                jules = me->FindNearestCreature(NPC_COLONEL_JULES, 20.0f, true);
+
+                if (jules)
+                    jules->AI()->Talk(SAY_JULES_1);
+
+                me->GetMotionMaster()->MovePoint(0, exorcismPos[1]);
+                Talk(SAY_BARADA_2);
+
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
+            }
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type != POINT_MOTION_TYPE)
+                return;
+
+            if (id == 0)
+                me->GetMotionMaster()->MovePoint(1, exorcismPos[1]);
+
+            if (id == 1)
+                _events.ScheduleEvent(EVENT_BARADAS_TALK, 2000);
+        }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            if (jules)
+            {
+                jules->GetAI()->DoAction(ACTION_JULES_MOVE_HOME);
+                jules->RemoveAllAuras();
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            _events.Update(diff);
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_BARADAS_TALK:
+                        switch (uiStep)
+                        {
+                            case 0:
+                                me->SetFacingTo(1.513286f);
+
+                                me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 3000);
+                                uiStep++;
+                                break;
+                            case 1:
+                                DoCast(SPELL_BARADAS_COMMAND);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 5000);
+                                uiStep++;
+                                break;
+                            case 2:
+                                Talk(SAY_BARADA_3);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 7000);
+                                uiStep++;
+                                break;
+                            case 3:
+                                if (jules)
+                                    jules->AI()->Talk(SAY_JULES_2);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 18000);
+                                uiStep++;
+                                break;
+                            case 4:
+                                DoCast(SPELL_BARADA_FALTERS);
+                                me->HandleEmoteCommand(EMOTE_STAND_STATE_NONE);
+
+                                if (jules)
+                                    jules->GetAI()->DoAction(ACTION_JULES_HOVER);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 11000);
+                                uiStep++;
+                                break;
+                            case 5:
+                                if (jules)
+                                    jules->AI()->Talk(SAY_JULES_3);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 13000);
+                                uiStep++;
+                                break;
+                            case 6:
+                                Talk(SAY_BARADA_4);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 5000);
+                                uiStep++;
+                                break;
+                            case 7:
+                                if (jules)
+                                    jules->AI()->Talk(SAY_JULES_3);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 13000);
+                                uiStep++;
+                                break;
+                            case 8:
+                                Talk(SAY_BARADA_4);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 12000);
+                                uiStep++;
+                                break;
+                            case 9:
+                                if (jules)
+                                    jules->AI()->Talk(SAY_JULES_4);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 12000);
+                                uiStep++;
+                                break;
+                            case 10:
+                                Talk(SAY_BARADA_4);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 5000);
+                                uiStep++;
+                                break;
+                            case 11:
+                                if (jules)
+                                    jules->GetAI()->DoAction(ACTION_JULES_FLIGH);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                uiStep++;
+                                break;
+                            case 12:
+                                if (jules)
+                                    jules->AI()->Talk(SAY_JULES_4);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 8000);
+                                uiStep++;
+                                break;
+                            case 13:
+                                Talk(SAY_BARADA_5);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                uiStep++;
+                                break;
+                            case 14:
+                                if (jules)
+                                    jules->AI()->Talk(SAY_JULES_4);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                uiStep++;
+                                break;
+                            case 15:
+                                Talk(SAY_BARADA_6);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                uiStep++;
+                                break;
+                            case 16:
+                                if (jules)
+                                    jules->AI()->Talk(SAY_JULES_5);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                uiStep++;
+                                break;
+                            case 17:
+                                Talk(SAY_BARADA_7);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                uiStep++;
+                                break;
+                            case 18:
+                                if (jules)
+                                    jules->AI()->Talk(SAY_JULES_3);
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                uiStep++;
+                                break;
+                            case 19:
+                                Talk(SAY_BARADA_7);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                uiStep++;
+                                break;
+                            case 20:
+                                if (jules)
+                                {
+                                    jules->GetAI()->DoAction(ACTION_JULES_MOVE_HOME);
+                                    jules->RemoveAura(SPELL_JULES_VOMITS_AURA);
+                                }
+
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                uiStep++;
+                                break;
+                            case 21:
+                                //End
+                                if (playerGUID)
+                                {
+                                    if (Player* player = ObjectAccessor::FindPlayer(playerGUID))
+                                        player->KilledMonsterCredit(NPC_COLONEL_JULES, ObjectGuid::Empty);
+                                }
+
+                                if (jules)
+                                    jules->RemoveAllAuras();
+
+                                me->RemoveAura(SPELL_BARADAS_COMMAND);
+                                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
+
+                                Talk(SAY_BARADA_8);
+                                me->GetMotionMaster()->MoveTargetedHome();
+                                EnterEvadeMode();
+                                break;
+                        }
+                        break;
+                }
+            }
+        }
+
+    private:
+        EventMap _events;
+        uint8 uiStep;
+        Creature* jules;
+        ObjectGuid playerGUID;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_baradaAI(creature);
+    }
+};
+
+class npc_colonel_jules : public CreatureScript
+{
+public:
+    npc_colonel_jules() : CreatureScript("npc_colonel_jules") { }
+
+    struct npc_colonel_julesAI : public ScriptedAI
+    {
+        npc_colonel_julesAI(Creature* creature) : ScriptedAI(creature), _summon(me)
+
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            uiCircleRounds = 0;
+            uiPoint = 3;
+        }
+
+        void Reset() override
+        {
+            _events.Reset();
+
+            _summon.DespawnAll();
+            bWpreached = false;
+        }
+
+        void DoAction(int32 uiAction) override
+        {
+            switch (uiAction)
+            {
+                case ACTION_JULES_HOVER:
+                    me->AddAura(SPELL_JULES_GOES_PRONE, me);
+                    me->AddAura(SPELL_JULES_THREATENS_AURA, me);
+
+                    me->SetCanFly(true);
+                    me->SetSpeed(MOVE_RUN, 0.2f);
+                    
+                    me->SetFacingTo(3.207566f);
+                    me->GetMotionMaster()->MoveJump(exorcismPos[2], 2.0f, 2.0f);
+
+                    _events.ScheduleEvent(EVENT_SUMMON_SKULL, 10000);
+                    break;
+                case ACTION_JULES_FLIGH:
+                    uiCircleRounds++;
+
+                    me->RemoveAura(SPELL_JULES_GOES_PRONE);
+
+                    me->AddAura(SPELL_JULES_GOES_UPRIGHT, me);
+                    me->AddAura(SPELL_JULES_VOMITS_AURA, me);
+
+                    bWpreached = true;
+                    me->GetMotionMaster()->MovePoint(uiPoint, exorcismPos[uiPoint]);
+                    break;
+                case ACTION_JULES_MOVE_HOME:
+                    bWpreached = false;
+                    me->SetSpeed(MOVE_RUN, 1.0f);
+                    me->GetMotionMaster()->MovePoint(11, exorcismPos[2]);
+
+                    _events.CancelEvent(EVENT_SUMMON_SKULL);
+                    break;
+            }
+        }
+
+        void JustSummoned(Creature* summon) override
+        {
+            _summon.Summon(summon);
+
+            if (summon->GetAI())
+                summon->GetMotionMaster()->MoveRandom(10.0f);
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type != POINT_MOTION_TYPE)
+                return;
+
+            if (id < 10)
+                bWpreached = true;
+
+            if (id == 8)
+            {
+                for (uint8 i = 0; i < uiCircleRounds; i++)
+                    DoSummon(NPC_FOUL_PURGE, exorcismPos[8]);
+            }
+
+            if (id == 10)
+            {
+                bWpreached = true;
+                uiPoint = 3;
+                uiCircleRounds++;
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (bWpreached)
+            {
+                me->GetMotionMaster()->MovePoint(uiPoint, exorcismPos[uiPoint]);
+                uiPoint++;
+                bWpreached = false;
+            }
+
+            _events.Update(diff);
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_SUMMON_SKULL:
+                        uint8 summonCount = urand(1, 3);
+
+                        for (uint8 i = 0; i < summonCount; i++)
+                            me->SummonCreature(NPC_DARKNESS_RELEASED, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 1.5f, 0, TEMPSUMMON_MANUAL_DESPAWN);
+
+                        _events.ScheduleEvent(EVENT_SUMMON_SKULL, urand(10000, 15000));
+                        break;
+                }
+            }
+        }
+
+    private:
+        EventMap _events;
+        SummonList _summon;
+
+        uint8 uiCircleRounds;
+        uint8 uiPoint;
+
+        bool bWpreached;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_colonel_julesAI(creature);
+    }
+};
+
 void AddSC_hellfire_peninsula()
 {
     new npc_aeranas();
     new npc_ancestral_wolf();
     new npc_wounded_blood_elf();
     new npc_fel_guard_hound();
+    new npc_barada();
+    new npc_colonel_jules();
 }
