@@ -516,7 +516,7 @@ public:
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
         }
 
-        void GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+        void GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId)
         {
             player->PlayerTalkClass->ClearMenus();
             switch (gossipListId)
