@@ -456,7 +456,7 @@ Position const exorcismPos[11] =
 {
     { -707.123f, 2751.686f, 101.592f, 4.577416f }, //Barada Waypoint-1      0
     { -710.731f, 2749.075f, 101.592f, 1.513286f }, //Barada Cast position   1
-    { -710.332f, 2754.394f, 102.948f, 3.207566f }, //Jules 					2
+    { -710.332f, 2754.394f, 102.948f, 3.207566f }, //Jules                  2
     { -714.261f, 2747.754f, 103.391f, 0.0f },      //Jules Waypoint-1       3
     { -713.113f, 2750.194f, 103.391f, 0.0f },      //Jules Waypoint-2       4
     { -710.385f, 2750.896f, 103.391f, 0.0f },      //Jules Waypoint-3       5
@@ -464,7 +464,7 @@ Position const exorcismPos[11] =
     { -707.401f, 2747.696f, 103.391f, 0.0f },      //Jules Waypoint-5       7  
     { -708.591f, 2745.266f, 103.391f, 0.0f },      //Jules Waypoint-6       8
     { -710.597f, 2744.035f, 103.391f, 0.0f },      //Jules Waypoint-7       9
-    { -713.089f, 2745.302f, 103.391f, 0.0f },      //Jules Waypoint-8      10
+    { -713.089f, 2745.302f, 103.391f, 0.0f },      //Jules Waypoint-8       10
 };
 
 enum ExorcismMisc
@@ -505,6 +505,7 @@ public:
 
         void Initialize()
         {
+            playerGUID.Clear();
             uiStep = 0;
             jules = 0;
         }
@@ -512,12 +513,10 @@ public:
         void Reset() override
         {
             _events.Reset();
-
-            playerGUID.Clear();
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
         }
 
-        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+        void GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
         {
             player->PlayerTalkClass->ClearMenus();
             switch (gossipListId)
@@ -557,7 +556,7 @@ public:
                 me->GetMotionMaster()->MovePoint(1, exorcismPos[1]);
 
             if (id == 1)
-                _events.ScheduleEvent(EVENT_BARADAS_TALK, 2000);
+                _events.ScheduleEvent(EVENT_BARADAS_TALK, 2 * IN_MILLISECONDS);
         }
 
         void JustDied(Unit* /*killer*/) override
@@ -584,24 +583,24 @@ public:
                                 me->SetFacingTo(1.513286f);
 
                                 me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 3000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 3 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 1:
                                 DoCast(SPELL_BARADAS_COMMAND);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 5000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 5 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 2:
                                 Talk(SAY_BARADA_3);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 7000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 7 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 3:
                                 if (jules)
                                     jules->AI()->Talk(SAY_JULES_2);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 18000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 18 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 4:
@@ -611,98 +610,98 @@ public:
                                 if (jules)
                                     jules->GetAI()->DoAction(ACTION_JULES_HOVER);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 11000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 11 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 5:
                                 if (jules)
                                     jules->AI()->Talk(SAY_JULES_3);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 13000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 13 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 6:
                                 Talk(SAY_BARADA_4);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 5000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 5 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 7:
                                 if (jules)
                                     jules->AI()->Talk(SAY_JULES_3);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 13000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 13 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 8:
                                 Talk(SAY_BARADA_4);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 12000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 12 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 9:
                                 if (jules)
                                     jules->AI()->Talk(SAY_JULES_4);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 12000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 12 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 10:
                                 Talk(SAY_BARADA_4);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 5000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 5 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 11:
                                 if (jules)
                                     jules->GetAI()->DoAction(ACTION_JULES_FLIGH);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 12:
                                 if (jules)
                                     jules->AI()->Talk(SAY_JULES_4);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 8000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 8 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 13:
                                 Talk(SAY_BARADA_5);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 14:
                                 if (jules)
                                     jules->AI()->Talk(SAY_JULES_4);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 15:
                                 Talk(SAY_BARADA_6);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 16:
                                 if (jules)
                                     jules->AI()->Talk(SAY_JULES_5);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 17:
                                 Talk(SAY_BARADA_7);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 18:
                                 if (jules)
                                     jules->AI()->Talk(SAY_JULES_3);
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 19:
                                 Talk(SAY_BARADA_7);
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 20:
@@ -712,7 +711,7 @@ public:
                                     jules->RemoveAura(SPELL_JULES_VOMITS_AURA);
                                 }
 
-                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10000);
+                                _events.ScheduleEvent(EVENT_BARADAS_TALK, 10 * IN_MILLISECONDS);
                                 uiStep++;
                                 break;
                             case 21:
@@ -769,14 +768,14 @@ public:
         {
             uiCircleRounds = 0;
             uiPoint = 3;
+
+            bWpreached = false;
         }
 
         void Reset() override
         {
             _events.Reset();
-
             _summon.DespawnAll();
-            bWpreached = false;
         }
 
         void DoAction(int32 uiAction) override
@@ -793,7 +792,7 @@ public:
                     me->SetFacingTo(3.207566f);
                     me->GetMotionMaster()->MoveJump(exorcismPos[2], 2.0f, 2.0f);
 
-                    _events.ScheduleEvent(EVENT_SUMMON_SKULL, 10000);
+                    _events.ScheduleEvent(EVENT_SUMMON_SKULL, 10 * IN_MILLISECONDS);
                     break;
                 case ACTION_JULES_FLIGH:
                     uiCircleRounds++;

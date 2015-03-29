@@ -811,11 +811,14 @@ class instance_ulduar : public InstanceMapScript
                                 gameObject->SetRespawnTime(gameObject->GetRespawnDelay());
 
                             instance->SummonCreature(NPC_THORIM_OBSERVATION_RING, ObservationRingKeepersPos[2]);
-							
-                            HandleGameObject(ThorimLightningFieldGUID, true);
++
++                            if (Creature* Sif = instance->GetCreature(SifGUID))
++                                Sif->DespawnOrUnsummon();
++
++                            DoUseDoorOrButton(ThorimLightningFieldGUID);
                         }
-                        else if (state == IN_PROGRESS)
-                            HandleGameObject(ThorimLightningFieldGUID, false);
++                        else if (state == IN_PROGRESS)
++                            DoUseDoorOrButton(ThorimLightningFieldGUID);
                         break;
                     case BOSS_ALGALON:
                         if (state == DONE)
