@@ -41,7 +41,7 @@ enum Spells
     SPELL_ACHIEVEMENT_SIFFED                    = 64980,
 
     SPELL_PARALYTIC_FIELD                       = 63540,
-    SPELL_PARALYTIC_FIELD2                      = 62241,
+    SPELL_PARALYTIC_FIELD2                      = 62241
 };
 
 enum Phases
@@ -333,11 +333,6 @@ class boss_thorim : public CreatureScript
 public:
     boss_thorim() : CreatureScript("boss_thorim") { }
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return GetInstanceAI<boss_thorimAI>(creature);
-    }
-
     struct boss_thorimAI : public BossAI
     {
         boss_thorimAI(Creature* creature) : BossAI(creature, BOSS_THORIM)
@@ -395,6 +390,8 @@ public:
                     Sif->DespawnOrUnsummon();
                 Talk(SAY_WIPE);
             }
+
+            _Reset();
 
             if (Creature* Sif = ObjectAccessor::GetCreature(*me, SifGUID))
                 Sif->DespawnOrUnsummon();
@@ -775,6 +772,11 @@ public:
             }
         }
     };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetInstanceAI<boss_thorimAI>(creature);
+    }
 };
 
 class npc_thorim_pre_phase : public CreatureScript

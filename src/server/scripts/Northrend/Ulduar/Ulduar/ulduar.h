@@ -481,8 +481,8 @@ AI* GetUlduarAI(T* obj)
 
 enum UlduarFactions
 {
-    FACTION_HOSTILE  = 14,
-    FACTION_FRIENDLY = 35
+    FACTION_HOSTILE             = 14,
+    FACTION_FRIENDLY            = 35
 };
 
 class PlayerOrPetCheck
