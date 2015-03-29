@@ -795,7 +795,7 @@ public:
                 if (me->GetEntry() == PRE_PHASE_ADD[i])
                     id = PreAdds(i);
 
-            healer = IS_HEALER(me);
+            bHealer = IS_HEALER(me);
         }
 
         void Initialize()
@@ -1056,7 +1056,7 @@ class npc_runic_colossus : public CreatureScript
 
             void Reset() override
             {
-                _Reset();
+                Initialize();
                 me->setActive(false);
                 me->GetMotionMaster()->MoveTargetedHome();
 
@@ -1275,7 +1275,7 @@ public:
 
         void Reset() override
         {
-            Initialize()
+            Initialize();
             me->GetMotionMaster()->MoveTargetedHome();
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
