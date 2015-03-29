@@ -564,7 +564,7 @@ public:
                             Talk(SAY_BERSERK);
                             break;
                         case EVENT_CLOSE_ARENA_DOOR:
-                            instance->DoUseDoorOrButton(instance->GetData(GO_THORIM_DARK_IRON_PROTCULLIS));
+                            instance->DoUseDoorOrButton(instance->GetGuidData(GO_THORIM_DARK_IRON_PROTCULLIS));
                             break;
                     }
                 }
