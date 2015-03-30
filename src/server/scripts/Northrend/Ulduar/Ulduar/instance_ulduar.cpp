@@ -504,7 +504,7 @@ class instance_ulduar : public InstanceMapScript
                         break;
                     case GO_MIMIRON_TRAM:
                         gameObject->setActive(true);
-                        MimironTrainGUID = gameObject->GetGUID();
+                        MimironTramGUID = gameObject->GetGUID();
                         break;
                     case GO_MIMIRON_ELEVATOR:
                         gameObject->setActive(true);

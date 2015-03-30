@@ -27,278 +27,278 @@ extern Position const AlgalonLandPos;
 
 enum UlduarBosses
 {
-    MAX_ENCOUNTER            = 17,
+    MAX_ENCOUNTER                            = 17,
 
-    BOSS_LEVIATHAN           = 0,
-    BOSS_IGNIS               = 1,
-    BOSS_RAZORSCALE          = 2,
-    BOSS_XT002               = 3,
-    BOSS_ASSEMBLY_OF_IRON    = 4,
-    BOSS_KOLOGARN            = 5,
-    BOSS_AURIAYA             = 6,
-    BOSS_HODIR               = 7,
-    BOSS_THORIM              = 8,
-    BOSS_FREYA               = 9,
-    BOSS_MIMIRON             = 10,
-    BOSS_VEZAX               = 11,
-    BOSS_YOGG_SARON          = 12,
-    BOSS_ALGALON             = 13,
-    BOSS_BRIGHTLEAF          = 14,
-    BOSS_IRONBRANCH          = 15,
-    BOSS_STONEBARK           = 16
+    BOSS_LEVIATHAN                           = 0,
+    BOSS_IGNIS                               = 1,
+    BOSS_RAZORSCALE                          = 2,
+    BOSS_XT002                               = 3,
+    BOSS_ASSEMBLY_OF_IRON                    = 4,
+    BOSS_KOLOGARN                            = 5,
+    BOSS_AURIAYA                             = 6,
+    BOSS_HODIR                               = 7,
+    BOSS_THORIM                              = 8,
+    BOSS_FREYA                               = 9,
+    BOSS_MIMIRON                             = 10,
+    BOSS_VEZAX                               = 11,
+    BOSS_YOGG_SARON                          = 12,
+    BOSS_ALGALON                             = 13,
+    BOSS_BRIGHTLEAF                          = 14,
+    BOSS_IRONBRANCH                          = 15,
+    BOSS_STONEBARK                           = 16
 };
 
 enum UlduarNPCs
 {
     // General
-    NPC_LEVIATHAN                           = 33113,
-    NPC_SALVAGED_DEMOLISHER                 = 33109,
-    NPC_SALVAGED_SIEGE_ENGINE               = 33060,
-    NPC_SALVAGED_CHOPPER                    = 33062,
-    NPC_IGNIS                               = 33118,
-    NPC_RAZORSCALE                          = 33186,
-    NPC_RAZORSCALE_CONTROLLER               = 33233,
-    NPC_STEELFORGED_DEFFENDER               = 33236,
-    NPC_EXPEDITION_COMMANDER                = 33210,
-    NPC_XT002                               = 33293,
-    NPC_XT_TOY_PILE                         = 33337,
-    NPC_STEELBREAKER                        = 32867,
-    NPC_MOLGEIM                             = 32927,
-    NPC_BRUNDIR                             = 32857,
-    NPC_KOLOGARN                            = 32930,
-    NPC_FOCUSED_EYEBEAM                     = 33632,
-    NPC_FOCUSED_EYEBEAM_RIGHT               = 33802,
-    NPC_LEFT_ARM                            = 32933,
-    NPC_RIGHT_ARM                           = 32934,
-    NPC_RUBBLE                              = 33768,
-    NPC_AURIAYA                             = 33515,
-    NPC_MIMIRON                             = 33350,
-    NPC_HODIR                               = 32845,
-    NPC_THORIM                              = 32865,
-    NPC_FREYA                               = 32906,
-    NPC_VEZAX                               = 33271,
-    NPC_YOGG_SARON                          = 33288,
-    NPC_ALGALON                             = 32871,
+    NPC_LEVIATHAN                            = 33113,
+    NPC_SALVAGED_DEMOLISHER                  = 33109,
+    NPC_SALVAGED_SIEGE_ENGINE                = 33060,
+    NPC_SALVAGED_CHOPPER                     = 33062,
+    NPC_IGNIS                                = 33118,
+    NPC_RAZORSCALE                           = 33186,
+    NPC_RAZORSCALE_CONTROLLER                = 33233,
+    NPC_STEELFORGED_DEFFENDER                = 33236,
+    NPC_EXPEDITION_COMMANDER                 = 33210,
+    NPC_XT002                                = 33293,
+    NPC_XT_TOY_PILE                          = 33337,
+    NPC_STEELBREAKER                         = 32867,
+    NPC_MOLGEIM                              = 32927,
+    NPC_BRUNDIR                              = 32857,
+    NPC_KOLOGARN                             = 32930,
+    NPC_FOCUSED_EYEBEAM                      = 33632,
+    NPC_FOCUSED_EYEBEAM_RIGHT                = 33802,
+    NPC_LEFT_ARM                             = 32933,
+    NPC_RIGHT_ARM                            = 32934,
+    NPC_RUBBLE                               = 33768,
+    NPC_AURIAYA                              = 33515,
+    NPC_MIMIRON                              = 33350,
+    NPC_HODIR                                = 32845,
+    NPC_THORIM                               = 32865,
+    NPC_FREYA                                = 32906,
+    NPC_VEZAX                                = 33271,
+    NPC_YOGG_SARON                           = 33288,
+    NPC_ALGALON                              = 32871,
 
     // Mimiron
-    NPC_LEVIATHAN_MKII                      = 33432,
-    NPC_VX_001                              = 33651,
-    NPC_AERIAL_COMMAND_UNIT                 = 33670,
-    NPC_ASSAULT_BOT                         = 34057,
-    NPC_BOMB_BOT                            = 33836,
-    NPC_JUNK_BOT                            = 33855,
-    NPC_EMERGENCY_FIRE_BOT                  = 34147,
-    NPC_FROST_BOMB                          = 34149,
-    NPC_BURST_TARGET                        = 34211,
-    NPC_FLAME                               = 34363,
-    NPC_FLAME_SPREAD                        = 34121,
-    NPC_DB_TARGET                           = 33576,
-    NPC_ROCKET_MIMIRON_VISUAL               = 34050,
-    NPC_WORLD_TRIGGER_MIMIRON               = 21252,
-    NPC_COMPUTER                            = 34143,
+    NPC_LEVIATHAN_MKII                       = 33432,
+    NPC_VX_001                               = 33651,
+    NPC_AERIAL_COMMAND_UNIT                  = 33670,
+    NPC_ASSAULT_BOT                          = 34057,
+    NPC_BOMB_BOT                             = 33836,
+    NPC_JUNK_BOT                             = 33855,
+    NPC_EMERGENCY_FIRE_BOT                   = 34147,
+    NPC_FROST_BOMB                           = 34149,
+    NPC_BURST_TARGET                         = 34211,
+    NPC_FLAME                                = 34363,
+    NPC_FLAME_SPREAD                         = 34121,
+    NPC_DB_TARGET                            = 33576,
+    NPC_ROCKET_MIMIRON_VISUAL                = 34050,
+    NPC_WORLD_TRIGGER_MIMIRON                = 21252,
+    NPC_COMPUTER                             = 34143,
 
     // Freya's Keepers
-    NPC_IRONBRANCH                          = 32913,
-    NPC_BRIGHTLEAF                          = 32915,
-    NPC_STONEBARK                           = 32914,
+    NPC_IRONBRANCH                           = 32913,
+    NPC_BRIGHTLEAF                           = 32915,
+    NPC_STONEBARK                            = 32914,
 
     // Hodir's Helper NPCs
-    NPC_TOR_GREYCLOUD                       = 32941,
-    NPC_KAR_GREYCLOUD                       = 33333,
-    NPC_EIVI_NIGHTFEATHER                   = 33325,
-    NPC_ELLIE_NIGHTFEATHER                  = 32901,
-    NPC_SPIRITWALKER_TARA                   = 33332,
-    NPC_SPIRITWALKER_YONA                   = 32950,
-    NPC_ELEMENTALIST_MAHFUUN                = 33328,
-    NPC_ELEMENTALIST_AVUUN                  = 32900,
-    NPC_AMIRA_BLAZEWEAVER                   = 33331,
-    NPC_VEESHA_BLAZEWEAVER                  = 32946,
-    NPC_MISSY_FLAMECUFFS                    = 32893,
-    NPC_SISSY_FLAMECUFFS                    = 33327,
-    NPC_BATTLE_PRIEST_ELIZA                 = 32948,
-    NPC_BATTLE_PRIEST_GINA                  = 33330,
-    NPC_FIELD_MEDIC_PENNY                   = 32897,
-    NPC_FIELD_MEDIC_JESSI                   = 33326,
+    NPC_TOR_GREYCLOUD                        = 32941,
+    NPC_KAR_GREYCLOUD                        = 33333,
+    NPC_EIVI_NIGHTFEATHER                    = 33325,
+    NPC_ELLIE_NIGHTFEATHER                   = 32901,
+    NPC_SPIRITWALKER_TARA                    = 33332,
+    NPC_SPIRITWALKER_YONA                    = 32950,
+    NPC_ELEMENTALIST_MAHFUUN                 = 33328,
+    NPC_ELEMENTALIST_AVUUN                   = 32900,
+    NPC_AMIRA_BLAZEWEAVER                    = 33331,
+    NPC_VEESHA_BLAZEWEAVER                   = 32946,
+    NPC_MISSY_FLAMECUFFS                     = 32893,
+    NPC_SISSY_FLAMECUFFS                     = 33327,
+    NPC_BATTLE_PRIEST_ELIZA                  = 32948,
+    NPC_BATTLE_PRIEST_GINA                   = 33330,
+    NPC_FIELD_MEDIC_PENNY                    = 32897,
+    NPC_FIELD_MEDIC_JESSI                    = 33326,
 
     // Freya's trash NPCs
-    NPC_CORRUPTED_SERVITOR                  = 33354,
-    NPC_MISGUIDED_NYMPH                     = 33355,
-    NPC_GUARDIAN_LASHER                     = 33430,
-    NPC_FOREST_SWARMER                      = 33431,
-    NPC_MANGROVE_ENT                        = 33525,
-    NPC_IRONROOT_LASHER                     = 33526,
-    NPC_NATURES_BLADE                       = 33527,
-    NPC_GUARDIAN_OF_LIFE                    = 33528,
+    NPC_CORRUPTED_SERVITOR                   = 33354,
+    NPC_MISGUIDED_NYMPH                      = 33355,
+    NPC_GUARDIAN_LASHER                      = 33430,
+    NPC_FOREST_SWARMER                       = 33431,
+    NPC_MANGROVE_ENT                         = 33525,
+    NPC_IRONROOT_LASHER                      = 33526,
+    NPC_NATURES_BLADE                        = 33527,
+    NPC_GUARDIAN_OF_LIFE                     = 33528,
 
     // Freya Achievement Trigger
-    NPC_FREYA_ACHIEVE_TRIGGER               = 33406,
+    NPC_FREYA_ACHIEVE_TRIGGER                = 33406,
 
     // Yogg-Saron
-    NPC_SARA                                = 33134,
-    NPC_GUARDIAN_OF_YOGG_SARON              = 33136,
-    NPC_HODIR_OBSERVATION_RING              = 33213,
-    NPC_FREYA_OBSERVATION_RING              = 33241,
-    NPC_THORIM_OBSERVATION_RING             = 33242,
-    NPC_MIMIRON_OBSERVATION_RING            = 33244,
-    NPC_VOICE_OF_YOGG_SARON                 = 33280,
-    NPC_OMINOUS_CLOUD                       = 33292,
-    NPC_FREYA_YS                            = 33410,
-    NPC_HODIR_YS                            = 33411,
-    NPC_MIMIRON_YS                          = 33412,
-    NPC_THORIM_YS                           = 33413,
-    NPC_SUIT_OF_ARMOR                       = 33433,
-    NPC_KING_LLANE                          = 33437,
-    NPC_THE_LICH_KING                       = 33441,
-    NPC_IMMOLATED_CHAMPION                  = 33442,
-    NPC_YSERA                               = 33495,
-    NPC_NELTHARION                          = 33523,
-    NPC_MALYGOS                             = 33535,
-    NPC_DEATH_RAY                           = 33881,
-    NPC_DEATH_ORB                           = 33882,
-    NPC_BRAIN_OF_YOGG_SARON                 = 33890,
-    NPC_INFLUENCE_TENTACLE                  = 33943,
-    NPC_TURNED_CHAMPION                     = 33962,
-    NPC_CRUSHER_TENTACLE                    = 33966,
-    NPC_CONSTRICTOR_TENTACLE                = 33983,
-    NPC_CORRUPTOR_TENTACLE                  = 33985,
-    NPC_IMMORTAL_GUARDIAN                   = 33988,
-    NPC_SANITY_WELL                         = 33991,
-    NPC_DESCEND_INTO_MADNESS                = 34072,
-    NPC_MARKED_IMMORTAL_GUARDIAN            = 36064,
+    NPC_SARA                                 = 33134,
+    NPC_GUARDIAN_OF_YOGG_SARON               = 33136,
+    NPC_HODIR_OBSERVATION_RING               = 33213,
+    NPC_FREYA_OBSERVATION_RING               = 33241,
+    NPC_THORIM_OBSERVATION_RING              = 33242,
+    NPC_MIMIRON_OBSERVATION_RING             = 33244,
+    NPC_VOICE_OF_YOGG_SARON                  = 33280,
+    NPC_OMINOUS_CLOUD                        = 33292,
+    NPC_FREYA_YS                             = 33410,
+    NPC_HODIR_YS                             = 33411,
+    NPC_MIMIRON_YS                           = 33412,
+    NPC_THORIM_YS                            = 33413,
+    NPC_SUIT_OF_ARMOR                        = 33433,
+    NPC_KING_LLANE                           = 33437,
+    NPC_THE_LICH_KING                        = 33441,
+    NPC_IMMOLATED_CHAMPION                   = 33442,
+    NPC_YSERA                                = 33495,
+    NPC_NELTHARION                           = 33523,
+    NPC_MALYGOS                              = 33535,
+    NPC_DEATH_RAY                            = 33881,
+    NPC_DEATH_ORB                            = 33882,
+    NPC_BRAIN_OF_YOGG_SARON                  = 33890,
+    NPC_INFLUENCE_TENTACLE                   = 33943,
+    NPC_TURNED_CHAMPION                      = 33962,
+    NPC_CRUSHER_TENTACLE                     = 33966,
+    NPC_CONSTRICTOR_TENTACLE                 = 33983,
+    NPC_CORRUPTOR_TENTACLE                   = 33985,
+    NPC_IMMORTAL_GUARDIAN                    = 33988,
+    NPC_SANITY_WELL                          = 33991,
+    NPC_DESCEND_INTO_MADNESS                 = 34072,
+    NPC_MARKED_IMMORTAL_GUARDIAN             = 36064,
 
     // Algalon the Observer
-    NPC_BRANN_BRONZBEARD_ALG                = 34064,
-    NPC_AZEROTH                             = 34246,
-    NPC_LIVING_CONSTELLATION                = 33052,
-    NPC_ALGALON_STALKER                     = 33086,
-    NPC_COLLAPSING_STAR                     = 32955,
-    NPC_BLACK_HOLE                          = 32953,
-    NPC_WORM_HOLE                           = 34099,
-    NPC_ALGALON_VOID_ZONE_VISUAL_STALKER    = 34100,
-    NPC_ALGALON_STALKER_ASTEROID_TARGET_01  = 33104,
-    NPC_ALGALON_STALKER_ASTEROID_TARGET_02  = 33105,
-    NPC_UNLEASHED_DARK_MATTER               = 34097,
+    NPC_BRANN_BRONZBEARD_ALG                 = 34064,
+    NPC_AZEROTH                              = 34246,
+    NPC_LIVING_CONSTELLATION                 = 33052,
+    NPC_ALGALON_STALKER                      = 33086,
+    NPC_COLLAPSING_STAR                      = 32955,
+    NPC_BLACK_HOLE                           = 32953,
+    NPC_WORM_HOLE                            = 34099,
+    NPC_ALGALON_VOID_ZONE_VISUAL_STALKER     = 34100,
+    NPC_ALGALON_STALKER_ASTEROID_TARGET_01   = 33104,
+    NPC_ALGALON_STALKER_ASTEROID_TARGET_02   = 33105,
+    NPC_UNLEASHED_DARK_MATTER                = 34097,
 
     // Thorim
-    NPC_THORIM_CTRL                         = 32879,
-    NPC_THORIM_IMAGE                        = 33413, 
-    NPC_SIF                                 = 33196,
+    NPC_THORIM_CTRL                          = 32879,
+    NPC_THORIM_IMAGE                         = 33413, 
+    NPC_SIF                                  = 33196,
     // Thorim_PrePhaseAddEntries
-    NPC_JORMUNGAR_BEHEMOTH                  = 32882,
-    NPC_MERCENARY_CAPTAIN_A                 = 32908,
-    NPC_MERCENARY_SOLDIER_A                 = 32885,
-    NPC_DARK_RUNE_ACOLYTE                   = 32886,
-    NPC_MERCENARY_CAPTAIN_H                 = 32907,
-    NPC_MERCENARY_SOLDIER_H                 = 32883,
-    NPC_RUNIC_COLOSSUS                      = 32872,
-    NPC_RUNE_GIANT                          = 32873
+    NPC_JORMUNGAR_BEHEMOTH                   = 32882,
+    NPC_MERCENARY_CAPTAIN_A                  = 32908,
+    NPC_MERCENARY_SOLDIER_A                  = 32885,
+    NPC_DARK_RUNE_ACOLYTE                    = 32886,
+    NPC_MERCENARY_CAPTAIN_H                  = 32907,
+    NPC_MERCENARY_SOLDIER_H                  = 32883,
+    NPC_RUNIC_COLOSSUS                       = 32872,
+    NPC_RUNE_GIANT                           = 32873
 };
 
 enum UlduarGameObjects
 {
     // Leviathan
-    GO_LEVIATHAN_DOOR                       = 194905,
-    GO_LEVIATHAN_GATE                       = 194630,
+    GO_LEVIATHAN_DOOR                        = 194905,
+    GO_LEVIATHAN_GATE                        = 194630,
 
     // Razorscale
-    GO_MOLE_MACHINE                         = 194316,
-    GO_RAZOR_HARPOON_1                      = 194542,
-    GO_RAZOR_HARPOON_2                      = 194541,
-    GO_RAZOR_HARPOON_3                      = 194543,
-    GO_RAZOR_HARPOON_4                      = 194519,
-    GO_RAZOR_BROKEN_HARPOON                 = 194565,
+    GO_MOLE_MACHINE                          = 194316,
+    GO_RAZOR_HARPOON_1                       = 194542,
+    GO_RAZOR_HARPOON_2                       = 194541,
+    GO_RAZOR_HARPOON_3                       = 194543,
+    GO_RAZOR_HARPOON_4                       = 194519,
+    GO_RAZOR_BROKEN_HARPOON                  = 194565,
 
     // XT-002
-    GO_XT_002_DOOR                          = 194631,
+    GO_XT_002_DOOR                           = 194631,
 
     // Assembly of Iron
-    GO_IRON_COUNCIL_DOOR                    = 194554,
-    GO_ARCHIVUM_DOOR                        = 194556,
+    GO_IRON_COUNCIL_DOOR                     = 194554,
+    GO_ARCHIVUM_DOOR                         = 194556,
 
     // Kologarn
-    GO_KOLOGARN_CHEST_HERO                  = 195047,
-    GO_KOLOGARN_CHEST                       = 195046,
-    GO_KOLOGARN_BRIDGE                      = 194232,
-    GO_KOLOGARN_DOOR                        = 194553,
+    GO_KOLOGARN_CHEST_HERO                   = 195047,
+    GO_KOLOGARN_CHEST                        = 195046,
+    GO_KOLOGARN_BRIDGE                       = 194232,
+    GO_KOLOGARN_DOOR                         = 194553,
 
     // Hodir
-    GO_HODIR_ENTRANCE                       = 194442,
-    GO_HODIR_DOOR                           = 194634,
-    GO_HODIR_ICE_DOOR                       = 194441,
-    GO_HODIR_RARE_CACHE_OF_WINTER           = 194200,
-    GO_HODIR_RARE_CACHE_OF_WINTER_HERO      = 194201,
-    GO_HODIR_CHEST_HERO                     = 194308,
-    GO_HODIR_CHEST                          = 194307,
+    GO_HODIR_ENTRANCE                        = 194442,
+    GO_HODIR_DOOR                            = 194634,
+    GO_HODIR_ICE_DOOR                        = 194441,
+    GO_HODIR_RARE_CACHE_OF_WINTER            = 194200,
+    GO_HODIR_RARE_CACHE_OF_WINTER_HERO       = 194201,
+    GO_HODIR_CHEST_HERO                      = 194308,
+    GO_HODIR_CHEST                           = 194307,
 
     // Thorim
-    GO_THORIM_CHEST_HERO                    = 194315,
-    GO_THORIM_CHEST                         = 194314,
+    GO_THORIM_CHEST_HERO                     = 194315,
+    GO_THORIM_CHEST                          = 194314,
 
     // Mimiron
-    GO_MIMIRON_TRAM                         = 194675,
-    GO_MIMIRON_ELEVATOR                     = 194749,
-    GO_MIMIRON_BUTTON                       = 194739,
-    GO_MIMIRON_DOOR_1                       = 194774,
-    GO_MIMIRON_DOOR_2                       = 194775,
-    GO_MIMIRON_DOOR_3                       = 194776,
-    GO_CACHE_OF_INNOVATION                  = 194789,
-    GO_CACHE_OF_INNOVATION_FIREFIGHTER      = 194957,
-    GO_CACHE_OF_INNOVATION_HERO             = 194956,
-    GO_CACHE_OF_INNOVATION_FIREFIGHTER_HERO = 194958,
-    GO_CALL_TRAM                            = 194914,
-    GO_CALL_TRAM_2                          = 194912,
-    GO_ACTIVATE_TRAM                        = 194438,
-    GO_ACTIVATE_TRAM_2                      = 194437,
+    GO_MIMIRON_TRAM                          = 194675,
+    GO_MIMIRON_ELEVATOR                      = 194749,
+    GO_MIMIRON_BUTTON                        = 194739,
+    GO_MIMIRON_DOOR_1                        = 194774,
+    GO_MIMIRON_DOOR_2                        = 194775,
+    GO_MIMIRON_DOOR_3                        = 194776,
+    GO_CACHE_OF_INNOVATION                   = 194789,
+    GO_CACHE_OF_INNOVATION_FIREFIGHTER       = 194957,
+    GO_CACHE_OF_INNOVATION_HERO              = 194956,
+    GO_CACHE_OF_INNOVATION_FIREFIGHTER_HERO  = 194958,
+    GO_CALL_TRAM                             = 194914,
+    GO_CALL_TRAM_2                           = 194912,
+    GO_ACTIVATE_TRAM                         = 194438,
+    GO_ACTIVATE_TRAM_2                       = 194437,
 
     // Vezax
-    GO_VEZAX_DOOR                           = 194750,
+    GO_VEZAX_DOOR                            = 194750,
 
     // Yogg-Saron
-    GO_YOGG_SARON_DOOR                      = 194773,
-    GO_BRAIN_ROOM_DOOR_1                    = 194635,
-    GO_BRAIN_ROOM_DOOR_2                    = 194636,
-    GO_BRAIN_ROOM_DOOR_3                    = 194637,
+    GO_YOGG_SARON_DOOR                       = 194773,
+    GO_BRAIN_ROOM_DOOR_1                     = 194635,
+    GO_BRAIN_ROOM_DOOR_2                     = 194636,
+    GO_BRAIN_ROOM_DOOR_3                     = 194637,
 
     // Algalon the Observer
-    GO_CELESTIAL_PLANETARIUM_ACCESS_10      = 194628,
-    GO_CELESTIAL_PLANETARIUM_ACCESS_25      = 194752,
-    GO_DOODAD_UL_SIGILDOOR_01               = 194767,
-    GO_DOODAD_UL_SIGILDOOR_02               = 194911,
-    GO_DOODAD_UL_SIGILDOOR_03               = 194910,
-    GO_DOODAD_UL_UNIVERSEFLOOR_01           = 194715,
-    GO_DOODAD_UL_UNIVERSEFLOOR_02           = 194716,
-    GO_DOODAD_UL_UNIVERSEGLOBE01            = 194148,
-    GO_DOODAD_UL_ULDUAR_TRAPDOOR_03         = 194253,
-    GO_GIFT_OF_THE_OBSERVER_10              = 194821,
-    GO_GIFT_OF_THE_OBSERVER_25              = 194822,
+    GO_CELESTIAL_PLANETARIUM_ACCESS_10       = 194628,
+    GO_CELESTIAL_PLANETARIUM_ACCESS_25       = 194752,
+    GO_DOODAD_UL_SIGILDOOR_01                = 194767,
+    GO_DOODAD_UL_SIGILDOOR_02                = 194911,
+    GO_DOODAD_UL_SIGILDOOR_03                = 194910,
+    GO_DOODAD_UL_UNIVERSEFLOOR_01            = 194715,
+    GO_DOODAD_UL_UNIVERSEFLOOR_02            = 194716,
+    GO_DOODAD_UL_UNIVERSEGLOBE01             = 194148,
+    GO_DOODAD_UL_ULDUAR_TRAPDOOR_03          = 194253,
+    GO_GIFT_OF_THE_OBSERVER_10               = 194821,
+    GO_GIFT_OF_THE_OBSERVER_25               = 194822,
 	
     // Thorim
-    GO_THORIM_DARK_IRON_PROTCULLIS          = 194560,
-    GO_THORIM_LIGHTNING_FIELD               = 194559,
-    GO_THORIM_STONE_DOOR                    = 194558,
-    GO_THORIM_RUNIC_DOOR                    = 194557,
+    GO_THORIM_DARK_IRON_PROTCULLIS           = 194560,
+    GO_THORIM_LIGHTNING_FIELD                = 194559,
+    GO_THORIM_STONE_DOOR                     = 194558,
+    GO_THORIM_RUNIC_DOOR                     = 194557,
 	
     // The Ancient Gate of the Keepers
-    GO_ANCIENT_GATE                         = 194255
+    GO_ANCIENT_GATE                          = 194255
 };
 
 enum EventIds
 {
-    EVENT_TOWER_OF_STORM_DESTROYED      = 21031,
-    EVENT_TOWER_OF_FROST_DESTROYED      = 21032,
-    EVENT_TOWER_OF_FLAMES_DESTROYED     = 21033,
-    EVENT_TOWER_OF_LIFE_DESTROYED       = 21030,
-    EVENT_ACTIVATE_SANITY_WELL          = 21432,
-    EVENT_HODIRS_PROTECTIVE_GAZE_PROC   = 21437
+    EVENT_TOWER_OF_STORM_DESTROYED           = 21031,
+    EVENT_TOWER_OF_FROST_DESTROYED           = 21032,
+    EVENT_TOWER_OF_FLAMES_DESTROYED          = 21033,
+    EVENT_TOWER_OF_LIFE_DESTROYED            = 21030,
+    EVENT_ACTIVATE_SANITY_WELL               = 21432,
+    EVENT_HODIRS_PROTECTIVE_GAZE_PROC        = 21437
 };
 
 enum LeviathanActions
 {
-    ACTION_TOWER_OF_STORM_DESTROYED     = 1,
-    ACTION_TOWER_OF_FROST_DESTROYED     = 2,
-    ACTION_TOWER_OF_FLAMES_DESTROYED    = 3,
-    ACTION_TOWER_OF_LIFE_DESTROYED      = 4,
-    ACTION_MOVE_TO_CENTER_POSITION      = 10
+    ACTION_TOWER_OF_STORM_DESTROYED          = 1,
+    ACTION_TOWER_OF_FROST_DESTROYED          = 2,
+    ACTION_TOWER_OF_FLAMES_DESTROYED         = 3,
+    ACTION_TOWER_OF_LIFE_DESTROYED           = 4,
+    ACTION_MOVE_TO_CENTER_POSITION           = 10
 };
 
 enum UlduarAchievementCriteriaIds
@@ -337,38 +337,38 @@ enum UlduarAchievementCriteriaIds
     CRITERIA_HERALD_OF_TITANS                = 10678,
 
     // Champion/Conqueror of Ulduar
-    CRITERIA_FLAME_LEVIATHAN_10                         = 10042,
-    CRITERIA_IGNIS_10                                   = 10342,
-    CRITERIA_RAZORSCALE_10                              = 10340,
-    CRITERIA_XT_002_10                                  = 10341,
-    CRITERIA_ASSEMBLY_OF_IRON_10                        = 10598,
-    CRITERIA_KOLOGARN_10                                = 10348,
-    CRITERIA_AURIAYA_10                                 = 10351,
-    CRITERIA_HODIR_10                                   = 10439,
-    CRITERIA_THORIM_10                                  = 10403,
-    CRITERIA_FREYA_10                                   = 10582,
-    CRITERIA_MIMIRON_10                                 = 10347,
-    CRITERIA_GENERAL_VEZAX_10                           = 10349,
-    CRITERIA_YOGG_SARON_10                              = 10350,
-    CRITERIA_FLAME_LEVIATHAN_25                         = 10352,
-    CRITERIA_IGNIS_25                                   = 10355,
-    CRITERIA_RAZORSCALE_25                              = 10353,
-    CRITERIA_XT_002_25                                  = 10354,
-    CRITERIA_ASSEMBLY_OF_IRON_25                        = 10599,
-    CRITERIA_KOLOGARN_25                                = 10357,
-    CRITERIA_AURIAYA_25                                 = 10363,
-    CRITERIA_HODIR_25                                   = 10719,
-    CRITERIA_THORIM_25                                  = 10404,
-    CRITERIA_FREYA_25                                   = 10583,
-    CRITERIA_MIMIRON_25                                 = 10361,
-    CRITERIA_GENERAL_VEZAX_25                           = 10362,
-    CRITERIA_YOGG_SARON_25                              = 10364
+    CRITERIA_FLAME_LEVIATHAN_10              = 10042,
+    CRITERIA_IGNIS_10                        = 10342,
+    CRITERIA_RAZORSCALE_10                   = 10340,
+    CRITERIA_XT_002_10                       = 10341,
+    CRITERIA_ASSEMBLY_OF_IRON_10             = 10598,
+    CRITERIA_KOLOGARN_10                     = 10348,
+    CRITERIA_AURIAYA_10                      = 10351,
+    CRITERIA_HODIR_10                        = 10439,
+    CRITERIA_THORIM_10                       = 10403,
+    CRITERIA_FREYA_10                        = 10582,
+    CRITERIA_MIMIRON_10                      = 10347,
+    CRITERIA_GENERAL_VEZAX_10                = 10349,
+    CRITERIA_YOGG_SARON_10                   = 10350,
+    CRITERIA_FLAME_LEVIATHAN_25              = 10352,
+    CRITERIA_IGNIS_25                        = 10355,
+    CRITERIA_RAZORSCALE_25                   = 10353,
+    CRITERIA_XT_002_25                       = 10354,
+    CRITERIA_ASSEMBLY_OF_IRON_25             = 10599,
+    CRITERIA_KOLOGARN_25                     = 10357,
+    CRITERIA_AURIAYA_25                      = 10363,
+    CRITERIA_HODIR_25                        = 10719,
+    CRITERIA_THORIM_25                       = 10404,
+    CRITERIA_FREYA_25                        = 10583,
+    CRITERIA_MIMIRON_25                      = 10361,
+    CRITERIA_GENERAL_VEZAX_25                = 10362,
+    CRITERIA_YOGG_SARON_25                   = 10364
 };
 
 enum UlduarData
 {
     // Colossus (Leviathan)
-    DATA_COLOSSUS                = 20,
+    DATA_COLOSSUS                            = 20,
 
     // Razorscale
     DATA_EXPEDITION_COMMANDER,
@@ -450,33 +450,33 @@ enum UlduarData
 
 enum UlduarWorldStates
 {
-    WORLD_STATE_ALGALON_DESPAWN_TIMER   = 4131,
-    WORLD_STATE_ALGALON_TIMER_ENABLED   = 4132
+    WORLD_STATE_ALGALON_DESPAWN_TIMER        = 4131,
+    WORLD_STATE_ALGALON_TIMER_ENABLED        = 4132
 };
 
 enum UlduarAchievementData
 {
     // FL Achievement boolean
-    DATA_UNBROKEN = 29052906, // 2905, 2906 are achievement IDs,
-    MAX_HERALD_ARMOR_ITEMLEVEL  = 226,
-    MAX_HERALD_WEAPON_ITEMLEVEL = 232,
-    SPELL_LUMBERJACKED_CREDIT   = 65296,
-    STAYING_BUFFED_WINTER_10    = 2969,
-    STAYING_BUFFED_WINTER_25    = 2970
+    DATA_UNBROKEN                            = 29052906, // 2905, 2906 are achievement IDs,
+    MAX_HERALD_ARMOR_ITEMLEVEL               = 226,
+    MAX_HERALD_WEAPON_ITEMLEVEL              = 232,
+    SPELL_LUMBERJACKED_CREDIT                = 65296,
+    STAYING_BUFFED_WINTER_10                 = 2969,
+    STAYING_BUFFED_WINTER_25                 = 2970
 };
 
 enum UlduarEvents
 {
-    EVENT_DESPAWN_ALGALON       = 1,
-    EVENT_UPDATE_ALGALON_TIMER  = 2,
-    ACTION_INIT_ALGALON         = 6
+    EVENT_DESPAWN_ALGALON                    = 1,
+    EVENT_UPDATE_ALGALON_TIMER               = 2,
+    ACTION_INIT_ALGALON                      = 6
 };
 
 enum YoggSaronIllusions
 {
-    CHAMBER_ILLUSION            = 0,
-    ICECROWN_ILLUSION           = 1,
-    STORMWIND_ILLUSION          = 2
+    CHAMBER_ILLUSION                         = 0,
+    ICECROWN_ILLUSION                        = 1,
+    STORMWIND_ILLUSION                       = 2
 };
 
 template<class AI, class T>
@@ -487,8 +487,8 @@ AI* GetUlduarAI(T* obj)
 
 enum UlduarFactions
 {
-    FACTION_HOSTILE             = 14,
-    FACTION_FRIENDLY            = 35
+    FACTION_HOSTILE                          = 14,
+    FACTION_FRIENDLY                         = 35
 };
 
 class PlayerOrPetCheck

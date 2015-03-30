@@ -3302,12 +3302,8 @@ void Spell::EffectWeaponDmg(SpellEffIndex effIndex)
             {
                 // Glyph of Death Strike
                 if (AuraEffect const* aurEff = m_caster->GetAuraEffect(59336, EFFECT_0))
-                    if (uint32 runic = m_caster->GetPower(POWER_RUNIC_POWER)/10)
-                    {                
-                        if (runic > 25)
-                            runic = 25;   
+                    if (uint32 runic = std::min<uint32>(m_caster->GetPower(POWER_RUNIC_POWER), aurEff->GetSpellInfo()->Effects[EFFECT_1].CalcValue()))
                         AddPct(totalDamagePercentMod, runic);
-                    }
                 break;
             }
             // Obliterate (12.5% more damage per disease)
