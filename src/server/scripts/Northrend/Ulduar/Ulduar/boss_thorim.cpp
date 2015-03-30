@@ -775,7 +775,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<boss_thorimAI>(creature);
+        return GetUlduarAI<boss_thorimAI>(creature);
     }
 };
 
@@ -875,7 +875,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_thorim_pre_phaseAI (creature);
+        return GetUlduarAI<npc_thorim_pre_phaseAI>(creature);
     }
 };
 
@@ -906,7 +906,7 @@ class npc_thorim_arena_phase : public CreatureScript
                 uiChargeTimer = 8000;
             }
 
-            bool isOnSameSide(const Unit* who)
+            bool isOnSameSide(Unit const* who) const
             {
                 return (bIsInArena == IN_ARENA(who));
             }
@@ -963,7 +963,7 @@ class npc_thorim_arena_phase : public CreatureScript
                 if (uiPrimaryTimer <= uiDiff)
                 {
                     Unit* target = NULL;
-                    if (bHealer && id != 32878)
+                    if (bHealer && id == DARK_RUNE_EVOKER)
                     {
                         if (!(target = DoSelectLowestHpFriendly(30)))
                             target = me;
@@ -1025,7 +1025,7 @@ class npc_thorim_arena_phase : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return new npc_thorim_arena_phaseAI(creature);
+            return GetUlduarAI<npc_thorim_arena_phaseAI>(creature);
         }
 };
 
@@ -1186,7 +1186,7 @@ class npc_runic_colossus : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return new npc_runic_colossusAI(creature);
+            return GetUlduarAI<npc_runic_colossusAI>(creature);
         }
 };
 
@@ -1243,7 +1243,7 @@ class npc_runic_smash : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return new npc_runic_smashAI(creature);
+            return GetUlduarAI<npc_runic_smashAI>(creature);
         }
 };
 
@@ -1343,7 +1343,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_ancient_rune_giantAI(creature);
+        return GetUlduarAI<npc_ancient_rune_giantAI>(creature);
     }
 };
 
@@ -1430,7 +1430,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_sifAI(creature);
+        return GetUlduarAI<npc_sifAI>(creature);
     }
 };
 
