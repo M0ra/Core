@@ -424,14 +424,14 @@ class instance_zulaman : public InstanceMapScript
         }
 };
 
-class npc_harrison_jones : public CreatureScript
+class harrison_jones : public CreatureScript
 {
 public:
-    npc_harrison_jones() : CreatureScript("npc_harrison_jones") { }
+    harrison_jones() : CreatureScript("harrison_jones") { }
 
-    struct npc_harrison_jonesAI : public ScriptedAI
+    struct harrison_jonesAI : public ScriptedAI
     {
-        npc_harrison_jonesAI(Creature* creature) : ScriptedAI(creature)
+        harrison_jonesAI(Creature* creature) : ScriptedAI(creature)
         {
             Initialize();
             instance = creature->GetInstanceScript();
@@ -642,7 +642,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_harrison_jonesAI(creature);
+        return new harrison_jonesAI(creature);
     }
 
     bool OnGossipHello(Player* player, Creature* creature) override
@@ -669,5 +669,5 @@ public:
 void AddSC_instance_zulaman()
 {
     new instance_zulaman();
-    new npc_harrison_jones();
+    new harrison_jones();
 }
