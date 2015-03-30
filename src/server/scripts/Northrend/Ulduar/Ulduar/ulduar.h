@@ -245,6 +245,10 @@ enum UlduarGameObjects
     GO_CACHE_OF_INNOVATION_FIREFIGHTER      = 194957,
     GO_CACHE_OF_INNOVATION_HERO             = 194956,
     GO_CACHE_OF_INNOVATION_FIREFIGHTER_HERO = 194958,
+    GO_CALL_TRAM                            = 194914,
+    GO_CALL_TRAM_2                          = 194912,
+    GO_ACTIVATE_TRAM                        = 194438,
+    GO_ACTIVATE_TRAM_2                      = 194437,
 
     // Vezax
     GO_VEZAX_DOOR                           = 194750,

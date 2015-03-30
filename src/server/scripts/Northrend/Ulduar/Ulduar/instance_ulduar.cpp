@@ -503,9 +503,11 @@ class instance_ulduar : public InstanceMapScript
                         HodirChestGUID = gameObject->GetGUID();
                         break;
                     case GO_MIMIRON_TRAM:
-                        MimironTramGUID = gameObject->GetGUID();
+                        gameObject->setActive(true);
+                        MimironTrainGUID = gameObject->GetGUID();
                         break;
                     case GO_MIMIRON_ELEVATOR:
+                        gameObject->setActive(true);
                         MimironElevatorGUID = gameObject->GetGUID();
                         break;
                     case GO_MIMIRON_BUTTON:
@@ -523,9 +525,6 @@ class instance_ulduar : public InstanceMapScript
                     case GO_HODIR_ENTRANCE:
                     case GO_HODIR_DOOR:
                     case GO_HODIR_ICE_DOOR:
-                    case GO_MIMIRON_DOOR_1:
-                    case GO_MIMIRON_DOOR_2:
-                    case GO_MIMIRON_DOOR_3:
                     case GO_VEZAX_DOOR:
                     case GO_YOGG_SARON_DOOR:
                         AddDoor(gameObject, true);
@@ -595,7 +594,6 @@ class instance_ulduar : public InstanceMapScript
                         GiftOfTheObserverGUID = gameObject->GetGUID();
                         break;
 
-                    // TW
                     case GO_THORIM_RUNIC_DOOR:
                         RunicDoorGUID = gameObject->GetGUID();
                         break;
@@ -604,6 +602,12 @@ class instance_ulduar : public InstanceMapScript
                         break;
                     case GO_THORIM_LIGHTNING_FIELD:
                         ThorimLightningFieldGUID = gameObject->GetGUID();
+                        break;
+                    case GO_MIMIRON_DOOR_1:
+                    case GO_MIMIRON_DOOR_2:
+                    case GO_MIMIRON_DOOR_3:
+                        gameObject->setActive(true);
+                        MimironDoorGUIDList.push_back(gameObject->GetGUID());
                         break;
                     case GO_ANCIENT_GATE:
                         AncientGateGUID = gameObject->GetGUID();
