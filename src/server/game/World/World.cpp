@@ -1287,8 +1287,8 @@ void World::LoadConfigSettings(bool reload)
 	// External Mail
     m_bool_configs[CONFIG_EXTERNAL_MAIL_ENABLE] = sConfigMgr->GetBoolDefault("External.Mail.Enable", false);
     m_int_configs[CONFIG_EXTERNAL_MAIL_INTERVAL] = sConfigMgr->GetIntDefault("External.Mail.Interval", 1);
-	
-	m_bool_configs[CONFIG_LFG_LOCATION_ALL] = sConfigMgr->GetBoolDefault("LFG.Location.All", true);
+
+    m_bool_configs[CONFIG_LFG_LOCATION_ALL] = sConfigMgr->GetBoolDefault("LFG.Location.All", true);
 
     // misc
     m_bool_configs[CONFIG_PDUMP_NO_PATHS] = sConfigMgr->GetBoolDefault("PlayerDump.DisallowPaths", true);
@@ -1342,7 +1342,10 @@ void World::LoadConfigSettings(bool reload)
 
     // Gm chat blue
     m_bool_configs[CONFIG_GM_BLUE_CHAT_ENABLE] = sConfigMgr->GetBoolDefault("Gm.Chat.Blue.Enable", false);
-	
+
+    // Mod special code
+    m_bool_configs[CONFIG_SPECIAL_CODE] = sConfigMgr->GetBoolDefault("SpecialCode.Enable", false);
+
     // call ScriptMgr if we're reloading the configuration
     if (reload)
         sScriptMgr->OnConfigLoad(reload);

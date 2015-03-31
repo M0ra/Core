@@ -1520,6 +1520,13 @@ ChatLevelReq.Say = 1
 Gm.Chat.Blue.Enable = 0
 
 #
+#    SpecialCode.Enable MOD
+#        Description: SpecialCode.
+#        Default:     0
+
+SpecialCode.Enable = 0
+
+#
 #    PreserveCustomChannels
 #        Description: Store custom chat channel settings like password, automatic ownership handout
 #                     or ban list in the database. Needs to be enabled to save custom

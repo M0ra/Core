@@ -18,6 +18,7 @@
 
 #include "ScriptPCH.h"
 #include "Config.h"
+#include "World.h"
 
 #define SQL_CODE "SELECT `CodeId`, `MailMoney`, `MaxCountForCharacter`, `MaxCountForAccount`, `MaxCountTotal`, `MailSubject`, `MailText` FROM `world_coded` WHERE `CodeStart` <= CURRENT_TIMESTAMP AND `CodeEnd` >= CURRENT_TIMESTAMP AND `CodeData` = '%s' LIMIT 1"
 #define SQL_CODE_COUNT "SELECT COUNT(*) FROM `world_coded_history` WHERE `CodeId` = '%u'"
@@ -26,27 +27,17 @@
 #define SQL_CODE_HISTORY "INSERT INTO `world_coded_history` (`CodeId`, `CharacterGuid`, `AccountId`, `SessionIp`) VALUES ('%u', '%u', '%u', '%s')"
 #define SQL_CODE_ITEMS "SELECT `ItemId`, `ItemCount` FROM `world_coded_items` WHERE `CodeId` = '%u' AND (`ItemClassMask` & %u OR `ItemClassMask` = 0) AND (`ItemRaceMask` & %u OR `ItemRaceMask` = 0)"
 
-bool SCEnable = false;
-
-class Mod_SpecialCode_WorldScript : public WorldScript
-{
-public:
-    Mod_SpecialCode_WorldScript() : WorldScript("Mod_SpecialCode_WorldScript") { }
-
-    void OnConfigLoad(bool /*reload*/)
-    {
-        SCEnable = sConfigMgr->GetBoolDefault("SpecialCode.Enable", false);
-    }
-};
-
-class Mod_SpecialCode_AllCreatureScript : public AllCreatureScript
+class Mod_SpecialCode_CreatureScript : public CreatureScript
 {
     public:
-        Mod_SpecialCode_AllCreatureScript() : AllCreatureScript("Mod_SpecialCode_AllCreatureScript") { }
+        Mod_SpecialCode_CreatureScript() : CreatureScript("Mod_SpecialCode_CreatureScript") { }
 
-    void OnGossipSelectCode(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/, const char* code)
+    void OnGossipSelectCode(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/, const char* code) override
     {
-        if (!SCEnable || !player || !*code)
+        if (!sWorld->getBoolConfig(CONFIG_SPECIAL_CODE))
+            return;
+
+        if (!player || !*code)
             return;
 
         std::string std_code(code);
@@ -178,6 +169,5 @@ class Mod_SpecialCode_AllCreatureScript : public AllCreatureScript
 
 void AddSC_Mod_SpecialCode()
 {
-    new Mod_SpecialCode_WorldScript();
-    new Mod_SpecialCode_AllCreatureScript();
+    new Mod_SpecialCode_CreatureScript();
 }
