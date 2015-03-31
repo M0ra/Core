@@ -38,7 +38,7 @@ class Mod_SpecialCode_CreatureScript : public CreatureScript
             return false;
 
         if (!player || !*code)
-            return;
+            return false;
 
         std::string std_code(code);
         CharacterDatabase.EscapeString(std_code);
