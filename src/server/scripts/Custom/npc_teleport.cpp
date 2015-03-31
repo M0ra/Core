@@ -19,7 +19,7 @@
 #include "sc_npc_teleport.h"
 #include <sstream>
 
-enum Spell
+enum tSpell
 {
     EFFECT_FLASH_HEAL                      = 38588,
     SPELL_ID_PASSIVE_RESURRECTION_SICKNESS = 15007,

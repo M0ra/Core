@@ -30,7 +30,9 @@
 
 enum Misc
 {
-    NPC_TELE    = 100000
+    NPC_TELE        = 100000,
+    RESURRECTION    = 15007,
+    DESERTER        = 26013
 };
 
 class premium_commandscript : public CommandScript
@@ -38,7 +40,7 @@ class premium_commandscript : public CommandScript
 public:
     premium_commandscript() : CommandScript("premium_commandscript") { }
 
-    ChatCommand* GetCommands() const
+    ChatCommand* GetCommands() const override
     {
         static ChatCommand premiumCommandTable[] =
         {
@@ -86,8 +88,8 @@ public:
             return false;
         }
 
-        handler->GetSession()->GetPlayer()->RemoveAurasDueToSpell(15007);
-        handler->GetSession()->GetPlayer()->RemoveAurasDueToSpell(26013);
+        handler->GetSession()->GetPlayer()->RemoveAurasDueToSpell(RESURRECTION);
+        handler->GetSession()->GetPlayer()->RemoveAurasDueToSpell(DESERTER);
 
         return true;
     }

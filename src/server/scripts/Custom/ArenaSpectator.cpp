@@ -28,7 +28,7 @@
 #include "CreatureTextMgr.h"
 #include "Config.h"
 
-enum Spell
+enum aSpell
 {
     ARENA_PREPARATION    = 32728,
     ARENA_PREPARATION_2  = 32727
@@ -318,7 +318,7 @@ public:
         return true;
     }
 
-    ChatCommand* GetCommands() const
+    ChatCommand* GetCommands() const override
     {
         static ChatCommand spectateCommandTable[] =
         {
