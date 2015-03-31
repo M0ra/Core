@@ -25029,7 +25029,7 @@ void Player::SetTitle(CharTitlesEntry const* title, bool lost)
 
         SetFlag(PLAYER__FIELD_KNOWN_TITLES + fieldIndexOffset, flag);
         if (title->ID <= TITLE_PVP_MAX)
-            GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_RANK, title->ID > TITLE_PVP_RANK_MAX ? title->ID - TITLE_PVP_RANK_MAX : title->ID);
+            UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_RANK, title->ID > TITLE_PVP_RANK_MAX ? title->ID - TITLE_PVP_RANK_MAX : title->ID);
     }
 
     WorldPacket data(SMSG_TITLE_EARNED, 4 + 4);
