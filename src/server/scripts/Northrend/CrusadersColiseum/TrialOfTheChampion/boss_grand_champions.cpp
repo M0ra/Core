@@ -586,8 +586,6 @@ class boss_warrior_toc5 : public CreatureScript
             if (!UpdateVictim())
                 return;
 
-            events.Update(uiDiff);
-
             if (actionId == 1)
             {
                 Talk(WARNING_WEAPONS);
@@ -684,7 +682,8 @@ class boss_warrior_toc5 : public CreatureScript
 
         void JustDied(Unit* /*killer*/) override
         {
-            instance->SetData(DATA_GRAND_CHAMPION_ENTRY, me->GetEntry());
+            if (instance)
+                instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
         }
     };
 
