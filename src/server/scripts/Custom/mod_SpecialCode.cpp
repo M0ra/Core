@@ -59,6 +59,7 @@ class Mod_SpecialCode_CreatureScript : public CreatureScript
         uint16 currentTotal = 0;
         uint16 currentAccount = 0;
         uint16 currentCharacter = 0;
+        ObjectGuid receiverGuid;
 
         if (maxTotal > 0)
         {
