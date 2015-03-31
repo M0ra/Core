@@ -82,6 +82,11 @@ enum Spells
     SPELL_GRAND_CHAMPIONS_CREDIT    = 68572
 };
 
+enum Misc
+{
+    ARGENT_LANCE                    = 46106
+};
+
 enum Talk
 {
     SAY_CHAMPION_DEFEAT             = 0,
@@ -181,13 +186,17 @@ void GuidDataAdder(Creature* creature)
     if (instance->GetGuidData(DATA_GRAND_CHAMPION_1).IsEmpty())
         instance->SetGuidData(DATA_GRAND_CHAMPION_1, creature->GetGUID());
     else if (!instance->GetGuidData(DATA_GRAND_CHAMPION_1).IsEmpty())
+    {
         if (instance->GetGuidData(DATA_GRAND_CHAMPION_2).IsEmpty())
+        {
             instance->SetGuidData(DATA_GRAND_CHAMPION_2, creature->GetGUID());
+        }
         else if (!instance->GetGuidData(DATA_GRAND_CHAMPION_2).IsEmpty())
         {
             if (instance->GetGuidData(DATA_GRAND_CHAMPION_3).IsEmpty())
                 instance->SetGuidData(DATA_GRAND_CHAMPION_3, creature->GetGUID());
         }
+    }
 }
 
 class generic_vehicleAI_toc5 : public CreatureScript
@@ -290,10 +299,10 @@ class generic_vehicleAI_toc5 : public CreatureScript
             {
                 case 2:
                     if (uiWaypointPath == 3 || uiWaypointPath == 2)
-                        instance->SetData(DATA_MOVEMENT_DONE, instance->GetData(DATA_MOVEMENT_DONE)+1);
+                        instance->SetData(DATA_MOVEMENT_DONE, instance->GetData(DATA_MOVEMENT_DONE) + 1);
                     break;
                 case 3:
-                        instance->SetData(DATA_MOVEMENT_DONE, instance->GetData(DATA_MOVEMENT_DONE)+1);
+                        instance->SetData(DATA_MOVEMENT_DONE, instance->GetData(DATA_MOVEMENT_DONE) + 1);
                     break;
             }
         }
@@ -515,9 +524,9 @@ class generic_vehicleAI_toc5 : public CreatureScript
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
-        return new generic_vehicleAI_toc5AI(creature);
+        return GetInstanceAI<generic_vehicleAI_toc5AI>(creature);
     }
 };
 
@@ -591,9 +600,9 @@ class boss_warrior_toc5 : public CreatureScript
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
@@ -761,9 +770,9 @@ class boss_mage_toc5 : public CreatureScript
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 if (instance)
                     instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
@@ -1119,9 +1128,9 @@ class boss_hunter_toc5 : public CreatureScript
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
+                        me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
                 else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
+                        me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
 
                 if (instance)
                     instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
@@ -1476,7 +1485,7 @@ class spell_toc5_ride_mount : public SpellScriptLoader
 
             SpellCastResult CheckRequirement()
             {
-                if(GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == 46106)
+                if (GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == ARGENT_LANCE)
                 {
                     GetCaster()->RemoveAurasByType(SPELL_AURA_MOD_SHAPESHIFT);
                     return SPELL_CAST_OK;
@@ -1486,7 +1495,7 @@ class spell_toc5_ride_mount : public SpellScriptLoader
                 }
             }
 
-            void Register()
+            void Register() override
             {
                 OnCheckCast += SpellCheckCastFn(spell_toc5_ride_mount_SpellScript::CheckRequirement);
             }
@@ -1508,19 +1517,19 @@ class spell_toc5_ride_mount : public SpellScriptLoader
                 }
             }
 
-            void Register()
+            void Register() override
             {
                 OnEffectApply += AuraEffectApplyFn(spell_toc5_ride_mount_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
                 OnEffectRemove += AuraEffectRemoveFn(spell_toc5_ride_mount_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL);
             }
         };
 
-        AuraScript* GetAuraScript() const
+        AuraScript* GetAuraScript() const override
         {
             return new spell_toc5_ride_mount_AuraScript();
         }
 
-        SpellScript* GetSpellScript() const
+        SpellScript* GetSpellScript() const override
         {
             return new spell_toc5_ride_mount_SpellScript();
         }
@@ -1535,7 +1544,7 @@ class spell_toc5_defend : public SpellScriptLoader
         {
             PrepareAuraScript(spell_toc5_defendAuraScript);
 
-            bool Validate(SpellInfo const* /*spellEntry*/)
+            bool Validate(SpellInfo const* /*spellEntry*/) override
             {
                 if (!sSpellMgr->GetSpellInfo(SPELL_VISUAL_SHIELD_1))
                     return false;
@@ -1570,14 +1579,14 @@ class spell_toc5_defend : public SpellScriptLoader
                 }
             }
 
-            void Register()
+            void Register() override
             {
                 OnEffectApply += AuraEffectApplyFn(spell_toc5_defendAuraScript::RefreshVisualShields, EFFECT_FIRST_FOUND, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_CHANGE_AMOUNT_SEND_FOR_CLIENT_MASK);
                 OnEffectRemove += AuraEffectRemoveFn(spell_toc5_defendAuraScript::RefreshVisualShields, EFFECT_FIRST_FOUND, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_CHANGE_AMOUNT_SEND_FOR_CLIENT_MASK);
             }
         };
 
-        AuraScript* GetAuraScript() const
+        AuraScript* GetAuraScript() const override
         {
             return new spell_toc5_defendAuraScript();
         }
@@ -1588,13 +1597,15 @@ class player_hex_mendingAI : public PlayerAI
     public:
         player_hex_mendingAI(Player* player) : PlayerAI(player) { }
 
-        void HealReceived(Unit* healer, uint32 & addHealth)
+        void HealReceived(Unit* healer, uint32 & addHealth) override
         {
             PlayerAI::HealReceived(healer, addHealth);
             me->CastCustomSpell(SPELL_HEX_OF_MENDING_HEAL, SPELLVALUE_BASE_POINT0, int32(addHealth*2.0f), me, true);
         }
 
-        void UpdateAI(const uint32 /*diff*/) { }
+        void UpdateAI(uint32 /*diff*/) override
+        {
+        }
 
     private:
         ObjectGuid casterGUID;
@@ -1630,7 +1641,7 @@ class spell_toc5_hex_mending : public SpellScriptLoader
                 GetTarget()->IsAIEnabled = oldAIState;
             }
 
-            void Register()
+            void Register() override
             {
                 AfterEffectApply += AuraEffectApplyFn(spell_toc5_hex_mending_AuraScript::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
                 AfterEffectRemove += AuraEffectRemoveFn(spell_toc5_hex_mending_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
@@ -1640,7 +1651,7 @@ class spell_toc5_hex_mending : public SpellScriptLoader
             bool oldAIState;
         };
 
-        AuraScript* GetAuraScript() const
+        AuraScript* GetAuraScript() const override
         {
             return new spell_toc5_hex_mending_AuraScript();
         }
@@ -1664,7 +1675,6 @@ void AddSC_boss_grand_champions()
     new achievement_toc5_grand_champions("achievement_toc5_champions_colosos", NPC_COLOSOS);
     new achievement_toc5_grand_champions("achievement_toc5_champions_jaelyne", NPC_JAELYNE);
     new achievement_toc5_grand_champions("achievement_toc5_champions_lana", NPC_LANA);
-
     new spell_toc5_ride_mount();
     new spell_toc5_defend();
     new spell_toc5_hex_mending();
