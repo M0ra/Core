@@ -608,6 +608,11 @@ class boss_warrior_toc5 : public CreatureScript
 
         void UpdateAI(uint32 uiDiff) override
         {
+            if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
+                return;
+
+            events.Update(uiDiff);
+
             if (uiInterceptTimer <= uiDiff && events.GetPhaseMask() == PHASE_COMBAT)
             {
                 Map::PlayerList const& players = me->GetMap()->GetPlayers();
@@ -682,14 +687,13 @@ class boss_warrior_toc5 : public CreatureScript
 
         void JustDied(Unit* /*killer*/) override
         {
-            if (instance)
-                instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
-        return new boss_warrior_toc5AI(creature);
+        return GetInstanceAI<boss_warrior_toc5AI>(creature);
     }
 };
 
@@ -840,11 +844,16 @@ class boss_mage_toc5 : public CreatureScript
                 HandleInstanceBind(me);
             }
         }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+        }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
-        return new boss_mage_toc5AI(creature);
+        return GetInstanceAI<boss_mage_toc5AI>(creature);
     };
 };
 
@@ -1006,11 +1015,16 @@ class boss_shaman_toc5 : public CreatureScript
                 HandleInstanceBind(me);
             }
         }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+        }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
-        return new boss_shaman_toc5AI(creature);
+        return GetInstanceAI<boss_shaman_toc5AI>(creature);
     }
 };
 
@@ -1219,11 +1233,16 @@ class boss_hunter_toc5 : public CreatureScript
                 HandleInstanceBind(me);
             }
         }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+        }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
-        return new boss_hunter_toc5AI(creature);
+        return GetInstanceAI<boss_hunter_toc5AI>(creature);
     }
 };
 
@@ -1387,11 +1406,16 @@ class boss_rogue_toc5 : public CreatureScript
                 HandleInstanceBind(me);
             }
         }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+        }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
-        return new boss_rogue_toc5AI(creature);
+        return GetInstanceAI<boss_rogue_toc5AI>(creature);
     }
 };
 
