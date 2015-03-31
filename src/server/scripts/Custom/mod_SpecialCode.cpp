@@ -46,7 +46,7 @@ class Mod_SpecialCode_CreatureScript : public CreatureScript
         if (!result)
         {
             player->CLOSE_GOSSIP_MENU();
-            return;
+            return false;
         }
 
         uint32 codeId = (*result)[0].GetUInt32();
@@ -69,7 +69,7 @@ class Mod_SpecialCode_CreatureScript : public CreatureScript
             if (currentTotal >= maxTotal)
             {
                 player->CLOSE_GOSSIP_MENU();
-                return;
+                return false;
             }
         }
 
@@ -84,7 +84,7 @@ class Mod_SpecialCode_CreatureScript : public CreatureScript
             if (currentAccount >= maxAccount)
             {
                 player->CLOSE_GOSSIP_MENU();
-                return;
+                return false;
             }
         }
 
@@ -99,7 +99,7 @@ class Mod_SpecialCode_CreatureScript : public CreatureScript
             if (currentCharacter >= maxCharacters)
             {
                 player->CLOSE_GOSSIP_MENU();
-                return;
+                return false;
             }
         }
 
@@ -141,7 +141,7 @@ class Mod_SpecialCode_CreatureScript : public CreatureScript
                 if (items.size() > MAX_MAIL_ITEMS)
                 {
                     player->CLOSE_GOSSIP_MENU();
-                    return;
+                    return false;
                 }
             }
             while (result->NextRow());

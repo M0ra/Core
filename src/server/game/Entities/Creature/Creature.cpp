@@ -34,9 +34,7 @@
 #include "InstanceScript.h"
 #include "Log.h"
 #include "LootMgr.h"
-#include "MapManager.h"
 #include "MoveSpline.h"
-#include "MoveSplineInit.h"
 #include "ObjectMgr.h"
 #include "Opcodes.h"
 #include "OutdoorPvPMgr.h"
@@ -48,10 +46,8 @@
 #include "TemporarySummon.h"
 #include "Util.h"
 #include "Vehicle.h"
-#include "WaypointMovementGenerator.h"
 #include "World.h"
 #include "WorldPacket.h"
-
 #include "Transport.h"
 
 TrainerSpell const* TrainerSpellData::Find(uint32 spell_id) const
