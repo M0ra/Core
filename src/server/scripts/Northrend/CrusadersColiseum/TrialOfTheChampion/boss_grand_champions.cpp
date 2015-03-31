@@ -1427,25 +1427,25 @@ class boss_rogue_toc5 : public CreatureScript
 
 class achievement_toc5_grand_champions : public AchievementCriteriaScript
 {
-    public:
-        uint32 creature_entry;
+public:
+    uint32 creature_entry;
 
-        achievement_toc5_grand_champions(const char* name, uint32 original_entry) : AchievementCriteriaScript(name) 
-        {
-            creature_entry = original_entry;
-        }
+    achievement_toc5_grand_champions(const char* name, uint32 original_entry) : AchievementCriteriaScript(name)
+    {
+        creature_entry = original_entry;
+    }
 
-        bool OnCheck(Player* /*source*/, Unit* target) override
-        {
-            if (!target)
-                return false;
-
-            if (Creature* creature = target->ToCreature())
-                if (creature->GetEntry() == creature_entry)
-                    return true;
-
+    bool OnCheck(Player* /*source*/, Unit* target) override
+    {
+        if (!target)
             return false;
-        }
+
+        if (Creature* creature = target->ToCreature())
+            if (creature->GetEntry() == creature_entry)
+                return true;
+
+        return false;
+    }
 };
 
 void HandleInstanceBind(Creature* source)
@@ -1476,120 +1476,120 @@ void HandleKillCreditForAllPlayers(Creature* credit)
 
 class spell_toc5_ride_mount : public SpellScriptLoader
 {
-    public:
-        spell_toc5_ride_mount() : SpellScriptLoader("spell_toc5_ride_mount") {}
+public:
+    spell_toc5_ride_mount() : SpellScriptLoader("spell_toc5_ride_mount") { }
 
-        class spell_toc5_ride_mount_SpellScript : public SpellScript
+    class spell_toc5_ride_mount_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_toc5_ride_mount_SpellScript);
+
+        SpellCastResult CheckRequirement()
         {
-            PrepareSpellScript(spell_toc5_ride_mount_SpellScript);
-
-            SpellCastResult CheckRequirement()
+            if (GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == ARGENT_LANCE)
             {
-                if (GetCaster()->GetUInt32Value(PLAYER_VISIBLE_ITEM_16_ENTRYID) == ARGENT_LANCE)
-                {
-                    GetCaster()->RemoveAurasByType(SPELL_AURA_MOD_SHAPESHIFT);
-                    return SPELL_CAST_OK;
-                } else {
-                    SetCustomCastResultMessage(SPELL_CUSTOM_ERROR_MUST_HAVE_LANCE_EQUIPPED);
-                    return SPELL_FAILED_CUSTOM_ERROR;
-                }
+                GetCaster()->RemoveAurasByType(SPELL_AURA_MOD_SHAPESHIFT);
+                return SPELL_CAST_OK;
+            } else {
+                SetCustomCastResultMessage(SPELL_CUSTOM_ERROR_MUST_HAVE_LANCE_EQUIPPED);
+                return SPELL_FAILED_CUSTOM_ERROR;
             }
+        }
 
-            void Register() override
-            {
+        void Register() override
+        {
                 OnCheckCast += SpellCheckCastFn(spell_toc5_ride_mount_SpellScript::CheckRequirement);
-            }
-        };
+        }
+    };
 
-        class spell_toc5_ride_mount_AuraScript : public AuraScript
+    class spell_toc5_ride_mount_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_toc5_ride_mount_AuraScript);
+
+        void HandleOnEffect(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
-            PrepareAuraScript(spell_toc5_ride_mount_AuraScript);
-
-            void HandleOnEffect(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            if (Unit* target = GetTarget())
+                target->RemoveAurasDueToSpell(SPELL_DEFEND_2);
+            if (Unit* caster = GetCaster())
             {
-                if (Unit* target = GetTarget())
-                    target->RemoveAurasDueToSpell(SPELL_DEFEND_2);
-                if (Unit* caster = GetCaster())
-                {
-                    caster->RemoveAurasDueToSpell(SPELL_DEFEND_2);
-                    for (uint8 i = 0; i < 3; i++)
-                        caster->RemoveAurasDueToSpell(SPELL_VISUAL_SHIELD_1 + i);
-                }
+                caster->RemoveAurasDueToSpell(SPELL_DEFEND_2);
+                for (uint8 i = 0; i < 3; i++)
+                    caster->RemoveAurasDueToSpell(SPELL_VISUAL_SHIELD_1 + i);
             }
-
-            void Register() override
-            {
-                OnEffectApply += AuraEffectApplyFn(spell_toc5_ride_mount_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
-                OnEffectRemove += AuraEffectRemoveFn(spell_toc5_ride_mount_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_toc5_ride_mount_AuraScript();
         }
 
-        SpellScript* GetSpellScript() const override
+        void Register() override
         {
-            return new spell_toc5_ride_mount_SpellScript();
+            OnEffectApply += AuraEffectApplyFn(spell_toc5_ride_mount_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+            OnEffectRemove += AuraEffectRemoveFn(spell_toc5_ride_mount_AuraScript::HandleOnEffect, EFFECT_0, SPELL_AURA_CONTROL_VEHICLE, AURA_EFFECT_HANDLE_REAL);
         }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_toc5_ride_mount_AuraScript();
+    }
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_toc5_ride_mount_SpellScript();
+    }
 };
 
 class spell_toc5_defend : public SpellScriptLoader
 {
-    public:
-        spell_toc5_defend() : SpellScriptLoader("spell_toc5_defend") { }
+public:
+    spell_toc5_defend() : SpellScriptLoader("spell_toc5_defend") { }
 
-        class spell_toc5_defendAuraScript : public AuraScript
+    class spell_toc5_defendAuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_toc5_defendAuraScript);
+
+        bool Validate(SpellInfo const* /*spellEntry*/) override
         {
-            PrepareAuraScript(spell_toc5_defendAuraScript);
-
-            bool Validate(SpellInfo const* /*spellEntry*/) override
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_VISUAL_SHIELD_1))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_VISUAL_SHIELD_2))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_VISUAL_SHIELD_3))
-                    return false;
-                return true;
-            }
-
-            void RefreshVisualShields(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                Unit* caster = GetCaster();
-
-                if(!caster)
-                    return;
-
-                if(Unit* rider = caster->GetCharmer())
-                {
-                    for(uint8 i = 0; i < 3; ++i)
-                        rider->RemoveAurasDueToSpell(SPELL_VISUAL_SHIELD_1 + i);
-
-                    if(Aura* defend = caster->GetAura(GetId()))
-                        rider->CastSpell(rider, SPELL_VISUAL_SHIELD_1 + (defend->GetStackAmount()-1), true);
-                }else
-                {
-                    for(uint8 i = 0; i < 3; ++i)
-                        caster->RemoveAurasDueToSpell(SPELL_VISUAL_SHIELD_1 + i);
-
-                    if(Aura* defend = caster->GetAura(GetId()))
-                        caster->CastSpell(caster, SPELL_VISUAL_SHIELD_1 + (defend->GetStackAmount()-1), true);
-                }
-            }
-
-            void Register() override
-            {
-                OnEffectApply += AuraEffectApplyFn(spell_toc5_defendAuraScript::RefreshVisualShields, EFFECT_FIRST_FOUND, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_CHANGE_AMOUNT_SEND_FOR_CLIENT_MASK);
-                OnEffectRemove += AuraEffectRemoveFn(spell_toc5_defendAuraScript::RefreshVisualShields, EFFECT_FIRST_FOUND, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_CHANGE_AMOUNT_SEND_FOR_CLIENT_MASK);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_toc5_defendAuraScript();
+            if (!sSpellMgr->GetSpellInfo(SPELL_VISUAL_SHIELD_1))
+                return false;
+            if (!sSpellMgr->GetSpellInfo(SPELL_VISUAL_SHIELD_2))
+                return false;
+            if (!sSpellMgr->GetSpellInfo(SPELL_VISUAL_SHIELD_3))
+                return false;
+            return true;
         }
+
+        void RefreshVisualShields(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            Unit* caster = GetCaster();
+
+            if (!caster)
+                return;
+
+            if (Unit* rider = caster->GetCharmer())
+            {
+                for (uint8 i = 0; i < 3; ++i)
+                    rider->RemoveAurasDueToSpell(SPELL_VISUAL_SHIELD_1 + i);
+
+                if (Aura* defend = caster->GetAura(GetId()))
+                    rider->CastSpell(rider, SPELL_VISUAL_SHIELD_1 + (defend->GetStackAmount()-1), true);
+            }else
+            {
+                for (uint8 i = 0; i < 3; ++i)
+                    caster->RemoveAurasDueToSpell(SPELL_VISUAL_SHIELD_1 + i);
+
+                if (Aura* defend = caster->GetAura(GetId()))
+                    caster->CastSpell(caster, SPELL_VISUAL_SHIELD_1 + (defend->GetStackAmount()-1), true);
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectApply += AuraEffectApplyFn(spell_toc5_defendAuraScript::RefreshVisualShields, EFFECT_FIRST_FOUND, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_CHANGE_AMOUNT_SEND_FOR_CLIENT_MASK);
+            OnEffectRemove += AuraEffectRemoveFn(spell_toc5_defendAuraScript::RefreshVisualShields, EFFECT_FIRST_FOUND, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_CHANGE_AMOUNT_SEND_FOR_CLIENT_MASK);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_toc5_defendAuraScript();
+    }
 };
 
 class player_hex_mendingAI : public PlayerAI
@@ -1613,48 +1613,48 @@ class player_hex_mendingAI : public PlayerAI
 
 class spell_toc5_hex_mending : public SpellScriptLoader
 {
-    public:
-        spell_toc5_hex_mending() : SpellScriptLoader("spell_toc5_hex_mending") { }
+public:
+    spell_toc5_hex_mending() : SpellScriptLoader("spell_toc5_hex_mending") { }
 
-        class spell_toc5_hex_mending_AuraScript : public AuraScript
+    class spell_toc5_hex_mending_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_toc5_hex_mending_AuraScript);
+
+        void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
-            PrepareAuraScript(spell_toc5_hex_mending_AuraScript);
+            if (GetTarget()->GetTypeId() != TYPEID_PLAYER)
+                return;
 
-            void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                if (GetTarget()->GetTypeId() != TYPEID_PLAYER)
-                    return;
-
-                oldAI = GetTarget()->GetAI();
-                GetTarget()->SetAI(new player_hex_mendingAI(GetTarget()->ToPlayer()));
-                oldAIState = GetTarget()->IsAIEnabled;
-                GetTarget()->IsAIEnabled = true;
-            }
-
-            void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                if (GetTarget()->GetTypeId() != TYPEID_PLAYER)
-                    return;
-
-                delete GetTarget()->GetAI();
-                GetTarget()->SetAI(oldAI);
-                GetTarget()->IsAIEnabled = oldAIState;
-            }
-
-            void Register() override
-            {
-                AfterEffectApply += AuraEffectApplyFn(spell_toc5_hex_mending_AuraScript::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-                AfterEffectRemove += AuraEffectRemoveFn(spell_toc5_hex_mending_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-            }
-
-            UnitAI* oldAI;
-            bool oldAIState;
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_toc5_hex_mending_AuraScript();
+            oldAI = GetTarget()->GetAI();
+            GetTarget()->SetAI(new player_hex_mendingAI(GetTarget()->ToPlayer()));
+            oldAIState = GetTarget()->IsAIEnabled;
+            GetTarget()->IsAIEnabled = true;
         }
+
+        void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (GetTarget()->GetTypeId() != TYPEID_PLAYER)
+                return;
+
+            delete GetTarget()->GetAI();
+            GetTarget()->SetAI(oldAI);
+            GetTarget()->IsAIEnabled = oldAIState;
+        }
+
+        void Register() override
+        {
+            AfterEffectApply += AuraEffectApplyFn(spell_toc5_hex_mending_AuraScript::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            AfterEffectRemove += AuraEffectRemoveFn(spell_toc5_hex_mending_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        }
+
+        UnitAI* oldAI;
+        bool oldAIState;
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_toc5_hex_mending_AuraScript();
+    }
 };
 
 void AddSC_boss_grand_champions()
