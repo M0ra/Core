@@ -917,6 +917,11 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
 
                 SetCriteriaProgress(achievementCriteria, 1, PROGRESS_ACCUMULATE);
                 break;
+            case ACHIEVEMENT_CRITERIA_TYPE_OWN_RANK:
+                if (!miscValue1 || miscValue1 > TITLE_PVP_RANK_MAX)
+                    continue;
+                SetCriteriaProgress(achievementCriteria, miscValue1);
+                break;
             case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
                 SetCriteriaProgress(achievementCriteria, GetPlayer()->GetBankBagSlotCount());
                 break;
@@ -1077,7 +1082,6 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
             // FIXME: not triggered in code as result, need to implement
             case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_RAID:
             case ACHIEVEMENT_CRITERIA_TYPE_PLAY_ARENA:
-            case ACHIEVEMENT_CRITERIA_TYPE_OWN_RANK:
                 break;                                   // Not implemented yet :(
         }
 
@@ -1173,6 +1177,8 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
             return progress->counter >= achievementCriteria->loot_item.itemCount;
         case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
             return progress->counter >= 1;
+        case ACHIEVEMENT_CRITERIA_TYPE_OWN_RANK:
+            return progress->counter == achievementCriteria->own_rank.rank;
         case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
             return progress->counter >= achievementCriteria->buy_bank_slot.numberOfSlots;
         case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
