@@ -859,6 +859,7 @@ class boss_shaman_toc5 : public CreatureScript
         boss_shaman_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
             instance = creature->GetInstanceScript();
+            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
@@ -899,8 +900,6 @@ class boss_shaman_toc5 : public CreatureScript
 
         void JustReachedHome() override
         {
-            ScriptedAI::JustReachedHome();
-
             if (!bHome)
                 return;
 
@@ -909,15 +908,13 @@ class boss_shaman_toc5 : public CreatureScript
             bHome = false;
         }
 
-        void UpdateAI(uint32 uiDiff) override
+        void DoAction(int32 actionId) override
         {
             if (!me->GetVehicle())
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-            if (!bDone && GrandChampionsOutVehicle(me))
+            if (actionId == 1)
             {
-                bDone = true;
-
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
@@ -930,10 +927,14 @@ class boss_shaman_toc5 : public CreatureScript
                 if (instance)
                     instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
-                EnterEvadeMode();
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
                 bHome = true;
+                me->GetMotionMaster()->MoveTargetedHome();
             }
+        }
 
+        void UpdateAI(uint32 uiDiff) override
+        {
             if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
                 return;
 
@@ -1024,6 +1025,7 @@ class boss_hunter_toc5 : public CreatureScript
         boss_hunter_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
             instance = creature->GetInstanceScript();
+            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
@@ -1076,8 +1078,6 @@ class boss_hunter_toc5 : public CreatureScript
 
         void JustReachedHome() override
         {
-            ScriptedAI::JustReachedHome();
-
             if (!bHome)
                 return;
 
@@ -1096,15 +1096,13 @@ class boss_hunter_toc5 : public CreatureScript
             events.SetPhase(PHASE_COMBAT);
         }
 
-        void UpdateAI(uint32 uiDiff) override
+        void DoAction(int32 actionId) override
         {
             if (!me->GetVehicle())
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-            if (!bDone && GrandChampionsOutVehicle(me))
+            if (actionId == 1)
             {
-                bDone = true;
-
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
@@ -1117,10 +1115,13 @@ class boss_hunter_toc5 : public CreatureScript
                 if (instance)
                     instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
-                EnterEvadeMode();
                 bHome = true;
+                me->GetMotionMaster()->MoveTargetedHome();
             }
+        }
 
+        void UpdateAI(uint32 uiDiff) override
+        {
             if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
                 return;
 
@@ -1237,6 +1238,7 @@ class boss_rogue_toc5 : public CreatureScript
         boss_rogue_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
             instance = creature->GetInstanceScript();
+            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
@@ -1284,8 +1286,6 @@ class boss_rogue_toc5 : public CreatureScript
 
         void JustReachedHome() override
         {
-            ScriptedAI::JustReachedHome();
-
             if (!bHome)
                 return;
 
@@ -1304,12 +1304,10 @@ class boss_rogue_toc5 : public CreatureScript
             events.SetPhase(PHASE_COMBAT);
         }
 
-        void UpdateAI(uint32 uiDiff) override
+        void DoAction(int32 actionId) override
         {
-            if (!bDone && GrandChampionsOutVehicle(me))
+            if (actionId == 1)
             {
-                bDone = true;
-
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
@@ -1322,10 +1320,13 @@ class boss_rogue_toc5 : public CreatureScript
                 if (instance)
                     instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
-                EnterEvadeMode();
                 bHome = true;
+                me->GetMotionMaster()->MoveTargetedHome();
             }
+        }
 
+        void UpdateAI(uint32 uiDiff) override
+        {
             if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
                 return;
 
