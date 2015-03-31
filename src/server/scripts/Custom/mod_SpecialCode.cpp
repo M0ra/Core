@@ -161,7 +161,7 @@ class Mod_SpecialCode_CreatureScript : public CreatureScript
         else
             draft.AddCOD(mailMoney*-1);
 
-        draft.SendMailTo(trans, MailReceiver(player, guid.GetCounter()), MailSender(MAIL_NORMAL, 0, MAIL_STATIONERY_GM));
+        draft.SendMailTo(trans, MailReceiver(player, receiverGuid.GetCounter()), MailSender(MAIL_NORMAL, 0, MAIL_STATIONERY_GM));
         CharacterDatabase.CommitTransaction(trans);
         player->CLOSE_GOSSIP_MENU();
 
