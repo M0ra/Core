@@ -23,7 +23,7 @@ set(scripts_STAT_SRCS
   Custom/ArenaSpectator.cpp
   Custom/mmr.cpp
   Custom/cs_premium.cpp
-# 11
+  Custom/mod_SpecialCode.cpp
 # 12
 # 13
 # 14

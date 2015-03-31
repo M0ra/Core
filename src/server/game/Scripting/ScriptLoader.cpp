@@ -1433,7 +1433,7 @@ void AddSC_NoFarming();
 void AddSC_Reset();
 void AddSC_arena_spectator_script();
 void AddSC_npc_mmr_reset();
-// 11
+void AddSC_Mod_SpecialCode();
 // 12
 // 13
 // 14
@@ -1479,7 +1479,7 @@ void AddCustomScripts()
     AddSC_npc_mmr_reset();
     AddSC_premium_commandscript();
     AddSC_npc_teleport();
-    // 11
+    AddSC_Mod_SpecialCode();
     // 12
     // 13
     // 14
