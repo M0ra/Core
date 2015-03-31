@@ -28,6 +28,7 @@ enum Spells
     SPELL_VISUAL_SHIELD_1           = 63130,
     SPELL_VISUAL_SHIELD_2           = 63131,
     SPELL_VISUAL_SHIELD_3           = 63132,
+    CHARGE                          = 68282,
 
     // Shield break
     SPELL_THROW_VISUAL              = 45827,
@@ -79,7 +80,8 @@ enum Spells
     SPELL_POISON_BOTTLE             = 67701,
 
     // Achievement Credit
-    SPELL_GRAND_CHAMPIONS_CREDIT    = 68572
+    SPELL_GRAND_CHAMPIONS_CREDIT    = 68572,
+    AURA_READY_JOUST                = 64723
 };
 
 enum Misc
@@ -136,20 +138,6 @@ enum Phases
     PHASE_COMBAT                    = 2
 };
 
-/*
-struct Point
-{
-    float x,y,z;
-};
-
-const Point MovementPoint[] =
-{
-  {746.84f,623.15f,411.41f},
-  {747.96f,620.29f,411.09f},
-  {750.23f,618.35f,411.09f}
-};
-*/
-
 void AggroAllPlayers(Creature* temp)
 {
     Map::PlayerList const &PlList = temp->GetMap()->GetPlayers();
@@ -157,7 +145,7 @@ void AggroAllPlayers(Creature* temp)
     if (PlList.isEmpty())
         return;
 
-    for(Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+    for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
     {
         if (Player* player = i->GetSource())
         {
@@ -236,10 +224,10 @@ class generic_vehicleAI_toc5 : public CreatureScript
         {
             combatCheckTimer = 500;
             uiShieldBreakerTimer = 8000;
-            uiBuffTimer = urand(30000,60000);
-            uiTimerSpell1= urand(4000,10000);
-            uiTimerSpell2= urand(4000,10000);
-            uiTimerSpell3= urand(1000,2000);
+            uiBuffTimer = urand(30000, 60000);
+            uiTimerSpell1 = urand(4000, 10000);
+            uiTimerSpell2 = urand(4000, 10000);
+            uiTimerSpell3 = urand(1000, 2000);
             uiDefendTimer = urand(30000, 60000);
         }
 
@@ -292,9 +280,6 @@ class generic_vehicleAI_toc5 : public CreatureScript
 
         void WaypointReached(uint32 i) override
         {
-            if (!instance)
-                return;
-
             switch(i)
             {
                 case 2:
@@ -329,20 +314,20 @@ class generic_vehicleAI_toc5 : public CreatureScript
                     defendAuraStackAmount = defendAura->GetStackAmount();
 
             // Shield-Break by player vehicle
-            if (spell->Id == 62575)
+            if (spell->Id == SPELL_SHIELD_BREAKER)
             {
                 source->DealDamage(me, uint32(2000 * (1 - 0.3f * defendAuraStackAmount)));
-                source->SendSpellNonMeleeDamageLog(me, 62575, uint32(2000 * (1 - 0.3f * defendAuraStackAmount)), SPELL_SCHOOL_MASK_NORMAL, 0, 0, true, 0, false);
+                source->SendSpellNonMeleeDamageLog(me, SPELL_SHIELD_BREAKER, uint32(2000 * (1 - 0.3f * defendAuraStackAmount)), SPELL_SCHOOL_MASK_NORMAL, 0, 0, true, 0, false);
 
                 if (me->HasAura(SPELL_DEFEND))
                     me->RemoveAuraFromStack(SPELL_DEFEND);
             }
     
             // Charge by player vehicle
-            if (spell->Id == 68282)
+            if (spell->Id == CHARGE)
             {
                 source->DealDamage(me, uint32(20000 * (1 - 0.3f * defendAuraStackAmount)));
-                source->SendSpellNonMeleeDamageLog(me, 68282, uint32(20000 * (1 - 0.3f * defendAuraStackAmount)), SPELL_SCHOOL_MASK_NORMAL, 0, 0, true, 0, false);
+                source->SendSpellNonMeleeDamageLog(me, CHARGE, uint32(20000 * (1 - 0.3f * defendAuraStackAmount)), SPELL_SCHOOL_MASK_NORMAL, 0, 0, true, 0, false);
 
                 if (source->GetMotionMaster())
                     source->GetMotionMaster()->MoveCharge(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
@@ -416,11 +401,11 @@ class generic_vehicleAI_toc5 : public CreatureScript
 
         bool CheckPlayersAlive()
         {
-            Map* pMap = me->GetMap();
-            if (pMap && pMap->IsDungeon())
+            Map* map = me->GetMap();
+            if (map && map->IsDungeon())
             {
-                Map::PlayerList const &players = pMap->GetPlayers();
-                for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                Map::PlayerList const &players = map->GetPlayers();
+                for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                 {
                     if (itr->GetSource() && itr->GetSource()->IsAlive() && !itr->GetSource()->IsGameMaster())
                         return true;
@@ -431,8 +416,8 @@ class generic_vehicleAI_toc5 : public CreatureScript
 
         void DoCastSpellShield()
         {
-            for(uint8 i = 0; i < 3; ++i)
-                DoCast(me,SPELL_SHIELD,true);
+            for (uint8 i = 0; i < 3; ++i)
+                DoCast(me, SPELL_SHIELD, true);
         }
 
         void UpdateAI(uint32 uiDiff) override
@@ -595,13 +580,13 @@ class boss_warrior_toc5 : public CreatureScript
             if (actionId == 1)
             {
                 Talk(WARNING_WEAPONS);
-                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
+                me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
+                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -624,7 +609,7 @@ class boss_warrior_toc5 : public CreatureScript
                 Map::PlayerList const& players = me->GetMap()->GetPlayers();
                 if (me->GetMap()->IsDungeon() && !players.isEmpty())
                 {
-                    for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                     {
                         Player* player = itr->GetSource();
                         if (player && !player->IsGameMaster() && me->IsInRange(player, 8.0f, 25.0f, false))
@@ -673,8 +658,7 @@ class boss_warrior_toc5 : public CreatureScript
                 hasBeenInCombat = false;
                 Talk(SAY_CHAMPION_DEFEAT);
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
                 // Instance encounter counting mechanics
                 if (!bCredit)
@@ -684,16 +668,11 @@ class boss_warrior_toc5 : public CreatureScript
                 }
 
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(35);
-                me->GetMotionMaster()->MovePoint(0,746.843f, 695.68f, 412.339f);
+                me->setFaction(FACTION_FRIENDLY);
+                me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
         }
     };
 
@@ -765,17 +744,16 @@ class boss_mage_toc5 : public CreatureScript
 
             if (actionId == 1)
             {
-                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
+                me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
+                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
@@ -796,21 +774,21 @@ class boss_mage_toc5 : public CreatureScript
                 switch (eventID)
                 {
                     case EVENT_FIREBALL:
-                        DoCastVictim(DUNGEON_MODE(SPELL_FIREBALL,SPELL_FIREBALL_H));
+                        DoCastVictim(DUNGEON_MODE(SPELL_FIREBALL, SPELL_FIREBALL_H));
                         events.ScheduleEvent(EVENT_FIREBALL, 17000, 0, PHASE_COMBAT);
                         break;
                     case EVENT_POLYMORPH:
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                            DoCast(target, DUNGEON_MODE(SPELL_POLYMORPH,SPELL_POLYMORPH_H));
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                            DoCast(target, DUNGEON_MODE(SPELL_POLYMORPH, SPELL_POLYMORPH_H));
                         events.ScheduleEvent(EVENT_POLYMORPH, 22000, 0, PHASE_COMBAT);
                         break;
                     case EVENT_BLASTWAVE:
-                        DoCastAOE(DUNGEON_MODE(SPELL_BLAST_WAVE,SPELL_BLAST_WAVE_H),false);
+                        DoCastAOE(DUNGEON_MODE(SPELL_BLAST_WAVE, SPELL_BLAST_WAVE_H), false);
                         events.ScheduleEvent(EVENT_BLADESTORM, 30000, 0, PHASE_COMBAT);
                         break;
                     case EVENT_HASTE:
                         me->InterruptNonMeleeSpells(true);
-                        DoCast(me,SPELL_HASTE);
+                        DoCast(me, SPELL_HASTE);
                         events.ScheduleEvent(EVENT_HASTE, 40000, 0, PHASE_COMBAT);
                         break;
                     case EVENT_PHASE_SWITCH:
@@ -834,8 +812,7 @@ class boss_mage_toc5 : public CreatureScript
                 hasBeenInCombat = false;
                 Talk(SAY_CHAMPION_DEFEAT);
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
                 // Instance encounter counting mechanics
                 if (!bCredit)
@@ -843,17 +820,12 @@ class boss_mage_toc5 : public CreatureScript
                     bCredit = true;
                     HandleSpellOnPlayersInInstanceToC5(me, SPELL_GRAND_CHAMPIONS_CREDIT);
                 }
-                me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(35);
-                me->GetMotionMaster()->MovePoint(0,746.843f, 695.68f, 412.339f);
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->setFaction(FACTION_FRIENDLY);
+                me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
         }
     };
 
@@ -930,19 +902,17 @@ class boss_shaman_toc5 : public CreatureScript
 
             if (actionId == 1)
             {
-                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
+                me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
-                        me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
-                        me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
-
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+
                 bHome = true;
                 me->GetMotionMaster()->MoveTargetedHome();
             }
@@ -961,11 +931,11 @@ class boss_shaman_toc5 : public CreatureScript
                 {
                     case EVENT_EARTH_SHIELD:
                         DoCast(me, SPELL_EARTH_SHIELD);
-                        events.ScheduleEvent(EVENT_EARTH_SHIELD, urand(40000,45000), 0, PHASE_COMBAT);
+                        events.ScheduleEvent(EVENT_EARTH_SHIELD, urand(40000, 45000), 0, PHASE_COMBAT);
                         break;
                     case EVENT_CHAIN_LIGHTNING:
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM,0))
-                            DoCast(target, DUNGEON_MODE(SPELL_CHAIN_LIGHTNING,SPELL_CHAIN_LIGHTNING_H));
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                            DoCast(target, DUNGEON_MODE(SPELL_CHAIN_LIGHTNING, SPELL_CHAIN_LIGHTNING_H));
                         events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, 23000, 0, PHASE_COMBAT);
                         break;
                     case EVENT_HEALING_WAVE:
@@ -980,7 +950,7 @@ class boss_shaman_toc5 : public CreatureScript
                         break;
                     case EVENT_HEX:
                         DoCastVictim(SPELL_HEX_OF_MENDING, true);
-                        events.ScheduleEvent(EVENT_HEX, urand(30000,35000), 0, PHASE_COMBAT);
+                        events.ScheduleEvent(EVENT_HEX, urand(30000, 35000), 0, PHASE_COMBAT);
                         break;
                     case EVENT_PHASE_SWITCH:
                         if (events.GetPhaseMask() == PHASE_IDLE)
@@ -1004,8 +974,7 @@ class boss_shaman_toc5 : public CreatureScript
                 hasBeenInCombat = false;
                 Talk(SAY_CHAMPION_DEFEAT);
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
                 // Instance encounter counting mechanics
                 if (!bCredit)
@@ -1015,16 +984,11 @@ class boss_shaman_toc5 : public CreatureScript
                 }
                 EnterEvadeMode();
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(35);
-                me->GetMotionMaster()->MovePoint(0,746.843f, 695.68f, 412.339f);
+                me->setFaction(FACTION_FRIENDLY);
+                me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
         }
     };
 
@@ -1071,18 +1035,17 @@ class boss_hunter_toc5 : public CreatureScript
 
             bShoot = false;
 
-            Map* pMap = me->GetMap();
-            if (hasBeenInCombat && pMap && pMap->IsDungeon())
+            Map* map = me->GetMap();
+            if (hasBeenInCombat && map && map->IsDungeon())
             {
-                Map::PlayerList const &players = pMap->GetPlayers();
+                Map::PlayerList const &players = map->GetPlayers();
                 for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                 {
                     if (itr->GetSource() && itr->GetSource()->IsAlive() && !itr->GetSource()->IsGameMaster())
                         return;
                 }
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, FAIL);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, FAIL);
 
                 if (instance)
                 {
@@ -1123,17 +1086,16 @@ class boss_hunter_toc5 : public CreatureScript
 
             if (actionId == 1)
             {
-                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
+                me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
-                        me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
-                        me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
+                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 bHome = true;
                 me->GetMotionMaster()->MoveTargetedHome();
@@ -1222,8 +1184,7 @@ class boss_hunter_toc5 : public CreatureScript
                 hasBeenInCombat = false;
                 Talk(SAY_CHAMPION_DEFEAT);
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
                 // Instance encounter counting mechanics
                 if (!bCredit)
@@ -1233,16 +1194,11 @@ class boss_hunter_toc5 : public CreatureScript
                 }
                 EnterEvadeMode();
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(35);
+                me->setFaction(FACTION_FRIENDLY);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
         }
     };
 
@@ -1283,25 +1239,24 @@ class boss_rogue_toc5 : public CreatureScript
         void Reset() override
         {
 
-            Map* pMap = me->GetMap();
+            Map* map = me->GetMap();
 
-            if (hasBeenInCombat && pMap && pMap->IsDungeon())
+            if (hasBeenInCombat && map && map->IsDungeon())
             {
-                Map::PlayerList const &players = pMap->GetPlayers();
+                Map::PlayerList const &players = map->GetPlayers();
                 for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                 {
                     if (itr->GetSource() && itr->GetSource()->IsAlive() && !itr->GetSource()->IsGameMaster())
                         return;
                 }
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, FAIL);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, FAIL);
 
                 if (instance)
                 {
-                    GameObject* GO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1));
-                    if (GO)
-                        instance->HandleGameObject(GO->GetGUID(),true);
+                    GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1));
+                    if (go)
+                        instance->HandleGameObject(go->GetGUID(),true);
                 }
 
                 events.SetPhase(PHASE_IDLE);
@@ -1333,17 +1288,16 @@ class boss_rogue_toc5 : public CreatureScript
         {
             if (actionId == 1)
             {
-                me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
+                me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
-                    me->SetHomePosition(739.678f,662.541f,413.395f,4.49f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_2))
-                        me->SetHomePosition(746.71f,661.02f,412.695f,4.6f);
-                else if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_3))
-                        me->SetHomePosition(754.34f,660.70f,413.395f,4.79f);
+                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                    me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 bHome = true;
                 me->GetMotionMaster()->MoveTargetedHome();
@@ -1395,8 +1349,7 @@ class boss_rogue_toc5 : public CreatureScript
                 hasBeenInCombat = false;
                 Talk(SAY_CHAMPION_DEFEAT);
 
-                if (instance)
-                    instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
                 // Instance encounter counting mechanics
                 if (!bCredit)
@@ -1406,16 +1359,11 @@ class boss_rogue_toc5 : public CreatureScript
                 }
                 EnterEvadeMode();
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(35);
+                me->setFaction(FACTION_FRIENDLY);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
         }
     };
 
