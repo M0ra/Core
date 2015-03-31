@@ -184,14 +184,11 @@ void GuidDataAdder(Creature* creature)
         if (instance->GetGuidData(DATA_GRAND_CHAMPION_2).IsEmpty())
             instance->SetGuidData(DATA_GRAND_CHAMPION_2, creature->GetGUID());
         else if (!instance->GetGuidData(DATA_GRAND_CHAMPION_2).IsEmpty())
+        {
             if (instance->GetGuidData(DATA_GRAND_CHAMPION_3).IsEmpty())
                 instance->SetGuidData(DATA_GRAND_CHAMPION_3, creature->GetGUID());
+        }
 }
-
-/*
-* Generic AI for vehicles used by npcs in ToC, it needs more improvements.  *
-* Script Complete: 25%.                                                     *
-*/
 
 class generic_vehicleAI_toc5 : public CreatureScript
 {
@@ -985,7 +982,7 @@ class boss_shaman_toc5 : public CreatureScript
                         break;
                 }
             }
-            
+
             if (events.GetPhaseMask() == PHASE_COMBAT)
                 DoMeleeAttackIfReady();
         }
