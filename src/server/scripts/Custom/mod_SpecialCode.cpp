@@ -35,7 +35,7 @@ class Mod_SpecialCode_CreatureScript : public CreatureScript
     bool OnGossipSelectCode(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/, const char* code) override
     {
         if (!sWorld->getBoolConfig(CONFIG_SPECIAL_CODE))
-            return;
+            return false;
 
         if (!player || !*code)
             return;

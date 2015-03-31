@@ -19,6 +19,13 @@
 #include "sc_npc_teleport.h"
 #include <sstream>
 
+enum Spell
+{
+    EFFECT_FLASH_HEAL                      = 38588,
+    SPELL_ID_PASSIVE_RESURRECTION_SICKNESS = 15007,
+    SPELL_VISUAL_TELEPORT                  = 35517
+};
+
 #define GOSSIP_SHOW_DEST        1000
 #define GOSSIP_TELEPORT         1001
 #define GOSSIP_NEXT_PAGEC       1002
@@ -26,9 +33,6 @@
 #define GOSSIP_NEXT_PAGED       1004
 #define GOSSIP_PREV_PAGED       1005
 #define GOSSIP_MAIN_MENU        1006
-
-#define SPELL_ID_PASSIVE_RESURRECTION_SICKNESS  15007
-#define SPELL_VISUAL_TELEPORT   35517
 
 #define NB_ITEM_PAGE            15
 #define MSG_CAT                 100000
@@ -146,16 +150,16 @@ namespace
 class npc_teleport : public CreatureScript
 {
 public:
-    npc_teleport() : CreatureScript("npc_teleport") {}
+    npc_teleport() : CreatureScript("npc_teleport") { }
 
-    bool OnGossipHello(Player *player, Creature *creature)
+    bool OnGossipHello(Player* player, Creature* creature) override
     {
         PageC(player) = PageD(player) = Cat(player) = 0;
 
-        if(player->IsInCombat())
+        if (player->IsInCombat())
         {
             player->CLOSE_GOSSIP_MENU();
-            creature->Whisper("You are in combat. Come back later", LANG_UNIVERSAL, player);
+            creature->Whisper("Вы находитесь в бою. Приходите позже", LANG_UNIVERSAL, player);
             return true;
         }
 
@@ -163,57 +167,57 @@ public:
        return true;
     }
 
-    bool OnGossipSelect(Player *player, Creature *creature, uint32 sender, uint32 param)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 param) override
     {
         player->PlayerTalkClass->ClearMenus();
         switch(sender)
         {
-          // Display destinations
-          case GOSSIP_SHOW_DEST:
-              Cat(player) = param;
-              AffichDest(player, creature);
-              break;
+            // Display destinations
+            case GOSSIP_SHOW_DEST:
+                Cat(player) = param;
+                AffichDest(player, creature);
+                break;
 
-          // Previous categories page
-          case GOSSIP_PREV_PAGEC:
-              --PageC(player);
-              AffichCat(player, creature);
-              break;
+            // Previous categories page
+            case GOSSIP_PREV_PAGEC:
+                --PageC(player);
+                AffichCat(player, creature);
+                break;
 
-          // Next page categories
-          case GOSSIP_NEXT_PAGEC:
-              ++PageC(player);
-              AffichCat(player, creature);
-              break;
+            // Next page categories
+            case GOSSIP_NEXT_PAGEC:
+                ++PageC(player);
+                AffichCat(player, creature);
+                break;
 
-          // Previous destinations page
-          case GOSSIP_PREV_PAGED:
-              --PageD(player);
-              AffichDest(player, creature);
-              break;
+            // Previous destinations page
+            case GOSSIP_PREV_PAGED:
+                --PageD(player);
+                AffichDest(player, creature);
+                break;
 
-          // Next destination page
-          case GOSSIP_NEXT_PAGED:
-              ++PageD(player);
-              AffichDest(player, creature);
-              break;
+            // Next destination page
+            case GOSSIP_NEXT_PAGED:
+                ++PageD(player);
+                AffichDest(player, creature);
+                break;
 
-          // Display main menu
-          case GOSSIP_MAIN_MENU:
-              OnGossipHello(player, creature);
-              break;
+            // Display main menu
+            case GOSSIP_MAIN_MENU:
+                OnGossipHello(player, creature);
+                break;
 
-          // Teleportation
-          case GOSSIP_TELEPORT:
-              player->CLOSE_GOSSIP_MENU();
-            if(player->HasAura(SPELL_ID_PASSIVE_RESURRECTION_SICKNESS)) 
-            {
-                creature->CastSpell(player,38588,false); // Healing effect
-                player->RemoveAurasDueToSpell(SPELL_ID_PASSIVE_RESURRECTION_SICKNESS);
-            }
+            // Teleportation
+            case GOSSIP_TELEPORT:
+                player->CLOSE_GOSSIP_MENU();
+                if (player->HasAura(SPELL_ID_PASSIVE_RESURRECTION_SICKNESS))
+                {
+                    creature->CastSpell(player, EFFECT_FLASH_HEAL, false);
+                    player->RemoveAurasDueToSpell(SPELL_ID_PASSIVE_RESURRECTION_SICKNESS);
+                }
 
-            ActionTeleport(player, creature, param);
-            break;
+                ActionTeleport(player, creature, param);
+                break;
         }
         return true;
     }
