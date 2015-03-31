@@ -775,7 +775,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetUlduarAI<boss_thorimAI>(creature);
+        return GetInstanceAI<boss_thorimAI>(creature);
     }
 };
 
@@ -875,7 +875,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetUlduarAI<npc_thorim_pre_phaseAI>(creature);
+        return GetInstanceAI<npc_thorim_pre_phaseAI>(creature);
     }
 };
 
@@ -1025,7 +1025,7 @@ class npc_thorim_arena_phase : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetUlduarAI<npc_thorim_arena_phaseAI>(creature);
+            return GetInstanceAI<npc_thorim_arena_phaseAI>(creature);
         }
 };
 
@@ -1186,7 +1186,7 @@ class npc_runic_colossus : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetUlduarAI<npc_runic_colossusAI>(creature);
+            return GetInstanceAI<npc_runic_colossusAI>(creature);
         }
 };
 
@@ -1243,7 +1243,7 @@ class npc_runic_smash : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetUlduarAI<npc_runic_smashAI>(creature);
+            return GetInstanceAI<npc_runic_smashAI>(creature);
         }
 };
 
@@ -1343,7 +1343,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetUlduarAI<npc_ancient_rune_giantAI>(creature);
+        return GetInstanceAI<npc_ancient_rune_giantAI>(creature);
     }
 };
 
@@ -1430,7 +1430,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetUlduarAI<npc_sifAI>(creature);
+        return GetInstanceAI<npc_sifAI>(creature);
     }
 };
 

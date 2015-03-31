@@ -171,29 +171,21 @@ void AggroAllPlayers(Creature* temp)
     }
 }
 
-bool GrandChampionsOutVehicle(Creature* me)
+void GuidDataAdder(Creature* creature)
 {
-    InstanceScript* instance = me->GetInstanceScript();
+    InstanceScript* instance = creature->GetInstanceScript();
 
     if (!instance)
-        return false;
+        return;
 
-    Creature* pGrandChampion1 = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1));
-    Creature* pGrandChampion2 = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_2));
-    Creature* pGrandChampion3 = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_3));
-
-    if (pGrandChampion1 && pGrandChampion2 && pGrandChampion3)
-    {
-        if (!pGrandChampion1->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) &&
-            !pGrandChampion1->GetVehicle() &&
-            !pGrandChampion2->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) &&
-            !pGrandChampion2->GetVehicle() &&
-            !pGrandChampion3->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) &&
-            !pGrandChampion3->GetVehicle())
-            return true;
-    }
-
-    return false;
+    if (instance->GetGuidData(DATA_GRAND_CHAMPION_1).IsEmpty())
+        instance->SetGuidData(DATA_GRAND_CHAMPION_1, creature->GetGUID());
+    else if (!instance->GetGuidData(DATA_GRAND_CHAMPION_1).IsEmpty())
+        if (instance->GetGuidData(DATA_GRAND_CHAMPION_2).IsEmpty())
+            instance->SetGuidData(DATA_GRAND_CHAMPION_2, creature->GetGUID());
+        else if (!instance->GetGuidData(DATA_GRAND_CHAMPION_2).IsEmpty())
+            if (instance->GetGuidData(DATA_GRAND_CHAMPION_3).IsEmpty())
+                instance->SetGuidData(DATA_GRAND_CHAMPION_3, creature->GetGUID());
 }
 
 /*
@@ -243,6 +235,11 @@ class generic_vehicleAI_toc5 : public CreatureScript
             uiTimerSpell2= urand(4000,10000);
             uiTimerSpell3= urand(1000,2000);
             uiDefendTimer = urand(30000, 60000);
+        }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            me->DespawnOrUnsummon(10000);
         }
 
         void SetData(uint32 uiType, uint32 /*uiData8*/) override
@@ -538,6 +535,7 @@ class boss_warrior_toc5 : public CreatureScript
         boss_warrior_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
             instance = creature->GetInstanceScript();
+            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
@@ -563,8 +561,6 @@ class boss_warrior_toc5 : public CreatureScript
 
         void JustReachedHome() override
         {
-            ScriptedAI::JustReachedHome();
-
             if (!bHome)
                 return;
 
@@ -582,7 +578,7 @@ class boss_warrior_toc5 : public CreatureScript
             events.SetPhase(PHASE_COMBAT);
         }
 
-        void UpdateAI(uint32 uiDiff) override
+        void DoAction(int32 actionId) override
         {
             if (!me->GetVehicle())
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -592,9 +588,8 @@ class boss_warrior_toc5 : public CreatureScript
 
             events.Update(uiDiff);
 
-            if (!bDone && GrandChampionsOutVehicle(me))
+            if (actionId == 1)
             {
-                bDone = true;
                 Talk(WARNING_WEAPONS);
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect	
 
@@ -606,10 +601,15 @@ class boss_warrior_toc5 : public CreatureScript
                          me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                EnterEvadeMode();
-                bHome = true;
-            }
+                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
+                bHome = true;
+                me->GetMotionMaster()->MoveTargetedHome();
+            }
+        }
+
+        void UpdateAI(uint32 uiDiff) override
+        {
             if (uiInterceptTimer <= uiDiff && events.GetPhaseMask() == PHASE_COMBAT)
             {
                 Map::PlayerList const& players = me->GetMap()->GetPlayers();
@@ -682,10 +682,9 @@ class boss_warrior_toc5 : public CreatureScript
             }
         }
 
-        void JustDied(Unit* /*killer*/)
+        void JustDied(Unit* /*killer*/) override
         {
-           if (instance)
-                instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
+            instance->SetData(DATA_GRAND_CHAMPION_ENTRY, me->GetEntry());
         }
     };
 
@@ -706,6 +705,7 @@ class boss_mage_toc5 : public CreatureScript
         boss_mage_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
             instance = creature->GetInstanceScript();
+            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
@@ -730,8 +730,6 @@ class boss_mage_toc5 : public CreatureScript
 
         void JustReachedHome() override
         {
-            ScriptedAI::JustReachedHome();
-
             if (!bHome)
                 return;
 
@@ -751,14 +749,13 @@ class boss_mage_toc5 : public CreatureScript
             events.SetPhase(PHASE_COMBAT);
         }
 
-        void UpdateAI(uint32 uiDiff) override
+        void DoAction(int32 actionId) override
         {
             if (!me->GetVehicle())
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-            if (!bDone && GrandChampionsOutVehicle(me))
+            if (actionId == 1)
             {
-                bDone = true;
                 me->RemoveAura(64723); // [DND] ReadyJoust Pose Effect
 
                 if (instance && me->GetGUID() == instance->GetData64(DATA_GRAND_CHAMPION_1))
@@ -773,10 +770,13 @@ class boss_mage_toc5 : public CreatureScript
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-                EnterEvadeMode();
                 bHome = true;
+                me->GetMotionMaster()->MoveTargetedHome();
             }
+        }
 
+        void UpdateAI(uint32 uiDiff) override
+        {
             if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
                 return;
 
