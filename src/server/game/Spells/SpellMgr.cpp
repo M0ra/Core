@@ -3007,7 +3007,7 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 53651: // Light's Beacon (Hidden periodic aura on Beacon of Light target)
             case 50259: // Daze from Feral Charge - Cat
             case 49376: // Feral Charge - Cat
-			case 69438: // Sample Satisfaction
+            case 69438: // Sample Satisfaction
             case 69445: // Perfume Spritz
             case 69489: // Chocolate Sample
             case 69563: // Cologne Spritz
