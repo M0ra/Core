@@ -1485,8 +1485,13 @@ SpellCastResult SpellInfo::CheckLocation(uint32 map_id, uint32 zone_id, uint32 a
             case SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED:
             case SPELL_AURA_FLY:
             {
-                if (player && !player->IsKnowHowFlyIn(map_id, zone_id))
-                    return SPELL_FAILED_INCORRECT_AREA;
+                SkillLineAbilityMapBounds bounds = sSpellMgr->GetSkillLineAbilityMapBounds(Id);
+                for (SkillLineAbilityMap::const_iterator skillIter = bounds.first; skillIter != bounds.second; ++skillIter)
+                {
+                    if (skillIter->second->skillId == SKILL_MOUNTS)
+                        if (player && !player->canFlyInZone(map_id, zone_id))
+                            return SPELL_FAILED_INCORRECT_AREA;
+                }
             }
         }
     }
