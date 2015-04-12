@@ -316,15 +316,15 @@ class boss_high_astromancer_solarian : public CreatureScript
                                 Portals[i][2] = PORTAL_Z;
                             }
                         }
-                        if ((abs(Portals[2][0] - Portals[1][0]) < 7) && (abs(Portals[2][1] - Portals[1][1]) < 7))
+                        if ((std::abs(Portals[2][0] - Portals[1][0]) < 7) && (std::abs(Portals[2][1] - Portals[1][1]) < 7))
                         {
-                            int i=1;
-                            if (abs(CENTER_X + 26.0f - Portals[2][0]) < 7)
+                            int i = 1;
+                            if (std::abs(CENTER_X + 26.0f - Portals[2][0]) < 7)
                                 i = -1;
                             Portals[2][0] = Portals[2][0]+7*i;
                             Portals[2][1] = Portal_Y(Portals[2][0], LARGE_PORTAL_RADIUS);
                         }
-                        for (int i=0; i <= 2; ++i)
+                        for (int i = 0; i <= 2; ++i)
                         {
                             if (Creature* Summoned = me->SummonCreature(NPC_ASTROMANCER_SOLARIAN_SPOTLIGHT, Portals[i][0], Portals[i][1], Portals[i][2], CENTER_O, TEMPSUMMON_TIMED_DESPAWN, Phase2_Timer+Phase3_Timer+AppearDelay_Timer+1700))
                             {
