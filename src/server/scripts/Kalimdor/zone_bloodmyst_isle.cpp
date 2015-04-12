@@ -156,7 +156,7 @@ enum EndingTheirWorldMisc
     EVENT_SEARING_TOTEM             = 3,
     EVENT_STRENGTH_OF_EARTH_TOTEM   = 4,
 
-    WP_START                        = 1,
+    WP_START = 1,
     WP_EXPLOSIVES_FIRST_POINT       = 21,
     WP_EXPLOSIVES_FIRST_PLANT       = 22,
     WP_EXPLOSIVES_FIRST_RUNOFF      = 23,
@@ -361,7 +361,10 @@ public:
 
     struct npc_demolitionist_legosoAI : public npc_escortAI
     {
-        npc_demolitionist_legosoAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_demolitionist_legosoAI(Creature* creature) : npc_escortAI(creature)
+        {
+            Initialize();
+        }
 
         void sQuestAccept(Player* player, Quest const* quest) override
         {
@@ -395,11 +398,16 @@ public:
             }
         }
 
-        void Reset() override
+        void Initialize()
         {
             _phase = PHASE_NONE;
             _moveTimer = 0;
             _eventStarterGuidLow = 0;
+        }
+
+        void Reset() override
+        {
+            Initialize();
             me->SetCanDualWield(true);
 
             _events.Reset();
