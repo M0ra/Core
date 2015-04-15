@@ -1363,11 +1363,11 @@ public:
             creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
         }
 
-        void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* /*who*/) override
         {
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             me->CastSpell(me, SPELL_HURLEY_DRUNKEN_RAGE);
         }
@@ -1377,11 +1377,11 @@ public:
             me->GetMotionMaster()->MoveTargetedHome();
         }
 
-        void JustDied(Unit* killer) override
+        void JustDied(Unit* /*killer*/) override
         {
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 /*diff*/) override
         {
             DoMeleeAttackIfReady();
         }
@@ -1404,7 +1404,7 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go) override
     {
-        if (_instance = player->GetInstanceScript())
+        if (InstanceScript* _instance = player->GetInstanceScript())
         {
             uint32 count = _instance->GetData(NPC_HURLEY_BLACKBREATH);
             count++;
