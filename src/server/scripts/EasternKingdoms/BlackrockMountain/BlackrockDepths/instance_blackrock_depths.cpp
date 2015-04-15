@@ -85,6 +85,7 @@ public:
             GhostKillCount = 0;
             TombTimer = TIMER_TOMBOFTHESEVEN;
             TombEventCounter = 0;
+            kegOfThunderbrewLagerCount = 0;
         }
 
         uint32 encounter[MAX_ENCOUNTER];
@@ -123,6 +124,9 @@ public:
         ObjectGuid TombEventStarterGUID;
         uint32 TombTimer;
         uint32 TombEventCounter;
+
+        ObjectGuid hurleyBlackbreathGUID;
+        uint32 kegOfThunderbrewLagerCount;
 
         void OnCreatureCreate(Creature* creature) override
         {
@@ -193,6 +197,9 @@ public:
                 else
                     TombOfSevenStart();//start
                 break;
+            case NPC_HURLEY_BLACKBREATH:
+                hurleyBlackbreathGUID = data;
+                break;
             }
         }
 
@@ -225,6 +232,9 @@ public:
                 break;
             case DATA_GHOSTKILL:
                 GhostKillCount += data;
+                break;
+            case NPC_HURLEY_BLACKBREATH:
+                kegOfThunderbrewLagerCount = data;
                 break;
             }
 
@@ -264,6 +274,8 @@ public:
                 return encounter[5];
             case DATA_GHOSTKILL:
                 return GhostKillCount;
+            case NPC_HURLEY_BLACKBREATH:
+                return kegOfThunderbrewLagerCount;
             }
             return 0;
         }
@@ -306,6 +318,8 @@ public:
                 return GoGolemSGUID;
             case DATA_GO_CHALICE:
                 return GoSpectralChaliceGUID;
+            case NPC_HURLEY_BLACKBREATH:
+                return hurleyBlackbreathGUID;
             }
             return ObjectGuid::Empty;
         }
