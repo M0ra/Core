@@ -64,7 +64,7 @@ enum DataTypes
     DATA_COREN              = 28
 };
 
-enum Creatures
+enum CreatureNpc
 {
     NPC_HURLEY_BLACKBREATH  = 9537
 };
