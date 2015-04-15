@@ -1423,10 +1423,6 @@ public:
         }
         return false;
     }
-
-    private:
-        InstanceScript* _instance;
-
 };
 
 void AddSC_blackrock_depths()
