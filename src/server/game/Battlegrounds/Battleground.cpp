@@ -679,7 +679,7 @@ void Battleground::RewardReputationToTeam(uint32 a_faction_id, uint32 h_faction_
 
         if (!player)
         {
-            TC_LOG_ERROR("bg.battleground", "BattleGround:RewardReputationToTeam: %u not found!", itr->first);
+            TC_LOG_ERROR("bg.battleground", "BattleGround:RewardReputationToTeam: %u not found!");
             continue;
         }
 
