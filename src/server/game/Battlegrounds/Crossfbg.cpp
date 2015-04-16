@@ -167,7 +167,7 @@ void Player::DoForgetPlayersInList()
         data << *itr;
         GetSession()->SendPacket(&data);
         if (Player* player = ObjectAccessor::FindPlayer(*itr))
-            GetSession()->SendNameQueryOpcode(player->GetGUID());
+            GetSession()->SendNameQueryOpcode(*itr);
     }
     m_FakePlayers.clear();
 }
