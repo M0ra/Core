@@ -3853,6 +3853,9 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 49611:
                 spellInfo->ProcCharges = 0;
                 break;
+            case 11389: // Detect Undead (from Elixir of Detect Undead)
+                spellInfo->ManaPerSecond = 0;
+                break;
             case 62997: // Mimiron - Plasma Blast
             case 69508: // Rotface - Slime Spray
             case 70498: // Vile Spirits
