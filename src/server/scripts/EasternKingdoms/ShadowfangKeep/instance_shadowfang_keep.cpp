@@ -309,7 +309,7 @@ public:
             OUT_LOAD_INST_DATA_COMPLETE;
         }
 
-        void Update(uint32 uiDiff)
+        void Update(uint32 uiDiff) override
         {          
             if (GetData(TYPE_CROWN) == IN_PROGRESS)
             {
@@ -320,7 +320,7 @@ public:
                     uiSpawnCrazedTimer = urand(2000, 5000);
                 }
                 else
-+                    uiSpawnCrazedTimer -= uiDiff;
+                    uiSpawnCrazedTimer -= uiDiff;
             }
 
             if (GetData(TYPE_FENRUS) != DONE)
