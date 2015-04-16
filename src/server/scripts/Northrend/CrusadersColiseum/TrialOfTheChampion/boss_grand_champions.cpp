@@ -129,6 +129,12 @@ enum Events
     EVENT_FAN_OF_KNIVES             = 16,
     EVENT_POISON_BOTTLE             = 17,
 
+    // Vehicles
+    EVENT_SHIELD_BREAKER            = 18,
+    EVENT_CHARGE_VEHICLE            = 19,
+    EVENT_THRUST                    = 20,
+    EVENT_DEFEND                    = 21,
+
     EVENT_PHASE_SWITCH
 };
 
@@ -203,32 +209,9 @@ class generic_vehicleAI_toc5 : public CreatureScript
             instance = creature->GetInstanceScript();
         }
 
-        InstanceScript* instance;
-
-        bool hasBeenInCombat;
-        bool combatEntered;
-
-        uint32 combatCheckTimer;
-        uint32 uiShieldBreakerTimer;
-        uint32 uiTimerSpell1;
-        uint32 uiTimerSpell2;
-        uint32 uiTimerSpell3;
-        uint32 uiBuffTimer;
-        uint32 uiCheckTimer;
-        uint32 uiDefendTimer;
-        uint32 uiChargeTimer;
-        uint32 uiThrustTimer;
-        uint32 uiWaypointPath;
-
         void Reset() override
         {
             combatCheckTimer = 500;
-            uiShieldBreakerTimer = 8000;
-            uiBuffTimer = urand(30000, 60000);
-            uiTimerSpell1 = urand(4000, 10000);
-            uiTimerSpell2 = urand(4000, 10000);
-            uiTimerSpell3 = urand(1000, 2000);
-            uiDefendTimer = urand(30000, 60000);
         }
 
         void JustDied(Unit* /*killer*/) override
@@ -296,45 +279,17 @@ class generic_vehicleAI_toc5 : public CreatureScript
         {
             hasBeenInCombat = true;
             DoCastSpellDefend();
+
+            events.ScheduleEvent(EVENT_SHIELD_BREAKER, 8000);
+            events.ScheduleEvent(EVENT_DEFEND, urand(30000, 60000));
+            events.ScheduleEvent(EVENT_CHARGE_VEHICLE, urand(10000, 30000));
+            events.ScheduleEvent(EVENT_THRUST, urand(8000, 14000));
         }
 
         void DoCastSpellDefend()
         {
             for(uint8 i = 0; i < 3; ++i)
                 DoCast(me, SPELL_DEFEND, true);
-        }
-
-        void SpellHit(Unit* source, const SpellInfo* spell) override
-        {
-
-            uint32 defendAuraStackAmount = 0;
-
-            if (me->HasAura(SPELL_DEFEND))
-                if (Aura* defendAura = me->GetAura(SPELL_DEFEND))
-                    defendAuraStackAmount = defendAura->GetStackAmount();
-
-            // Shield-Break by player vehicle
-            if (spell->Id == SPELL_SHIELD_BREAKER)
-            {
-                source->DealDamage(me, uint32(2000 * (1 - 0.3f * defendAuraStackAmount)));
-                source->SendSpellNonMeleeDamageLog(me, SPELL_SHIELD_BREAKER, uint32(2000 * (1 - 0.3f * defendAuraStackAmount)), SPELL_SCHOOL_MASK_NORMAL, 0, 0, true, 0, false);
-
-                if (me->HasAura(SPELL_DEFEND))
-                    me->RemoveAuraFromStack(SPELL_DEFEND);
-            }
-    
-            // Charge by player vehicle
-            if (spell->Id == CHARGE)
-            {
-                source->DealDamage(me, uint32(20000 * (1 - 0.3f * defendAuraStackAmount)));
-                source->SendSpellNonMeleeDamageLog(me, CHARGE, uint32(20000 * (1 - 0.3f * defendAuraStackAmount)), SPELL_SCHOOL_MASK_NORMAL, 0, 0, true, 0, false);
-
-                if (source->GetMotionMaster())
-                    source->GetMotionMaster()->MoveCharge(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
-
-                if (me->HasAura(SPELL_DEFEND))
-                    me->RemoveAuraFromStack(SPELL_DEFEND);
-            }
         }
 
         bool StayInCombatAndCleanup(bool combat, bool cleanup)
@@ -432,81 +387,69 @@ class generic_vehicleAI_toc5 : public CreatureScript
                 } else combatCheckTimer -= uiDiff;
             }
 
+            if (!CheckPlayersAlive())
+               if (Creature* announcer = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ANNOUNCER)))
+                   announcer->AI()->DoAction(ACTION_RESET_GRAND_CHAMPIONS);
+
             npc_escortAI::UpdateAI(uiDiff);
 
             if (!UpdateVictim())
                 return;
 
-            if (uiDefendTimer <= uiDiff)
-            {
-                DoCastSpellDefend();
-                uiDefendTimer = urand(30000, 45000);
-            } else uiDefendTimer -= uiDiff;
+            events.Update(uiDiff);
 
-            if (uiShieldBreakerTimer <= uiDiff)
+            while (uint32 eventId = events.ExecuteEvent())
             {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                switch (eventId)
                 {
-                    if (target->GetTypeId() == TYPEID_PLAYER && me->GetDistance(target) > 10.0f && me->GetDistance(target) < 30.0f)
-                    {
-                        if (target->GetVehicle())
+                    case EVENT_CHARGE_VEHICLE:
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
                         {
-                            if (Unit* vehTarget = target->GetVehicle()->GetBase())
-                            {
-                                DoCast(vehTarget, SPELL_SHIELD_BREAKER);
-                                vehTarget->RemoveAuraFromStack(SPELL_DEFEND);
-                            }
+                            DoResetThreat();
+                            me->AddThreat(target, 5.0f);
+                            DoCastVictim(SPELL_CHARGE);
                         }
-                    }
-                    else if (target->GetTypeId() == TYPEID_UNIT && me->GetDistance(target) > 8.0f && me->GetDistance(target) < 25.0f)
-                    {
-                        DoCast(target, SPELL_SHIELD_BREAKER);
-                        target->RemoveAuraFromStack(SPELL_DEFEND);
-                    }
-                }
-
-                uiShieldBreakerTimer = urand(15000, 20000);
-            } else uiShieldBreakerTimer -= uiDiff;
-
-            if (uiChargeTimer <= uiDiff)
-            {
-                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                {
-                    if (target->GetTypeId() == TYPEID_PLAYER && me->GetDistance(target) > 8.0f && me->GetDistance(target) < 25.0f)
-                    {
-                        if (target->GetVehicle())
+                        events.ScheduleEvent(EVENT_CHARGE_VEHICLE, urand(10000, 30000));
+                        break;
+                    case EVENT_SHIELD_BREAKER:
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
                         {
-                            if (Unit* vehTarget = target->GetVehicle()->GetBase())
+                            if (target->GetTypeId() == TYPEID_PLAYER && me->GetDistance(target) > 10.0f && me->GetDistance(target) < 30.0f)
                             {
-                                DoCast(vehTarget, SPELL_CHARGE);
-
-                                if (vehTarget->HasAura(SPELL_DEFEND))
-                                    vehTarget->RemoveAuraFromStack(SPELL_DEFEND);
+                                if (target->GetVehicle())
+                                {
+                                    if (Unit* vehTarget = target->GetVehicle()->GetBase())
+                                        DoCast(vehTarget, SPELL_SHIELD_BREAKER);
+                                }
                             }
+                            else if (target->GetTypeId() == TYPEID_UNIT && me->GetDistance(target) > 8.0f && me->GetDistance(target) < 25.0f)
+                                DoCast(target, SPELL_SHIELD_BREAKER);
                         }
-                    }
-                    else if (target->GetTypeId() == TYPEID_UNIT && me->GetDistance(target) > 8.0f && me->GetDistance(target) < 25.0f)
-                    {
-                        DoCast(target, SPELL_CHARGE);
-
-                        if (target->HasAura(SPELL_DEFEND))
-                            target->RemoveAuraFromStack(SPELL_DEFEND);
-                    }
+                        events.ScheduleEvent(EVENT_SHIELD_BREAKER, urand(15000, 20000));
+                        break;
+                    case EVENT_DEFEND:
+                        DoCastSpellDefend();
+                        events.ScheduleEvent(EVENT_DEFEND, urand(30000, 45000));
+                        break;
+                    case EVENT_THRUST:
+                        DoCastVictim(SPELL_THRUST);
+                        events.ScheduleEvent(EVENT_THRUST, urand(8000, 14000));
+                        break;
+                    default:
+                        break;
                 }
-
-                uiChargeTimer = urand(10000, 30000);
-            } else uiChargeTimer -= uiDiff;
-
-            if (uiThrustTimer <= uiDiff)
-            {
-                if (me->GetVictim() && me->GetDistance(me->GetVictim()) < 5.0f)
-                    DoCast(me->GetVictim(), SPELL_THRUST);
-
-                uiThrustTimer = urand(8000, 14000);
-            } else uiThrustTimer -= uiDiff;
-
-            DoMeleeAttackIfReady();
+            }
         }
+        private:
+            EventMap events;
+            InstanceScript* instance;
+
+            bool hasBeenInCombat;
+            bool combatEntered;
+
+            uint32 combatCheckTimer;
+            uint32 uiCheckTimer;
+            uint32 uiWaypointPath;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
@@ -670,7 +613,6 @@ class boss_warrior_toc5 : public CreatureScript
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->setFaction(FACTION_FRIENDLY);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
-                HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
         }
@@ -823,7 +765,6 @@ class boss_mage_toc5 : public CreatureScript
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->setFaction(FACTION_FRIENDLY);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
-                HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
         }
@@ -986,7 +927,6 @@ class boss_shaman_toc5 : public CreatureScript
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->setFaction(FACTION_FRIENDLY);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
-                HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
         }
@@ -1045,7 +985,7 @@ class boss_hunter_toc5 : public CreatureScript
                         return;
                 }
 
-                instance->SetData(BOSS_GRAND_CHAMPIONS, FAIL);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, NOT_STARTED);
 
                 if (instance)
                 {
@@ -1196,7 +1136,6 @@ class boss_hunter_toc5 : public CreatureScript
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->setFaction(FACTION_FRIENDLY);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
-                HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
         }
@@ -1250,7 +1189,7 @@ class boss_rogue_toc5 : public CreatureScript
                         return;
                 }
 
-                instance->SetData(BOSS_GRAND_CHAMPIONS, FAIL);
+                instance->SetData(BOSS_GRAND_CHAMPIONS, NOT_STARTED);
 
                 if (instance)
                 {
@@ -1361,7 +1300,6 @@ class boss_rogue_toc5 : public CreatureScript
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->setFaction(FACTION_FRIENDLY);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
-                HandleKillCreditForAllPlayers(me);
                 HandleInstanceBind(me);
             }
         }
@@ -1407,18 +1345,6 @@ void HandleInstanceBind(Creature* source)
             if (player)
                 source->GetMap()->ToInstanceMap()->PermBindAllPlayers(player);
         }
-    }
-}
-
-void HandleKillCreditForAllPlayers(Creature* credit)
-{
-    InstanceScript* instance = credit->GetInstanceScript();
-    if (instance)
-    {
-        Map::PlayerList const &PlayerList = instance->instance->GetPlayers();
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player* player = i->GetSource())
-                player->KilledMonsterCredit(credit->GetEntry());
     }
 }
 
