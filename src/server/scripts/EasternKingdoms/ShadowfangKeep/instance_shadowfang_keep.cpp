@@ -16,20 +16,21 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: Instance_Shadowfang_Keep
-SD%Complete: 90
-SDComment:
-SDCategory: Shadowfang Keep
-EndScriptData */
-
 #include "ScriptedCreature.h"
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
 #include "shadowfang_keep.h"
 #include "TemporarySummon.h"
+#include "Group.h"
+#include "GameEventMgr.h"
 
-#define MAX_ENCOUNTER              4
+#define MAX_ENCOUNTER              6
+
+enum Apothecary
+{
+    ACTION_SPAWN_CRAZED      = 3,
+    EVENT_LOVE_IS_IN_THE_AIR = 8
+};
 
 enum Yells
 {
@@ -66,6 +67,14 @@ const Position SpawnLocation[] =
     {-140.794f, 2178.037f, 128.448f, 4.090f},
     {-138.640f, 2170.159f, 136.577f, 2.737f}
 };
+
+const Position ApothecarySpawnLocation[] =
+{
+    {-205.196f, 2214.55f, 79.8469f, 2.40855f},
+    {-208.09f, 2217.39f, 79.8469f, 4.81711f},
+    {-210.359f, 2214.61f, 79.8476f, 1.0472f},
+};
+
 class instance_shadowfang_keep : public InstanceMapScript
 {
 public:
@@ -85,6 +94,7 @@ public:
 
             uiPhase = 0;
             uiTimer = 0;
+            uiSpawnCrazedTimer = 0;
         }
 
         uint32 m_auiEncounter[MAX_ENCOUNTER];
@@ -98,6 +108,11 @@ public:
         ObjectGuid DoorSorcererGUID;
         ObjectGuid DoorArugalGUID;
 
+        ObjectGuid fryeGUID;
+        ObjectGuid hummelGUID;
+        ObjectGuid baxterGUID;
+        uint32 uiSpawnCrazedTimer;
+
         uint8 uiPhase;
         uint16 uiTimer;
 
@@ -105,9 +120,24 @@ public:
         {
             switch (creature->GetEntry())
             {
-                case NPC_ASH: uiAshGUID = creature->GetGUID(); break;
-                case NPC_ADA: uiAdaGUID = creature->GetGUID(); break;
-                case NPC_ARCHMAGE_ARUGAL: uiArchmageArugalGUID = creature->GetGUID(); break;
+                case NPC_ASH:
+                    uiAshGUID = creature->GetGUID();
+                    break;
+                case NPC_ADA:
+                    uiAdaGUID = creature->GetGUID();
+                    break;
+                case NPC_ARCHMAGE_ARUGAL:
+                    uiArchmageArugalGUID = creature->GetGUID();
+                    break;
+                case NPC_FRYE:
+                    fryeGUID = creature->GetGUID();
+                    break;
+                case NPC_HUMMEL:
+                    hummelGUID = creature->GetGUID();
+                    break;
+                case NPC_BAXTER:
+                    baxterGUID = creature->GetGUID();
+                    break;
             }
         }
 
@@ -177,6 +207,14 @@ public:
                         DoUseDoorOrButton(DoorArugalGUID);
                     m_auiEncounter[3] = data;
                     break;
+                case TYPE_CROWN:
+                    if (data == NOT_STARTED)
+                        uiSpawnCrazedTimer = urand(7000, 14000);
+                    m_auiEncounter[4] = data;
+                    break;
+                case TYPE_BATTLE:
+                    m_auiEncounter[5] = data;
+                    break;
             }
 
             if (data == DONE)
@@ -205,8 +243,43 @@ public:
                     return m_auiEncounter[2];
                 case TYPE_NANDOS:
                     return m_auiEncounter[3];
+                case TYPE_CROWN:
+                    return m_auiEncounter[4];
+                case TYPE_BATTLE:
+                    return m_auiEncounter[5];
             }
             return 0;
+        }
+
+        ObjectGuid GetGuidData(uint32 id) const override
+        {
+            switch(id)
+            {
+                case DATA_DOOR:
+                    return DoorCourtyardGUID;
+                case DATA_FRYE:
+                    return fryeGUID;
+                case DATA_HUMMEL:
+                    return hummelGUID;
+                case DATA_BAXTER:
+                    return baxterGUID;
+            }
+            return ObjectGuid::Empty;
+        }
+
+        void OnPlayerEnter(Player* player) override
+        {
+            Map::PlayerList const& players = instance->GetPlayers();
+            if (!players.isEmpty() && !fryeGUID)
+            {
+                if (Group* group = players.begin()->GetSource()->GetGroup())
+                    if (group->isLFGGroup() && sGameEventMgr->IsActiveEvent(EVENT_LOVE_IS_IN_THE_AIR))
+                    {
+                        instance->SummonCreature(NPC_FRYE, ApothecarySpawnLocation[0]);
+                        instance->SummonCreature(NPC_HUMMEL, ApothecarySpawnLocation[1]);
+                        instance->SummonCreature(NPC_BAXTER, ApothecarySpawnLocation[2]);
+                    }
+            } 
         }
 
         std::string GetSaveData() override
@@ -237,7 +310,19 @@ public:
         }
 
         void Update(uint32 uiDiff)
-        {
+        {          
+            if (GetData(TYPE_CROWN) == IN_PROGRESS)
+            {
+                if (uiSpawnCrazedTimer <= uiDiff)
+                {
+                    if (Creature* hummel = instance->GetCreature(hummelGUID))
+                        hummel->AI()->DoAction(ACTION_SPAWN_CRAZED);
+                    uiSpawnCrazedTimer = urand(2000, 5000);
+                }
+                else
++                    uiSpawnCrazedTimer -= uiDiff;
+            }
+
             if (GetData(TYPE_FENRUS) != DONE)
                 return;
 
