@@ -216,6 +216,7 @@ public:
                 case VEHICLE_ARGENT_WARHORSE:
                 case VEHICLE_ARGENT_BATTLEWORG:
                     VehicleList.push_back(creature->GetGUID());
+                    creature->DespawnOrUnsummon();
                     break;
                 case NPC_EADRIC:
                 case NPC_PALETRESS:
