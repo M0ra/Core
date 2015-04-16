@@ -25,7 +25,7 @@
 enum Spells
 {
     SPELL_SMELT_DARK_IRON       = 14891,
-    SPELL_LEARN_SMELT           = 14894,
+    SPELL_LEARN_SMELT           = 14894
 };
 
 enum Quests
@@ -59,19 +59,19 @@ public:
         player->PlayerTalkClass->ClearMenus();
         switch (action)
         {
-            case GOSSIP_ACTION_INFO_DEF+1:
+            case GOSSIP_ACTION_INFO_DEF + 1:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TEACH_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
                 player->SEND_GOSSIP_MENU(2606, creature->GetGUID());
                 break;
-            case GOSSIP_ACTION_INFO_DEF+11:
+            case GOSSIP_ACTION_INFO_DEF + 11:
                 player->CLOSE_GOSSIP_MENU();
                 player->CastSpell(player, SPELL_LEARN_SMELT, false);
                 break;
-            case GOSSIP_ACTION_INFO_DEF+2:
+            case GOSSIP_ACTION_INFO_DEF + 2:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_TEACH_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 22);
                 player->SEND_GOSSIP_MENU(2604, creature->GetGUID());
                 break;
-            case GOSSIP_ACTION_INFO_DEF+22:
+            case GOSSIP_ACTION_INFO_DEF + 22:
                 player->CLOSE_GOSSIP_MENU();
                 if (InstanceScript* instance = creature->GetInstanceScript())
                 {
@@ -127,11 +127,11 @@ class boss_doomrel : public CreatureScript
             player->PlayerTalkClass->ClearMenus();
             switch (action)
             {
-                case GOSSIP_ACTION_INFO_DEF+1:
+                case GOSSIP_ACTION_INFO_DEF + 1:
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SELECT_DOOMREL, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
                     player->SEND_GOSSIP_MENU(2605, creature->GetGUID());
                     break;
-                case GOSSIP_ACTION_INFO_DEF+2:
+                case GOSSIP_ACTION_INFO_DEF + 2:
                     player->CLOSE_GOSSIP_MENU();
                     //start event here
                     creature->setFaction(FACTION_HOSTILE);
