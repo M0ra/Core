@@ -3696,6 +3696,7 @@ void SpellMgr::LoadSpellInfoCorrections()
                 spellInfo->Effects[EFFECT_0].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_50000_YARDS); // 50000yd
                 spellInfo->Effects[EFFECT_1].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_50000_YARDS); // 50000yd
                 spellInfo->Effects[EFFECT_2].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_50000_YARDS); // 50000yd
+                spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
                 break;
             case 73655: // Harvest Soul
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
@@ -3847,10 +3848,21 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             // ENDOF ISLE OF CONQUEST SPELLS
             //
+            case 49224: // Magic Suppression
+            case 49610:
+            case 49611:
+                spellInfo->ProcCharges = 0;
+                break;
             case 62997: // Mimiron - Plasma Blast
             case 69508: // Rotface - Slime Spray
             case 70498: // Vile Spirits
                 spellInfo->ChannelInterruptFlags = 0;
+                break;
+            case 70541: // Infest (10 normal)
+            case 73779: // Infest (25 normal)
+            case 73780: // Infest (10 heroic)
+            case 73781: // Infest (25 heroic)
+                spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
                 break;
             case 57108:
                 spellInfo->Effects[0].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
