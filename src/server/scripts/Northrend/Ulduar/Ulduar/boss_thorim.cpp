@@ -444,7 +444,6 @@ public:
                         lightning->SetGoState(GO_STATE_ACTIVE);
 
                 DoCastAOE(SPELL_ACHIEVEMENT_CHECK);
-                instance->SetBossState(BOSS_THORIM, DONE);
                 me->setFaction(FACTION_FRIENDLY);
             }
         }
