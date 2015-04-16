@@ -34,7 +34,7 @@
 #include "Opcodes.h"
 #include "DisableMgr.h"
 #include "Group.h"
-#include "Crossfbg/Crossfbg.h"
+#include "Crossfbg.h"
 
 void WorldSession::HandleBattlemasterHelloOpcode(WorldPacket& recvData)
 {
