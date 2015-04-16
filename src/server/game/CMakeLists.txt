@@ -50,7 +50,6 @@ file(GLOB_RECURSE sources_Tickets Tickets/*.cpp Tickets/*.h)
 file(GLOB_RECURSE sources_Warden Warden/*.cpp Warden/*.h)
 file(GLOB_RECURSE sources_Weather Weather/*.cpp Weather/*.h)
 file(GLOB_RECURSE sources_World World/*.cpp World/*.h)
-file(GLOB_RECURSE sources_Crossfbg Crossfbg/*.cpp Crossfbg/*.h)
 
 # Create game-libary
 
@@ -103,7 +102,6 @@ set(game_STAT_SRCS
   ${sources_Warden}
   ${sources_Weather}
   ${sources_World}
-  ${sources_Crossfbg}
 )
 
 include_directories(
