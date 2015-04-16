@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -25,8 +24,8 @@
 #include "ArenaTeam.h"
 #include "Language.h"
 
-#define ARENA_1V1_MIN_LEVEL 80 // min level to create an arenateam
-#define ARENA_1V1_COST 40 * 10000 // costs for create a team: 40 gold
+#define ARENA_1V1_MIN_LEVEL 80      // min level to create an arenateam
+#define ARENA_1V1_COST 4000 * 10000 // costs for create a team: 4000 gold
 
 class npc_1v1arena : public CreatureScript  
 {
@@ -35,12 +34,11 @@ class npc_1v1arena : public CreatureScript
         {
         }
 
-        bool JoinQueueArena(Player* player, Creature* me)
+        bool JoinQueueArena(Player* player, Creature* /*me*/)
         {
             if (ARENA_1V1_MIN_LEVEL > player->getLevel())
                 return false;
 
-            ObjectGuid guid = player->GetGUID();
             uint8 arenaslot = ArenaTeam::GetSlotByType(ARENA_TEAM_1v1);
             uint8 arenatype = ARENA_TYPE_1v1;
             uint32 arenaRating = 0;
@@ -94,7 +92,6 @@ class npc_1v1arena : public CreatureScript
             arenaRating = at->GetRating();
             matchmakerRating = arenaRating;
             // the arenateam id must match for everyone in the group
-
             if (arenaRating <= 0)
                 arenaRating = 1;
 
@@ -115,7 +112,7 @@ class npc_1v1arena : public CreatureScript
             return true;
         }
 
-        bool CreateArenateam(Player* player, Creature* me)
+        bool CreateArenateam(Player* player, Creature* /*me*/)
         {
             uint8 slot = ArenaTeam::GetSlotByType(ARENA_TEAM_1v1);
             if (slot >= MAX_ARENA_SLOT)
@@ -157,7 +154,7 @@ class npc_1v1arena : public CreatureScript
             sArenaTeamMgr->AddArenaTeam(arenaTeam);
             arenaTeam->AddMember(player->GetGUID());
 
-            ChatHandler(player->GetSession()).SendSysMessage("1v1 Arenateam successful created!");
+            ChatHandler(player->GetSession()).SendSysMessage("1х1 команда успешно создана!");
 
             return true;
         }
@@ -165,21 +162,21 @@ class npc_1v1arena : public CreatureScript
         bool OnGossipHello(Player* player, Creature* me) override
         {
             if (player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1)) == NULL)
-                player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Create 1v1 Rated Arena Team", GOSSIP_SENDER_MAIN, 1, "Create 1v1 arena team?", ARENA_1V1_COST, false);
+                player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Создать 1х1 Команду", GOSSIP_SENDER_MAIN, 1, "Создать 1х1 Команду?", ARENA_1V1_COST, false);
             else
             {
                 if (player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_1v1))
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Leave 1v1 Arena", GOSSIP_SENDER_MAIN, 3);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Оставить 1х1 Арена", GOSSIP_SENDER_MAIN, 3);
                 else
                 {
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_3v3_5:30|t Join 1v1 Rated Arena", GOSSIP_SENDER_MAIN, 2);
-                    player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Disband Arena team", GOSSIP_SENDER_MAIN, 5, "Are you sure?", 0, false);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_3v3_5:30|t Соединение 1х1 Арена", GOSSIP_SENDER_MAIN, 2);
+                    player->ADD_GOSSIP_ITEM_EXTENDED(GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Распустить Команду.", GOSSIP_SENDER_MAIN, 5, "Вы уверены?", 0, false);
                 }
 
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_01:30|t Show statistics", GOSSIP_SENDER_MAIN, 4);
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_01:30|t Показать статистику.", GOSSIP_SENDER_MAIN, 4);
             }
 
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_03:30|t How to Use NPC?", GOSSIP_SENDER_MAIN, 8);
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "|TInterface/ICONS/INV_Misc_Coin_03:30|t Как использовать NPC?", GOSSIP_SENDER_MAIN, 8);
 	        	player->SEND_GOSSIP_MENU(68, me->GetGUID());
 	        	return true;
         }
@@ -199,7 +196,7 @@ class npc_1v1arena : public CreatureScript
                     }
                     else
                     {
-                        ChatHandler(player->GetSession()).PSendSysMessage("You need level %u+ to create an 1v1 Arena Team.", ARENA_1V1_MIN_LEVEL);
+                        ChatHandler(player->GetSession()).PSendSysMessage("Вам нужен %u+ уровень, чтобы создать 1х1 команду Арены.", ARENA_1V1_MIN_LEVEL);
                         player->CLOSE_GOSSIP_MENU();
                         return true;
                     }
@@ -208,7 +205,7 @@ class npc_1v1arena : public CreatureScript
                 case 2: // Join Queue Arena
                 {
                     if (JoinQueueArena(player, me) == false)
-                        ChatHandler(player->GetSession()).SendSysMessage("Something went wrong while join queue.");
+                        ChatHandler(player->GetSession()).SendSysMessage("Что-то пошло не так при присоединении к очереди.");
                     player->CLOSE_GOSSIP_MENU();
                     return true;
                 }
@@ -244,17 +241,17 @@ class npc_1v1arena : public CreatureScript
                     WorldPacket Data;
                     Data << (uint32)player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_1v1));
                     player->GetSession()->HandleArenaTeamLeaveOpcode(Data);
-                    ChatHandler(player->GetSession()).PSendSysMessage("Arena team deleted!");
+                    ChatHandler(player->GetSession()).PSendSysMessage("Команда арены удалена!");
                     player->CLOSE_GOSSIP_MENU();
                     return true;
                 }
                 break;
                 case 8: // Script Info
                 {
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Click on Create new 1v1 Arena team", GOSSIP_SENDER_MAIN, uiAction);
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Join 1v1 Arena and ready!", GOSSIP_SENDER_MAIN, uiAction);
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Enjoy!", GOSSIP_SENDER_MAIN, uiAction);
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "<- Back", GOSSIP_SENDER_MAIN, 7);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Создать новую команду 1х1 Арена", GOSSIP_SENDER_MAIN, uiAction);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Присоединиться 1х1 Арена и вперёд!", GOSSIP_SENDER_MAIN, uiAction);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Наслаждаться!", GOSSIP_SENDER_MAIN, uiAction);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "<- Назад", GOSSIP_SENDER_MAIN, 7);
                     player->SEND_GOSSIP_MENU(68, me->GetGUID());
                     return true;
                 }
