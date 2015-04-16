@@ -3868,11 +3868,6 @@ void SpellMgr::LoadSpellInfoCorrections()
                 spellInfo->Effects[0].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
                 spellInfo->Effects[1].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
                 break;
-            case 49224: // Magic Suppression
-            case 49610:
-            case 49611:
-                spellInfo->ProcCharges = 0;
-                break;
             case 28374: // Gluth's Decimate
             case 54426: // Gluth's Decimate
                 spellInfo->AttributesEx |= SPELL_ATTR1_CANT_TARGET_SELF;
