@@ -141,7 +141,7 @@ void Player::FitPlayerInTeam(bool action, Battleground* pBattleGround)
     if ((!pBattleGround || pBattleGround->isArena()) && action)
         return;
 
-    if(!IsPlayingNative() && action)
+    if (!IsPlayingNative() && action)
         setFactionForRace(getRace());
     else
         setFactionForRace(getORace());
