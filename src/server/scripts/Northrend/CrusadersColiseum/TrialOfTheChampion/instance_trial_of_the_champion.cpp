@@ -91,6 +91,22 @@ public:
             uiArgentSoldierDeaths         = 0;
             TeamInInstance                = 0;
 
+            uiAnnouncerGUID.Clear();
+            blackknightGUID.Clear();
+            uiHighlordGUID.Clear();
+            uiMainGateGUID.Clear();
+            uiMainGate1GUID.Clear();
+            uiVarianGUID.Clear();
+            uiThrallGUID.Clear();
+            uiGrandChampionVehicle1GUID.Clear();
+            uiGrandChampionVehicle2GUID.Clear();
+            uiGrandChampionVehicle3GUID.Clear();
+            uiGrandChampion1GUID.Clear();
+            uiGrandChampion2GUID.Clear();
+            uiGrandChampion3GUID.Clear();
+            uiChampionLootGUID.Clear();
+            uiArgentChampionGUID.Clear();
+
             bDone = false;
             HasChestSpawned = false;
 
@@ -257,7 +273,7 @@ public:
             {
                 case CRITERIA_IVE_HAD_WORSE:
                     if (Creature* knight = instance->GetCreature(blackknightGUID))
-                        return knight->AI()->GetData(DATA_IVE_HAD_WORSE);
+                        return knight->AI()->GetData(DATA_IVE_HAD_WORSE) == 1;
                     break;
                 default:
                     break;
