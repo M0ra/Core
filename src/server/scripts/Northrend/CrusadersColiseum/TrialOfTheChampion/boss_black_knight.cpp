@@ -22,17 +22,18 @@
 
 enum Talk
 {
-   SAY_INTRO_1                             = 0, // You spoiled my grand entrance, Rat.
-   SAY_INTRO_2                             = 56, // What is the meaning of this? -Tirion
-   SAY_INTRO_3                             = 1, // Did you honestly think an agent of the Lich King would be bested on the field of your pathetic little tournament?
-   SAY_INTRO_4                             = 2, // I have come to finish my task
-   SAY_AGGRO                               = 3, // This farce ends here!
-   SAY_AGGRO_OUTRO                         = 51, // Varian - Don't just stand there; kill him! | Garrosh - Tear him apart!
-   SAY_KILLED_PLAYER                       = 6, // Pathetic | A waste of flesh.
-   SAY_PHASE_1                             = 4, // My roting flash was just getting in the way!
-   SAY_PHASE_2                             = 5, // I have no need for bones to best you!
-   SAY_DEATH                               = 7  // No! I must not fail...again...
+   SAY_INTRO_1              = 0, 
+   SAY_INTRO_2              = 56,
+   SAY_INTRO_3              = 1,
+   SAY_INTRO_4              = 2,
+   SAY_AGGRO                = 3,
+   SAY_AGGRO_OUTRO          = 51,
+   SAY_KILLED_PLAYER        = 6,
+   SAY_PHASE_1              = 4,
+   SAY_PHASE_2              = 5,
+   SAY_DEATH                = 7,
 };
+
 
 enum Spells
 {
@@ -49,7 +50,7 @@ enum Spells
     KILL_HERALD             = 66804,
     SPELL_RESPITE_HERALD    = 66798,
 
-    //phase 2 - During this phase, the Black Knight will use the same abilities as in phase 1, except for Death's Respite
+    //phase 2
     SPELL_ARMY_DEAD         = 67761,
     SPELL_DESECRATION       = 68766,
     SPELL_GHOUL_EXPLODE     = 67751,
@@ -76,13 +77,13 @@ enum Spells
 
 enum Models
 {
-    MODEL_SKELETON = 29846,
-    MODEL_GHOST    = 21300
+    MODEL_SKELETON          = 29846,
+    MODEL_GHOST             = 21300
 };
 
 enum Equip
 {
-    EQUIP_SWORD   = 40343
+    EQUIP_SWORD            = 40343
 };
 
 enum IntroPhase
@@ -90,24 +91,24 @@ enum IntroPhase
     IDLE,
     INTRO,
     NORMAL,
-    FINISHED
+    FINISHED,
 };
 
 enum Phases
 {
-    PHASE_UNDEAD    = 3,
-    PHASE_SKELETON  = 4,
-    PHASE_GHOST     = 5
+    PHASE_UNDEAD            = 3,
+    PHASE_SKELETON          = 4,
+    PHASE_GHOST             = 5,
 
 };
 
 enum Creatures
 {
-    CREATURE_HIGHLORD                     = 34996,
-    CREATURE_ANNOUNCER                    = 35004
+    CREATURE_HIGHLORD       = 34996,
+    CREATURE_ANNOUNCER      = 35004,
 };
 
-const Position MoveKnightPos         = {746.993286f, 622.990784f, 411.417237f, 4.712464f};
+const Position MoveKnightPos = {746.993286f, 622.990784f, 411.417237f, 4.712464f};
 
 class boss_black_knight : public CreatureScript
 {
@@ -118,9 +119,40 @@ public:
     {
         boss_black_knightAI(Creature* creature) : ScriptedAI(creature)
         {
+            Initialize();
             instance = creature->GetInstanceScript();
             Phase = IDLE;
             bCredit = false;
+        }
+
+        void Initialize()
+        {
+            uiPhase = PHASE_UNDEAD;
+            uiIcyTouchTimer = urand(5000, 9000);
+            uiIcyTouch1Timer = urand(15000, 15000);
+            uiPlagueStrikeTimer = urand(10000, 13000);
+            uiDeathRespiteTimer = 17000;
+            uiPlagueStrike1Timer = urand(14000, 14000);
+            uiObliterateTimer = urand(17000, 19000);
+            uiObliterate1Timer = urand(15000, 15000);
+            uiDesecrationTimer = urand(15000, 16000);
+            uiDesecrationTimer = 22000;
+            uiDeathArmyCheckTimer = 7000;
+            uiResurrectTimer = 4000;
+            uiGhoulExplodeTimer = 8000;
+            uiDeathBiteTimer = urand (2000, 4000);
+            uiMarkedDeathTimer = urand (5000, 7000);
+            uiIntroTimer = 15000;
+            uiIntroPhase = 0;
+            Phase = INTRO;
+
+            bEventInProgress = false;
+            bEvent = false;
+            bSummonArmy = false;
+            bDeathArmyDone = false;
+            bFight = false;
+            iveHadWorse = true;
+            announcer = 0;
         }
 
         InstanceScript* instance;
@@ -139,8 +171,8 @@ public:
         uint8 uiPhase;
         uint8 uiIntroPhase;
 
-        Creature* pHighlord;
-        Creature* pAnnouncer;
+        Creature* highlord;
+        Creature* announcer;
 
         IntroPhase Phase;
 
@@ -165,22 +197,13 @@ public:
             me->SetDisplayId(me->GetNativeDisplayId());
             me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
 
-            bEventInProgress = false;
-            bEvent = false;
-            bSummonArmy = false;
-            bDeathArmyDone = false;
-            bFight = false;
-            iveHadWorse = true;
-            pAnnouncer = NULL;
+            Initialize();
 
-            if (instance)
-            {
-                if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
-                    instance->HandleGameObject(go->GetGUID(), false);
+            if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
+                instance->HandleGameObject(go->GetGUID(), false);
 
-                if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
-                    instance->HandleGameObject(go->GetGUID(), true);
-            }
+            if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
+                instance->HandleGameObject(go->GetGUID(), true);
 
             if (bEventInBattle)
             {
@@ -189,25 +212,6 @@ public:
                 me->SetReactState(REACT_AGGRESSIVE);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
             }
-
-            uiPhase = PHASE_UNDEAD;
-            uiIcyTouchTimer = urand(5000, 9000);
-            uiIcyTouch1Timer = urand(15000, 15000);
-            uiPlagueStrikeTimer = urand(10000, 13000);
-            uiDeathRespiteTimer = 17000;
-            uiPlagueStrike1Timer = urand(14000, 14000);
-            uiObliterateTimer = urand(17000, 19000);
-            uiObliterate1Timer = urand(15000, 15000);
-            uiDesecrationTimer = urand(15000, 16000);
-            uiDesecrationTimer = 22000;
-            uiDeathArmyCheckTimer = 7000;
-            uiResurrectTimer = 4000;
-            uiGhoulExplodeTimer = 8000;
-            uiDeathBiteTimer = urand (2000, 4000);
-            uiMarkedDeathTimer = urand (5000, 7000);
-            uiIntroTimer = 15000;
-            uiIntroPhase = 0;
-            Phase = IDLE;
         }
 
         void MoveInLineOfSight(Unit* who) override
@@ -229,14 +233,13 @@ public:
             if (SummonList.empty())
                 return;
 
-            for(GuidList::const_iterator itr = SummonList.begin(); itr != SummonList.end(); ++itr)
+            for (GuidList::const_iterator itr = SummonList.begin(); itr != SummonList.end(); ++itr)
             {
                 if (Creature* temp = ObjectAccessor::GetCreature(*me, *itr))
                 {
                     if (temp)
                     {
-                        // Let all remaining ghouls explode
-                        if ((temp->GetEntry() == 35590 || temp->GetEntry() == 12444) && temp->IsAlive())
+                        if ((temp->GetEntry() == RISEN_CHAMPION || temp->GetEntry() == 12444) && temp->IsAlive())
                         {
                             me->CastSpell(temp, SPELL_GHOUL_EXPLODE, true);
                         }
@@ -312,7 +315,6 @@ public:
                 return;
 
             if (bEventInProgress)
-            {
                 if (uiResurrectTimer <= uiDiff)
                 {
                     me->SetFullHealth();
@@ -335,7 +337,7 @@ public:
                     bEventInProgress = false;
                     me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
                 } else uiResurrectTimer -= uiDiff;
-            }
+
 
             switch (uiPhase)
             {
@@ -366,12 +368,11 @@ public:
                     {
                         bSummonArmy = true;
                         me->AddUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
-                        me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                         DoCast(me, SPELL_ARMY_DEAD);
                     }
 
                     if (!bDeathArmyDone)
-                    {
                         if (uiDeathArmyCheckTimer <= uiDiff)
                         {
                             me->ClearUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED);
@@ -379,8 +380,7 @@ public:
                             uiDeathArmyCheckTimer = 0;
                             bDeathArmyDone = true;
                         } else uiDeathArmyCheckTimer -= uiDiff;
-                    }
-							
+                    
                     if (uiDesecrationTimer <= uiDiff)
                     {
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
@@ -388,21 +388,20 @@ public:
                             if (target->IsAlive())
                                 DoCast(target, SPELL_DESECRATION);
                         }
-                        uiDesecrationTimer = urand(15000,16000);
+                        uiDesecrationTimer = urand(15000, 16000);
                     } else uiDesecrationTimer -= uiDiff;
                         
                     if (uiGhoulExplodeTimer <= uiDiff)
                     {
                         if (!SummonList.empty())
                         {
-                            for(GuidList::const_iterator itr = SummonList.begin(); itr != SummonList.end(); ++itr)
+                            for (GuidList::const_iterator itr = SummonList.begin(); itr != SummonList.end(); ++itr)
                             {
                                 if (Creature* temp = ObjectAccessor::GetCreature(*me, *itr))
                                 {
                                     if (temp)
                                     {
-                                        // Let all remaining ghouls explode
-                                        if (temp->GetEntry() == 35590 || temp->GetEntry() == 12444)
+                                        if (temp->GetEntry() == RISEN_CHAMPION || temp->GetEntry() == 12444)
                                         {
                                             if (temp->IsAlive())
                                             {
@@ -476,7 +475,7 @@ public:
                 DoMeleeAttackIfReady();
         }
 
-        void EnterCombat(Unit* /*who*/) override
+        void EnterCombat(Unit* who) override
         {
             bEventInBattle = true;
             Talk(SAY_AGGRO);
@@ -496,16 +495,13 @@ public:
                     varian->AI()->Talk(SAY_AGGRO_OUTRO);
             }
 
-            if (instance)
-            {
-                if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
-                    instance->HandleGameObject(go->GetGUID(), false);
+            if (GameObject* gate = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
+                instance->HandleGameObject(gate->GetGUID(), false);
 
-                if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
-                    instance->HandleGameObject(go->GetGUID(), false);
+            if (GameObject* gate = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
+                instance->HandleGameObject(gate->GetGUID(), false);
 
-                instance->SetData(BOSS_BLACK_KNIGHT, IN_PROGRESS);
-            }
+            instance->SetData(BOSS_BLACK_KNIGHT, IN_PROGRESS);
         }
 
         void KilledUnit(Unit* /*victim*/) override
@@ -559,29 +555,23 @@ public:
         {
             DoCast(me, SPELL_KILL_CREDIT);
             Talk(SAY_DEATH);
+            
             if (TempSummon* summ = me->ToTempSummon())
                 summ->SetTempSummonType(TEMPSUMMON_DEAD_DESPAWN);
 
-            if (instance)
-            {
-                instance->SetData(BOSS_BLACK_KNIGHT, DONE);
+            instance->SetData(BOSS_BLACK_KNIGHT, DONE);
+            instance->DoCastSpellOnPlayers(SPELL_KILL_CREDIT);
 
-                instance->DoCastSpellOnPlayers(SPELL_KILL_CREDIT);
-
-                // Instance encounter counting mechanics
-                //instance->UpdateEncounterState(ENCOUNTER_CREDIT_CAST_SPELL, 68663, me);
-
-                if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
-                    instance->HandleGameObject(go->GetGUID(), true);
-            }
+            if (GameObject* gate = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
+                instance->HandleGameObject(gate->GetGUID(), true);
         }
         private:
             EventMap _events;
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
-        return new boss_black_knightAI (creature);
+        return GetTrialOfTheChampionAI<boss_black_knightAI>(creature);
     }
 
 };
@@ -593,14 +583,23 @@ public:
 
     struct npc_risen_ghoulAI : public ScriptedAI
     {
-        npc_risen_ghoulAI(Creature* creature) : ScriptedAI(creature) { }
+        npc_risen_ghoulAI(Creature* creature) : ScriptedAI(creature) 
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            uiAttackTimer = 3500;
+        }
 
         uint32 uiAttackTimer;
+
         InstanceScript* instance;
 
         void Reset() override
         {
-            uiAttackTimer = 3500;
+            Initialize();   
         }
 
         void UpdateAI(uint32 diff) override
@@ -631,7 +630,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_risen_ghoulAI(creature);
+        return GetTrialOfTheChampionAI<npc_risen_ghoulAI>(creature);
     }
 };
 
@@ -644,7 +643,14 @@ public:
     {
         npc_risen_announcerAI(Creature* creature) : ScriptedAI(creature) 
         {
+            Initialize();
             me->setFaction(14);
+        }
+
+        void Initialize()
+        {
+            uiLeapTimer = 10000;
+            uiClawTimer = 1000;
         }
 
         uint32 uiLeapTimer;
@@ -652,8 +658,7 @@ public:
 
         void Reset() override
         {
-            uiLeapTimer = 10000;
-            uiClawTimer = 1000;
+            Initialize();
         }
 
         void UpdateAI(uint32 diff) override
@@ -677,15 +682,13 @@ public:
                 uiClawTimer = 1000;
             } else uiClawTimer -= diff;
 
-
-
             DoMeleeAttackIfReady();
         }
     };
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_risen_announcerAI(creature);
+        return GetTrialOfTheChampionAI<npc_risen_announcerAI>(creature);
     }
 };
 
@@ -698,16 +701,23 @@ public:
     {
         npc_black_knight_skeletal_gryphonAI(Creature* creature) : npc_escortAI(creature)
         {
+            Initialize();
             Start(false, true);
             instance = creature->GetInstanceScript();
         }
 
-        Creature* pHighlord;
+        void Initialize()
+        {
+            highlord = 0;
+        }
+
+        Creature* highlord;
+
         InstanceScript* instance;
 
         void Reset() override
         {
-            pHighlord = NULL;
+            Initialize();
         }
 
         void WaypointReached(uint32 uiPointId) override
@@ -740,9 +750,6 @@ public:
                 case 10:
                     me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
                     me->SetSpeed(MOVE_RUN, 2.0f);
-                    if (!me->FindNearestCreature(NPC_BLACK_KNIGHT, 200.0f))
-                        if (Creature* announcer = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ANNOUNCER)))
-                            announcer->AI()->DoAction(ACTION_RESET_BLACK_KNIGHT);
                     break;
             }
         }
@@ -758,7 +765,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_black_knight_skeletal_gryphonAI(creature);
+        return GetTrialOfTheChampionAI<npc_black_knight_skeletal_gryphonAI>(creature);
     }
 };
 
