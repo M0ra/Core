@@ -18,7 +18,9 @@
 #ifndef DEF_TOC_H
 #define DEF_TOC_H
 
-enum Data
+#define TOCHScriptName "instance_trial_of_the_champion"
+
+enum eData
 {
     BOSS_GRAND_CHAMPIONS,
     BOSS_ARGENT_CHALLENGE_E,
@@ -26,9 +28,7 @@ enum Data
     BOSS_BLACK_KNIGHT,
     DATA_MOVEMENT_DONE,
     DATA_LESSER_CHAMPIONS_DEFEATED,
-    DATA_GRAND_CHAMPIONS_DEFEATED,
     DATA_START,
-    DATA_IN_POSITION,
     DATA_ARGENT_SOLDIER_DEFEATED,
     DATA_TEAM_IN_INSTANCE,
     DATA_RESET,
@@ -36,7 +36,6 @@ enum Data
     DATA_AGRO_DONE,
     DATA_BLACK_KNIGHT,
     DATA_KNIGHT,
-    DATA_THE_FACEROLLER,
     DATA_IVE_HAD_WORSE
 };
 
@@ -57,7 +56,7 @@ enum Data64
     DATA_GRAND_CHAMPION_3
 };
 
-enum Npcs
+enum eNpcs
 {
     // Horde Champions
     NPC_MOKRA                                       = 35572,
@@ -137,10 +136,12 @@ enum Npcs
 
     // Vehicles
     NPC_ARGENT_WARHORSE                             = 35644,
-    NPC_ARGENT_BATTLEWORG                           = 36558
+    NPC_ARGENT_BATTLEWORG                           = 36558,
+
+    RISEN_CHAMPION                                  = 35590
 };
 
-enum GameObjects
+enum eGameObjects
 {
     GO_MAIN_GATE                                    = 195647,
     GO_MAIN_GATE1                                   = 195650,
@@ -155,7 +156,7 @@ enum GameObjects
     GO_PALETRESS_LOOT_H                             = 195324
 };
 
-enum Vehicles
+enum eVehicles
 {
     //Grand Champions Alliance Vehicles
     VEHICLE_MARSHAL_JACOB_ALERIUS_MOUNT             = 35637,
@@ -191,22 +192,28 @@ enum Vehicles
 enum Actions
 {
     ACTION_OUTRO                                    = 0,
-    ACTION_RESET_BLACK_KNIGHT                       = 1
+    ACTION_SET_HERALD_IN_POSITION                   = 1,
+    ACTION_RESET_GRAND_CHAMPIONS                    = 2,
 };
 
 enum Criterias
 {
-    CRITERIA_IVE_HAD_WORSE                          = 11789
-};
-
-enum TocFactions
-{
-    FACTION_HOSTILE                                 = 14,
-    FACTION_FRIENDLY                                = 35
+    CRITERIA_IVE_HAD_WORSE                          = 11789,
+    ARGENT_LANCE                                    = 46106
 };
 
 void HandleSpellOnPlayersInInstanceToC5(Unit* caller, uint32 spellId);
-void HandleKillCreditForAllPlayers(Creature* credit);
 void HandleInstanceBind(Creature* source);
+
+
+template<class AI>
+CreatureAI* GetTrialOfTheChampionAI(Creature* creature)
+{
+    if (InstanceMap* instance = creature->GetMap()->ToInstanceMap())
+        if (instance->GetInstanceScript())
+            if (instance->GetScriptId() == sObjectMgr->GetScriptId(TOCHScriptName))
+                return new AI(creature);
+            return NULL;
+}
 
 #endif
