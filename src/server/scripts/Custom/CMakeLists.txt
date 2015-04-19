@@ -25,7 +25,7 @@ set(scripts_STAT_SRCS
   Custom/cs_premium.cpp
   Custom/mod_SpecialCode.cpp
   Custom/1v1.cpp
-# 13
+  Custom/cs_qc.cpp
 # 14
 # 15
 # 16
