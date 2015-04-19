@@ -1193,7 +1193,7 @@ class boss_rogue_toc5 : public CreatureScript
             bHome = false;
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             _EnterCombat();
             hasBeenInCombat = true;
@@ -1304,7 +1304,7 @@ public:
         creature_entry = original_entry;
     }
 
-    bool OnCheck(Player* source, Unit* target) override
+    bool OnCheck(Player* /*source*/, Unit* target) override
     {
         if (!target)
             return false;
