@@ -292,7 +292,7 @@ class boss_eadric : public CreatureScript
             }
         }
 
-        void DamageTaken(Unit* /*who*/, uint32& damage)
+        void DamageTaken(Unit* /*who*/, uint32& damage) override
         {
             if (damage >= me->GetHealth())
             {
@@ -318,7 +318,7 @@ class boss_eadric : public CreatureScript
                 return;
         }
 
-        void EnterCombat(Unit* /*who*/)
+        void EnterCombat(Unit* /*who*/) override
         {
             events.ScheduleEvent(EVENT_RADIANCE, 16000);
             events.ScheduleEvent(EVENT_VENGEANCE, 10000);
@@ -435,10 +435,9 @@ class boss_paletress : public CreatureScript
             _hasSummonedMemory = false;
             bCredit = false;
             uiResetTimer = 7000;
-            _hasSummonedMemory = false;
             bDone = false;
+            memoryGUID.Clear();
         }
-
 
         void Reset() override
         {
@@ -824,7 +823,7 @@ class npc_argent_soldier : public CreatureScript
                 uiWaypoint = uiType;
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32 &damage)
+            void DamageTaken(Unit* /*attacker*/, uint32 &damage) override
             {
                 if (!IsHeroic() || _shielded || me->GetEntry() != NPC_ARGENT_MONK)
                     return;
@@ -1018,7 +1017,7 @@ public:
     bool OnCheck(Player* /*source*/, Unit* target) override
     {
         if (target && target->GetMap()->ToInstanceMap()->IsHeroic())
-            return target->GetAI()->GetData(DATA_THE_FACEROLLER);
+            return target->GetAI()->GetData(DATA_THE_FACEROLLER) == 1;
 
         return false;
     }
