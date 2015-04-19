@@ -116,7 +116,8 @@ enum DataTypes
     DATA_ARTHAS_PLATFORM            = 39,
     DATA_TERENAS_MENETHIL           = 40,
     DATA_ENEMY_GUNSHIP              = 41,
-    DATA_UPPERSPIRE_TELE_ACT        = 42
+    DATA_UPPERSPIRE_TELE_ACT        = 42,
+    DATA_CRIMSON_HALL_DOOR          = 43
 };
 
 enum CreaturesIds
@@ -326,7 +327,12 @@ enum CreaturesIds
     NPC_FROSTWARDEN_SORCERESS                   = 37229,
 
     // Generic
-    NPC_INVISIBLE_STALKER                       = 30298
+    NPC_INVISIBLE_STALKER                       = 30298,
+
+    NPC_DARKFALLEN_NOBLE                        = 37663,
+    NPC_DARKFALLEN_BLOODKNIGHT                  = 37595,
+    NPC_DARKFALLEN_ARCHMAGE                     = 37664,
+    NPC_DARKFALLEN_ADVISOR                      = 37571
 };
 
 enum GameObjectsIds
