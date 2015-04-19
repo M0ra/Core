@@ -1434,7 +1434,7 @@ void AddSC_Reset();
 void AddSC_arena_spectator_script();
 void AddSC_npc_mmr_reset();
 void AddSC_Mod_SpecialCode();
-// 12
+void AddSC_custom_commandscript();
 // 13
 // 14
 // 15
@@ -1480,7 +1480,7 @@ void AddCustomScripts()
     AddSC_premium_commandscript();
     AddSC_npc_teleport();
     AddSC_Mod_SpecialCode();
-    // 12
+    AddSC_custom_commandscript();
     // 13
     // 14
     // 15
