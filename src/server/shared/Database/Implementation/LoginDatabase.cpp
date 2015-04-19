@@ -110,6 +110,10 @@ void LoginDatabaseConnection::DoPrepareStatements()
     PrepareStatement(LOGIN_UPD_EXPIRED_ACCOUNT_PREMIUM, "UPDATE account_premium SET active = 0 WHERE unsetdate<=UNIX_TIMESTAMP() AND unsetdate<>setdate", CONNECTION_SYNCH);
     PrepareStatement(LOGIN_SEL_PREMIUM, "SELECT 1 FROM account_premium WHERE id = ? AND active = 1", CONNECTION_SYNCH);
 
+    PrepareStatement(LOGIN_SEL_QUESTCOMPLETER, "SELECT COUNT(id) FROM quest_completer where id = ?", CONNECTION_SYNCH);
+    PrepareStatement(LOGIN_INS_QUESTCOMPLETER, "INSERT INTO quest_completer VALUES (?)", CONNECTION_ASYNC);
+    PrepareStatement(LOGIN_DEL_QUESTCOMPLETER, "DELETE FROM quest_completer WHERE id = ?", CONNECTION_ASYNC);
+
     PrepareStatement(LOGIN_SEL_ACCOUNT_ACCESS_BY_ID, "SELECT gmlevel, RealmID FROM account_access WHERE id = ? and (RealmID = ? OR RealmID = -1) ORDER BY gmlevel desc", CONNECTION_SYNCH);
 
     PrepareStatement(LOGIN_SEL_RBAC_ACCOUNT_PERMISSIONS, "SELECT permissionId, granted FROM rbac_account_permissions WHERE accountId = ? AND (realmId = ? OR realmId = -1) ORDER BY permissionId, realmId", CONNECTION_SYNCH);
