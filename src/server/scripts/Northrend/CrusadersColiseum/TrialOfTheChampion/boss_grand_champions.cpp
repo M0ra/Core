@@ -23,15 +23,9 @@
 
 enum Spells
 {
-    // Defend
-    SPELL_DEFEND_2                  = 66482,
     SPELL_VISUAL_SHIELD_1           = 63130,
     SPELL_VISUAL_SHIELD_2           = 63131,
     SPELL_VISUAL_SHIELD_3           = 63132,
-    CHARGE                          = 68282,
-
-    // Shield break
-    SPELL_THROW_VISUAL              = 45827,
 
     // Vehicle
     SPELL_SHIELD_BREAKER            = 62575,
@@ -79,25 +73,21 @@ enum Spells
     SPELL_FAN_OF_KNIVES             = 67706,
     SPELL_POISON_BOTTLE             = 67701,
 
+    AURA_READY_JOUST                = 64723,
+
     // Achievement Credit
     SPELL_GRAND_CHAMPIONS_CREDIT    = 68572,
-    AURA_READY_JOUST                = 64723
-};
-
-enum Misc
-{
-    ARGENT_LANCE                    = 46106
 };
 
 enum Talk
 {
     SAY_CHAMPION_DEFEAT             = 0,
-    WARNING_WEAPONS                 = 1
+    WARNING_WEAPONS                 = 1,
 };
 
 enum Seat
 {
-    SEAT_ID_0                       = 0
+    SEAT_ID_0                       = 0,
 };
 
 enum Events
@@ -135,7 +125,7 @@ enum Events
     EVENT_THRUST                    = 20,
     EVENT_DEFEND                    = 21,
 
-    EVENT_PHASE_SWITCH
+    EVENT_PHASE_SWITCH,
 };
 
 enum Phases
@@ -160,7 +150,7 @@ void AggroAllPlayers(Creature* temp)
 
             if (player->IsAlive())
             {
-                temp->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
+                temp->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
                 temp->SetReactState(REACT_AGGRESSIVE);
                 temp->SetInCombatWith(player);
                 player->SetInCombatWith(temp);
@@ -170,27 +160,29 @@ void AggroAllPlayers(Creature* temp)
     }
 }
 
-void GuidDataAdder(Creature* creature)
+bool GrandChampionsOutVehicle(Creature* me)
 {
-    InstanceScript* instance = creature->GetInstanceScript();
+    InstanceScript* instance = me->GetInstanceScript();
 
     if (!instance)
-        return;
+        return false;
 
-    if (instance->GetGuidData(DATA_GRAND_CHAMPION_1).IsEmpty())
-        instance->SetGuidData(DATA_GRAND_CHAMPION_1, creature->GetGUID());
-    else if (!instance->GetGuidData(DATA_GRAND_CHAMPION_1).IsEmpty())
+    Creature* grandChampion1 = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1));
+    Creature* grandChampion2 = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_2));
+    Creature* grandChampion3 = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_3));
+
+    if (grandChampion1 && grandChampion2 && grandChampion3)
     {
-        if (instance->GetGuidData(DATA_GRAND_CHAMPION_2).IsEmpty())
-        {
-            instance->SetGuidData(DATA_GRAND_CHAMPION_2, creature->GetGUID());
-        }
-        else if (!instance->GetGuidData(DATA_GRAND_CHAMPION_2).IsEmpty())
-        {
-            if (instance->GetGuidData(DATA_GRAND_CHAMPION_3).IsEmpty())
-                instance->SetGuidData(DATA_GRAND_CHAMPION_3, creature->GetGUID());
-        }
+        if (!grandChampion1->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) &&
+            !grandChampion1->GetVehicle() &&
+            !grandChampion2->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) &&
+            !grandChampion2->GetVehicle() &&
+            !grandChampion3->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) &&
+            !grandChampion3->GetVehicle())
+            return true;
     }
+
+    return false;
 }
 
 class generic_vehicleAI_toc5 : public CreatureScript
@@ -202,26 +194,28 @@ class generic_vehicleAI_toc5 : public CreatureScript
     {
         generic_vehicleAI_toc5AI(Creature* creature) : npc_escortAI(creature)
         {
-            hasBeenInCombat = false;
+            Initialize();
             SetDespawnAtEnd(false);
+            instance = creature->GetInstanceScript();
+        }
+
+        void Initialize()
+        {
+            combatEntered = false;
+            hasBeenInCombat = false;
             uiWaypointPath = 0;
             uiCheckTimer = 5000;
-            instance = creature->GetInstanceScript();
+            combatCheckTimer = 500;
         }
 
         void Reset() override
         {
-            combatCheckTimer = 500;
-        }
-
-        void JustDied(Unit* /*killer*/) override
-        {
-            me->DespawnOrUnsummon(10000);
+            Initialize();
         }
 
         void SetData(uint32 uiType, uint32 /*uiData8*/) override
         {
-            switch(uiType)
+            switch (uiType)
             {
                 case 1:
                     AddWaypoint(0, 746.45f, 647.03f, 411.57f);
@@ -263,7 +257,7 @@ class generic_vehicleAI_toc5 : public CreatureScript
 
         void WaypointReached(uint32 i) override
         {
-            switch(i)
+            switch (i)
             {
                 case 2:
                     if (uiWaypointPath == 3 || uiWaypointPath == 2)
@@ -288,7 +282,7 @@ class generic_vehicleAI_toc5 : public CreatureScript
 
         void DoCastSpellDefend()
         {
-            for(uint8 i = 0; i < 3; ++i)
+            for (uint8 i = 0; i < 3; ++i)
                 DoCast(me, SPELL_DEFEND, true);
         }
 
@@ -306,7 +300,6 @@ class generic_vehicleAI_toc5 : public CreatureScript
                         Player* player = itr->GetSource();
                         if (player && !player->IsGameMaster() && player->IsAlive())
                         {
-                            // Handle combat variable
                             if (combat)
                             {
                                 if (combatEntered)
@@ -317,9 +310,9 @@ class generic_vehicleAI_toc5 : public CreatureScript
 
                                     foundtarget = true;
 
-                                    if (Vehicle* pVehicle = player->GetVehicle()) // If no mounted player is found, first encounter bugs. This might cause it, needs further tests
+                                    if (Vehicle* vehicle = player->GetVehicle())
                                     {
-                                        if (Unit* vehicleCreature = pVehicle->GetBase())
+                                        if (Unit* vehicleCreature = vehicle->GetBase())
                                         {
                                             me->SetInCombatWith(vehicleCreature);
                                             vehicleCreature->SetInCombatWith(me);
@@ -329,7 +322,6 @@ class generic_vehicleAI_toc5 : public CreatureScript
                                 }
                             }
 
-                            // Handle cleanup variable
                             if (cleanup)
                                 if (player->HasAura(SPELL_DEFEND))
                                     player->RemoveAurasDueToSpell(SPELL_DEFEND);
@@ -349,7 +341,6 @@ class generic_vehicleAI_toc5 : public CreatureScript
 
         void EnterEvadeMode() override
         {
-            // Try to stay in combat, otherwise reset
             if (!StayInCombatAndCleanup(true, false))
                 ScriptedAI::EnterEvadeMode();
         }
@@ -377,7 +368,6 @@ class generic_vehicleAI_toc5 : public CreatureScript
 
         void UpdateAI(uint32 uiDiff) override
         {
-            // Try to keep players clean of defend aura
             if (combatEntered)
             {
                 if (combatCheckTimer <= uiDiff)
@@ -440,21 +430,19 @@ class generic_vehicleAI_toc5 : public CreatureScript
                 }
             }
         }
-        private:
-            EventMap events;
-            InstanceScript* instance;
-
-            bool hasBeenInCombat;
-            bool combatEntered;
-
-            uint32 combatCheckTimer;
-            uint32 uiCheckTimer;
-            uint32 uiWaypointPath;
+    private:
+        EventMap events;
+        InstanceScript* instance;
+        bool hasBeenInCombat;
+        bool combatEntered;
+        uint32 combatCheckTimer;
+        uint32 uiCheckTimer;
+        uint32 uiWaypointPath;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<generic_vehicleAI_toc5AI>(creature);
+        return GetTrialOfTheChampionAI<generic_vehicleAI_toc5AI>(creature);
     }
 };
 
@@ -462,19 +450,24 @@ class generic_vehicleAI_toc5 : public CreatureScript
 class boss_warrior_toc5 : public CreatureScript
 {
     public:
-        boss_warrior_toc5(): CreatureScript("boss_warrior_toc5") {}
+        boss_warrior_toc5(): CreatureScript("boss_warrior_toc5") { }
 
     struct boss_warrior_toc5AI : public BossAI
     {
-        boss_warrior_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
+        boss_warrior_toc5AI(Creature* creature) : BossAI(creature,BOSS_GRAND_CHAMPIONS)
         {
+            Initialize();
             instance = creature->GetInstanceScript();
-            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
             bCredit = false;
             hasBeenInCombat = false;
+        }
+
+        void Initialize()
+        {
+            uiInterceptTimer  = 7000;
         }
 
         InstanceScript* instance;
@@ -488,13 +481,15 @@ class boss_warrior_toc5 : public CreatureScript
 
         void Reset() override
         {
-            uiInterceptTimer  = 7000;		
+            Initialize();
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             events.SetPhase(PHASE_IDLE);
         }
 
         void JustReachedHome() override
         {
+            ScriptedAI::JustReachedHome();
+
             if (!bHome)
                 return;
 
@@ -508,11 +503,11 @@ class boss_warrior_toc5 : public CreatureScript
             _EnterCombat();
             hasBeenInCombat = true;
             events.ScheduleEvent(EVENT_BLADESTORM, urand(15000, 25000), 0, PHASE_COMBAT);
-            events.ScheduleEvent(EVENT_MORTAL_STRIKE, urand(8000,12000), 0, PHASE_COMBAT);
+            events.ScheduleEvent(EVENT_MORTAL_STRIKE, urand(8000, 12000), 0, PHASE_COMBAT);
             events.SetPhase(PHASE_COMBAT);
         }
 
-        void DoAction(int32 actionId) override
+        void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -520,32 +515,25 @@ class boss_warrior_toc5 : public CreatureScript
             if (!UpdateVictim())
                 return;
 
-            if (actionId == 1)
+            events.Update(uiDiff);
+
+            if (!bDone && GrandChampionsOutVehicle(me))
             {
+                bDone = true;
                 Talk(WARNING_WEAPONS);
                 me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
-
+                EnterEvadeMode();
                 bHome = true;
-                me->GetMotionMaster()->MoveTargetedHome();
             }
-        }
-
-        void UpdateAI(uint32 uiDiff) override
-        {
-            if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
-                return;
-
-            events.Update(uiDiff);
 
             if (uiInterceptTimer <= uiDiff && events.GetPhaseMask() == PHASE_COMBAT)
             {
@@ -577,7 +565,7 @@ class boss_warrior_toc5 : public CreatureScript
                         break;
                     case EVENT_MORTAL_STRIKE:
                         DoCastVictim(SPELL_MORTAL_STRIKE);
-                        events.ScheduleEvent(EVENT_MORTAL_STRIKE, urand(8000,12000), 0, PHASE_COMBAT);
+                        events.ScheduleEvent(EVENT_MORTAL_STRIKE, urand(8000, 12000), 0, PHASE_COMBAT);
                         break;
                     case EVENT_PHASE_SWITCH:
                         if (events.GetPhaseMask() == PHASE_IDLE)
@@ -603,7 +591,6 @@ class boss_warrior_toc5 : public CreatureScript
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
-                // Instance encounter counting mechanics
                 if (!bCredit)
                 {
                     bCredit = true;
@@ -611,7 +598,7 @@ class boss_warrior_toc5 : public CreatureScript
                 }
 
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(FACTION_FRIENDLY);
+                me->setFaction(35);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleInstanceBind(me);
             }
@@ -620,7 +607,7 @@ class boss_warrior_toc5 : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<boss_warrior_toc5AI>(creature);
+        return GetTrialOfTheChampionAI<boss_warrior_toc5AI>(creature);
     }
 };
 
@@ -628,14 +615,13 @@ class boss_warrior_toc5 : public CreatureScript
 class boss_mage_toc5 : public CreatureScript
 {
     public:
-        boss_mage_toc5(): CreatureScript("boss_mage_toc5") {}
+        boss_mage_toc5(): CreatureScript("boss_mage_toc5") { }
 
     struct boss_mage_toc5AI : public BossAI
     {
         boss_mage_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
             instance = creature->GetInstanceScript();
-            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
@@ -660,6 +646,8 @@ class boss_mage_toc5 : public CreatureScript
 
         void JustReachedHome() override
         {
+            ScriptedAI::JustReachedHome();
+
             if (!bHome)
                 return;
 
@@ -679,33 +667,31 @@ class boss_mage_toc5 : public CreatureScript
             events.SetPhase(PHASE_COMBAT);
         }
 
-        void DoAction(int32 actionId) override
+        void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-            if (actionId == 1)
+            if (!bDone && GrandChampionsOutVehicle(me))
             {
+                bDone = true;
                 me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
-
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
+                EnterEvadeMode();
                 bHome = true;
-                me->GetMotionMaster()->MoveTargetedHome();
             }
-        }
 
-        void UpdateAI(uint32 uiDiff) override
-        {
             if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
                 return;
 
@@ -756,14 +742,13 @@ class boss_mage_toc5 : public CreatureScript
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
-                // Instance encounter counting mechanics
                 if (!bCredit)
                 {
                     bCredit = true;
                     HandleSpellOnPlayersInInstanceToC5(me, SPELL_GRAND_CHAMPIONS_CREDIT);
                 }
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(FACTION_FRIENDLY);
+                me->setFaction(35);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleInstanceBind(me);
             }
@@ -772,7 +757,7 @@ class boss_mage_toc5 : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<boss_mage_toc5AI>(creature);
+        return GetTrialOfTheChampionAI<boss_mage_toc5AI>(creature);
     };
 };
 
@@ -780,20 +765,19 @@ class boss_mage_toc5 : public CreatureScript
 class boss_shaman_toc5 : public CreatureScript
 {
     public:
-        boss_shaman_toc5(): CreatureScript("boss_shaman_toc5") {}
+        boss_shaman_toc5(): CreatureScript("boss_shaman_toc5") { }
 
     struct boss_shaman_toc5AI : public BossAI
     {
         boss_shaman_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
             instance = creature->GetInstanceScript();
-            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
             bCredit = false;
             hasBeenInCombat = false;
-
+            
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);        
         }
 
@@ -828,6 +812,8 @@ class boss_shaman_toc5 : public CreatureScript
 
         void JustReachedHome() override
         {
+            ScriptedAI::JustReachedHome();
+
             if (!bHome)
                 return;
 
@@ -836,31 +822,30 @@ class boss_shaman_toc5 : public CreatureScript
             bHome = false;
         }
 
-        void DoAction(int32 actionId) override
+        void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-            if (actionId == 1)
+            if (!bDone && GrandChampionsOutVehicle(me))
             {
+                bDone = true;
+
                 me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
+                EnterEvadeMode();
                 bHome = true;
-                me->GetMotionMaster()->MoveTargetedHome();
             }
-        }
 
-        void UpdateAI(uint32 uiDiff) override
-        {
             if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
                 return;
 
@@ -880,7 +865,7 @@ class boss_shaman_toc5 : public CreatureScript
                         events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, 23000, 0, PHASE_COMBAT);
                         break;
                     case EVENT_HEALING_WAVE:
-                        bChance = urand(0,1);
+                        bChance = urand(0, 1);
                         if (!bChance)
                         {
                             if (Unit* pFriend = DoSelectLowestHpFriendly(40))
@@ -902,7 +887,7 @@ class boss_shaman_toc5 : public CreatureScript
                         break;
                 }
             }
-
+            
             if (events.GetPhaseMask() == PHASE_COMBAT)
                 DoMeleeAttackIfReady();
         }
@@ -917,7 +902,6 @@ class boss_shaman_toc5 : public CreatureScript
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
-                // Instance encounter counting mechanics
                 if (!bCredit)
                 {
                     bCredit = true;
@@ -925,7 +909,7 @@ class boss_shaman_toc5 : public CreatureScript
                 }
                 EnterEvadeMode();
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(FACTION_FRIENDLY);
+                me->setFaction(35);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleInstanceBind(me);
             }
@@ -934,7 +918,7 @@ class boss_shaman_toc5 : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<boss_shaman_toc5AI>(creature);
+        return GetTrialOfTheChampionAI<boss_shaman_toc5AI>(creature);
     }
 };
 
@@ -942,14 +926,14 @@ class boss_shaman_toc5 : public CreatureScript
 class boss_hunter_toc5 : public CreatureScript
 {
     public:
-        boss_hunter_toc5(): CreatureScript("boss_hunter_toc5") {}
+        boss_hunter_toc5(): CreatureScript("boss_hunter_toc5") { }
 
     struct boss_hunter_toc5AI : public BossAI
     {
         boss_hunter_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
+            Initialize();
             instance = creature->GetInstanceScript();
-            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
@@ -957,6 +941,13 @@ class boss_hunter_toc5 : public CreatureScript
             bCredit = false;
 
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        }
+
+        void Initialize()
+        {
+            uiTargetGUID.Clear();
+
+            bShoot = false;
         }
 
         InstanceScript* instance;
@@ -971,15 +962,11 @@ class boss_hunter_toc5 : public CreatureScript
 
         void Reset() override
         {
-            uiTargetGUID.Clear();
-
-            bShoot = false;
-
             Map* map = me->GetMap();
             if (hasBeenInCombat && map && map->IsDungeon())
             {
                 Map::PlayerList const &players = map->GetPlayers();
-                for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                 {
                     if (itr->GetSource() && itr->GetSource()->IsAlive() && !itr->GetSource()->IsGameMaster())
                         return;
@@ -987,12 +974,8 @@ class boss_hunter_toc5 : public CreatureScript
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, NOT_STARTED);
 
-                if (instance)
-                {
-                    GameObject* GO = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1));
-                    if (GO)
-                        instance->HandleGameObject(GO->GetGUID(),true);
-                }
+                if (GameObject* gate = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
+                    instance->HandleGameObject(gate->GetGUID(), true);
 
                 me->RemoveFromWorld();
                 events.SetPhase(PHASE_IDLE);
@@ -1001,6 +984,8 @@ class boss_hunter_toc5 : public CreatureScript
 
         void JustReachedHome() override
         {
+            ScriptedAI::JustReachedHome();
+
             if (!bHome)
                 return;
 
@@ -1019,31 +1004,30 @@ class boss_hunter_toc5 : public CreatureScript
             events.SetPhase(PHASE_COMBAT);
         }
 
-        void DoAction(int32 actionId) override
+        void UpdateAI(uint32 uiDiff) override
         {
             if (!me->GetVehicle())
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-            if (actionId == 1)
+            if (!bDone && GrandChampionsOutVehicle(me))
             {
+                bDone = true;
+
                 me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
+                EnterEvadeMode();
                 bHome = true;
-                me->GetMotionMaster()->MoveTargetedHome();
             }
-        }
 
-        void UpdateAI(uint32 uiDiff) override
-        {
             if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
                 return;
 
@@ -1076,7 +1060,7 @@ class boss_hunter_toc5 : public CreatureScript
                                 Map::PlayerList const& players = me->GetMap()->GetPlayers();
                                 if (me->GetMap()->IsDungeon() && !players.isEmpty())
                                 {
-                                    for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                                    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                                     {
                                         Player* player = itr->GetSource();
                                         if (player && me->IsInRange(player, 5.0f, 30.0f, false))
@@ -1126,7 +1110,6 @@ class boss_hunter_toc5 : public CreatureScript
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
-                // Instance encounter counting mechanics
                 if (!bCredit)
                 {
                     bCredit = true;
@@ -1134,7 +1117,7 @@ class boss_hunter_toc5 : public CreatureScript
                 }
                 EnterEvadeMode();
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(FACTION_FRIENDLY);
+                me->setFaction(35);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleInstanceBind(me);
             }
@@ -1143,7 +1126,7 @@ class boss_hunter_toc5 : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<boss_hunter_toc5AI>(creature);
+        return GetTrialOfTheChampionAI<boss_hunter_toc5AI>(creature);
     }
 };
 
@@ -1158,13 +1141,13 @@ class boss_rogue_toc5 : public CreatureScript
         boss_rogue_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
             instance = creature->GetInstanceScript();
-            GuidDataAdder(me);
 
             bDone = false;
             bHome = false;
             bCredit = false;
 
             hasBeenInCombat = false;
+
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
 
@@ -1177,13 +1160,12 @@ class boss_rogue_toc5 : public CreatureScript
 
         void Reset() override
         {
-
             Map* map = me->GetMap();
 
             if (hasBeenInCombat && map && map->IsDungeon())
             {
                 Map::PlayerList const &players = map->GetPlayers();
-                for(Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                 {
                     if (itr->GetSource() && itr->GetSource()->IsAlive() && !itr->GetSource()->IsGameMaster())
                         return;
@@ -1191,12 +1173,8 @@ class boss_rogue_toc5 : public CreatureScript
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, NOT_STARTED);
 
-                if (instance)
-                {
-                    GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1));
-                    if (go)
-                        instance->HandleGameObject(go->GetGUID(),true);
-                }
+                if (GameObject* gate = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
+                    instance->HandleGameObject(gate->GetGUID(),true);
 
                 events.SetPhase(PHASE_IDLE);
                 me->RemoveFromWorld();
@@ -1205,6 +1183,8 @@ class boss_rogue_toc5 : public CreatureScript
 
         void JustReachedHome() override
         {
+            ScriptedAI::JustReachedHome();
+
             if (!bHome)
                 return;
 
@@ -1213,7 +1193,7 @@ class boss_rogue_toc5 : public CreatureScript
             bHome = false;
         }
 
-        void EnterCombat(Unit* /*who*/) override
+        void EnterCombat(Unit* who) override
         {
             _EnterCombat();
             hasBeenInCombat = true;
@@ -1223,28 +1203,32 @@ class boss_rogue_toc5 : public CreatureScript
             events.SetPhase(PHASE_COMBAT);
         }
 
-        void DoAction(int32 actionId) override
+        void UpdateAI(uint32 uiDiff) override
         {
-            if (actionId == 1)
+            if (!me->GetVehicle())
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+
+            if (!bDone && GrandChampionsOutVehicle(me))
             {
+                bDone = true;
+
                 me->RemoveAura(AURA_READY_JOUST);
 
-                if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
+                if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
-                else if (instance && me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
+                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
+                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
-                bHome = true;
-                me->GetMotionMaster()->MoveTargetedHome();
-            }
-        }
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-        void UpdateAI(uint32 uiDiff) override
-        {
+                EnterEvadeMode();
+                bHome = true;
+            }
+
             if (!UpdateVictim() || me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) || me->GetVehicle())
                 return;
 
@@ -1255,7 +1239,7 @@ class boss_rogue_toc5 : public CreatureScript
                 switch (eventId)
                 {
                     case EVENT_EVISCERATE:
-                        DoCast(me->GetVictim(),DUNGEON_MODE(SPELL_EVISCERATE, SPELL_EVISCERATE_H));
+                        DoCast(me->GetVictim(), DUNGEON_MODE(SPELL_EVISCERATE, SPELL_EVISCERATE_H));
                         events.ScheduleEvent(EVENT_EVISCERATE, 12000, 0, PHASE_COMBAT);
                         break;
                     case EVENT_FAN_OF_KNIVES:
@@ -1290,7 +1274,6 @@ class boss_rogue_toc5 : public CreatureScript
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, DONE);
 
-                // Instance encounter counting mechanics
                 if (!bCredit)
                 {
                     bCredit = true;
@@ -1298,7 +1281,7 @@ class boss_rogue_toc5 : public CreatureScript
                 }
                 EnterEvadeMode();
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(FACTION_FRIENDLY);
+                me->setFaction(35);
                 me->GetMotionMaster()->MovePoint(0, 746.843f, 695.68f, 412.339f);
                 HandleInstanceBind(me);
             }
@@ -1307,7 +1290,7 @@ class boss_rogue_toc5 : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<boss_rogue_toc5AI>(creature);
+        return GetTrialOfTheChampionAI<boss_rogue_toc5AI>(creature);
     }
 };
 
@@ -1316,12 +1299,12 @@ class achievement_toc5_grand_champions : public AchievementCriteriaScript
 public:
     uint32 creature_entry;
 
-    achievement_toc5_grand_champions(const char* name, uint32 original_entry) : AchievementCriteriaScript(name)
+    achievement_toc5_grand_champions(const char* name, uint32 original_entry) : AchievementCriteriaScript(name) 
     {
         creature_entry = original_entry;
     }
 
-    bool OnCheck(Player* /*source*/, Unit* target) override
+    bool OnCheck(Player* source, Unit* target) override
     {
         if (!target)
             return false;
@@ -1371,7 +1354,7 @@ public:
 
         void Register() override
         {
-                OnCheckCast += SpellCheckCastFn(spell_toc5_ride_mount_SpellScript::CheckRequirement);
+            OnCheckCast += SpellCheckCastFn(spell_toc5_ride_mount_SpellScript::CheckRequirement);
         }
     };
 
@@ -1382,10 +1365,10 @@ public:
         void HandleOnEffect(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
             if (Unit* target = GetTarget())
-                target->RemoveAurasDueToSpell(SPELL_DEFEND_2);
+                target->RemoveAurasDueToSpell(SPELL_SHIELD_1);
             if (Unit* caster = GetCaster())
             {
-                caster->RemoveAurasDueToSpell(SPELL_DEFEND_2);
+                caster->RemoveAurasDueToSpell(SPELL_SHIELD_1);
                 for (uint8 i = 0; i < 3; i++)
                     caster->RemoveAurasDueToSpell(SPELL_VISUAL_SHIELD_1 + i);
             }
@@ -1468,18 +1451,18 @@ public:
 
 class player_hex_mendingAI : public PlayerAI
 {
-    public:
-        player_hex_mendingAI(Player* player) : PlayerAI(player) { }
+public:
+    player_hex_mendingAI(Player* player) : PlayerAI(player) { }
 
-        void HealReceived(Unit* healer, uint32 & addHealth) override
-        {
-            PlayerAI::HealReceived(healer, addHealth);
-            me->CastCustomSpell(SPELL_HEX_OF_MENDING_HEAL, SPELLVALUE_BASE_POINT0, int32(addHealth*2.0f), me, true);
-        }
+    void HealReceived(Unit* healer, uint32 & addHealth) override
+    {
+        PlayerAI::HealReceived(healer, addHealth);
+        me->CastCustomSpell(SPELL_HEX_OF_MENDING_HEAL, SPELLVALUE_BASE_POINT0, int32(addHealth*2.0f), me, true);
+    }
 
-        void UpdateAI(uint32 /*diff*/) override
-        {
-        }
+    void UpdateAI(uint32 /*diff*/) override
+    {
+    }
 
     private:
         ObjectGuid casterGUID;
