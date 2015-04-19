@@ -312,7 +312,7 @@ class boss_eadric : public CreatureScript
             }
         }
 
-        void MovementInform(uint32 MovementType, uint32 Data) override
+        void MovementInform(uint32 MovementType, uint32 /*Data*/) override
         {
             if (MovementType != POINT_MOTION_TYPE)
                 return;
