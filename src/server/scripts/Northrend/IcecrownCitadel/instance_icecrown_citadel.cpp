@@ -131,7 +131,6 @@ class instance_icecrown_citadel : public InstanceMapScript
                 BloodQuickeningMinutes = 0;
 
                 CrimsonHallBloodFallenKillCount = 0;
-                CrimsonHallDoorGUID = 0;
             }
 
             // A function to help reduce the number of lines for teleporter management.
