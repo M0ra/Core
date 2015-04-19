@@ -79,13 +79,13 @@ enum Texts
 
     // Black Knight
     SAY_INTRO_BLACK_KNIGHT_TIRION   = 55,
-    SAY_HERALD_RAFTERS        = 8,
+    SAY_HERALD_RAFTERS        = 8
 };
 
 enum Gossip
 {
     GOSSIP_NOT_MOUNTED_A      = 14757,
-    GOSSIP_NOT_MOUNTED_H      = 15043,
+    GOSSIP_NOT_MOUNTED_H      = 15043
 };
 
 enum Events
@@ -120,7 +120,7 @@ enum Phases
 enum Spells
 {
     SPELL_FACE_BLACKKNIGHT    = 67482,
-    SPELL_HERALD_ARGENT       = 64787,
+    SPELL_HERALD_ARGENT       = 64787
 };
 
 class npc_jaeren_sunsworn_toc5 : public CreatureScript
@@ -184,7 +184,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                 instance->GetData(BOSS_BLACK_KNIGHT) == NOT_STARTED)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             else if (instance)
-                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
     
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
     
@@ -309,7 +309,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                         }
 
                         for (GuidList::const_iterator itr = TempList.begin(); itr != TempList.end(); ++itr)
-                        if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
+                            if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
                                 AggroAllPlayers(summon);
                     } else if (uiLesserChampions == 9)
                         StartGrandChampionsAttack();
@@ -425,7 +425,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                     return;
             }
 
-            if (Creature* pBoss = me->SummonCreature(VEHICLE_TO_SUMMON1,SpawnPosition))
+            if (Creature* pBoss = me->SummonCreature(VEHICLE_TO_SUMMON1, SpawnPosition))
             {
                 switch (uiSummonTimes)
                 {
@@ -433,8 +433,8 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                     {
                         uiVehicle1GUID = pBoss->GetGUID();
                         if (Creature* pBoss = ObjectAccessor::GetCreature(*me, uiVehicle1GUID))
-                            if (Vehicle* pVehicle = pBoss->GetVehicleKit())
-                                if (Unit* pUnit = pVehicle->GetPassenger(0))
+                            if (Vehicle* vehicle = pBoss->GetVehicleKit())
+                                if (Unit* pUnit = vehicle->GetPassenger(0))
                                     uiGrandChampionBoss1 = pUnit->GetGUID();
                         
                         instance->SetGuidData(DATA_GRAND_CHAMPION_1, uiGrandChampionBoss1);
@@ -445,8 +445,8 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                     {
                         uiVehicle2GUID = pBoss->GetGUID();
                         if (Creature* pBoss = ObjectAccessor::GetCreature(*me, uiVehicle2GUID))
-                            if (Vehicle* pVehicle = pBoss->GetVehicleKit())
-                                if (Unit* pUnit = pVehicle->GetPassenger(0))
+                            if (Vehicle* vehicle = pBoss->GetVehicleKit())
+                                if (Unit* pUnit = vehicle->GetPassenger(0))
                                     uiGrandChampionBoss2 = pUnit->GetGUID();
                        
                         instance->SetGuidData(DATA_GRAND_CHAMPION_2, uiGrandChampionBoss2);
@@ -457,8 +457,8 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                     {
                         uiVehicle3GUID = pBoss->GetGUID();
                         if (Creature* pBoss = ObjectAccessor::GetCreature(*me, uiVehicle3GUID))
-                            if (Vehicle* pVehicle = pBoss->GetVehicleKit())
-                                if (Unit* pUnit = pVehicle->GetPassenger(0))
+                            if (Vehicle* vehicle = pBoss->GetVehicleKit())
+                                if (Unit* pUnit = vehicle->GetPassenger(0))
                                     uiGrandChampionBoss3 = pUnit->GetGUID();
                         
                         if (instance)
@@ -491,13 +491,13 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                         switch (i)
                         {
                             case 0:
-                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, M_PI);
+                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, float(M_PI));
                                 break;
                             case 1:
-                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, M_PI / 2);
+                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, float(M_PI) / 2);
                                 break;
                             case 2:
-                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, M_PI / 2 + M_PI);
+                                pAdd->GetMotionMaster()->MoveFollow(pBoss, 2.5f, float(M_PI) / 2 + float(M_PI));
                                 break;
                         }
                     }
@@ -529,7 +529,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                 }
             }
         }
-        
+
         void DoAction(int32 actionID) override
         {
             switch (actionID)
@@ -561,9 +561,9 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
         void EnterCombat(Unit* /*who*/) override
         {
             me->SetReactState(REACT_PASSIVE);
-            if (Creature* pGhoul = me->SummonCreature(NPC_RISEN_JAEREN, 742.835f, 639.134f, 411.571f, 1.05731f))
+            if (Creature* ghoul = me->SummonCreature(NPC_RISEN_JAEREN, 742.835f, 639.134f, 411.571f, 1.05731f))
             {
-                pGhoul->setFaction(14);
+                ghoul->setFaction(14);
             }
             if (instance)
                 instance->SetData(DATA_AGRO_DONE,DONE);
@@ -602,7 +602,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
 
             me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE1)))
-                instance->HandleGameObject(go->GetGUID(),false);
+                instance->HandleGameObject(go->GetGUID(), false);
 
             if (instance->GetData(BOSS_BLACK_KNIGHT) == NOT_STARTED)
             {
@@ -706,9 +706,9 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
         {
             if (!(thrallGUID || garroshGUID || varianGUID || proudmooreGUID || tirionGUID))
                 return;
-                
+
             events.Update(diff);
-                
+
             while (uint32 eventId = events.ExecuteEvent())
             {
                 switch (eventId)
@@ -730,7 +730,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                                 thrall->AI()->Talk(H_SAY_INTRO_HERALD_3);
                         }
                         else
-                        if (Creature* varian = ObjectAccessor::GetCreature(*me, varianGUID))
+                            if (Creature* varian = ObjectAccessor::GetCreature(*me, varianGUID))
                                 varian->AI()->Talk(A_SAY_INTRO_HERALD_3);
                         events.ScheduleEvent(EVENT_INTRO_4, 4000, 0, PHASE_INTRO);
                         break;
@@ -741,7 +741,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                                 garrosh->AI()->Talk(H_SAY_INTRO_HERALD_4);
                         }
                         else
-                        if (Creature* proudmoore = ObjectAccessor::GetCreature(*me, proudmooreGUID))
+                            if (Creature* proudmoore = ObjectAccessor::GetCreature(*me, proudmooreGUID))
                                 proudmoore->AI()->Talk(A_SAY_INTRO_HERALD_4);
                         events.ScheduleEvent(EVENT_INTRO_5, 4000, 0, PHASE_INTRO);
                         break;
@@ -752,7 +752,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                                 varian->AI()->Talk(SAY_INTRO_HERALD_5);
                         }
                         else
-                        if (Creature* garrosh = ObjectAccessor::GetCreature(*me, garroshGUID))
+                            if (Creature* garrosh = ObjectAccessor::GetCreature(*me, garroshGUID))
                                 garrosh->AI()->Talk(SAY_INTRO_HERALD_5);
                         events.ScheduleEvent(EVENT_INTRO_6, 6000, 0, PHASE_INTRO);
                         break;
@@ -763,7 +763,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                                 proudmoore->AI()->Talk(H_SAY_INTRO_HERALD_6);
                         }
                         else
-                        if (Creature* thrall = ObjectAccessor::GetCreature(*me, thrallGUID))
+                            if (Creature* thrall = ObjectAccessor::GetCreature(*me, thrallGUID))
                                 thrall->AI()->Talk(A_SAY_INTRO_HERALD_6);
                         events.ScheduleEvent(EVENT_INTRO_7, 6000, 0, PHASE_INTRO);
                         break;
@@ -787,7 +787,7 @@ class npc_jaeren_sunsworn_toc5 : public CreatureScript
                         if (!Champion1List.empty())
                         {
                             for (GuidList::const_iterator itr = Champion1List.begin(); itr != Champion1List.end(); ++itr)
-                            if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
+                                if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
                                     AggroAllPlayers(summon);
                         }
                         break;
