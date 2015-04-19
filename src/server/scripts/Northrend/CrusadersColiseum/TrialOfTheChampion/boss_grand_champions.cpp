@@ -454,7 +454,7 @@ class boss_warrior_toc5 : public CreatureScript
 
     struct boss_warrior_toc5AI : public BossAI
     {
-        boss_warrior_toc5AI(Creature* creature) : BossAI(creature,BOSS_GRAND_CHAMPIONS)
+        boss_warrior_toc5AI(Creature* creature) : BossAI(creature, BOSS_GRAND_CHAMPIONS)
         {
             Initialize();
             instance = creature->GetInstanceScript();
@@ -526,9 +526,9 @@ class boss_warrior_toc5 : public CreatureScript
                 if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 EnterEvadeMode();
@@ -680,10 +680,10 @@ class boss_mage_toc5 : public CreatureScript
                 if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
-                
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -777,7 +777,7 @@ class boss_shaman_toc5 : public CreatureScript
             bHome = false;
             bCredit = false;
             hasBeenInCombat = false;
-            
+
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);        
         }
 
@@ -787,7 +787,7 @@ class boss_shaman_toc5 : public CreatureScript
         bool bHome;
         bool hasBeenInCombat;
         bool bCredit;
-        bool bChance;
+        uint8 chance;
 
         void Reset() override
         {
@@ -836,9 +836,9 @@ class boss_shaman_toc5 : public CreatureScript
                 if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
@@ -865,8 +865,8 @@ class boss_shaman_toc5 : public CreatureScript
                         events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, 23000, 0, PHASE_COMBAT);
                         break;
                     case EVENT_HEALING_WAVE:
-                        bChance = urand(0, 1);
-                        if (!bChance)
+                        chance = urand(0, 1);
+                        if (chance == 0)
                         {
                             if (Unit* pFriend = DoSelectLowestHpFriendly(40))
                                 DoCast(pFriend, DUNGEON_MODE(SPELL_HEALING_WAVE, SPELL_HEALING_WAVE_H));
@@ -887,7 +887,6 @@ class boss_shaman_toc5 : public CreatureScript
                         break;
                 }
             }
-            
             if (events.GetPhaseMask() == PHASE_COMBAT)
                 DoMeleeAttackIfReady();
         }
@@ -1018,9 +1017,9 @@ class boss_hunter_toc5 : public CreatureScript
                 if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
@@ -1217,9 +1216,9 @@ class boss_rogue_toc5 : public CreatureScript
                 if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_1))
                     me->SetHomePosition(739.678f, 662.541f, 413.395f, 4.49f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_2))
-                         me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
+                        me->SetHomePosition(746.71f, 661.02f, 412.695f, 4.6f);
                 else if (me->GetGUID() == instance->GetGuidData(DATA_GRAND_CHAMPION_3))
-                         me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
+                        me->SetHomePosition(754.34f, 660.70f, 413.395f, 4.79f);
 
                 instance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
 
