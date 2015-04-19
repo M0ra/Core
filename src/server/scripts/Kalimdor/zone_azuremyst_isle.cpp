@@ -447,7 +447,8 @@ public:
         void Reset() override
         {
             Initialize();
-            StartEvent();
+            if (!EventStarted)
+                StartEvent();
         }
 
         void EnterCombat(Unit* /*who*/) override { }
