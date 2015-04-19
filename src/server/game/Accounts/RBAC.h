@@ -699,6 +699,7 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_QUESTCOMPLETER_STATUS                  = 1003,
     RBAC_PERM_COMMAND_QUESTCOMPLETER_ADD                     = 1004,
     RBAC_PERM_COMMAND_QUESTCOMPLETER_DEL                     = 1005,
+    RBAC_PERM_COMMAND_QUESTCOMPLETER_COMP                    = 1006,
 
     // custom permissions 1000+
     RBAC_PERM_MAX
