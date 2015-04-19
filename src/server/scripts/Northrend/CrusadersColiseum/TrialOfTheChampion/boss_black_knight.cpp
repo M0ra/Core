@@ -31,7 +31,7 @@ enum Talk
    SAY_KILLED_PLAYER        = 6,
    SAY_PHASE_1              = 4,
    SAY_PHASE_2              = 5,
-   SAY_DEATH                = 7,
+   SAY_DEATH                = 7
 };
 
 
@@ -91,21 +91,20 @@ enum IntroPhase
     IDLE,
     INTRO,
     NORMAL,
-    FINISHED,
+    FINISHED
 };
 
 enum Phases
 {
     PHASE_UNDEAD            = 3,
     PHASE_SKELETON          = 4,
-    PHASE_GHOST             = 5,
-
+    PHASE_GHOST             = 5
 };
 
 enum Creatures
 {
     CREATURE_HIGHLORD       = 34996,
-    CREATURE_ANNOUNCER      = 35004,
+    CREATURE_ANNOUNCER      = 35004
 };
 
 const Position MoveKnightPos = {746.993286f, 622.990784f, 411.417237f, 4.712464f};
@@ -551,7 +550,7 @@ public:
         void SetData(uint32 uiType, uint32 uiData) override
         {
             if (uiType == DATA_IVE_HAD_WORSE)
-                iveHadWorse = uiData;
+                iveHadWorse = uiData == 1;
         }
 
         void JustDied(Unit* /*killer*/) override
