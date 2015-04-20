@@ -297,7 +297,6 @@ inline stdext::checked_array_iterator<T*> make_ptr(T *ptr, std::size_t size) {
 template <typename T>
 inline T *make_ptr(T *ptr, std::size_t) { return ptr; }
 #endif
-}  // namespace internal
 
 /** A buffer supporting a subset of ``std::vector``'s operations. */
 template <typename T>
@@ -800,10 +799,6 @@ struct EnableIf {};
 template<class T>
 struct EnableIf<true, T> { typedef T type; };
 
-// A helper function to suppress bogus "conditional expression is constant"
-// warnings.
-inline bool check(bool value) { return value; }
-
 // Makes an Arg object from any type.
 template <typename Char>
 class MakeValue : public Arg {
@@ -863,7 +858,7 @@ class MakeValue : public Arg {
   MakeValue(long value) {
     // To minimize the number of types we need to deal with, long is
     // translated either to int or to long long depending on its size.
-    if (check(sizeof(long) == sizeof(int)))
+    if (sizeof(long) == sizeof(int))
       int_value = static_cast<int>(value);
     else
       long_long_value = value;
@@ -873,7 +868,7 @@ class MakeValue : public Arg {
   }
 
   MakeValue(unsigned long value) {
-    if (check(sizeof(unsigned long) == sizeof(unsigned)))
+    if (sizeof(unsigned long) == sizeof(unsigned))
       uint_value = static_cast<unsigned>(value);
     else
       ulong_long_value = value;
@@ -2638,7 +2633,7 @@ struct ArgArraySize {
     Arg array[fmt::internal::ArgArraySize<sizeof...(Args)>::VALUE] = { \
       fmt::internal::MakeValue<Char>(args)... \
     }; \
-    if (fmt::internal::check((sizeof...(Args) > fmt::ArgList::MAX_PACKED_ARGS))) \
+    if (sizeof...(Args) > fmt::ArgList::MAX_PACKED_ARGS) \
       set_types(array, args...); \
     call(FMT_FOR_EACH(FMT_GET_ARG_NAME, __VA_ARGS__), \
       fmt::ArgList(fmt::internal::make_type(args...), array)); \
