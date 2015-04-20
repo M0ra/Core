@@ -30,9 +30,7 @@
 class npc_1v1arena : public CreatureScript  
 {
 public:
-    npc_1v1arena() : CreatureScript("npc_1v1arena") 
-    {
-    }
+    npc_1v1arena() : CreatureScript("npc_1v1arena") { }
 
     bool JoinQueueArena(Player* player, Creature* /*me*/)
     {
@@ -69,11 +67,9 @@ public:
         if (!bracketEntry)
             return false;
 
-        GroupJoinBattlegroundResult err = ERR_GROUP_JOIN_BATTLEGROUND_FAIL;
-
         // check if already in queue
         if (player->GetBattlegroundQueueIndex(bgQueueTypeId) < PLAYER_MAX_BATTLEGROUND_QUEUES)
-        // player is already in this queue
+            // player is already in this queue
             return false;
         // check if has free queue slots
         if (!player->HasFreeBattlegroundQueueId())
