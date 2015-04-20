@@ -339,6 +339,8 @@ class boss_hodir : public CreatureScript
             void Reset() override
             {
                 Initialize();
+                if (instance->GetBossState(BOSS_HODIR) == DONE)
+                    return;
 
                 _Reset();
                 me->SetReactState(REACT_PASSIVE);
