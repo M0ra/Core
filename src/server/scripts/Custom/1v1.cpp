@@ -256,11 +256,6 @@ public:
         OnGossipHello(player, me);
         return true;
     }
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_1v1arenaAI(creature);
-    }
 };
 
 void AddSC_npc_1v1arena()
