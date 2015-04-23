@@ -774,7 +774,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<boss_thorimAI>(creature);
+        return new boss_thorimAI(creature);
     }
 };
 
@@ -1024,7 +1024,7 @@ class npc_thorim_arena_phase : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetInstanceAI<npc_thorim_arena_phaseAI>(creature);
+            return new npc_thorim_arena_phaseAI(creature);
         }
 };
 
@@ -1185,7 +1185,7 @@ class npc_runic_colossus : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetInstanceAI<npc_runic_colossusAI>(creature);
+            return new npc_runic_colossusAI(creature);
         }
 };
 
@@ -1242,7 +1242,7 @@ class npc_runic_smash : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetInstanceAI<npc_runic_smashAI>(creature);
+            return new npc_runic_smashAI(creature);
         }
 };
 
@@ -1429,7 +1429,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_sifAI>(creature);
+        return new npc_sifAI(creature);
     }
 };
 
@@ -1491,167 +1491,167 @@ public:
 
 class NotInArenaCheck
 {
-    public:
-        bool operator() (WorldObject* unit)
-        {
-            return !IN_ARENA(unit);
-        }
+public:
+    bool operator() (WorldObject* unit)
+    {
+        return !IN_ARENA(unit);
+    }
 };
 
 class spell_stormhammer_targeting : public SpellScriptLoader
 {
-    public:
-        spell_stormhammer_targeting() : SpellScriptLoader("spell_stormhammer_targeting") { }
+public:
+    spell_stormhammer_targeting() : SpellScriptLoader("spell_stormhammer_targeting") { }
 
-        class spell_stormhammer_targeting_SpellScript : public SpellScript
+    class spell_stormhammer_targeting_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_stormhammer_targeting_SpellScript);
+
+        void FilterTargets(std::list<WorldObject*>& unitList)
         {
-            PrepareSpellScript(spell_stormhammer_targeting_SpellScript);
+            _target = NULL;
+            unitList.remove_if(NotInArenaCheck());
 
-            void FilterTargets(std::list<WorldObject*>& unitList)
-            {
-                _target = NULL;
-                unitList.remove_if(NotInArenaCheck());
+            if (unitList.empty())
+                return;
 
-                if (unitList.empty())
-                    return;
-
-                _target = Trinity::Containers::SelectRandomContainerElement(unitList);
-                SetTarget(unitList);
-            }
-
-            void SetTarget(std::list<WorldObject*>& unitList)
-            {
-                unitList.clear();
-
-                if (_target)
-                    unitList.push_back(_target);
-            }
-
-            void Register() override
-            {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_stormhammer_targeting_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_stormhammer_targeting_SpellScript::SetTarget, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_stormhammer_targeting_SpellScript::SetTarget, EFFECT_2, TARGET_UNIT_SRC_AREA_ENEMY);
-            }
-
-            WorldObject* _target;
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_stormhammer_targeting_SpellScript();
+            _target = Trinity::Containers::SelectRandomContainerElement(unitList);
+            SetTarget(unitList);
         }
+
+        void SetTarget(std::list<WorldObject*>& unitList)
+        {
+            unitList.clear();
+
+            if (_target)
+                unitList.push_back(_target);
+        }
+
+        void Register() override
+        {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_stormhammer_targeting_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_stormhammer_targeting_SpellScript::SetTarget, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_stormhammer_targeting_SpellScript::SetTarget, EFFECT_2, TARGET_UNIT_SRC_AREA_ENEMY);
+        }
+
+        WorldObject* _target;
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_stormhammer_targeting_SpellScript();
+    }
 };
 
 class go_thorim_lever : public GameObjectScript
 {
-    public:
-        go_thorim_lever() : GameObjectScript("go_thorim_lever") { }
+public:
+    go_thorim_lever() : GameObjectScript("go_thorim_lever") { }
 
-        bool OnGossipHello(Player* /*player*/, GameObject* go) override
-        {
-            if (GameObject* porticullis = go->FindNearestGameObject(GO_THORIM_DARK_IRON_PROTCULLIS, 50.0f))
-                go->GetInstanceScript()->DoUseDoorOrButton(porticullis->GetGUID());
+    bool OnGossipHello(Player* /*player*/, GameObject* go) override
+    {
+        if (GameObject* porticullis = go->FindNearestGameObject(GO_THORIM_DARK_IRON_PROTCULLIS, 50.0f))
+            go->GetInstanceScript()->DoUseDoorOrButton(porticullis->GetGUID());
 
-            if (Creature* thorim = go->FindNearestCreature(BOSS_THORIM, 50.0f))
-                thorim->AI()->DoAction(ACTION_CLOSE_ARENA_DOOR);
+        if (Creature* thorim = go->FindNearestCreature(BOSS_THORIM, 50.0f))
+            thorim->AI()->DoAction(ACTION_CLOSE_ARENA_DOOR);
 
-            go->UseDoorOrButton();
-            go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+        go->UseDoorOrButton();
+        go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
 
-            return true;
-        }
+        return true;
+    }
 };
 
 class spell_thorim_berserk : public SpellScriptLoader
 {
-    public:
-        spell_thorim_berserk() : SpellScriptLoader("spell_thorim_berserk") {}
+public:
+    spell_thorim_berserk() : SpellScriptLoader("spell_thorim_berserk") {}
 
-        class spell_thorim_berserk_SpellScript : public SpellScript
+    class spell_thorim_berserk_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_thorim_berserk_SpellScript);
+
+        void FilterTargets(std::list<WorldObject*>& targets)
         {
-            PrepareSpellScript(spell_thorim_berserk_SpellScript);
-
-            void FilterTargets(std::list<WorldObject*>& targets)
-            {
-                targets.remove_if(BerserkSelector());
-            }
-
-            void Register() override
-            {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_berserk_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENTRY);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_berserk_SpellScript::FilterTargets, EFFECT_2, TARGET_UNIT_SRC_AREA_ENTRY);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_thorim_berserk_SpellScript();
+            targets.remove_if(BerserkSelector());
         }
+
+        void Register() override
+        {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_berserk_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENTRY);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_berserk_SpellScript::FilterTargets, EFFECT_2, TARGET_UNIT_SRC_AREA_ENTRY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_thorim_berserk_SpellScript();
+    }
 };
 
 class spell_thorim_runic_fortification : public SpellScriptLoader
 {
-    public:
-        spell_thorim_runic_fortification() : SpellScriptLoader("spell_thorim_runic_fortification") { }
+public:
+    spell_thorim_runic_fortification() : SpellScriptLoader("spell_thorim_runic_fortification") { }
 
-        class spell_thorim_runic_fortification_SpellScript : public SpellScript
+    class spell_thorim_runic_fortification_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_thorim_runic_fortification_SpellScript);
+
+        void FilterTargets(std::list<WorldObject*>& targets)
         {
-            PrepareSpellScript(spell_thorim_runic_fortification_SpellScript);
-
-            void FilterTargets(std::list<WorldObject*>& targets)
-            {
-                targets.remove_if(NoPlayerOrPetCheck());
-            }
-
-            void Register() override
-            {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_runic_fortification_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_runic_fortification_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENTRY);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_runic_fortification_SpellScript::FilterTargets, EFFECT_2, TARGET_UNIT_SRC_AREA_ENTRY);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_thorim_runic_fortification_SpellScript();
+            targets.remove_if(NoPlayerOrPetCheck());
         }
+
+        void Register() override
+        {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_runic_fortification_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_runic_fortification_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENTRY);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_thorim_runic_fortification_SpellScript::FilterTargets, EFFECT_2, TARGET_UNIT_SRC_AREA_ENTRY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_thorim_runic_fortification_SpellScript();
+    }
 };
 
 class achievement_siffed_and_lose_your_illusion : public AchievementCriteriaScript
 {
-    public:
-        achievement_siffed_and_lose_your_illusion() : AchievementCriteriaScript("achievement_siffed_and_lose_your_illusion") { }
+public:
+    achievement_siffed_and_lose_your_illusion() : AchievementCriteriaScript("achievement_siffed_and_lose_your_illusion") { }
 
-        bool OnCheck(Player* /*player*/, Unit* target) override
-        {
-            if (!target)
-                return false;
-
-            if (Creature* Thorim = target->ToCreature())
-                if (Thorim->AI()->GetData(DATA_LOSE_YOUR_ILLUSION))
-                    return true;
-
+    bool OnCheck(Player* /*player*/, Unit* target) override
+    {
+        if (!target)
             return false;
-        }
+
+        if (Creature* Thorim = target->ToCreature())
+            if (Thorim->AI()->GetData(DATA_LOSE_YOUR_ILLUSION))
+                return true;
+
+        return false;
+    }
 };
 
 class achievement_dont_stand_in_the_lightning : public AchievementCriteriaScript
 {
-    public:
-        achievement_dont_stand_in_the_lightning() : AchievementCriteriaScript("achievement_dont_stand_in_the_lightning") { }
+public:
+    achievement_dont_stand_in_the_lightning() : AchievementCriteriaScript("achievement_dont_stand_in_the_lightning") { }
 
-        bool OnCheck(Player* /*player*/, Unit* target) override
-        {
-            if (!target)
-                return false;
-
-            if (Creature* Thorim = target->ToCreature())
-                if (Thorim->AI()->GetData(DATA_DONT_STAND_IN_THE_LIGHTNING))
-                    return true;
-
+    bool OnCheck(Player* /*player*/, Unit* target) override
+    {
+        if (!target)
             return false;
-        }
+
+        if (Creature* Thorim = target->ToCreature())
+            if (Thorim->AI()->GetData(DATA_DONT_STAND_IN_THE_LIGHTNING))
+                return true;
+
+        return false;
+    }
 };
 
 void AddSC_boss_thorim()
