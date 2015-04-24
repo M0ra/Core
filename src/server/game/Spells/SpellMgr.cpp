@@ -3860,7 +3860,8 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             case 62997: // Mimiron - Plasma Blast
             case 69508: // Rotface - Slime Spray
-            case 70498: // Vile Spirits
+            case 70498: // Lich King - Vile Spirits
+            case 73301: // Blood Prince Council - Shadow Prison Dummy
                 spellInfo->ChannelInterruptFlags = 0;
                 break;
             case 70541: // Infest (10 normal)
