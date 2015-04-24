@@ -906,7 +906,7 @@ class instance_ulduar : public InstanceMapScript
                                 RadioGUID = radio->GetGUID();
                                 radio->AI()->Talk(SAY_BRANN_RADIO_LEVIATHAN);
                                 _events.ScheduleEvent(EVENT_BRANN_RADIO, 8000);
-
+                            }
                             SaveToDB();
                         }
                         break;
