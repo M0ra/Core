@@ -55,7 +55,12 @@ enum SharedSpells
 
     // Shadowmourne questline
     SPELL_UNSATED_CRAVING               = 71168,
-    SPELL_SHADOWS_FATE                  = 71169
+    SPELL_SHADOWS_FATE                  = 71169,
+
+    SPELL_HELLSCREAM_WARSONG            = 73822,
+    SPELL_HELLSCREAM_WARSONG_20         = 73820,
+    SPELL_STRENGTH_OF_WRYNN             = 73828,
+    SPELL_STRENGTH_OF_WRYNN_20          = 73826
 };
 
 enum TeleporterSpells
@@ -85,7 +90,7 @@ enum DataTypes
     DATA_VALITHRIA_DREAMWALKER      = 10,
     DATA_SINDRAGOSA                 = 11,
     DATA_THE_LICH_KING              = 12,
-	DATA_SINDRAGOSA_GAUNTLET        = 13,
+    DATA_SINDRAGOSA_GAUNTLET        = 13,
 
     // Additional data
     DATA_SAURFANG_EVENT_NPC         = 14,
@@ -117,7 +122,9 @@ enum DataTypes
     DATA_TERENAS_MENETHIL           = 40,
     DATA_ENEMY_GUNSHIP              = 41,
     DATA_UPPERSPIRE_TELE_ACT        = 42,
-    DATA_CRIMSON_HALL_DOOR          = 43
+    DATA_CRIMSON_HALL_DOOR          = 43,
+    DATA_INSECT_SWARM_EVENT         = 44,
+    DATA_IS_BUFF_ENABLED            = 45
 };
 
 enum CreaturesIds
@@ -236,6 +243,7 @@ enum CreaturesIds
     NPC_TEAR_GAS_TARGET_STALKER                 = 38317,
     NPC_MUTATED_ABOMINATION_10                  = 37672,
     NPC_MUTATED_ABOMINATION_25                  = 38285,
+    NPC_FLESH_EATING_INSECT                     = 37782,
 
     // Blood Prince Council
     NPC_PRINCE_KELESETH                         = 37972,
@@ -332,7 +340,8 @@ enum CreaturesIds
     NPC_DARKFALLEN_NOBLE                        = 37663,
     NPC_DARKFALLEN_BLOODKNIGHT                  = 37595,
     NPC_DARKFALLEN_ARCHMAGE                     = 37664,
-    NPC_DARKFALLEN_ADVISOR                      = 37571
+    NPC_DARKFALLEN_ADVISOR                      = 37571,
+    NPC_PUTRICIDE_TRAP                          = 38879
 };
 
 enum GameObjectsIds
@@ -440,6 +449,9 @@ enum GameObjectsIds
     GO_LAVAMAN_PILLARS_CHAINED              = 202437,
     GO_LAVAMAN_PILLARS_UNCHAINED            = 202438,
 
+    GO_EATING_INSECT                        = 201399,
+    GO_EATING_INSECT_2                      = 201611
+
     GO_OOZE_RELEASE_VALVE                   = 201615,
     GO_GAS_RELEASE_VALVE                    = 201616
 };
@@ -508,7 +520,11 @@ enum SharedActions
 
     // The Lich King
     ACTION_RESTORE_LIGHT        = -72262,
-    ACTION_FROSTMOURNE_INTRO    = -36823
+    ACTION_FROSTMOURNE_INTRO    = -36823,
+
+    ACTION_START_TRAP_EVENT     = 20,
+    ACTION_END_TRAP_EVENT       = 21,
+    ACTION_FAIL_TRAP_EVENT      = 22
 };
 
 enum WeekliesICC
