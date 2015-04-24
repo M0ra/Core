@@ -476,7 +476,8 @@ enum UlduarEvents
     EVENT_BRANN_RADIO                        = 3,
     EVENT_BRANN_RADIO2                       = 4,
     EVENT_LEVIATHAN_BREAKTHROUGH             = 5,
-    ACTION_INIT_ALGALON                      = 6
+    ACTION_INIT_ALGALON                      = 6,
+    EVENT_ACTIVATE_FORCEFIELD
 };
 
 enum UlduarTexts
