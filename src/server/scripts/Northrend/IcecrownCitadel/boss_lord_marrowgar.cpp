@@ -148,7 +148,7 @@ class boss_lord_marrowgar : public CreatureScript
                 events.ScheduleEvent(EVENT_ENRAGE, 600000);
                 _boneSlice = false;
                 _boneSpikeImmune.clear();
-                me->SetReactState(REACT_DEFENSIVE);
+                me->SetReactState(REACT_AGGRESSIVE);
             }
 
             void EnterCombat(Unit* /*who*/) override
@@ -181,7 +181,6 @@ class boss_lord_marrowgar : public CreatureScript
             }
 
             void MoveInLineOfSight(Unit* who) override
-
             {
                 if (!_introDone && me->IsWithinDistInMap(who, 70.0f))
                 {
@@ -190,7 +189,7 @@ class boss_lord_marrowgar : public CreatureScript
                 }
                 
                 if (me->IsWithinDist(who, 10.0f))
-                    ScriptedAI::MoveInLineOfSight(who);
+                    BossAI::MoveInLineOfSight(who);
             }
 
             void UpdateAI(uint32 diff) override
