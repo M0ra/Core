@@ -901,7 +901,6 @@ class instance_ulduar : public InstanceMapScript
                         ColossusData = data;
                         if (data == 2)
                         {
-                            instance->SummonCreature(NPC_BRONZEBEARD_RADIO, BrannRadioSummonPos);                          
                             if (Creature* radio = instance->SummonCreature(NPC_BRONZEBEARD_RADIO, BrannRadioSummonPos))
                             {
                                 RadioGUID = radio->GetGUID();
@@ -1384,7 +1383,7 @@ class instance_ulduar : public InstanceMapScript
             uint32 champConqOfUlduar[13];
         };
 
-        InstanceScript* GetInstanceScript(InstanceMap* map) const override
+        InstanceScript* GetInstanceScript(InstanceMap* map) const
         {
             return new instance_ulduar_InstanceMapScript(map);
         }
