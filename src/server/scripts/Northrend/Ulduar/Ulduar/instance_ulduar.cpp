@@ -1333,6 +1333,11 @@ class instance_ulduar : public InstanceMapScript
                                 Leviathan->AI()->DoAction(ACTION_MOVE_TO_CENTER_POSITION);
                             if (GameObject* gameObject = instance->GetGameObject(LeviathanGateGUID))
                                 gameObject->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                            _events.ScheduleEvent(EVENT_ACTIVATE_FORCEFIELD, 3000);
+                            break;
+                        case EVENT_ACTIVATE_FORCEFIELD:
+                            HandleGameObject(LeviathanForcefieldGUID, false);
+                        default:
                             break;
                     }
                 }
