@@ -379,7 +379,7 @@ class npc_coldflame : public CreatureScript
                 {
                     float ang = Position::NormalizeOrientation(pos.GetAngle(me));
                     me->SetOrientation(ang);
-                    owner->GetNearPoint2D(pos.m_positionX, pos.m_positionY, 5.0f - owner->GetObjectSize(), ang);
+                    owner->GetNearPoint2D(pos.m_positionX, pos.m_positionY, 10.0f - owner->GetObjectSize(), ang);
                 }
                 else
                 {
