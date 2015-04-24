@@ -1114,6 +1114,8 @@ class instance_ulduar : public InstanceMapScript
                         return RunicColossusGUID;
                     case DATA_RUNE_GIANT:
                         return RuneGiantGUID;
+                    case DATA_LEVIATHAN_FORCEFIELD:
+                        return LeviathanForcefieldGUID;
 
                 }
 
