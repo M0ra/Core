@@ -450,7 +450,7 @@ enum GameObjectsIds
     GO_LAVAMAN_PILLARS_UNCHAINED            = 202438,
 
     GO_EATING_INSECT                        = 201399,
-    GO_EATING_INSECT_2                      = 201611
+    GO_EATING_INSECT_2                      = 201611,
 
     GO_OOZE_RELEASE_VALVE                   = 201615,
     GO_GAS_RELEASE_VALVE                    = 201616
