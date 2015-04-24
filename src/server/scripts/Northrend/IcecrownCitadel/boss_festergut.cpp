@@ -152,6 +152,12 @@ class boss_festergut : public CreatureScript
                     professor->AI()->EnterEvadeMode();
             }
 
+            void MoveInLineOfSight(Unit* who) override
+            {
+                if (me->IsWithinDist(who, 10.0f))
+                    ScriptedAI::MoveInLineOfSight(who);
+            }
+
             void KilledUnit(Unit* victim) override
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
