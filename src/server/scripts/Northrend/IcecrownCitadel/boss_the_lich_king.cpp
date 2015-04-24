@@ -517,7 +517,7 @@ class boss_the_lich_king : public CreatureScript
             void Reset() override
             {
                 _Reset();
-                me->SetReactState(REACT_PASSIVE);
+                me->SetReactState(REACT_AGGRESSIVE);
                 events.SetPhase(PHASE_INTRO);
                 Initialize();
                 SetEquipmentSlots(true);
@@ -928,6 +928,7 @@ class boss_the_lich_king : public CreatureScript
                             me->SetWalk(false);
                             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                             me->SetReactState(REACT_AGGRESSIVE);
+                            me->SetInCombatWithZone();
                             events.SetPhase(PHASE_ONE);
                             break;
                         case EVENT_SUMMON_SHAMBLING_HORROR:
