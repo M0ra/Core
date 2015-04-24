@@ -155,7 +155,7 @@ class boss_festergut : public CreatureScript
             void MoveInLineOfSight(Unit* who) override
             {
                 if (me->IsWithinDist(who, 10.0f))
-                    ScriptedAI::MoveInLineOfSight(who);
+                    BossAI::MoveInLineOfSight(who);
             }
 
             void KilledUnit(Unit* victim) override
