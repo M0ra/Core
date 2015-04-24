@@ -437,8 +437,7 @@ class boss_freya : public CreatureScript
                             events.ScheduleEvent(EVENT_NATURE_BOMB, urand(10000, 12000));
                             break;
                         case EVENT_UNSTABLE_ENERGY:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
-                                DoCast(target, SPELL_FREYA_UNSTABLE_SUNBEAM, true);
+                            me->CastCustomSpell(SPELL_FREYA_UNSTABLE_SUNBEAM, SPELLVALUE_MAX_TARGETS, RAID_MODE(1, 3));
                             events.ScheduleEvent(EVENT_UNSTABLE_ENERGY, urand(15000, 20000));
                             break;
                         case EVENT_WAVE:
