@@ -2427,7 +2427,8 @@ class spell_the_lich_king_defile : public SpellScriptLoader
 
             void ChangeDamageAndGrow()
             {
-                if (GetHitUnit()->HasAura(SPELL_HARVEST_SOULS))
+                // Soul Harvest or Val'kyr grab.
+                if (GetHitUnit()->GetVehicleBase())
                     return;
 
                 SetHitDamage(int32(GetHitDamage() * GetCaster()->GetObjectScale()));
