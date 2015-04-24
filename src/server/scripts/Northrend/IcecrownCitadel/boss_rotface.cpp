@@ -182,7 +182,7 @@ class boss_rotface : public CreatureScript
             void MoveInLineOfSight(Unit* who) override
             {
                 if (me->IsWithinDist(who, 10.0f))
-                    ScriptedAI::MoveInLineOfSight(who);
+                    BossAI::MoveInLineOfSight(who);
             }
 
             void JustSummoned(Creature* summon) override
