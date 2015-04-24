@@ -164,6 +164,15 @@ class instance_icecrown_citadel : public InstanceMapScript
 
                 if (GetBossState(DATA_LADY_DEATHWHISPER) == DONE && GetBossState(DATA_ICECROWN_GUNSHIP_BATTLE) != DONE)
                     SpawnGunship();
+
+                if (instance->IsHeroic())
+                {
+                    player->SendUpdateWorldState(WORLDSTATE_SHOW_ATTEMPTS, 1);
+                    player->SendUpdateWorldState(WORLDSTATE_ATTEMPTS_REMAINING, HeroicAttempts);
+                }
+                else
+                    player->SendUpdateWorldState(WORLDSTATE_SHOW_ATTEMPTS, 0);
+
             }
 
             void OnCreatureCreate(Creature* creature) override
