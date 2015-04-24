@@ -138,6 +138,8 @@ enum Events
     // Nightmare Cloud
     EVENT_CHECK_PLAYER                      = 17,
     EVENT_EXPLODE                           = 18,
+
+    EVENT_CHECK_PLAYERS                     = 19
 };
 
 enum Actions
@@ -332,6 +334,7 @@ class boss_valithria_dreamwalker : public CreatureScript
                 _instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
                 _events.ScheduleEvent(EVENT_INTRO_TALK, 15000);
                 _events.ScheduleEvent(EVENT_DREAM_PORTAL, urand(45000, 48000));
+                _events.ScheduleEvent(EVENT_CHECK_PLAYERS, 5000);
                 if (IsHeroic())
                     _events.ScheduleEvent(EVENT_BERSERK, 420000);
             }
@@ -460,6 +463,12 @@ class boss_valithria_dreamwalker : public CreatureScript
                             break;
                         case EVENT_DREAM_SLIP:
                             DoCast(me, SPELL_DREAM_SLIP);
+                            break;
+                        case EVENT_CHECK_PLAYERS:
+                            if (me->GetMap()->GetPlayers().isEmpty())
+                                if (Creature* trigger = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_VALITHRIA_TRIGGER)))
+                                    trigger->AI()->DoAction(ACTION_DEATH);
+                                _events.ScheduleEvent(EVENT_CHECK_PLAYERS, 5000);
                             break;
                         default:
                             break;
