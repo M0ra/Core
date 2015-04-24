@@ -55,6 +55,9 @@ MinionData const minionData[] =
     { 0,                  0,                    }
 };
 
+// ! Made up values, just spawn him anywhere unreachable.
+Position const BrannRadioSummonPos = { -312.553f, 294.34140f, 525.1342f, 5.408990f };
+
 class instance_ulduar : public InstanceMapScript
 {
     public:
@@ -122,6 +125,7 @@ class instance_ulduar : public InstanceMapScript
             ObjectGuid KeeperGUIDs[4];
             ObjectGuid AlgalonGUID;
             ObjectGuid BrannBronzebeardAlgGUID;
+            ObjectGuid RadioGUID;
 
             // GameObjects
             ObjectGuid LeviathanGateGUID;
@@ -142,6 +146,7 @@ class instance_ulduar : public InstanceMapScript
             ObjectGuid AlgalonTrapdoorGUID;
             ObjectGuid GiftOfTheObserverGUID;
             ObjectGuid AncientGateGUID;
+            ObjectGuid LeviathanForcefieldGUID;
 			
             // Thorim 
             ObjectGuid RunicDoorGUID;
@@ -518,7 +523,6 @@ class instance_ulduar : public InstanceMapScript
                         if (GetBossState(BOSS_LEVIATHAN) == DONE)
                             gameObject->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
                         break;
-                    case GO_LEVIATHAN_DOOR:
                     case GO_XT_002_DOOR:
                     case GO_IRON_COUNCIL_DOOR:
                     case GO_ARCHIVUM_DOOR:
@@ -616,6 +620,12 @@ class instance_ulduar : public InstanceMapScript
                             GetBossState(BOSS_HODIR) == DONE &&
                             GetBossState(BOSS_THORIM) == DONE)
                             gameObject->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
+                        break;
+                    case GO_LEVIATHAN_DOOR:
+                        if (gameObject->GetDBTableGUIDLow() == 5338)
+                            LeviathanForcefieldGUID = gameObject->GetGUID();
+                        else
+                            AddDoor(gameObject, true);
                         break;
                     default:
                         break;
@@ -743,6 +753,7 @@ class instance_ulduar : public InstanceMapScript
                     case BOSS_LEVIATHAN:
                         if (state == DONE)
                         {
+                            HandleGameObject(LeviathanForcefieldGUID, true);
                             // Eject all players from vehicles and make them untargetable.
                             // They will be despawned after a while
                             for (auto const& vehicleGuid : LeviathanVehicleGUIDs)
@@ -890,10 +901,13 @@ class instance_ulduar : public InstanceMapScript
                         ColossusData = data;
                         if (data == 2)
                         {
-                            if (Creature* Leviathan = instance->GetCreature(LeviathanGUID))
-                                Leviathan->AI()->DoAction(ACTION_MOVE_TO_CENTER_POSITION);
-                            if (GameObject* gameObject = instance->GetGameObject(LeviathanGateGUID))
-                                gameObject->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                            instance->SummonCreature(NPC_BRONZEBEARD_RADIO, BrannRadioSummonPos);                          
+                            if (Creature* radio = instance->SummonCreature(NPC_BRONZEBEARD_RADIO, BrannRadioSummonPos))
+                            {
+                                RadioGUID = radio->GetGUID();
+                                radio->AI()->Talk(SAY_BRANN_RADIO_LEVIATHAN);
+                                _events.ScheduleEvent(EVENT_BRANN_RADIO, 8000);
+
                             SaveToDB();
                         }
                         break;
@@ -1301,6 +1315,22 @@ class instance_ulduar : public InstanceMapScript
                                 if (Creature* algalon = instance->GetCreature(AlgalonGUID))
                                     algalon->AI()->DoAction(EVENT_DESPAWN_ALGALON);
                             }
+                            break;
+                        case EVENT_BRANN_RADIO:
+                            if (Creature* radio = instance->GetCreature(RadioGUID))
+                                radio->AI()->Talk(SAY_BRANN_RADIO_LEVIATHAN2);
+                            _events.ScheduleEvent(EVENT_BRANN_RADIO2, 5000);
+                            break;
+                        case EVENT_BRANN_RADIO2:
+                            if (Creature* radio = instance->GetCreature(RadioGUID))
+                                radio->AI()->Talk(SAY_BRANN_RADIO_LEVIATHAN3);
+                            _events.ScheduleEvent(EVENT_LEVIATHAN_BREAKTHROUGH, 5000);
+                            break;
+                        case EVENT_LEVIATHAN_BREAKTHROUGH:
+                            if (Creature* Leviathan = instance->GetCreature(LeviathanGUID))
+                                Leviathan->AI()->DoAction(ACTION_MOVE_TO_CENTER_POSITION);
+                            if (GameObject* gameObject = instance->GetGameObject(LeviathanGateGUID))
+                                gameObject->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
                             break;
                     }
                 }
