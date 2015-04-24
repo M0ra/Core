@@ -79,6 +79,8 @@ enum UlduarNPCs
     NPC_VEZAX                                = 33271,
     NPC_YOGG_SARON                           = 33288,
     NPC_ALGALON                              = 32871,
+    NPC_BRONZEBEARD_FLYING_MACHINE          = 34120,
+    NPC_BRONZEBEARD_RADIO                   = 34054,
 
     // Mimiron
     NPC_LEVIATHAN_MKII                       = 33432,
@@ -445,7 +447,9 @@ enum UlduarData
     DATA_GETTING_COLD_IN_HERE,
     DATA_HODIR_RARE_CACHE,
     DATA_COOLEST_FRIENDS,
-    DATA_CHEESE_THE_FREEZE
+    DATA_CHEESE_THE_FREEZE,
+
+    DATA_LEVIATHAN_FORCEFIELD
 };
 
 enum UlduarWorldStates
@@ -469,7 +473,17 @@ enum UlduarEvents
 {
     EVENT_DESPAWN_ALGALON                    = 1,
     EVENT_UPDATE_ALGALON_TIMER               = 2,
+    EVENT_BRANN_RADIO                        = 3,
+    EVENT_BRANN_RADIO2                       = 4,
+    EVENT_LEVIATHAN_BREAKTHROUGH             = 5,
     ACTION_INIT_ALGALON                      = 6
+};
+
+enum UlduarTexts
+{
+    SAY_BRANN_RADIO_LEVIATHAN,
+    SAY_BRANN_RADIO_LEVIATHAN2,
+    SAY_BRANN_RADIO_LEVIATHAN3
 };
 
 enum YoggSaronIllusions
