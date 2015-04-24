@@ -287,6 +287,7 @@ class boss_flame_leviathan : public CreatureScript
                 events.ScheduleEvent(EVENT_SHUTDOWN, 150*IN_MILLISECONDS);
                 events.ScheduleEvent(EVENT_SPEED, 15*IN_MILLISECONDS);
                 events.ScheduleEvent(EVENT_SUMMON, 1*IN_MILLISECONDS);
+                instance->HandleGameObject(instance->GetGuidData(DATA_LEVIATHAN_FORCEFIELD), false);
                 ActiveTower(); //void ActiveTower
             }
 
@@ -475,6 +476,11 @@ class boss_flame_leviathan : public CreatureScript
             {
                 if (spell->Id == SPELL_PURSUED)
                     _pursueTarget = target->GetGUID();
+            }
+
+            void JustReachedHome() override
+            {
+                instance->HandleGameObject(instance->GetGuidData(DATA_LEVIATHAN_FORCEFIELD), false);
             }
 
             void DoAction(int32 action) override
