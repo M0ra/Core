@@ -1121,26 +1121,28 @@ class npc_runic_colossus : public CreatureScript
 
             void UpdateAI(uint32 diff) override
             {
-                if (uiRunicSmashPhase == 1)
-                {
-                    if (uiRunicSmashTimer <= diff)
-                    {
-                        uiSide = urand(0, 1);
-                        DoCast(me, uiSide ? SPELL_RUNIC_SMASH_LEFT : SPELL_RUNIC_SMASH_RIGHT);
-                        uiRunicSmashTimer = 1000;
-                        uiRunicSmashPhase = 2;
-                    }
-                    else uiRunicSmashTimer -= diff;
-                }
+                if (!me->IsInCombat())
+                     if (uiRunicSmashPhase == 1)
+                     {
+                         if (uiRunicSmashPhase <= diff)
+                         {
+                             uiSide = urand(0, 1);
+                             DoCast(me, Side ? SPELL_RUNIC_SMASH_LEFT : SPELL_RUNIC_SMASH_RIGHT);
+                             uiRunicSmashPhase = 1000;
+                             uiRunicSmashPhase = 2;
+                         }
+                         else uiRunicSmashPhase -= diff;
+                     }
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
-                if (uiRunicSmashPhase == 2)
-                {
-                    uiRunicSmashPhase = 1;
-                    DoRunicSmash();
-                }
+                if (!me->IsInCombat())
+                    if (uiRunicSmashPhase == 2)
+                    {
+                        uiRunicSmashPhase = 1;
+                        DoRunicSmash();
+                    }
 
                 if (!UpdateVictim())
                     return;
