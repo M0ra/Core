@@ -143,7 +143,9 @@ enum Events
     EVENT_CHECK_CORPOREALITY    = 14,
     EVENT_SHADOW_PULSARS_SHOOT  = 15,
     EVENT_TRIGGER_BERSERK       = 16,
-    EVENT_TWILIGHT_MENDING      = 17
+    EVENT_TWILIGHT_MENDING      = 17,
+
+    EVENT_CHECK_PLAYERS         = 18
 };
 
 enum Actions
@@ -640,6 +642,7 @@ class npc_halion_controller : public CreatureScript
                 _materialDamageTaken = 0;
 
                 _events.ScheduleEvent(EVENT_TRIGGER_BERSERK, 8 * MINUTE * IN_MILLISECONDS);
+                _events.ScheduleEvent(EVENT_CHECK_PLAYERS, 5000);
             }
 
             void JustReachedHome() override
@@ -758,6 +761,11 @@ class npc_halion_controller : public CreatureScript
                         case EVENT_CHECK_CORPOREALITY:
                             UpdateCorporeality();
                             _events.ScheduleEvent(EVENT_CHECK_CORPOREALITY, 5000);
+                            break;
+                        case EVENT_CHECK_PLAYERS:
+                            if (me->GetMap()->GetPlayers().isEmpty())
+                                EnterEvadeMode();
+                            _events.ScheduleEvent(EVENT_CHECK_PLAYERS, 5000);
                             break;
                         default:
                             break;
