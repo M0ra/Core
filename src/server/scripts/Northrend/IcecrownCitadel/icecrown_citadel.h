@@ -438,7 +438,10 @@ enum GameObjectsIds
     GO_DOODAD_ICECROWN_SNOWEDGEWARNING01    = 202190,
     GO_FROZEN_LAVAMAN                       = 202436,
     GO_LAVAMAN_PILLARS_CHAINED              = 202437,
-    GO_LAVAMAN_PILLARS_UNCHAINED            = 202438
+    GO_LAVAMAN_PILLARS_UNCHAINED            = 202438,
+
+    GO_OOZE_RELEASE_VALVE                   = 201615,
+    GO_GAS_RELEASE_VALVE                    = 201616
 };
 
 enum AchievementCriteriaIds
