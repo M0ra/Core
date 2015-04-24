@@ -179,6 +179,12 @@ class boss_rotface : public CreatureScript
                     Talk(SAY_SLIME_SPRAY);
             }
 
+            void MoveInLineOfSight(Unit* who) override
+            {
+                if (me->IsWithinDist(who, 10.0f))
+                    ScriptedAI::MoveInLineOfSight(who);
+            }
+
             void JustSummoned(Creature* summon) override
             {
                 if (summon->GetEntry() == NPC_VILE_GAS_STALKER)
