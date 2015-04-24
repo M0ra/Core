@@ -188,7 +188,9 @@ class boss_lord_marrowgar : public CreatureScript
                     Talk(SAY_ENTER_ZONE);
                     _introDone = true;
                 }
-                BossAI::MoveInLineOfSight(who);
+                
+                if (me->IsWithinDist(who, 10.0f))
+                    ScriptedAI::MoveInLineOfSight(who);
             }
 
             void UpdateAI(uint32 diff) override
