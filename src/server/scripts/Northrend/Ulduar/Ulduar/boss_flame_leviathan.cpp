@@ -389,7 +389,7 @@ class boss_flame_leviathan : public CreatureScript
                     return;
                 }
 
-                if (me->HasUnitState(UNIT_STATE_CASTING))
+                if (me->HasUnitState(UNIT_STATE_CASTING) || me->HasUnitState(UNIT_STATE_STUNNED))
                     return;
 
                 while (uint32 eventId = events.ExecuteEvent())
@@ -430,7 +430,7 @@ class boss_flame_leviathan : public CreatureScript
                             break;
                         case EVENT_REPAIR:
                             Talk(EMOTE_REPAIR);
-                            me->ClearUnitState(UNIT_STATE_STUNNED | UNIT_STATE_ROOT);
+                            //me->ClearUnitState(UNIT_STATE_STUNNED | UNIT_STATE_ROOT);
                             events.ScheduleEvent(EVENT_SHUTDOWN, 150*IN_MILLISECONDS);
                             events.CancelEvent(EVENT_REPAIR);
                             break;
@@ -557,7 +557,10 @@ class boss_flame_leviathan : public CreatureScript
 
                         // Pursue was unable to acquire a valid target, so get the current victim as target.
                         if (!target && me->GetVictim())
+                        {
                             target = me->GetVictim();
+                            me->AI()->AttackStart(target);
+                        }
 
                         if (me->IsWithinCombatRange(target, 30.0f))
                         {
@@ -1634,6 +1637,7 @@ class spell_systems_shutdown : public SpellScriptLoader
                 if (!owner)
                     return;
 
+                owner->ClearUnitState(UNIT_STATE_STUNNED | UNIT_STATE_ROOT);
                 owner->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
             }
 
@@ -1731,6 +1735,9 @@ class spell_pursue : public SpellScriptLoader
             {
                 Creature* caster = GetCaster()->ToCreature();
                 if (!caster)
+                    return;
+
+                if (caster->HasUnitState(UNIT_STATE_STUNNED))
                     return;
 
                 caster->AI()->AttackStart(GetHitUnit());    // Chase target
