@@ -1313,8 +1313,7 @@ class spell_sindragosa_ice_tomb : public SpellScriptLoader
 
             void FilterTargets(std::list<WorldObject*>& targets)
             {
-                if (Creature* caster = GetCaster()->ToCreature())
-                    targets.remove_if(FrostBeaconSelector(caster));
+                targets.remove_if(FrostBeaconSelector(GetCaster()));
             }
 
             void SummonTomb()
