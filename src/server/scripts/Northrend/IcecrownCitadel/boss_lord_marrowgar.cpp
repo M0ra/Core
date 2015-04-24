@@ -188,7 +188,7 @@ class boss_lord_marrowgar : public CreatureScript
                     _introDone = true;
                 }
                 
-                if (me->IsWithinDist(who, 10.0f))
+                if (me->IsWithinDist(who, 10.0f) && !me->IsInCombat())
                     BossAI::MoveInLineOfSight(who);
             }
 
