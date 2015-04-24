@@ -233,6 +233,12 @@ class boss_professor_putricide : public CreatureScript
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
             }
 
+            void MoveInLineOfSight(Unit* who) override
+            {
+                if (me->IsWithinDist(who, 10.0f))
+                    ScriptedAI::MoveInLineOfSight(who);
+            }
+
             void EnterCombat(Unit* who) override
             {
                 if (events.IsInPhase(PHASE_ROTFACE) || events.IsInPhase(PHASE_FESTERGUT))
