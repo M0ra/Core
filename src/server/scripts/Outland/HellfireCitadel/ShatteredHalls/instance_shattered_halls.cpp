@@ -24,7 +24,12 @@ SDCategory: Hellfire Citadel, Shattered Halls
 EndScriptData */
 
 #include "ScriptMgr.h"
+#include "ScriptedCreature.h"
+#include "SpellScript.h"
+#include "SpellAuraEffects.h"
 #include "InstanceScript.h"
+#include "Player.h"
+#include "SpellAuras.h"
 #include "shattered_halls.h"
 
 enum Spells
