@@ -101,7 +101,7 @@ void Appender::write(LogMessage* message)
     if (ss.rdbuf()->in_avail() == 0)
         ss << ' ';
 
-    message->prefix = std::move(ss.str());
+    message->prefix = ss.str();
     _write(message);
 }
 
