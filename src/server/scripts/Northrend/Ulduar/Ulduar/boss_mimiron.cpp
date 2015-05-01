@@ -271,7 +271,9 @@ enum Events
     EVENT_PROXIMITY_MINE_ARM,
     EVENT_PROXIMITY_MINE_DETONATION,
     EVENT_SEARCH_FLAMES,
-    EVENT_WATER_SPRAY
+    EVENT_WATER_SPRAY,
+
+    EVENT_CHECK_PLAYERS
 };
 
 enum Actions
@@ -426,6 +428,7 @@ class boss_mimiron : public CreatureScript
                 if (_fireFighter)
                     events.ScheduleEvent(EVENT_SUMMON_FLAMES, 3000);
                 events.ScheduleEvent(EVENT_INTRO_1, 1500);
+                events.ScheduleEvent(EVENT_CHECK_PLAYERS, 5000);
             }
 
             void JustDied(Unit* /*who*/) override
@@ -648,6 +651,30 @@ class boss_mimiron : public CreatureScript
                             DoCast(me, SPELL_TELEPORT_VISUAL);
                             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                             me->DespawnOrUnsummon(1000); // sniffs say 6 sec after, but it doesnt matter.
+                            break;
+                        case EVENT_CHECK_PLAYERS:
+                        {
+                            uint8 deadplayers = 0;
+                            Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
+                            if (PlList.isEmpty())
+                            {
+                                EnterEvadeMode();
+                                return;
+                            }
+
+                            for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+                            {
+                                if (Player* player = i->GetSource())
+                                {
+                                    if (!player->IsAlive())
+                                        deadplayers++;
+                                }
+
+                                if (deadplayers >= PlList.getSize())
+                                    EnterEvadeMode();
+                            }
+                            events.ScheduleEvent(EVENT_CHECK_PLAYERS, 5000);
+                        }
                             break;
                         default:
                             break;
