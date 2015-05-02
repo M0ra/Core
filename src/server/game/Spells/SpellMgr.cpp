@@ -3390,7 +3390,7 @@ void SpellMgr::LoadSpellInfoCorrections()
                 //! HACK: This spell break quest complete for alliance and on retail not used º_O
                 spellInfo->Effects[EFFECT_0].Effect = 0;
                 break;
-			case 44535: // Spirit Heal, abilities also have no cost
+            case 44535: // Spirit Heal, abilities also have no cost
                 spellInfo->Effects[EFFECT_0].MiscValue = 127;
                 break;
             case 59578: // The Art of War (Rank 2) - FOL or Exorcism don't reset swing timer
