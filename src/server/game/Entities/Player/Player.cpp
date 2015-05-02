@@ -6109,6 +6109,8 @@ void Player::ApplyRatingMod(CombatRating combatRating, int32 value, bool apply)
             ApplyAttackTimePercentMod(OFF_ATTACK, oldVal, false);
             ApplyAttackTimePercentMod(BASE_ATTACK, newVal, true);
             ApplyAttackTimePercentMod(OFF_ATTACK, newVal, true);
+            if (Guardian* guardian = GetGuardianPet())
+                guardian->UpdateMeleeHaste(oldVal, newVal);
             break;
         case CR_HASTE_RANGED:
             ApplyAttackTimePercentMod(RANGED_ATTACK, oldVal, false);

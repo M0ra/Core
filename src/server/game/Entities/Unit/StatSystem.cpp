@@ -806,13 +806,26 @@ void Player::UpdateArmorPenetration(int32 amount)
 void Player::UpdateMeleeHitChances()
 {
     m_modMeleeHitChance = (float)GetTotalAuraModifier(SPELL_AURA_MOD_HIT_CHANCE);
-    m_modMeleeHitChance += GetRatingBonusValue(CR_HIT_MELEE);
+    float crHit = GetRatingBonusValue(CR_HIT_MELEE);
+    m_modMeleeHitChance += crHit;
+
+    Pet* pet = GetPet();                               
+    Guardian* guardian = GetGuardianPet();
+    if (pet && pet->IsPetGhoul())
+        pet->m_modMeleeHitChance = crHit;
+    if (guardian && guardian->IsSpiritWolf())
+        guardian->m_modMeleeHitChance = crHit;
 }
 
 void Player::UpdateRangedHitChances()
 {
     m_modRangedHitChance = (float)GetTotalAuraModifier(SPELL_AURA_MOD_HIT_CHANCE);
-    m_modRangedHitChance += GetRatingBonusValue(CR_HIT_RANGED);
+    float crHit = GetRatingBonusValue(CR_HIT_RANGED);
+    m_modRangedHitChance += crHit;
+
+    Pet* pet = GetPet();
+    if (pet && pet->IsHunterPet())
+        pet->m_modMeleeHitChance = crHit;
 }
 
 void Player::UpdateSpellHitChances()
@@ -1477,4 +1490,18 @@ void Guardian::SetBonusDamage(int32 damage)
     m_bonusSpellDamage = damage;
     if (GetOwner()->GetTypeId() == TYPEID_PLAYER)
         GetOwner()->SetUInt32Value(PLAYER_PET_SPELL_POWER, damage);
+}
+
+void Guardian::UpdateMeleeHaste(float oldVal, float newVal)
+{
+    if (!IsPetGhoul())
+        return;
+
+    if (oldVal)
+    {
+        ApplyAttackTimePercentMod(BASE_ATTACK, oldVal, false);
+        ApplyAttackTimePercentMod(OFF_ATTACK, oldVal, false);
+    }
+    ApplyAttackTimePercentMod(BASE_ATTACK, newVal, true);
+    ApplyAttackTimePercentMod(OFF_ATTACK, newVal, true);
 }
