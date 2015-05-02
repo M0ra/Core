@@ -228,6 +228,7 @@ class boss_professor_putricide : public CreatureScript
 
                 events.Reset();
                 summons.DespawnAll();
+                _abominationGUID.Clear();
                 SetPhase(PHASE_COMBAT_1);
                 _experimentState = EXPERIMENT_STATE_OOZE;
                 me->SetReactState(REACT_AGGRESSIVE);
@@ -333,6 +334,7 @@ class boss_professor_putricide : public CreatureScript
                         return;
                     case NPC_MUTATED_ABOMINATION_10:
                     case NPC_MUTATED_ABOMINATION_25:
+                        _abominationGUID = summon->GetGUID();
                         return;
                     default:
                         break;
@@ -623,10 +625,8 @@ class boss_professor_putricide : public CreatureScript
                             DoCastAOE(SPELL_TEAR_GAS_CANCEL);
                             instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_GAS_VARIABLE);
                             instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_OOZE_VARIABLE);
-                            for (SummonList::iterator itr = summons.begin(); itr != summons.end(); ++itr)
-                                 if(Unit* unit = ObjectAccessor::GetUnit(*me, *itr))
-                                     if (unit->GetEntry() == NPC_MUTATED_ABOMINATION_10 || unit->GetEntry() == NPC_MUTATED_ABOMINATION_25)
-                                         unit->RemoveAurasDueToSpell(SPELL_TEAR_GAS_PLAYER);
+                            if (Creature* abomination = ObjectAccessor::GetCreature(*me, _abominationGUID))
+                                abomination->RemoveAurasDueToSpell(SPELL_TEAR_GAS_PLAYER);
                             break;
                         case EVENT_MALLEABLE_GOO:
                             if (Is25ManRaid())
@@ -705,6 +705,7 @@ class boss_professor_putricide : public CreatureScript
                 events.SetPhase(newPhase);
             }
 
+            ObjectGuid _abominationGUID;
             ObjectGuid _oozeFloodDummyGUIDs[4];
             Phases _phase;          // external of EventMap because event phase gets reset on evade
             float const _baseSpeed;
