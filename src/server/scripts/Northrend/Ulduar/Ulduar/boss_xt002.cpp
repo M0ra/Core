@@ -266,10 +266,7 @@ class boss_xt002 : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
-                {
-                    instance->SetData(DATA_CRITERIA_XT_002, 1);
                     Talk(SAY_SLAY);
-                }
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -543,12 +540,6 @@ class npc_scrapbot : public CreatureScript
                     me->GetMotionMaster()->MoveFollow(pXT002, 0.0f, 0.0f);
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_XT_002, 1);
-            }
-
             void JustDied(Unit* who) override
             {
                 if (who->GetEntry() == NPC_XE321_BOOMBOT)
@@ -615,12 +606,6 @@ class npc_pummeller : public CreatureScript
                 }
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_XT_002, 1);
-            }
-			
             void UpdateAI(uint32 diff) override
             {
                 if (!UpdateVictim())
@@ -732,12 +717,6 @@ class npc_boombot : public CreatureScript
                     me->GetMotionMaster()->MoveFollow(pXT002, 0.0f, 0.0f);
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_XT_002, 1);
-            }
-			
             void DamageTaken(Unit* /*who*/, uint32& damage) override
             {
                 if (damage >= (me->GetHealth() - me->GetMaxHealth() * 0.5f) && !_boomed)
@@ -805,12 +784,6 @@ class npc_life_spark : public CreatureScript
                 _shockTimer = 0; // first one is immediate.
                 
                 me->SetInCombatWithZone();
-            }
-
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_XT_002, 1);
             }
 
             void Reset() override

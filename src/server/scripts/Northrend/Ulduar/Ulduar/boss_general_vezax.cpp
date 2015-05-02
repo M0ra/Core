@@ -222,10 +222,7 @@ class boss_general_vezax : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
-                {
-                    instance->SetData(DATA_CRITERIA_GENERAL_VEZAX, 1);
                     Talk(SAY_SLAY);
-                }
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -339,12 +336,6 @@ class boss_saronite_animus : public CreatureScript
                 events.ScheduleEvent(EVENT_PROFOUND_OF_DARKNESS, 3000);
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_GENERAL_VEZAX, 1);
-            }
-			
             void JustDied(Unit* /*killer*/) override
             {
                 if (Creature* Vezax = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_VEZAX)))
