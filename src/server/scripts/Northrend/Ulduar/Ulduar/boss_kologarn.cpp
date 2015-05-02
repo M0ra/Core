@@ -253,7 +253,7 @@ class boss_kologarn : public CreatureScript
                 }
             }
 
-            ObjectGuid GetGUID(int32 /*type*/) const override
+            ObjectGuid GetGUID(int32 type) const override
             {
                 if (type == DATA_EYEBEAM_TARGET)
                     return eyebeamTarget;
