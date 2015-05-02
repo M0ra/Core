@@ -809,12 +809,13 @@ void Player::UpdateMeleeHitChances()
     float crHit = GetRatingBonusValue(CR_HIT_MELEE);
     m_modMeleeHitChance += crHit;
 
-    Pet* pet = GetPet();                               
-    Guardian* guardian = GetGuardianPet();
-    if (pet && pet->IsPetGhoul())
-        pet->m_modMeleeHitChance = crHit;
-    if (guardian && guardian->IsSpiritWolf())
-        guardian->m_modMeleeHitChance = crHit;
+    if (Pet* pet = GetPet())
+        if (!pet->IsHunterPet())
+            pet->m_modMeleeHitChance = crHit;
+
+    if (Guardian* guardian = GetGuardianPet())
+        if (guardian->IsSpiritWolf())
+            guardian->m_modMeleeHitChance = crHit;
 }
 
 void Player::UpdateRangedHitChances()
@@ -823,9 +824,9 @@ void Player::UpdateRangedHitChances()
     float crHit = GetRatingBonusValue(CR_HIT_RANGED);
     m_modRangedHitChance += crHit;
 
-    Pet* pet = GetPet();
-    if (pet && pet->IsHunterPet())
-        pet->m_modMeleeHitChance = crHit;
+    if (Pet* pet = GetPet())
+        if (pet->IsHunterPet())
+            pet->m_modMeleeHitChance = crHit;
 }
 
 void Player::UpdateSpellHitChances()
