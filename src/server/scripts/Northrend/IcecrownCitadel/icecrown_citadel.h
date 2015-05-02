@@ -157,6 +157,7 @@ enum CreaturesIds
 
     // Weekly quests
     NPC_INFILTRATOR_MINCHAR                     = 38471,
+    NPC_INFILTRATOR_MINCHAR_25                  = 39123,
     NPC_KOR_KRON_LIEUTENANT                     = 38491,
     NPC_SKYBREAKER_LIEUTENANT                   = 38492,
     NPC_ROTTING_FROST_GIANT_10                  = 38490,
@@ -164,7 +165,6 @@ enum CreaturesIds
     NPC_ALCHEMIST_ADRIANNA                      = 38501,
     NPC_ALRIN_THE_AGILE                         = 38551,
     NPC_INFILTRATOR_MINCHAR_BQ                  = 38558,
-    NPC_INFILTRATOR_MINCHAR_BQ_25               = 39123,
     NPC_MINCHAR_BEAM_STALKER                    = 38557,
     NPC_VALITHRIA_DREAMWALKER_QUEST             = 38589,
 
