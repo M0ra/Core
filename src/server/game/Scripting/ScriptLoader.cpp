@@ -202,6 +202,7 @@ void AddSC_boss_lorekeeperpolkelt();
 void AddSC_boss_rasfrost();
 void AddSC_boss_theravenian();
 void AddSC_boss_vectus();
+void AddSC_boss_apothecary_trio()
 void AddSC_boss_kirtonos_the_herald();
 void AddSC_instance_scholomance();
 void AddSC_shadowfang_keep();                //Shadowfang keep
@@ -466,6 +467,7 @@ void AddSC_boss_assembly_of_iron();
 void AddSC_boss_general_vezax();
 void AddSC_boss_mimiron();
 void AddSC_boss_hodir();
+void AddSC_boss_thorim()
 void AddSC_boss_freya();
 void AddSC_boss_yogg_saron();
 void AddSC_boss_algalon_the_observer();
@@ -907,6 +909,7 @@ void AddEasternKingdomsScripts()
     AddSC_boss_rasfrost();
     AddSC_boss_theravenian();
     AddSC_boss_vectus();
+    AddSC_boss_apothecary_trio();
     AddSC_boss_kirtonos_the_herald();
     AddSC_instance_scholomance();
     AddSC_shadowfang_keep();                //Shadowfang keep
@@ -1299,6 +1302,7 @@ void AddNorthrendScripts()
     AddSC_boss_kologarn();
     AddSC_boss_mimiron();
     AddSC_boss_hodir();
+    AddSC_boss_thorim();
     AddSC_boss_freya();
     AddSC_boss_yogg_saron();
     AddSC_boss_algalon_the_observer();
@@ -1435,7 +1439,7 @@ void AddSC_arena_spectator_script();
 void AddSC_npc_mmr_reset();
 void AddSC_Mod_SpecialCode();
 void AddSC_custom_commandscript();
-// 13
+void AddSC_npc_1v1arena();
 // 14
 // 15
 // 16
@@ -1481,7 +1485,7 @@ void AddCustomScripts()
     AddSC_npc_teleport();
     AddSC_Mod_SpecialCode();
     AddSC_custom_commandscript();
-    // 13
+    AddSC_npc_1v1arena();
     // 14
     // 15
     // 16
