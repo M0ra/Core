@@ -3399,7 +3399,6 @@ void SpellMgr::LoadSpellInfoCorrections()
                 spellInfo->Effects[EFFECT_1].TargetA = TARGET_UNIT_CASTER;
                 spellInfo->Effects[EFFECT_1].SpellClassMask = flag96(0x40000000, 0x00000002, 0x00000000);
                 break;
-
             // ULDUAR SPELLS
             //
             case 62374: // Pursued (Flame Leviathan)
