@@ -467,7 +467,7 @@ void AddSC_boss_assembly_of_iron();
 void AddSC_boss_general_vezax();
 void AddSC_boss_mimiron();
 void AddSC_boss_hodir();
-void AddSC_boss_thorim()
+void AddSC_boss_thorim();
 void AddSC_boss_freya();
 void AddSC_boss_yogg_saron();
 void AddSC_boss_algalon_the_observer();
