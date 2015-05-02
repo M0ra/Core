@@ -116,12 +116,13 @@ public:
 
     struct boss_black_knightAI : public ScriptedAI
     {
-        boss_black_knightAI(Creature* creature) : ScriptedAI(creature)
+        boss_black_knightAI(Creature* creature) : ScriptedAI(creature), Summons(me)
         {
             Initialize();
             instance = creature->GetInstanceScript();
             Phase = IDLE;
             bCredit = false;
+            bEventInBattle = false;
         }
 
         void Initialize()
@@ -143,7 +144,15 @@ public:
             uiMarkedDeathTimer = urand (5000, 7000);
             uiIntroTimer = 15000;
             uiIntroPhase = 0;
-            Phase = INTRO;
+            Phase = IDLE;
+        }
+
+        void EnterEvadeMode() override
+        {
+            me->DespawnOrUnsummon();
+            if (Creature* announcer = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_ANNOUNCER)))
+                announcer->Respawn(true);
+            Summons.DespawnAll();
 
             bEventInProgress = false;
             bEvent = false;
@@ -156,7 +165,8 @@ public:
 
         InstanceScript* instance;
 
-        GuidList SummonList;
+        GuidList SummonLists;
+        SummonList Summons;
 
         bool bEventInProgress;
         bool bEvent;
@@ -229,10 +239,10 @@ public:
 
         void RemoveSummons()
         {
-            if (SummonList.empty())
+            if (SummonLists.empty())
                 return;
 
-            for (GuidList::const_iterator itr = SummonList.begin(); itr != SummonList.end(); ++itr)
+            for (GuidList::const_iterator itr = SummonLists.begin(); itr != SummonLists.end(); ++itr)
             {
                 if (Creature* temp = ObjectAccessor::GetCreature(*me, *itr))
                 {
@@ -247,18 +257,22 @@ public:
                     }
                 }
             }
-            SummonList.clear();
+            SummonLists.clear();
         }
 
         void JustSummoned(Creature* summon) override
         {
-            SummonList.push_back(summon->GetGUID());
+            SummonLists.push_back(summon->GetGUID());
+            Summons.Summon(summon);
         }
 
         void UpdateAI(uint32 uiDiff) override
         {
             if (Phase == IDLE)
+            {
+                std::cout << "\nФаза ожидания";
                 return;
+            }
 
             if (Phase == INTRO)
             {
@@ -395,9 +409,9 @@ public:
                         
                     if (uiGhoulExplodeTimer <= uiDiff)
                     {
-                        if (!SummonList.empty())
+                        if (!SummonLists.empty())
                         {
-                            for (GuidList::const_iterator itr = SummonList.begin(); itr != SummonList.end(); ++itr)
+                            for (GuidList::const_iterator itr = SummonLists.begin(); itr != SummonLists.end(); ++itr)
                             {
                                 if (Creature* temp = ObjectAccessor::GetCreature(*me, *itr))
                                 {

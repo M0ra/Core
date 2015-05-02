@@ -542,6 +542,7 @@ class instance_ulduar : public InstanceMapScript
                     case GO_YOGG_SARON_DOOR:
                     case GO_THORIM_LIGHTNING_FIELD:
                         AddDoor(gameObject, true);
+                        ThorimLightningFieldGUID = gameObject->GetGUID();
                         break;
                     case GO_RAZOR_HARPOON_1:
                         RazorHarpoonGUIDs[0] = gameObject->GetGUID();
@@ -613,9 +614,6 @@ class instance_ulduar : public InstanceMapScript
                         break;
                     case GO_THORIM_STONE_DOOR:
                         StoneDoorGUID = gameObject->GetGUID();
-                        break;
-                    case GO_THORIM_LIGHTNING_FIELD:
-                        ThorimLightningFieldGUID = gameObject->GetGUID();
                         break;
                     case GO_MIMIRON_DOOR_1:
                     case GO_MIMIRON_DOOR_2:
