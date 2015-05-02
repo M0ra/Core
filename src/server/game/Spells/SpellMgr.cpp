@@ -3387,7 +3387,7 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             case 51798: // Brewfest - Relay Race - Intro - Quest Complete
             case 47134: // Quest Complete
-                //! HACK: This spell break quest complete for alliance and on retail not used °_O
+                //! HACK: This spell break quest complete for alliance and on retail not used º_O
                 spellInfo->Effects[EFFECT_0].Effect = 0;
                 break;
 			case 44535: // Spirit Heal, abilities also have no cost
@@ -3869,6 +3869,9 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 73780: // Infest (10 heroic)
             case 73781: // Infest (25 heroic)
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
+                break;
+            case 74384:  // Intimidating Roar - Ruby Sanctum
+                spellInfo->Effects[EFFECT_1].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_40_YARDS);
                 break;
             case 57108:
                 spellInfo->Effects[0].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
