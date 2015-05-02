@@ -395,6 +395,10 @@ public:
             if (bEncounterFinished)
                 return;
 
+            me->RemoveAllAuras();
+            me->getThreatManager().clearReferences();
+            me->CombatStop();
+
             phase = PHASE_OUTRO;
             bEncounterFinished = true;
             Talk(SAY_DEATH);
