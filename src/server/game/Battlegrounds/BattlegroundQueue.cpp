@@ -537,14 +537,16 @@ void BattlegroundQueue::FillPlayersToBG(Battleground* bg, BattlegroundBracketId 
     uint32 aliCount = m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE].size();
     //index to queue which group is current
     uint32 aliIndex = 0;
-    for (; aliIndex < aliCount && m_SelectionPools[TEAM_ALLIANCE].AddGroup((*Ali_itr), aliFree); aliIndex++)
-        ++Ali_itr;
+    if ((hordeFree == aliFree && m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE].size() > 0 && m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_HORDE].size() > 0) || hordeFree != aliFree) {
+    for (; aliIndex < aliCount && m_SelectionPools[TEAM_ALLIANCE].AddGroup((*Ali_itr), aliFree); aliIndex++) {
+        ++Ali_itr;}}
     //the same thing for horde
     GroupsQueueType::const_iterator Horde_itr = m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_HORDE].begin();
     uint32 hordeCount = m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_HORDE].size();
     uint32 hordeIndex = 0;
-    for (; hordeIndex < hordeCount && m_SelectionPools[TEAM_HORDE].AddGroup((*Horde_itr), hordeFree); hordeIndex++)
-        ++Horde_itr;
+    if ((hordeFree == aliFree && m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE].size() > 0 && m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_HORDE].size() > 0) || hordeFree != aliFree) {
+    for (; hordeIndex < hordeCount && m_SelectionPools[TEAM_HORDE].AddGroup((*Horde_itr), hordeFree); hordeIndex++) {
+        ++Horde_itr;}}
 
     //if ofc like BG queue invitation is set in config, then we are happy
     if (sWorld->getIntConfig(CONFIG_BATTLEGROUND_INVITATION_TYPE) == 0)
