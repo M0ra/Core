@@ -319,6 +319,9 @@ class boss_freya : public CreatureScript
 
             void Reset() override
             {
+                if (instance->GetBossState(BOSS_FREYA) == DONE)
+                    return;
+
                 _Reset();
                 Initialize();
             }
@@ -326,10 +329,7 @@ class boss_freya : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
-                {
-                    instance->SetData(DATA_CRITERIA_FREYA, 1);
                     Talk(SAY_SLAY);
-                }
             }
 
             void DamageTaken(Unit* who, uint32& damage) override
@@ -1066,12 +1066,6 @@ class npc_detonating_lasher : public CreatureScript
                 Initialize();
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
-            }
-			
             void UpdateAI(uint32 diff) override
             {
                 if (!UpdateVictim())
@@ -1139,12 +1133,6 @@ class npc_ancient_water_spirit : public CreatureScript
                 Initialize();
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
-            }
-			
             void UpdateAI(uint32 diff) override
             {
                 if (!UpdateVictim())
@@ -1213,12 +1201,6 @@ class npc_storm_lasher : public CreatureScript
             {
                 Initialize();
             }
-			
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
-            }
 
             void UpdateAI(uint32 diff) override
             {
@@ -1282,12 +1264,6 @@ class npc_snaplasher : public CreatureScript
                 else
                     waveCount = 0;
             }
-			
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
-            }
 
             void UpdateAI(uint32 /*diff*/) override
             {
@@ -1344,12 +1320,6 @@ class npc_ancient_conservator : public CreatureScript
                 SummonHealthySpores(2);
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
-            }
-			
             void SummonHealthySpores(uint8 sporesCount)
             {
                 for (uint8 n = 0; n < sporesCount; ++n)
@@ -1416,12 +1386,6 @@ class npc_sun_beam : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 DoCastAOE(SPELL_FREYA_UNSTABLE_ENERGY_VISUAL, true);
                 DoCast(SPELL_FREYA_UNSTABLE_ENERGY);
-            }
-
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
             }
         };
 
@@ -1525,12 +1489,6 @@ class npc_nature_bomb : public CreatureScript
                 bombTimer = urand(8000, 10000);
                 DoCast(SPELL_OBJECT_BOMB);
             }
-			
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
-            }
 
             void UpdateAI(uint32 diff) override
             {
@@ -1577,12 +1535,6 @@ class npc_unstable_sun_beam : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_FREYA, 1);
-            }
-			
             void UpdateAI(uint32 diff) override
             {
                 if (despawnTimer <= diff)

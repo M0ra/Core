@@ -148,7 +148,6 @@ class boss_kologarn : public CreatureScript
             void Reset() override
             {
                 _Reset();
-                _armDied = false;
                 _ifLooks = true;
                 _rubbleCount = 0;
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -172,10 +171,7 @@ class boss_kologarn : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
-                {
-                    instance->SetData(DATA_CRITERIA_KOLOGARN, 1);
                     Talk(SAY_SLAY);
-                }
             }
 
             void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply) override
@@ -186,7 +182,6 @@ class boss_kologarn : public CreatureScript
                     left = apply;
                     if (!apply && isEncounterInProgress)
                     {
-                        _armDied = true;
                         Talk(SAY_LEFT_ARM_GONE);
                         events.ScheduleEvent(EVENT_RESPAWN_LEFT_ARM, 40000);
                     }
@@ -197,7 +192,6 @@ class boss_kologarn : public CreatureScript
                     right = apply;
                     if (!apply && isEncounterInProgress)
                     {
-                        _armDied = true;
                         Talk(SAY_RIGHT_ARM_GONE);
                         events.ScheduleEvent(EVENT_RESPAWN_RIGHT_ARM, 40000);
                     }
@@ -222,6 +216,7 @@ class boss_kologarn : public CreatureScript
                     if (!right && !left)
                         events.ScheduleEvent(EVENT_STONE_SHOUT, 5000);
 
+                    _armDied = true;
                     instance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, CRITERIA_DISARMED);
                 }
                 else
@@ -244,7 +239,6 @@ class boss_kologarn : public CreatureScript
                     default:
                         break;
                 }
-
                 return 0;
             }
 
@@ -262,7 +256,7 @@ class boss_kologarn : public CreatureScript
 
             ObjectGuid GetGUID(int32 /*type*/) const override
             {
-                if (DATA_EYEBEAM_TARGET)
+                if (type == DATA_EYEBEAM_TARGET)
                     return eyebeamTarget;
 
                 return ObjectGuid::Empty;

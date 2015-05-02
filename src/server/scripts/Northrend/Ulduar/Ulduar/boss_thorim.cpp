@@ -186,7 +186,7 @@ const uint32 SPELL_ARENA_SECONDARY_H[]          = {15578, 38313, 62529, 62418, 6
 #define SPELL_CHARGE                            32323
 #define SPELL_RUNIC_MENDING                     RAID_MODE(62328, 62446)
 
-#define GO_LEVER                                194265
+#define GO_LEVER                                194264
 
 enum RunicSpells
 {
@@ -381,40 +381,13 @@ public:
             if (bEncounterFinished)
                 return;
 
-            if (bWipe)
-            {
-                instance->SetBossState(BOSS_THORIM, FAIL);
-                if (GameObject* lightning = me->FindNearestGameObject(GO_THORIM_LIGHTNING_FIELD, 500))
-                    lightning->SetGoState(GO_STATE_ACTIVE);
-                if (Creature* Sif = me->FindNearestCreature(NPC_SIF, 200.0f))
-                    Sif->DespawnOrUnsummon();
-                Talk(SAY_WIPE);
-            }
-
             _Reset();
 
-            if (Creature* Sif = ObjectAccessor::GetCreature(*me, SifGUID))
-                Sif->DespawnOrUnsummon();
-
-            for (uint8 i = DATA_RUNIC_COLOSSUS; i <= DATA_RUNE_GIANT; ++i)
-                if (Creature* MiniBoss = ObjectAccessor::GetCreature(*me, instance->GetGuidData(i)))
-                    MiniBoss->Respawn(true);
-
-            for (uint8 i = 0; i < 6; ++i)
-                me->SummonCreature(preAddLocations[i].entry,preAddLocations[i].x, preAddLocations[i].y, preAddLocations[i].z, preAddLocations[i].o,
-                TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
+            if (bWipe)
+                Talk(SAY_WIPE);
 
             if (GameObject* go = me->FindNearestGameObject(GO_LEVER, 500))
                 go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
-        }
-
-        void KilledUnit(Unit* victim) override
-        {
-            if (victim->GetTypeId() == TYPEID_PLAYER)
-            {
-                Talk(SAY_SLAY);
-                instance->SetData(DATA_CRITERIA_THORIM, 1);
-            }
         }
 
         void EncounterIsDone()
@@ -439,13 +412,31 @@ public:
                     me->SummonGameObject(RAID_MODE(CACHE_OF_STORMS_10, CACHE_OF_STORMS_25), 2134.58f, -286.908f, 419.495f, 1.55988f, 0, 0, 1, 1, 604800);
                 }
 
-                if (GameObject* lightning = me->FindNearestGameObject(GO_THORIM_LIGHTNING_FIELD, 500.0f))
-                    if (lightning->GetGoState() == GO_STATE_READY)
-                        lightning->SetGoState(GO_STATE_ACTIVE);
-
                 DoCastAOE(SPELL_ACHIEVEMENT_CHECK);
                 me->setFaction(FACTION_FRIENDLY);
             }
+        }
+
+        void JustSummoned(Creature* summon) override
+        {
+            switch (summon->GetEntry())
+            {
+                case NPC_CHARGED_ORB:
+                    summon->AddUnitState(UNIT_STATE_ROOT);
+                    summon->SetReactState(REACT_PASSIVE);
+                    summon->SetFlag(UNIT_FIELD_FLAGS, 33685508);
+                    break;
+                case NPC_LIGHTNING_ORB:
+                    summon->CastSpell(summon, SPELL_LIGHTNING_DESTRUCTION, true);
+                    break;
+                default:
+                    break;
+            }
+
+            if (me->IsInCombat())
+                DoZoneInCombat(summon);
+
+            summons.Summon(summon);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -720,16 +711,6 @@ public:
             }
         }
 
-        void JustSummoned(Creature* summon) override
-        {
-            summons.Summon(summon);
-            if (me->IsInCombat())
-                DoZoneInCombat(summon);
-
-            if (summon->GetEntry() == NPC_LIGHTNING_ORB)
-                summon->CastSpell(summon, SPELL_LIGHTNING_DESTRUCTION, true);
-        }
-
         void DamageTaken(Unit* attacker, uint32 &damage) override
         {
             if (damage >= me->GetHealth())
@@ -942,12 +923,6 @@ class npc_thorim_arena_phase : public CreatureScript
                 Reset();
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_THORIM, 1);
-            }
-
             void UpdateAI(uint32 uiDiff) override
             {
                 if (!UpdateVictim() || me->HasUnitState(UNIT_STATE_CASTING))
@@ -1059,8 +1034,8 @@ class npc_runic_colossus : public CreatureScript
                 me->setActive(false);
                 me->GetMotionMaster()->MoveTargetedHome();
 
-                if (instance)
-                    instance->SetData(DATA_RUNIC_DOOR, GO_STATE_READY);
+                if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_RUNIC_DOOR, 20.0f))
+                    gate->SetGoState(GO_STATE_READY);
 
                 summons.DespawnAll();
                 for (uint8 i = 0; i < 6; i++)
@@ -1079,16 +1054,10 @@ class npc_runic_colossus : public CreatureScript
                 summons.Summon(summon);
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_THORIM, 1);
-            }
-
             void JustDied(Unit* /*victim*/) override
             {
-                if (instance)
-                    instance->SetData(DATA_RUNIC_DOOR, GO_STATE_ACTIVE);
+                if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_RUNIC_DOOR, 200.0f))
+                    gate->SetGoState(GO_STATE_ACTIVE);
             }
 
             void DoAction(int32 action) override
@@ -1215,12 +1184,6 @@ class npc_runic_smash : public CreatureScript
                 Initialize();
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_THORIM, 1);
-            }
-
             void SetData(uint32 /*type*/, uint32 data) override
             {
                 uiExplodeTimer = data;
@@ -1279,18 +1242,12 @@ public:
             me->GetMotionMaster()->MoveTargetedHome();
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-            if (instance)
-                instance->SetData(DATA_STONE_DOOR, GO_STATE_READY);
+            if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_STONE_DOOR, 200.0f))
+                gate->SetGoState(GO_STATE_READY);
 
             summons.DespawnAll();
             for (uint8 i = 0; i < 5; i++)
                 me->SummonCreature(giantAddLocations[i].entry,giantAddLocations[i].x,giantAddLocations[i].y,giantAddLocations[i].z,giantAddLocations[i].o,TEMPSUMMON_CORPSE_TIMED_DESPAWN,3000);
-        }
-
-        void KilledUnit(Unit* who) override
-        {
-            if (who->GetTypeId() == TYPEID_PLAYER)
-                me->GetInstanceScript()->SetData(DATA_CRITERIA_THORIM, 1);
         }
 
         void MoveInLineOfSight(Unit* who) override
@@ -1313,8 +1270,8 @@ public:
 
         void JustDied(Unit* /*victim*/) override
         {
-            if (instance)
-                instance->SetData(DATA_STONE_DOOR, GO_STATE_ACTIVE);
+            if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_STONE_DOOR, 20.0f))
+                gate->SetGoState(GO_STATE_ACTIVE);
         }
 
         void UpdateAI(uint32 uiDiff) override
@@ -1379,12 +1336,6 @@ public:
         void Reset() override
         {
             Initialize();
-        }
-
-        void KilledUnit(Unit* who) override
-        {
-            if (who->GetTypeId() == TYPEID_PLAYER)
-                me->GetInstanceScript()->SetData(DATA_CRITERIA_THORIM, 1);
         }
 
         void UpdateAI(uint32 uiDiff) override

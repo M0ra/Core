@@ -276,6 +276,9 @@ class npc_ice_block : public CreatureScript
                     // Prevents to have Ice Block on other place than target is
                     me->NearTeleportTo(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation());
                 }
+
+                if (Creature* Hodir = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_HODIR)))
+                    Hodir->AI()->JustSummoned(me);
             }
 
             void DamageTaken(Unit* who, uint32& /*damage*/) override
@@ -338,10 +341,10 @@ class boss_hodir : public CreatureScript
 
             void Reset() override
             {
-                Initialize();
                 if (instance->GetBossState(BOSS_HODIR) == DONE)
                     return;
 
+                Initialize();
                 _Reset();
                 me->SetReactState(REACT_PASSIVE);
 
@@ -373,10 +376,7 @@ class boss_hodir : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
-                {
                     Talk(SAY_SLAY);
-                    instance->SetData(DATA_CRITERIA_HODIR, 1);
-                }
             }
 
             void DamageTaken(Unit* /*who*/, uint32& damage) override
@@ -389,6 +389,8 @@ class boss_hodir : public CreatureScript
                     if (iCouldSayThatThisCacheWasRare)
                         instance->SetData(DATA_HODIR_RARE_CACHE, 1);
 
+                    DoCastAOE(SPELL_KILL_CREDIT);
+
                     me->RemoveAllAuras();
                     me->RemoveAllAttackers();
                     me->AttackStop();
@@ -400,7 +402,6 @@ class boss_hodir : public CreatureScript
                     me->SetControlled(true, UNIT_STATE_STUNNED);
                     me->CombatStop(true);
 
-                    DoCastAOE(SPELL_KILL_CREDIT);
                     me->setFaction(FACTION_FRIENDLY);
                     me->DespawnOrUnsummon(10000);
 
@@ -519,7 +520,6 @@ class boss_hodir : public CreatureScript
                     case DATA_GETTING_COLD_IN_HERE:
                         return gettingColdInHere;
                 }
-
                 return 0;
             }
 
