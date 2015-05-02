@@ -202,7 +202,7 @@ void AddSC_boss_lorekeeperpolkelt();
 void AddSC_boss_rasfrost();
 void AddSC_boss_theravenian();
 void AddSC_boss_vectus();
-void AddSC_boss_apothecary_trio()
+void AddSC_boss_apothecary_trio();
 void AddSC_boss_kirtonos_the_herald();
 void AddSC_instance_scholomance();
 void AddSC_shadowfang_keep();                //Shadowfang keep
