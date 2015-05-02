@@ -96,7 +96,6 @@ enum Yells
 enum Data
 {
     DATA_RUBBLE_AND_ROLL,
-    DATA_WITH_OPEN_ARMS,
     DATA_IF_LOOKS_COULD_KILL,
     DATA_EYEBEAM_TARGET
 };
