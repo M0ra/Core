@@ -523,7 +523,7 @@ class boss_the_lich_king : public CreatureScript
                 SetEquipmentSlots(true);
             }
 
-            void JustDied(Unit* /*killer*/) override
+            void JustDied(Unit* killer) override
             {
                 _JustDied();
                 DoCastAOE(SPELL_PLAY_MOVIE, false);
@@ -532,6 +532,11 @@ class boss_the_lich_king : public CreatureScript
                 me->GetMotionMaster()->MoveFall();
                 if (Creature* frostmourne = me->FindNearestCreature(NPC_FROSTMOURNE_TRIGGER, 50.0f))
                     frostmourne->DespawnOrUnsummon();
+
+                // !Hack - Reward credit for the Lich King's Last Stand (24748) to all raid members since there are range issues.
+                if (Is25ManRaid())
+                    if (Player* player = killer->ToPlayer())
+                        player->RewardPlayerAndGroupAtEvent(38153, player);
             }
 
             void EnterCombat(Unit* target) override
