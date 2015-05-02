@@ -86,7 +86,13 @@ enum Spells
     // Frost Infusion
     SPELL_FROST_INFUSION_CREDIT = 72289,
     SPELL_FROST_IMBUED_BLADE    = 72290,
-    SPELL_FROST_INFUSION        = 72292
+    SPELL_FROST_INFUSION        = 72292,
+
+
+    SPELL_MYSTIC_BUFFET_10      = 72528,
+    SPELL_MYSTIC_BUFFET_15      = 70127,
+    SPELL_MYSTIC_BUFFET_20      = 72529,
+    SPELL_MYSTIC_BUFFET_20_2    = 72530
 };
 
 enum Events
@@ -223,6 +229,10 @@ class boss_sindragosa : public CreatureScript
         {
             boss_sindragosaAI(Creature* creature) : BossAI(creature, DATA_SINDRAGOSA), _summoned(false)
             {
+                me->ApplySpellImmune(0, IMMUNITY_ID, SPELL_MYSTIC_BUFFET_15, true);
+                me->ApplySpellImmune(0, IMMUNITY_ID, SPELL_MYSTIC_BUFFET_10, true);
+                me->ApplySpellImmune(0, IMMUNITY_ID, SPELL_MYSTIC_BUFFET_20, true);
+                me->ApplySpellImmune(0, IMMUNITY_ID, SPELL_MYSTIC_BUFFET_20_2, true);
                 Initialize();
             }
 
@@ -414,8 +424,8 @@ class boss_sindragosa : public CreatureScript
 
             void SpellHitTarget(Unit* target, SpellInfo const* spell) override
             {
-                if (uint32 spellId = sSpellMgr->GetSpellIdForDifficulty(70127, me))
-                    if (spellId == spell->Id)
+                if (uint32 spellId = sSpellMgr->GetSpellIdForDifficulty(SPELL_MYSTIC_BUFFET_15, me))
+                    if (spellId == spell->Id && target->GetTypeId() == TYPEID_PLAYER)
                         if (Aura const* mysticBuffet = target->GetAura(spell->Id))
                             _mysticBuffetStack = std::max<uint8>(_mysticBuffetStack, mysticBuffet->GetStackAmount());
 
@@ -570,6 +580,7 @@ class npc_ice_tomb : public CreatureScript
         {
             npc_ice_tombAI(Creature* creature) : ScriptedAI(creature)
             {
+                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
                 _existenceCheckTimer = 0;
                 SetCombatMovement(false);
             }
@@ -589,7 +600,10 @@ class npc_ice_tomb : public CreatureScript
                     
                     // Intentional initialization
                     _asphyxiationTimer = 20000;
-                    
+
+                    if (Player* player = ObjectAccessor::GetPlayer(*me, _trappedPlayerGUID))
+                        player->RemoveAura(SPELL_FROST_BEACON);
+
                     if (InstanceScript* instance = me->GetInstanceScript())
                         if (Creature* sindragosa = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_SINDRAGOSA)))
                             _asphyxiationTimer = sindragosa->AI()->GetData(DATA_AIR_PHASE) ? 30000 : 20000;
@@ -612,8 +626,7 @@ class npc_ice_tomb : public CreatureScript
             {
                 if (!_trappedPlayerGUID)
                     return;
-                    
-                    
+
                 if (!_asphyxiationTriggered)
                 {
                     if (_asphyxiationTimer <= diff)
