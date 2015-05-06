@@ -81,6 +81,16 @@ void BattlegroundRV::StartingEventOpenDoors()
     TogglePillarCollision();
 }
 
+bool BattlegroundRV::HandlePlayerUnderMap(Player* player)
+{
+    // Wait for elevators to Go up, before start checking for UnderMaped players
+    if (GetStartTime() < uint32(StartDelayTimes[BG_STARTING_EVENT_FIRST] + 20*IN_MILLISECONDS))
+        return true;
+	
+    player->TeleportTo(GetMapId(), 763.5f, -284, 28.276f, 2.422f);
+    return true;
+}
+
 void BattlegroundRV::HandleAreaTrigger(Player* player, uint32 trigger)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)

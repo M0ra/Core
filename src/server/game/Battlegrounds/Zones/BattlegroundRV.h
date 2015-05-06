@@ -101,6 +101,7 @@ class BattlegroundRV : public Arena
 
         void HandleAreaTrigger(Player* Source, uint32 Trigger) override;
         bool SetupBattleground() override;
+        bool HandlePlayerUnderMap(Player* player) override;
 
     private:
         void PostUpdateImpl(uint32 diff) override;
