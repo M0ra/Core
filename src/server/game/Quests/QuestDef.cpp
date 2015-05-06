@@ -235,7 +235,7 @@ bool Quest::IsRaidQuest(Difficulty difficulty) const
             return !(difficulty & RAID_DIFFICULTY_MASK_25MAN);
         case QUEST_TYPE_RAID_25:
             return difficulty & RAID_DIFFICULTY_MASK_25MAN;
-		case QUEST_TYPE_PVP:
+        case QUEST_TYPE_PVP:
             return Flags & QUEST_TYPE_RAID;	
         default:
             break;

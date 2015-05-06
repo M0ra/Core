@@ -969,7 +969,7 @@ void World::LoadConfigSettings(bool reload)
     }
 
     m_bool_configs[CONFIG_SAVE_RESPAWN_TIME_IMMEDIATELY] = sConfigMgr->GetBoolDefault("SaveRespawnTimeImmediately", true);
-	if (!m_bool_configs[CONFIG_SAVE_RESPAWN_TIME_IMMEDIATELY])
+    if (!m_bool_configs[CONFIG_SAVE_RESPAWN_TIME_IMMEDIATELY])
     {
         TC_LOG_WARN("server.loading", "SaveRespawnTimeImmediately triggers assertions when disabled, overridden to Enabled");
         m_bool_configs[CONFIG_SAVE_RESPAWN_TIME_IMMEDIATELY] = true;
@@ -1286,7 +1286,7 @@ void World::LoadConfigSettings(bool reload)
     // MySQL ping time interval
     m_int_configs[CONFIG_DB_PING_INTERVAL] = sConfigMgr->GetIntDefault("MaxPingTime", 30);
 	
-	// External Mail
+    // External Mail
     m_bool_configs[CONFIG_EXTERNAL_MAIL_ENABLE] = sConfigMgr->GetBoolDefault("External.Mail.Enable", false);
     m_int_configs[CONFIG_EXTERNAL_MAIL_INTERVAL] = sConfigMgr->GetIntDefault("External.Mail.Interval", 1);
 
@@ -2116,7 +2116,7 @@ void World::Update(uint32 diff)
     if (m_gameTime > m_NextGuildReset)
         ResetGuildCap();
 		
-	// Handle external mail
+    // Handle external mail
     if (sWorld->getBoolConfig(CONFIG_EXTERNAL_MAIL_ENABLE))
     {
         extmail_timer.Update(diff);

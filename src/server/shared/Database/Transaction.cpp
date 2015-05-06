@@ -72,7 +72,7 @@ bool TransactionTask::Execute()
 
     if (errorCode == ER_LOCK_DEADLOCK)
     {
-	    // Make sure only 1 async thread retries a transaction so they don't keep dead-locking each other
+        // Make sure only 1 async thread retries a transaction so they don't keep dead-locking each other
         std::lock_guard<std::mutex> lock(_deadlockLock);
         uint8 loopBreaker = 5;  // Handle MySQL Errno 1213 without extending deadlock to the core itself
         for (uint8 i = 0; i < loopBreaker; ++i)

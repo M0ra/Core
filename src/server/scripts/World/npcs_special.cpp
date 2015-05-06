@@ -2412,27 +2412,29 @@ class npc_argent_squire : public CreatureScript
 public:
     npc_argent_squire() : CreatureScript("npc_argent_squire") { }
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_argent_squireAI(creature);
-    }
-
     struct npc_argent_squireAI : public ScriptedAI
     {
-        npc_argent_squireAI(Creature* creature) : ScriptedAI(creature) { }
+        npc_argent_squireAI(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            curPennant = 0;
+            Bank = false;
+            Shop = false;
+            Mail = false;
+        }
 
         bool Bank;
         bool Shop;
         bool Mail;
-
         uint32 curPennant;
 
-        void Reset()
+        void Reset() override
         {
-            curPennant = 0;
-            Bank=false;
-            Shop=false;
-            Mail=false;
+            Initialize();
 
             if (Aura* tired = me->GetOwner()->GetAura(SPELL_PLAYER_TIRED))
             {
@@ -2442,13 +2444,13 @@ public:
             }
         }
 
-        void UpdateAI(uint32 /*diff*/)
+        void UpdateAI(uint32 /*diff*/) override
         {
             Player* player = me->GetOwner()->ToPlayer();
 
             if (player->HasAchieved(ACH_PONY_UP))
                 if (!me->HasAura(SPELL_SQUIRE_MOUNT_CHECK))
-                    me->AddAura(SPELL_SQUIRE_MOUNT_CHECK,me);
+                    me->AddAura(SPELL_SQUIRE_MOUNT_CHECK, me);
 
             if (me->HasAura(SPELL_SQUIRE_TIRED)) // Make sure Tired aura is applied before Unsummon
             {
@@ -2459,7 +2461,7 @@ public:
             }
         }
 
-        void GossipSelect (Player* player, uint32 /*sender*/, uint32 action)
+        void GossipSelect(Player* player, uint32 /*sender*/, uint32 action) override
         {
             switch (action)
             {
@@ -2468,9 +2470,9 @@ public:
                     if (!Bank)
                     {
                         Bank = true;
-                        me->AddAura(SPELL_SQUIRE_BANK,me);
+                        me->AddAura(SPELL_SQUIRE_BANK, me);
                         player->AddAura(SPELL_PLAYER_TIRED, player);
-                        me->SetFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_BANKER);
+                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_BANKER);
                     }
                     player->GetSession()->SendShowBank(player->GetGUID());
                     break;
@@ -2479,7 +2481,7 @@ public:
                     if (!Shop)
                     {
                         Shop = true;
-                        me->AddAura(SPELL_SQUIRE_SHOP,me);
+                        me->AddAura(SPELL_SQUIRE_SHOP, me);
                         player->AddAura(SPELL_PLAYER_TIRED, player);
                     }
                     player->GetSession()->SendListInventory(me->GetGUID());
@@ -2488,10 +2490,10 @@ public:
                     player->CLOSE_GOSSIP_MENU();
                     if (!Mail)
                     {
-                        me->RemoveFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_VENDOR);
-                        me->SetFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_MAILBOX);
+                        me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR);
+                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_MAILBOX);
                         Mail = true;
-                        me->AddAura(SPELL_SQUIRE_POSTMAN,me);
+                        me->AddAura(SPELL_SQUIRE_POSTMAN, me);
                         player->AddAura(SPELL_PLAYER_TIRED, player);
                     }
                     player->GetSession()->SendShowMail(me->GetGUID());
@@ -2501,12 +2503,12 @@ public:
                     me->RemoveAurasDueToSpell(curPennant);
                     if (me->GetEntry()==NPC_ARGENT_SQUIRE)
                     {
-                        me->AddAura(SPELL_DARNASSUS_PENNANT,me);
+                        me->AddAura(SPELL_DARNASSUS_PENNANT, me);
                         curPennant = SPELL_DARNASSUS_PENNANT;
                     }
                     else
                     {
-                        me->AddAura(SPELL_SENJIN_PENNANT,me);
+                        me->AddAura(SPELL_SENJIN_PENNANT, me);
                         curPennant = SPELL_SENJIN_PENNANT;
                     }
                     break;
@@ -2515,12 +2517,12 @@ public:
                     me->RemoveAurasDueToSpell(curPennant);
                     if (me->GetEntry()==NPC_ARGENT_SQUIRE)
                     {
-                        me->AddAura(SPELL_EXODAR_PENNANT,me);
+                        me->AddAura(SPELL_EXODAR_PENNANT, me);
                         curPennant = SPELL_EXODAR_PENNANT;
                     }
                     else
                     {
-                        me->AddAura(SPELL_UNDERCITY_PENNANT,me);
+                        me->AddAura(SPELL_UNDERCITY_PENNANT, me);
                         curPennant = SPELL_UNDERCITY_PENNANT;
                     }
                     break;
@@ -2529,12 +2531,12 @@ public:
                     me->RemoveAurasDueToSpell(curPennant);
                     if (me->GetEntry()==NPC_ARGENT_SQUIRE)
                     {
-                        me->AddAura(SPELL_GNOMEREAGAN_PENNANT,me);
+                        me->AddAura(SPELL_GNOMEREAGAN_PENNANT, me);
                         curPennant = SPELL_GNOMEREAGAN_PENNANT;
                     }
                     else
                     {
-                        me->AddAura(SPELL_ORGRIMMAR_PENNANT,me);
+                        me->AddAura(SPELL_ORGRIMMAR_PENNANT, me);
                         curPennant = SPELL_ORGRIMMAR_PENNANT;
                     }
                     break;
@@ -2543,12 +2545,12 @@ public:
                     me->RemoveAurasDueToSpell(curPennant);
                     if (me->GetEntry()==NPC_ARGENT_SQUIRE)
                     {
-                        me->AddAura(SPELL_IRONFORGE_PENNANT,me);
+                        me->AddAura(SPELL_IRONFORGE_PENNANT, me);
                         curPennant = SPELL_IRONFORGE_PENNANT;
                     }
                     else
                     {
-                        me->AddAura(SPELL_SILVERMOON_PENNANT,me);
+                        me->AddAura(SPELL_SILVERMOON_PENNANT, me);
                         curPennant = SPELL_SILVERMOON_PENNANT;
                     }
                     break;
@@ -2557,19 +2559,23 @@ public:
                     me->RemoveAurasDueToSpell(curPennant);
                     if (me->GetEntry()==NPC_ARGENT_SQUIRE)
                     {
-                        me->AddAura(SPELL_STORMWIND_PENNANT,me);
+                        me->AddAura(SPELL_STORMWIND_PENNANT, me);
                         curPennant = SPELL_STORMWIND_PENNANT;
                     }
                     else
                     {
-                        me->AddAura(SPELL_THUNDERBLUFF_PENNANT,me);
+                        me->AddAura(SPELL_THUNDERBLUFF_PENNANT, me);
                         curPennant = SPELL_THUNDERBLUFF_PENNANT;
                     }
                     break;
             }
         }
-
     };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_argent_squireAI(creature);
+    }
 };
 
 // Achievement: The Turkinator
@@ -2587,14 +2593,14 @@ public:
     {
         npc_wild_turkeyAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void JustDied(Unit* killer)
+        void JustDied(Unit* killer) override
         {
             if (killer && killer->GetTypeId() == TYPEID_PLAYER)
                 killer->CastSpell(killer, SPELL_TURKEY_TRACKER);
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_wild_turkeyAI(creature);
     }
@@ -2612,9 +2618,9 @@ public:
 
     struct npc_lonely_turkeyAI : public ScriptedAI
     {
-        npc_lonely_turkeyAI(Creature* creature) : ScriptedAI(creature) {}
+        npc_lonely_turkeyAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void Reset()
+        void Reset() override
         {
             if (me->IsSummon())
                 if (Unit* owner = me->ToTempSummon()->GetSummoner())
@@ -2623,7 +2629,7 @@ public:
             _StinkerBrokenHeartTimer = 3.5 * IN_MILLISECONDS;
         }
 
-        void UpdateAI(uint32 const diff)
+        void UpdateAI(uint32 diff) override
         {
             if (_StinkerBrokenHeartTimer <= diff)
             {
@@ -2636,7 +2642,7 @@ public:
         uint32 _StinkerBrokenHeartTimer;
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_lonely_turkeyAI(creature);
     }

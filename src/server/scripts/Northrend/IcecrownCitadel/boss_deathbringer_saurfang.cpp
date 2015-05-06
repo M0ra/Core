@@ -953,14 +953,14 @@ class npc_muradin_bronzebeard_icc : public CreatureScript
 
             if ((!player->GetGroup() || !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
             {
-                player->ADD_GOSSIP_ITEM(0, "I'm not the raid leader...", 631, GOSSIP_ACTION_INFO_DEF + 2);
+                player->ADD_GOSSIP_ITEM(0, "Вы не лидер рейда...", 631, GOSSIP_ACTION_INFO_DEF + 2);
                 player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
                 return true;
             }
-					
+
             if (instance && instance->GetBossState(DATA_DEATHBRINGER_SAURFANG) != DONE)
             {
-                player->ADD_GOSSIP_ITEM(0, "Let it begin...", 631, -ACTION_START_EVENT + 1);
+                player->ADD_GOSSIP_ITEM(0, "Начинаем...", 631, -ACTION_START_EVENT + 1);
                 player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
             }
 
@@ -973,12 +973,12 @@ class npc_muradin_bronzebeard_icc : public CreatureScript
             player->CLOSE_GOSSIP_MENU();
             if (action == -ACTION_START_EVENT + 1)
                 creature->AI()->DoAction(ACTION_START_EVENT);
-				
+
             if (action == GOSSIP_ACTION_INFO_DEF + 2)
-                {
-                    player->CLOSE_GOSSIP_MENU();
-                    return true;
-                }				
+            {
+                player->CLOSE_GOSSIP_MENU();
+                return true;
+            }				
 
             return true;
         }

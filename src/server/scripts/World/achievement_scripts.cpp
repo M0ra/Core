@@ -281,50 +281,50 @@ class achievement_flirt_with_disaster_perf_check : public AchievementCriteriaScr
 
 class achievement_killed_exp_or_honor_target : public AchievementCriteriaScript
 {
-    public:
-        achievement_killed_exp_or_honor_target() : AchievementCriteriaScript("achievement_killed_exp_or_honor_target") { }
+public:
+    achievement_killed_exp_or_honor_target() : AchievementCriteriaScript("achievement_killed_exp_or_honor_target") { }
 
-        bool OnCheck(Player* player, Unit* target) override
-        {
-            return target && player->isHonorOrXPTarget(target);
-        }
+    bool OnCheck(Player* player, Unit* target) override
+    {
+        return target && player->isHonorOrXPTarget(target);
+    }
 };
 
 class achievement_food_fight : public AchievementCriteriaScript
 {
-    public:
-        achievement_food_fight() : AchievementCriteriaScript("achievement_food_fight") { }
+public:
+    achievement_food_fight() : AchievementCriteriaScript("achievement_food_fight") { }
 
-        bool OnCheck(Player* /*source*/, Unit* target) override
-        {
-            if (!target)
-                return false;
-
-            if (Player* victim = target->ToPlayer())
-            {
-                if (Vehicle* vehicle = victim->GetVehicle())
-                    if (vehicle->GetVehicleInfo()->m_ID == 321)
-                        return true;
-            }
-
+    bool OnCheck(Player* /*source*/, Unit* target) override
+    {
+        if (!target)
             return false;
+
+        if (Player* victim = target->ToPlayer())
+        {
+            if (Vehicle* vehicle = victim->GetVehicle())
+                if (vehicle->GetVehicleInfo()->m_ID == 321)
+                    return true;
         }
+
+        return false;
+    }
 };
 
 class achievement_piligrims_peril : public AchievementCriteriaScript
 {
-    public:
-        achievement_piligrims_peril() : AchievementCriteriaScript("achievement_piligrims_peril") { }
+public:
+    achievement_piligrims_peril() : AchievementCriteriaScript("achievement_piligrims_peril") { }
 
-        bool OnCheck(Player* source, Unit* /*target*/) override
+    bool OnCheck(Player* source, Unit* /*target*/) override
+    {
+        if (source->HasItemOrGemWithIdEquipped(44785, 1) || source->HasItemOrGemWithIdEquipped(46824, 1) || source->HasItemOrGemWithIdEquipped(46800, 1))
         {
-            if (source->HasItemOrGemWithIdEquipped(44785, 1) || source->HasItemOrGemWithIdEquipped(46824, 1) || source->HasItemOrGemWithIdEquipped(46800, 1))
-            {
-                return true;
-            }
-
-            return false;
+            return true;
         }
+
+        return false;
+    }
 };
 
 void AddSC_achievement_scripts()

@@ -512,7 +512,7 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
                             if (AuraEffect const* aurEff = unitTarget->GetAuraEffect(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_ROGUE, 0x00010000, 0, 0, m_caster->GetGUID()))
                             {
                                 // count consumed deadly poison doses at target
-                                bool needConsume = !m_caster->HasAura(64199);
+                                bool needConsume = true;
                                 uint32 spellId = aurEff->GetId();
 
                                 uint32 doses = aurEff->GetBase()->GetStackAmount();

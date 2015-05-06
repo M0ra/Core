@@ -517,7 +517,7 @@ public:
                         case 5:
                             if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
                             {
-                                player->GroupEventHappens(QUEST_ONESHOT_ONEKILL,me);
+                                player->GroupEventHappens(QUEST_ONESHOT_ONEKILL, me);
                             }
                             Talk(SAY_END2);
                             me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
@@ -564,7 +564,7 @@ public:
 void AddSC_darkshore()
 {
     new npc_sentinel_aynasha();
-	new npc_kerlonian();
+    new npc_kerlonian();
     new npc_prospector_remtravel();
     new npc_threshwackonator();
 }

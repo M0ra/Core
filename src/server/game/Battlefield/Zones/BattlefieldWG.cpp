@@ -370,7 +370,7 @@ void BattlefieldWG::OnBattleEnd(bool endByTimer)
         {
             player->CastSpell(player, SPELL_ESSENCE_OF_WINTERGRASP, true);
             player->CastSpell(player, SPELL_VICTORY_REWARD, true);
-			if (GetData(BATTLEFIELD_WG_DATA_DAMAGED_TOWER_DEF))
+            if (GetData(BATTLEFIELD_WG_DATA_DAMAGED_TOWER_DEF))
                 player->CastSpell(player, SPELL_DAMAGED_BUILDING, true);
             else
                 if (!GetData(BATTLEFIELD_WG_DATA_BROKEN_TOWER_DEF))
@@ -391,11 +391,11 @@ void BattlefieldWG::OnBattleEnd(bool endByTimer)
     }
 
     for (GuidSet::const_iterator itr = m_PlayersInWar[GetAttackerTeam()].begin(); itr != m_PlayersInWar[GetAttackerTeam()].end(); ++itr)
-	{
+    {
         if (Player* player = ObjectAccessor::FindPlayer(*itr))
-		{
+        {
             player->CastSpell(player, SPELL_DEFEAT_REWARD, true);
-			if (GetData(BATTLEFIELD_WG_DATA_BROKEN_TOWER_DEF))
+            if (GetData(BATTLEFIELD_WG_DATA_BROKEN_TOWER_DEF))
                 player->CastSpell(player, SPELL_DESTROYED_TOWER, true);
             else
                 if (GetData(BATTLEFIELD_WG_DATA_DAMAGED_TOWER_DEF))
@@ -886,7 +886,7 @@ void BattlefieldWG::BrokenWallOrTower(TeamId team)
 {
     if (team == GetDefenderTeam())
     {
-		for (GuidSet::const_iterator itr = m_PlayersInWar[GetDefenderTeam()].begin(); itr != m_PlayersInWar[GetDefenderTeam()].end(); ++itr)
+        for (GuidSet::const_iterator itr = m_PlayersInWar[GetDefenderTeam()].begin(); itr != m_PlayersInWar[GetDefenderTeam()].end(); ++itr)
         {
             if (Player* player = ObjectAccessor::FindPlayer(*itr))
                 player->KilledMonsterCredit(CREDIT_TOWERS);

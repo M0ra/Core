@@ -22598,7 +22598,7 @@ void Player::SendCooldownEvent(SpellInfo const* spellInfo, uint32 itemId /*= 0*/
     data << uint64(GetGUID());
     SendDirectMessage(&data);
 	
-	uint32 cat = spellInfo->GetCategory();
+    uint32 cat = spellInfo->GetCategory();
     if (cat && spellInfo->CategoryRecoveryTime)
     {
         SpellCategoryStore::const_iterator ct = sSpellsByCategoryStore.find(cat);

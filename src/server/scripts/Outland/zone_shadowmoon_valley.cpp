@@ -1701,23 +1701,26 @@ class npc_invis_arakkoa_target : public CreatureScript
 public:
     npc_invis_arakkoa_target() : CreatureScript("npc_invis_arakkoa_target") { }
 
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_invis_arakkoa_targetAI (creature);
-    }
-
     struct npc_invis_arakkoa_targetAI : public ScriptedAI
     {
-        npc_invis_arakkoa_targetAI(Creature* creature) : ScriptedAI(creature){}
+        npc_invis_arakkoa_targetAI(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            checkTimer = 4000;
+        }
 
         uint32 checkTimer;
 
-        void Reset()
+        void Reset() override
         {
-            checkTimer = 4*IN_MILLISECONDS;
+            Initialize();
         }
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 diff) override
         {
             if (checkTimer <= diff)
             {
@@ -1731,8 +1734,13 @@ public:
             }
             else
             checkTimer -= diff;
-         }    
+        }    
     };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_invis_arakkoa_targetAI (creature);
+    }
 };
 
 void AddSC_shadowmoon_valley()

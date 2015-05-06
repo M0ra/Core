@@ -79,7 +79,7 @@ bool Map::ExistMap(uint32 mapid, int gx, int gy)
     FILE* pf = fopen(fileName, "rb");
 
     if (!pf)
-	{
+    {
         TC_LOG_ERROR("maps", "Map file '%s' does not exist!", fileName);
         TC_LOG_ERROR("maps", "Please place MAP-files (*.map) in the appropriate directory (%s), or correct the DataDir setting in your worldserver.conf file.", (sWorld->GetDataPath()+"maps/").c_str());
     }
@@ -3265,7 +3265,7 @@ bool BattlegroundMap::AddPlayerToMap(Player* player)
 
 void BattlegroundMap::RemovePlayerFromMap(Player* player, bool remove)
 {
-if (player && player->isSpectator() && !player->isSpectateCanceled())
+    if (player && player->isSpectator() && !player->isSpectateCanceled())
     {
         if (GetBG())
             GetBG()->RemoveSpectator(player->GetGUID());

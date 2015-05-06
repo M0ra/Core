@@ -192,7 +192,7 @@ void Vehicle::ApplyAllImmunities()
         _me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, true);
     }
 
-	// Honour non movement flag (4)
+    // Honour non movement flag (4)
     if (_me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
         _me->SetControlled(true, UNIT_STATE_ROOT);
 	
@@ -209,7 +209,7 @@ void Vehicle::ApplyAllImmunities()
             // why we need to apply this? we can simple add immunities to slow mechanic in DB
             _me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_DECREASE_SPEED, true);
             break;
-		case 321: // Pilgrims Bount: Chair
+        case 321: // Pilgrims Bount: Chair
             _me->SetControlled(true, UNIT_STATE_ROOT);
             break;
         default:

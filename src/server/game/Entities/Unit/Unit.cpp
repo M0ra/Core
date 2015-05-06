@@ -291,7 +291,7 @@ Unit::~Unit()
             m_currentSpells[i] = NULL;
         }
 
-	// remove veiw point for spectator
+    // remove veiw point for spectator
     if (!m_sharedVision.empty())
     {
         for (SharedVisionList::iterator itr = m_sharedVision.begin(); itr != m_sharedVision.end(); ++itr)
@@ -10755,11 +10755,6 @@ uint32 Unit::SpellCriticalDamageBonus(SpellInfo const* spellProto, uint32 damage
 
     if (damage > uint32(crit_bonus))
     {
-       // all these spells should have only 50% bonus damage on crit like a magic spells
-        if (spellProto->Id == 55078 || spellProto->Id == 61840 ||
-            (spellProto->SpellFamilyName == SPELLFAMILY_HUNTER && spellProto->SpellFamilyFlags[0] & 0x4000))
-            crit_bonus /= 2;
-
         // adds additional damage to critBonus (from talents)
         if (Player* modOwner = GetSpellModOwner())
             modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_CRIT_DAMAGE_BONUS, crit_bonus);
@@ -13539,7 +13534,7 @@ void Unit::SetMaxHealth(uint32 val)
     // group update
     if (GetTypeId() == TYPEID_PLAYER)
     {
-		if (ToPlayer()->HaveSpectators())
+        if (ToPlayer()->HaveSpectators())
         {
             SpectatorAddonMsg msg;
             msg.SetPlayer(ToPlayer()->GetName());
@@ -13583,7 +13578,7 @@ void Unit::SetPower(Powers power, uint32 val)
     // group update
     if (Player* player = ToPlayer())
     {
-		if (player->HaveSpectators())
+        if (player->HaveSpectators())
         {
             SpectatorAddonMsg msg;
             msg.SetPlayer(player->GetName());
@@ -17101,7 +17096,7 @@ void Unit::_EnterVehicle(Vehicle* vehicle, int8 seatId, AuraApplication const* a
         }
     }
 	
-	// Check if there is unit type non move on vehicle
+    // Check if there is unit type non move on vehicle
     // If so, root the vehicle once someone gets in
     if (vehicle->GetBase()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
         SetControlled(true, UNIT_STATE_ROOT);

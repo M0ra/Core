@@ -3287,9 +3287,6 @@ void SpellMgr::LoadSpellInfoCorrections()
                 spellInfo->AttributesEx |= SPELL_ATTR1_NOT_BREAK_STEALTH;
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
                 break;
-            case 60106: // Lava Lash
-                spellInfo->Effects[EFFECT_1].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
-                break;
             case 58883: // Rapid Recuperation
                 spellInfo->Effects[0].Effect = SPELL_EFFECT_ENERGIZE_PCT;
                 break;
@@ -3342,10 +3339,6 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 64936: // Item - Warrior T8 Protection 4P Bonus
                 spellInfo->Effects[EFFECT_0].BasePoints = 100; // 100% chance of procc'ing, not -10% (chance calculated in PrepareTriggersExecutedOnHit)
                 break;
-	    case 63163: // Apply Enchanted Bridle (Argent Tournament)
-                spellInfo->Effects[EFFECT_0].DieSides = 0; // was 1, that should probably mean seat 0, but instead it's treated as spell 1
-                spellInfo->Effects[EFFECT_0].BasePoints = 52391; // Ride Vehicle (forces seat 0)
-                break;	
             case 19970: // Entangling Roots (Rank 6) -- Nature's Grasp Proc
             case 19971: // Entangling Roots (Rank 5) -- Nature's Grasp Proc
             case 19972: // Entangling Roots (Rank 4) -- Nature's Grasp Proc

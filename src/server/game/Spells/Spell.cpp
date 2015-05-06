@@ -2938,7 +2938,7 @@ void Spell::prepare(SpellCastTargets const* targets, AuraEffect const* triggered
     ReSetTimer();
 
     TC_LOG_DEBUG("spells", "Spell::prepare: spell id %u source %u caster %d customCastFlags %u mask %u", m_spellInfo->Id, m_caster->GetEntry(), m_originalCaster ? m_originalCaster->GetEntry() : -1, _triggeredCastFlags, m_targets.GetTargetMask());
-	if (GetCaster() && GetSpellInfo())
+    if (GetCaster() && GetSpellInfo())
         if (Player *tmpPlayer = GetCaster()->ToPlayer())
             if (tmpPlayer->HaveSpectators())
             {
@@ -4696,7 +4696,7 @@ SpellCastResult Spell::CheckCast(bool strict)
             return SPELL_FAILED_ONLY_INDOORS;
     }
 		
-	if (Player *tmpPlayer = m_caster->ToPlayer())
+    if (Player *tmpPlayer = m_caster->ToPlayer())
         if (tmpPlayer->isSpectator())
             return SPELL_FAILED_SPELL_UNAVAILABLE;
 
@@ -5093,7 +5093,13 @@ SpellCastResult Spell::CheckCast(bool strict)
                     float objSize = target->GetObjectSize();
                     float range = m_spellInfo->GetMaxRange(true, m_caster, this) * 1.5f + objSize; // can't be overly strict
 
-                    m_preGeneratedPath.SetPathLengthLimit(range);
+                    float limit = m_spellInfo->GetMaxRange(true);
+                    if (m_caster->HasAura(58097))
+                    {
+                        limit += 5.0f;
+                    }
+
+                    m_preGeneratedPath.SetPathLengthLimit(limit * 1.5f);
                     // first try with raycast, if it fails fall back to normal path
                     bool result = m_preGeneratedPath.CalculatePath(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ() + target->GetObjectSize(), false, true);
                     if (m_preGeneratedPath.GetPathType() & PATHFIND_SHORT)

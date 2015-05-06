@@ -328,7 +328,7 @@ class WorldSession
         void SendTrainerList(ObjectGuid guid, std::string const& strTitle);
         void SendListInventory(ObjectGuid guid);
         void SendShowBank(ObjectGuid guid);
-		void SendShowMail(ObjectGuid guid);
+        void SendShowMail(ObjectGuid guid);
         bool CanOpenMailBox(ObjectGuid guid);
         void SendShowMailBox(ObjectGuid guid);
         void SendTabardVendorActivate(ObjectGuid guid);
@@ -375,7 +375,7 @@ class WorldSession
             }
         }
         //used with item_page table
-		static void SendExternalMails();
+        static void SendExternalMails();
         bool SendItemInfo(uint32 itemid, WorldPacket data);
         //auction
         void SendAuctionHello(ObjectGuid guid, Creature* unit);

@@ -334,7 +334,7 @@ void AnticheatMgr::BuildReport(Player* player,uint8 reportType)
     {
         // display warning at the center of the screen, hacky way?
         std::string str = "";
-		if (sWorld->getBoolConfig(CONFIG_BAN_PLAYER)) //Make anticheat active.
+        if (sWorld->getBoolConfig(CONFIG_BAN_PLAYER)) //Make anticheat active.
         {
             if (m_Players[key].GetAverage() > 0.5f)
             {
@@ -345,11 +345,11 @@ void AnticheatMgr::BuildReport(Player* player,uint8 reportType)
         }
         else
         {
-        str = "|cFFFFFC00[AC]|cFF00FFFF[|cFF60FF00" + std::string(player->GetName().c_str()) + "|cFF00FFFF] Возможно читер!";
-        WorldPacket data(SMSG_NOTIFICATION, (str.size()+1));
-        data << str;
-        sWorld->SendGlobalGMMessage(&data);
-		}
+            str = "|cFFFFFC00[AC]|cFF00FFFF[|cFF60FF00" + std::string(player->GetName().c_str()) + "|cFF00FFFF] Возможно читер!";
+            WorldPacket data(SMSG_NOTIFICATION, (str.size()+1));
+            data << str;
+            sWorld->SendGlobalGMMessage(&data);
+        }
     }
 }
 
