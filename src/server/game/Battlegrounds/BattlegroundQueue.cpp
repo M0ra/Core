@@ -925,10 +925,6 @@ void BattlegroundQueue::BattlegroundQueueUpdate(uint32 /*diff*/, BattlegroundTyp
         uint32 arenaMaxRating = arenaRating + sBattlegroundMgr->GetMaxRatingDifference();
         // if max rating difference is set and the time past since server startup is greater than the rating discard time
         // (after what time the ratings aren't taken into account when making teams) then
-        // the discard time is current_time - time_to_discard, teams that joined after that, will have their ratings taken into account
-        // else leave the discard time on 0, this way all ratings will be discarded
-        uint32 discardTime = getMSTime() - sBattlegroundMgr->GetRatingDiscardTimer();
-
         // we need to find 2 teams which will play next game
         GroupsQueueType::iterator itr_teams[BG_TEAMS_COUNT];
         uint8 found = 0;
@@ -962,7 +958,7 @@ void BattlegroundQueue::BattlegroundQueueUpdate(uint32 /*diff*/, BattlegroundTyp
                     || ((*itr2)->ArenaMatchmakerRating >= arenaMinRating - 850 && (*itr2)->ArenaMatchmakerRating <= arenaMaxRating + 850 && (*itr2)->JoinTime + 510000 < getMSTime())
                     || ((*itr2)->ArenaMatchmakerRating >= arenaMinRating - 900 && (*itr2)->ArenaMatchmakerRating <= arenaMaxRating + 900 && (*itr2)->JoinTime + 540000 < getMSTime())
                     || ((*itr2)->ArenaMatchmakerRating >= arenaMinRating - 950 && (*itr2)->ArenaMatchmakerRating <= arenaMaxRating + 950 && (*itr2)->JoinTime + 570000 < getMSTime())
-                        || (*itr2)->JoinTime < discardTime))
+                        ||  getMSTimeDiff((*itr2)->JoinTime, getMSTime()) > sBattlegroundMgr->GetRatingDiscardTimer()))
                 {
                     itr_teams[found++] = itr2;
                     team = i;
@@ -999,7 +995,7 @@ void BattlegroundQueue::BattlegroundQueueUpdate(uint32 /*diff*/, BattlegroundTyp
                     || ((*itr3)->ArenaMatchmakerRating >= arenaMinRating - 850 && (*itr3)->ArenaMatchmakerRating <= arenaMaxRating + 850 && (*itr3)->JoinTime + 510000 < getMSTime())
                     || ((*itr3)->ArenaMatchmakerRating >= arenaMinRating - 900 && (*itr3)->ArenaMatchmakerRating <= arenaMaxRating + 900 && (*itr3)->JoinTime + 540000 < getMSTime())
                     || ((*itr3)->ArenaMatchmakerRating >= arenaMinRating - 950 && (*itr3)->ArenaMatchmakerRating <= arenaMaxRating + 950 && (*itr3)->JoinTime + 570000 < getMSTime())
-                        || (*itr3)->JoinTime < discardTime)
+                        || getMSTimeDiff((*itr3)->JoinTime, getMSTime()) > sBattlegroundMgr->GetRatingDiscardTimer())
                     && (*itr_teams[0])->ArenaTeamId != (*itr3)->ArenaTeamId)
                 {
                     itr_teams[found++] = itr3;
