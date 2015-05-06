@@ -420,7 +420,7 @@ class npc_sentinel_aynasha : public CreatureScript
 public:
     npc_sentinel_aynasha() : CreatureScript("npc_sentinel_aynasha") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_ONESHOT_ONEKILL)
         {
@@ -434,7 +434,7 @@ public:
         return true;
     }
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_sentinel_aynashaAI(creature);
     }
@@ -443,41 +443,48 @@ public:
     {
         npc_sentinel_aynashaAI(Creature* creature) : npc_escortAI(creature)
         {
+            Initialize();
+        }
+
+        void Initialize()
+        {
             bArrow_said = 0;
             uiWait_Controller = 0;
+            uiShoot_Timer = 1000;
+            uiArrow_Timer = 60000;
+            uiWait_Timer = 5000;
         }
 
         uint32 uiWait_Controller;
         uint32 uiWait_Timer;
         uint32 uiShoot_Timer;
         uint32 uiArrow_Timer;
-		
+
         bool bArrow_said;
 
         ObjectGuid PlayerGUID;
 
-        void Reset()
+        void Reset() override
         {
-            uiShoot_Timer = 1000;
+            Initialize();
         }
 
-        void WaypointReached(uint32 /*uiPoint*/) //needs to be here even if it is empty
+        void WaypointReached(uint32 /*uiPoint*/) override //needs to be here even if it is empty
         {
-
         }
 
-        void JustSummoned(Creature* summoned)
+        void JustSummoned(Creature* summoned) override
         {
             summoned->AI()->AttackStart(me);
         }
 
-        void UpdateAI(const uint32 uiDiff)
+        void UpdateAI(uint32 uiDiff) override
         {
-            if(uiWait_Controller)
+            if (uiWait_Controller)
             {
-                if(uiWait_Timer <= uiDiff)
+                if (uiWait_Timer <= uiDiff)
                 {
-                    switch(uiWait_Controller)
+                    switch (uiWait_Controller)
                     {
                         case 1:
                             me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4371.19f, -33.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
@@ -486,7 +493,6 @@ public:
                             ++uiWait_Controller;
                             uiWait_Timer = 45000;
                             break;
-
                         case 2:
                             me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4371.19f, -33.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
                             me->SummonCreature(NPC_BLACKWOOD_TRACKER, 4376.19f, -33.71f, 86.2792f, 5.44982f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
@@ -511,7 +517,7 @@ public:
                         case 5:
                             if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
                             {
-                                 player->GroupEventHappens(QUEST_ONESHOT_ONEKILL,me);
+                                player->GroupEventHappens(QUEST_ONESHOT_ONEKILL,me);
                             }
                             Talk(SAY_END2);
                             me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
@@ -522,26 +528,25 @@ public:
                         default:
                             break;
                     }
-                }else uiWait_Timer -= uiDiff;
+                } else uiWait_Timer -= uiDiff;
             }
 
-            if(!UpdateVictim())
+            if (!UpdateVictim())
             {
                 return;
             }
 
-            if(uiArrow_Timer <= uiDiff && !bArrow_said && uiWait_Controller)
+            if (uiArrow_Timer <= uiDiff && !bArrow_said && uiWait_Controller)
             {
                 Talk(SAY_OUT_OF_ARROWS);
                 bArrow_said = 1;
-            }else uiArrow_Timer -= uiDiff;
+            } else uiArrow_Timer -= uiDiff;
 
-            if(uiShoot_Timer <= uiDiff && !bArrow_said)
+            if (uiShoot_Timer <= uiDiff && !bArrow_said)
             {
-                DoCast(me->GetVictim(),SPELL_SHOOT);
+                DoCast(me->GetVictim(), SPELL_SHOOT);
                 uiShoot_Timer = 1000;
-            }else uiShoot_Timer -= uiDiff;
-
+            } else uiShoot_Timer -= uiDiff;
         }
 
         void StartEvent()
@@ -554,7 +559,6 @@ public:
             uiArrow_Timer = 60000;
         }
     };
-
 };
 
 void AddSC_darkshore()
