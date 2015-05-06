@@ -32,6 +32,7 @@
 #    AUCTION HOUSE BOT BUYER CONFIG
 #    LOGGING SYSTEM SETTINGS
 #    PACKET SPOOF PROTECTION SETTINGS
+#    REWARD TIME ONLIN
 #
 ###################################################################################################
 
@@ -3422,3 +3423,111 @@ CrossfactionBG.enable = 1
 
 #
 ###################################################################################################
+
+##################################################################################################################################
+#    REWARD TIME ONLINE
+##################################################################################################################################
+#
+#    Activate.System.Reward.Time.Online
+#       Activates the reward system for uninterrupted time online
+#       Default: 0 (Disabled)
+#                1 (Enabled)
+
+Activate.System.Reward.Time.Online = 0
+
+#
+#    Activate.Rank.1 - Levels of 1 to 40
+#    Activate.Rank.2 - Levels of 41 to 69
+#    Activate.Rank.3 - Levels of 70 to 79
+#    Activate.Rank.4 - Level 80
+#       Activate the awards ceremony for each level range
+#       Default: 0 (Disabled)
+#                1 (Enabled)
+
+Activate.Rank.1 = 0
+Activate.Rank.2 = 0
+Activate.Rank.3 = 0
+Activate.Rank.4 = 0
+
+#
+#    Time.Online
+#       Set the time the player must be connected without interruption to receive the reward
+#       Important: This time is expressed in milliseconds
+#       Default: 0 (Disabled)
+
+Time.Online = 0
+
+#
+#    Activate.Item.Rank.1 (Enable options for the player to receive objects)
+#    Item.Rank.1          (Order to meet the meet the set time)
+#    Item.Amount.Rank.1   (Amount to receive the object set)
+#    Arena.Rank.1         (Amount of arena points to receive it when the time set)
+#    Honor.Rank.1         (Number of points honor to receive it when the time set)
+#    Money.Rank.1         (Amount of money to receive it when the time set - 10000 is a gold coin)
+#       Sets rewards the player will receive it when the time set connected without interruption (Rank 1)
+#       Default: 0 (Disabled)
+
+Activate.Item.Rank.1 = 0
+Item.Rank.1          = 0
+Item.Amount.Rank.1   = 0
+
+Arena.Rank.1       = 0
+Honor.Rank.1       = 0
+Money.Rank.1       = 0
+
+#
+#    Activate.Item.Rank.2 (Enable options for the player to receive objects)
+#    Item.Rank.2          (Order to meet the meet the set time)
+#    Item.Amount.Rank.2   (Amount to receive the object set)
+#    Arena.Rank.2         (Amount of arena points to receive it when the time set)
+#    Honor.Rank.2         (Number of points honor to receive it when the time set)
+#    Money.Rank.2         (Amount of money to receive it when the time set - 10000 is a gold coin)
+#       Sets rewards the player will receive it when the time set connected without interruption (Rank 2)
+#       Default: 0 (Disabled)
+
+Activate.Item.Rank.2 = 0
+Item.Rank.2          = 0
+Item.Amount.Rank.2   = 0
+
+Arena.Rank.2       = 0
+Honor.Rank.2       = 0
+Money.Rank.2       = 0
+
+#
+#    Activate.Item.Rank.3 (Enable options for the player to receive objects)
+#    Item.Rank.3          (Order to meet the meet the set time)
+#    Item.Amount.Rank.3   (Amount to receive the object set)
+#    Arena.Rank.3         (Amount of arena points to receive it when the time set)
+#    Honor.Rank.3         (Number of points honor to receive it when the time set)
+#    Money.Rank.3         (Amount of money to receive it when the time set - 10000 is a gold coin)
+#       Sets rewards the player will receive it when the time set connected without interruption (Rank 3)
+#       Default: 0 (Disabled)
+
+Activate.Item.Rank.3 = 0
+Item.Rank.3          = 0
+Item.Amount.Rank.3   = 0
+
+Arena.Rank.3       = 0
+Honor.Rank.3       = 0
+Money.Rank.3       = 0
+
+#
+#    Activate.Item.Rank.4 (Enable options for the player to receive objects)
+#    Item.Rank.4          (Order to meet the meet the set time)
+#    Item.Amount.Rank.4   (Amount to receive the object set)
+#    Arena.Rank.4         (Amount of arena points to receive it when the time set)
+#    Honor.Rank.4         (Number of points honor to receive it when the time set)
+#    Money.Rank.4         (Amount of money to receive it when the time set - 10000 is a gold coin)
+#       Sets rewards the player will receive it when the time set connected without interruption (Rank 4)
+#       Default: 0 (Disabled)
+
+Activate.Item.Rank.4 = 0
+Item.Rank.4          = 0
+Item.Amount.Rank.4   = 0
+
+Arena.Rank.4       = 0
+Honor.Rank.4       = 0
+Money.Rank.4       = 0
+
+#
+##################################################################################################################################

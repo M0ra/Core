@@ -779,6 +779,7 @@ Player::Player(WorldSession* session): Unit(true)
         m_bgBattlegroundQueueID[j].invitedToInstance = 0;
     }
 
+    time_reward = sWorld->getIntConfig(TIME_ONLINE);
     m_logintime = time(NULL);
     m_Last_tick = m_logintime;
     m_Played_time[PLAYED_TIME_TOTAL] = 0;
@@ -1641,6 +1642,114 @@ void Player::Update(uint32 p_time)
     // check every second
     if (now > m_Last_tick + 1)
         UpdateSoulboundTradeItems();
+
+
+    if (sWorld->getBoolConfig(ACTIVATE_SYSTEM_REWARD_TIME_ONLINE))
+    {
+        if (sWorld->getBoolConfig(ACTIVATE_RANK_1))
+        {
+            if (getLevel() >= 1 && getLevel() <= 40)
+            {
+                if (time_reward > 0)
+                {
+                    if (p_time >= time_reward)
+                    {
+                        GetSession()->SendAreaTriggerMessage("Уровень 1: У вас есть 60 минут без перерыва, вот ваша награда!");
+
+                        if (sWorld->getBoolConfig(ACTIVATE_ITEM_RANK_1))
+                        {
+                            AddItem(sWorld->getIntConfig(ITEM_RANK_1), sWorld->getIntConfig(ITEM_AMOUNT_RANK_1));
+                        }
+                        ModifyArenaPoints(sWorld->getIntConfig(ARENA_RANK_1));
+                        ModifyHonorPoints(sWorld->getIntConfig(HONOR_RANK_1));
+                        ModifyMoney(sWorld->getIntConfig(MONEY_RANK_1));
+
+                        time_reward =+ sWorld->getIntConfig(TIME_ONLINE);
+                    }
+                    else
+                        time_reward -= p_time;
+                }
+            }
+        }
+
+        if (sWorld->getBoolConfig(ACTIVATE_RANK_2))
+        {
+            if (getLevel() >= 41 && getLevel() <= 69)
+            {
+                if (time_reward > 0)
+                {
+                    if (p_time >= time_reward)
+                    {
+                        GetSession()->SendAreaTriggerMessage("Уровень 2: У вас есть 60 минут без перерыва, вот ваша награда!");
+
+                        if (sWorld->getBoolConfig(ACTIVATE_ITEM_RANK_2))
+                        {
+                            AddItem(sWorld->getIntConfig(ITEM_RANK_2), sWorld->getIntConfig(ITEM_AMOUNT_RANK_2));
+                        }
+                        ModifyArenaPoints(sWorld->getIntConfig(ARENA_RANK_2));
+                        ModifyHonorPoints(sWorld->getIntConfig(HONOR_RANK_2));
+                        ModifyMoney(sWorld->getIntConfig(MONEY_RANK_2));
+
+                        time_reward =+ sWorld->getIntConfig(TIME_ONLINE);
+                    }
+                    else
+                        time_reward -= p_time;
+                }
+            }
+        }
+
+        if (sWorld->getBoolConfig(ACTIVATE_RANK_3))
+        {
+            if (getLevel() >= 70 && getLevel() <= 79)
+            {
+                if (time_reward > 0)
+                {
+                    if (p_time >= time_reward)
+                    {
+                        GetSession()->SendAreaTriggerMessage("Уровень 3: У вас есть 60 минут без перерыва, вот ваша награда!");
+
+                        if (sWorld->getBoolConfig(ACTIVATE_ITEM_RANK_3))
+                        {
+                            AddItem(sWorld->getIntConfig(ITEM_RANK_3), sWorld->getIntConfig(ITEM_AMOUNT_RANK_3));
+                        }
+                        ModifyArenaPoints(sWorld->getIntConfig(ARENA_RANK_3));
+                        ModifyHonorPoints(sWorld->getIntConfig(HONOR_RANK_3));
+                        ModifyMoney(sWorld->getIntConfig(MONEY_RANK_3));
+
+                        time_reward =+ sWorld->getIntConfig(TIME_ONLINE);
+                    }
+                    else
+                        time_reward -= p_time;
+                }
+            }
+        }
+
+        if (sWorld->getBoolConfig(ACTIVATE_RANK_4))
+        {
+            if (getLevel() >= 80 && getLevel() <= 80)
+            {
+                if (time_reward > 0)
+                {
+                    if (p_time >= time_reward)
+                    {
+                        GetSession()->SendAreaTriggerMessage("Уровень 4: У вас есть 60 минут без перерыва, вот ваша награда!");
+
+                        if (sWorld->getBoolConfig(ACTIVATE_ITEM_RANK_4))
+                        {
+                            AddItem(sWorld->getIntConfig(ITEM_RANK_4), sWorld->getIntConfig(ITEM_AMOUNT_RANK_4));
+                        }
+                        ModifyArenaPoints(sWorld->getIntConfig(ARENA_RANK_4));
+                        ModifyHonorPoints(sWorld->getIntConfig(HONOR_RANK_4));
+                        ModifyMoney(sWorld->getIntConfig(MONEY_RANK_4));
+
+                        time_reward =+ sWorld->getIntConfig(TIME_ONLINE);
+                    }
+                    else
+                        time_reward -= p_time;
+                }
+            }
+        }
+    }
 
     // If mute expired, remove it from the DB
     if (GetSession()->m_muteTime && GetSession()->m_muteTime < now)
@@ -7074,7 +7183,7 @@ void Player::CheckAreaExploreAndOutdoor()
                     XP = uint32(sObjectMgr->GetBaseXP(areaEntry->area_level)*sWorld->getRate(RATE_XP_EXPLORE));
                 }
 
-                if(GetSession()->IsPremium())
+                if (GetSession()->IsPremium())
                     XP *= sWorld->getRate(RATE_XP_EXPLORE_PREMIUM);
 
                 GiveXP(XP, NULL);
@@ -7490,7 +7599,7 @@ bool Player::RewardHonor(Unit* victim, uint32 groupsize, int32 honor, bool pvpto
 
     honor_f *= sWorld->getRate(RATE_HONOR);
 
-    if(GetSession()->IsPremium())
+    if (GetSession()->IsPremium())
         honor_f *= sWorld->getRate(RATE_HONOR_PREMIUM);
 
     // Back to int now

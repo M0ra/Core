@@ -1348,6 +1348,43 @@ void World::LoadConfigSettings(bool reload)
     // Mod special code
     m_bool_configs[CONFIG_SPECIAL_CODE] = sConfigMgr->GetBoolDefault("SpecialCode.Enable", false);
 
+    // Reward Time Online
+    m_bool_configs[ACTIVATE_SYSTEM_REWARD_TIME_ONLINE] = sConfigMgr->GetBoolDefault("Activate.System.Reward.Time.Online", false);
+    m_bool_configs[ACTIVATE_RANK_1] = sConfigMgr->GetBoolDefault("Activate.Rank.1", false);
+    m_bool_configs[ACTIVATE_RANK_2] = sConfigMgr->GetBoolDefault("Activate.Rank.2", false);
+    m_bool_configs[ACTIVATE_RANK_3] = sConfigMgr->GetBoolDefault("Activate.Rank.3", false);
+    m_bool_configs[ACTIVATE_RANK_4] = sConfigMgr->GetBoolDefault("Activate.Rank.4", false);
+
+    m_int_configs[TIME_ONLINE] = sConfigMgr->GetIntDefault("Time.Online", 0);
+
+    m_bool_configs[ACTIVATE_ITEM_RANK_1] = sConfigMgr->GetBoolDefault("Activate.Item.Rank.1", false);
+    m_int_configs[ITEM_RANK_1] = sConfigMgr->GetIntDefault("Item.Rank.1", 0);
+    m_int_configs[ITEM_AMOUNT_RANK_1] = sConfigMgr->GetIntDefault("Item.Amount.Rank.1", 0);
+    m_int_configs[ARENA_RANK_1] = sConfigMgr->GetIntDefault("Arena.Rank.1", 0);
+    m_int_configs[HONOR_RANK_1] = sConfigMgr->GetIntDefault("Honor.Rank.1", 0);
+    m_int_configs[MONEY_RANK_1] = sConfigMgr->GetIntDefault("Money.Rank.1", 0);
+
+    m_bool_configs[ACTIVATE_ITEM_RANK_2] = sConfigMgr->GetBoolDefault("Activate.Item.Rank.2", false);
+    m_int_configs[ITEM_RANK_2] = sConfigMgr->GetIntDefault("Item.Rank.2", 0);
+    m_int_configs[ITEM_AMOUNT_RANK_2] = sConfigMgr->GetIntDefault("Item.Amount.Rank.2", 0);
+    m_int_configs[ARENA_RANK_2] = sConfigMgr->GetIntDefault("Arena.Rank.2", 0);
+    m_int_configs[HONOR_RANK_2] = sConfigMgr->GetIntDefault("Honor.Rank.2", 0);
+    m_int_configs[MONEY_RANK_2] = sConfigMgr->GetIntDefault("Money.Rank.2", 0);
+
+    m_bool_configs[ACTIVATE_ITEM_RANK_3] = sConfigMgr->GetBoolDefault("Activate.Item.Rank.3", false);
+    m_int_configs[ITEM_RANK_3] = sConfigMgr->GetIntDefault("Item.Rank.3", 0);
+    m_int_configs[ITEM_AMOUNT_RANK_3] = sConfigMgr->GetIntDefault("Item.Amount.Rank.3", 0);
+    m_int_configs[ARENA_RANK_3] = sConfigMgr->GetIntDefault("Arena.Rank.3", 0);
+    m_int_configs[HONOR_RANK_3] = sConfigMgr->GetIntDefault("Honor.Rank.3", 0);
+    m_int_configs[MONEY_RANK_3] = sConfigMgr->GetIntDefault("Money.Rank.3", 0);
+
+    m_bool_configs[ACTIVATE_ITEM_RANK_4] = sConfigMgr->GetBoolDefault("Activate.Item.Rank.4", false);
+    m_int_configs[ITEM_RANK_4] = sConfigMgr->GetIntDefault("Item.Rank.4", 0);
+    m_int_configs[ITEM_AMOUNT_RANK_4] = sConfigMgr->GetIntDefault("Item.Amount.Rank.4", 0);
+    m_int_configs[ARENA_RANK_4] = sConfigMgr->GetIntDefault("Arena.Rank.4", 0);
+    m_int_configs[HONOR_RANK_4] = sConfigMgr->GetIntDefault("Honor.Rank.4", 0);
+    m_int_configs[MONEY_RANK_4] = sConfigMgr->GetIntDefault("Money.Rank.4", 0);
+
     // call ScriptMgr if we're reloading the configuration
     if (reload)
         sScriptMgr->OnConfigLoad(reload);
