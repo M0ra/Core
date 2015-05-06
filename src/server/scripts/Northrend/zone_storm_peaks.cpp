@@ -758,7 +758,7 @@ class spell_close_rift : public SpellScriptLoader
 enum eSpell
 {
     HYLDNIR_HARPOON     = 54933
-}
+};
 
 class npc_column_ornament : public CreatureScript
 {
