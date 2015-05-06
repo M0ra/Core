@@ -755,6 +755,11 @@ class spell_close_rift : public SpellScriptLoader
         }
 };
 
+enum eSpell
+{
+    HYLDNIR_HARPOON     = 54933
+}
+
 class npc_column_ornament : public CreatureScript
 {
 public:
@@ -764,17 +769,15 @@ public:
     {
         npc_column_ornamentAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void Reset() { } 
-  
         void SpellHit(Unit* hitter, const SpellInfo* spell) override
         {
             if (!hitter || !spell)
                 return;
 
-            if (spell->Id != 54933)
+            if (spell->Id != HYLDNIR_HARPOON)
                 return;
 
-            if (spell->Id == 54933)
+            if (spell->Id == HYLDNIR_HARPOON)
             {
                 hitter->ToPlayer()->ExitVehicle();
                 hitter->ToPlayer()->JumpTo(me,25.0f);        

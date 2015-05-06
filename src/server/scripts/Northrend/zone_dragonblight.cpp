@@ -704,9 +704,9 @@ class npc_torturer_lecraft : public CreatureScript
 /*######
 ## npc_rokhan
 ######*/
- 
+
 #define ROKHAN_GOSSIP_ITEM1 "Призвать Сарастру, чтобы я вырвал у неё сердце!"
- 
+
 enum Rokhan
 {
     QUEST_SARATHSTRA_COURGE_OF_THE_NORTH   = 12097,
@@ -714,12 +714,12 @@ enum Rokhan
     NPC_ROKHAN                             = 26859,
     CREATURE_SARATHSTRA                    = 26858
 };
- 
+
 class npc_rokhan : public CreatureScript
 {
 public:
     npc_rokhan() : CreatureScript("npc_rokhan") { }
- 
+
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (creature->IsQuestGiver())
@@ -727,20 +727,20 @@ public:
  
         if (player->GetQuestStatus(QUEST_SARATHSTRA_COURGE_OF_THE_NORTH) == QUEST_STATUS_INCOMPLETE && !player->FindNearestCreature(CREATURE_SARATHSTRA, 200, true))
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ROKHAN_GOSSIP_ITEM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-       
+
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-       
+
         return true;
     }
- 
+
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 /*uiAction*/) override
     {
         player->CLOSE_GOSSIP_MENU();
-       
+
         if (Creature* sarath = player->FindNearestCreature(CREATURE_SARATHSTRA, 200, false))
             sarath->DespawnOrUnsummon();
  
-        Creature *sarath = player->SummonCreature(CREATURE_SARATHSTRA, 4412.329f, 857.795f, 170.0f, 2.28f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
+        Creature* sarath = player->SummonCreature(CREATURE_SARATHSTRA, 4412.329f, 857.795f, 170.0f, 2.28f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
         sarath->SetCanFly(true);
         sarath->GetMotionMaster()->MovePoint(0, 4362.881f, 946.37f, 87.94f);
         player->GetMotionMaster()->MovePoint(0, 4362.881f, 946.37f, 82.94f);

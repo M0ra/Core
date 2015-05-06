@@ -2510,7 +2510,7 @@ public:
             if (GameObject* go = me->FindNearestGameObject(GO_SIGNAL_FIRE, 2.0f))
                 go->SetGoState(GO_STATE_READY);
         }
-		
+
         EventMap _events;
         Creature* uiKeristrasza;
         Creature* uiSaragosa;
@@ -2522,7 +2522,7 @@ public:
         {
             Initialize();
         }
-		
+
         void SpellHit(Unit* caster, const SpellInfo* spell) override
         {
             if (eventRunning)
@@ -2594,10 +2594,9 @@ public:
                     break;
             }
         }
-
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_signal_fireAI(creature);
     }
@@ -2614,7 +2613,7 @@ public:
         {
             Initialize();
         }
-		
+
         void Initialize()
         {
             _events.Reset();
@@ -2637,7 +2636,7 @@ public:
         {
             Initialize();
         }
-		
+
         void SetGUID(ObjectGuid uiGuid, int32 /*id*/) override
         {
             me->NearTeleportTo(posKeristrasza[4].GetPositionX(), posKeristrasza[4].GetPositionY(), posKeristrasza[4].GetPositionZ(), posKeristrasza[4].GetOrientation());
@@ -2706,7 +2705,7 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_keristrasza_coldarraAI(creature);
     }
