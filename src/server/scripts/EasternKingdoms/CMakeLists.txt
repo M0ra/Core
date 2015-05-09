@@ -105,6 +105,8 @@ set(scripts_STAT_SRCS
   EasternKingdoms/Gnomeregan/instance_gnomeregan.cpp
   EasternKingdoms/Gnomeregan/gnomeregan.cpp
   EasternKingdoms/Gnomeregan/gnomeregan.h
+  EasternKingdoms/OperationGnomeregan/operation_gnomeregan.cpp
+  EasternKingdoms/OperationGnomeregan/operation_gnomeregan.h
   EasternKingdoms/zone_redridge_mountains.cpp
   EasternKingdoms/ScarletEnclave/chapter2.cpp
   EasternKingdoms/ScarletEnclave/chapter5.cpp
