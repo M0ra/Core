@@ -52,7 +52,7 @@ public:
         {
             SetHeaders(DataHeader);
             SetBossNumber(EncounterCount);
-			
+
             uiLeeroyTimer = 15*IN_MILLISECONDS;
             uiWhelpCount = 0;
             bLeeeeeeeeroy = true;
@@ -114,8 +114,8 @@ public:
                     if (GetBossState(DATA_GYTH) == DONE)
                         creature->DisappearAndDie();
                     break;
-             }
-         }
+            }
+        }
 
         void OnGameObjectCreate(GameObject* go) override
         {
@@ -250,8 +250,7 @@ public:
                 default:
                     break;
             }
-
-             return true;
+            return true;
         }
 
         void ProcessEvent(WorldObject* /*obj*/, uint32 eventId) override
@@ -298,7 +297,7 @@ public:
                         SetData(EVENT_LEEEROY, IN_PROGRESS);
                         DoSendNotifyToInstance("Лиииииироооооой! Начали!");
                     }
-                uiWhelpCount = data;
+                    uiWhelpCount = data;
                 default:
                     break;
             }
@@ -382,7 +381,7 @@ public:
 
         uint32 GetData(uint32 type) const override
         {
-            switch(type)
+            switch (type)
             {
                 case EVENT_LEEEROY:      
                     return uiLeroyData;
@@ -391,7 +390,7 @@ public:
             }
             return 0;
         }
-		
+
         void Update(uint32 diff) override
         {
             Events.Update(diff);
@@ -611,7 +610,6 @@ public:
                 return true;
             }
         }
-
         return false;
     }
 };
@@ -647,8 +645,8 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-	
-	CreatureAI* GetAI(Creature* creature) const override
+
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_rookey_whelpAI (creature);
     }
@@ -667,7 +665,7 @@ public:
     {
         player->GetPosition();
         player->SummonCreature(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetOrientation(), NPC_ROOKERY_WHELP, TEMPSUMMON_TIMED_DESPAWN, 15*IN_MILLISECONDS);
-    //destroy gobject need to be implemented
+        //destroy gobject need to be implemented
 
     return true;
     }

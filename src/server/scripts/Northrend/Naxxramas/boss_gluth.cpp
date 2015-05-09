@@ -140,7 +140,7 @@ public:
                             DoSummon(NPC_ZOMBIE, PosSummon[rand32() % RAID_MODE(1, 3)]);
                         // There's probably a better way to handle this
                         for (SummonList::iterator itr = summons.begin(); itr != summons.end(); ++itr)
-                            if(Unit* unit = ObjectAccessor::GetUnit(*me, *itr))
+                            if (Unit* unit = ObjectAccessor::GetUnit(*me, *itr))
                                 if (unit->GetEntry() == NPC_ZOMBIE)
                                     unit->ToCreature()->AI()->AttackStart(me);
                         events.ScheduleEvent(EVENT_SUMMON, 10000);
@@ -150,7 +150,6 @@ public:
                 DoMeleeAttackIfReady();
         }
     };
-
 };
 
 void AddSC_boss_gluth()

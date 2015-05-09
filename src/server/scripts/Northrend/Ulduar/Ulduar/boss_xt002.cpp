@@ -69,7 +69,7 @@ enum Spells
     SPELL_STATIC_CHARGED_10                     = 64227,
     SPELL_STATIC_CHARGED_25                     = 64236,
     SPELL_SHOCK                                 = 64230,
-	
+
     //----------------XT-002 HEART-------------------
     SPELL_EXPOSED_HEART                         = 63849,
     // Channeled

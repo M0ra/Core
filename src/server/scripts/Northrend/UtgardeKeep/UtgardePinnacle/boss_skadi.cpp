@@ -492,8 +492,8 @@ public:
         if (!instance)
             return false;
 
-        if (Creature* pSkadi = ObjectAccessor::GetCreature(*go, instance->GetGuidData(DATA_SKADI_THE_RUTHLESS)))
-            player->CastSpell(pSkadi, SPELL_RAPID_FIRE, true);
+        if (Creature* skadi = ObjectAccessor::GetCreature(*go, instance->GetGuidData(DATA_SKADI_THE_RUTHLESS)))
+            player->CastSpell(skadi, SPELL_RAPID_FIRE, true);
 
         return false;
     }
@@ -502,22 +502,20 @@ public:
 
 class achievement_my_girl_loves_to_skadi_all_the_time : public AchievementCriteriaScript
 {
-    public:
-        achievement_my_girl_loves_to_skadi_all_the_time() : AchievementCriteriaScript("achievement_my_girl_loves_to_skadi_all_the_time")
-        {
-        }
+public:
+    achievement_my_girl_loves_to_skadi_all_the_time() : AchievementCriteriaScript("achievement_my_girl_loves_to_skadi_all_the_time") { }
 
-        bool OnCheck(Player* /*player*/, Unit* target) override
-        {
-            if (!target)
-                return false;
-
-            if (Creature* skadi = target->ToCreature())
-                if (skadi->AI()->GetData(DATA_MGLTS) && skadi->GetMap()->ToInstanceMap()->IsHeroic())
-                    return true;
-
+    bool OnCheck(Player* /*player*/, Unit* target) override
+    {
+        if (!target)
             return false;
-        }
+
+        if (Creature* skadi = target->ToCreature())
+            if (skadi->AI()->GetData(DATA_MGLTS) && skadi->GetMap()->ToInstanceMap()->IsHeroic())
+                return true;
+
+        return false;
+    }
 };
 
 void AddSC_boss_skadi()

@@ -4764,15 +4764,6 @@ enum TauntFlagSpells
     EMOTE_TAUNT             = 28008
 };
 
-class TauntFlagFilter
-{
-public:
-    bool operator()(WorldObject* target) const
-    {
-        return target->ToPlayer()->IsAlive();
-    }
-};
-
 class spell_taunt_flag : public SpellScriptLoader
 {
 public:
@@ -4805,8 +4796,6 @@ public:
 
         void SelectTarget(std::list<WorldObject*>& targets)
         {
-            targets.remove_if(TauntFlagFilter());
-            targets.remove_if(Trinity::UnitAuraCheck(true, SPELL_TAUNT_FLAG_SUMMON));
             if (targets.empty())
                 return;
 

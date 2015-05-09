@@ -147,7 +147,7 @@ public:
         bool polaritySwitch;
         uint32 uiAddsTimer;
 
-        void Reset()
+        void Reset() override
         {
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_STUNNED);
             me->SetReactState(REACT_PASSIVE);
@@ -384,7 +384,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 class npc_feugen : public CreatureScript
@@ -458,7 +457,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 class spell_thaddius_pos_neg_charge : public SpellScriptLoader
