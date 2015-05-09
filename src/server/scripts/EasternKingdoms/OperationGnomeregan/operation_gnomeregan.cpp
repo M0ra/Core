@@ -20,14 +20,18 @@
 #include "Group.h"
 #include "operation_gnomeregan.h"
 
-class npc_og_battle_suit : public CreatureScript
+class npc_og_suit : public CreatureScript
 {
 public:
-    npc_og_battle_suit() : CreatureScript("npc_og_battle_suit") { }
+    npc_og_suit() : CreatureScript("npc_og_suit") { }
 
-    struct npc_og_battle_suitAI : public npc_escortAI
+    struct npc_og_suitAI : public npc_escortAI
     {
-        npc_og_battle_suitAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_og_suitAI(Creature* creature) : npc_escortAI(creature) { }
+
+        void WaypointReached(uint32 i) override
+        {
+        }
 
         void SetupMovement(uint32 variation)
         {
@@ -138,10 +142,10 @@ public:
                     AddWaypoint(23, -5093.171387f, 469.209137f, 403.715790f);
                     break;
                 default:
-                    //sLog->outError("Unexpected movement variation (%i) in npc_og_battle_suitAI::SetupMovement call!", variation);
+                    //sLog->outError("Unexpected movement variation (%i) in npc_og_suitAI::SetupMovement call!", variation);
                     return;
             }
-            if (npc_og_battle_suitAI* escortAI = CAST_AI(npc_og_battle_suitAI, me->AI()))
+            if (npc_og_suitAI* escortAI = CAST_AI(npc_og_suitAI, me->AI()))
             {
                 if (variation == 5)
                     escortAI->Start(true, true);
@@ -162,7 +166,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_og_battle_suitAI(creature);
+        return new npc_og_suitAI(creature);
     }
 };
 
@@ -2035,6 +2039,6 @@ void AddSC_operation_gnomeregan()
     new npc_og_bomber;
     new npc_og_trogg;
     new npc_og_tank;
-    new npc_og_battle_suit();
+    new npc_og_suit();
     new npc_og_rl;
 }
