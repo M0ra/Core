@@ -1263,7 +1263,7 @@ class npc_og_mekkatorque : public CreatureScript
                                 {
                                     for (GroupReference* itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
                                     {
-                                        if (Player* pMember = itr->getSource())
+                                        if (Player* pMember = itr->GetSource())
                                         {
                                             Creature* pCameraVeh = me->SummonCreature(NPC_CAMERA_VEHICLE, -5164.767578f, 556.341125f, 423.753784f, 25.29f, TEMPSUMMON_MANUAL_DESPAWN);
                                             pMember->CastSpell(pMember, SPELL_SEE_INVISIBILITY, true);
@@ -1328,173 +1328,172 @@ class npc_og_mekkatorque : public CreatureScript
                 DoMeleeAttackIfReady();
             }
 
-            void JustDied(Unit* /*who*/)
-            {
-                DoCleanup();
-            }
+        void JustDied(Unit* /*who*/) override
+        {
+            DoCleanup();
+        }
 
-            void JustSummoned(Creature* summon)
-            {
-                SummonsGUID.push_back(summon->GetGUID());
-            }
+        void JustSummoned(Creature* summon) override
+        {
+            SummonsGUID.push_back(summon->GetGUID());
+        }
 
-            void JumpToNextStep(uint32 uiTimer)
+        void JumpToNextStep(uint32 uiTimer)
+        {
+            uiStep_timer = uiTimer;
+            ++uiStep;
+        }
+
+        void SetHoldState(bool b_OnHold)
+        {
+            SetEscortPaused(b_OnHold);
+            if (!b_OnHold)
             {
-                uiStep_timer = uiTimer;
+                if (Creature* cogspin = me->FindNearestCreature(NPC_COGSPIN, 100.0f))
+                    CAST_AI(npc_og_assistants::npc_og_assistantsAI, cogspin->AI())->SetHoldState(b_OnHold);
+                if (Creature* fastblast = me->FindNearestCreature(NPC_FASTBLAST, 100.0f))
+                    CAST_AI(npc_og_assistants::npc_og_assistantsAI, fastblast->AI())->SetHoldState(b_OnHold);
                 ++uiStep;
             }
+        }
 
-            void SetHoldState(bool b_OnHold)
+        void EnterCombat(Unit* who) override
+        {
+            if (who && who->ToCreature())
+                SquadAssist(who->ToCreature());
+        }
+
+        void PartyCast(uint32 spell)
+        {
+            if (Player* player = GetPlayerForEscort())
             {
-                SetEscortPaused(b_OnHold);
-                if (!b_OnHold)
+                if (Group* group = player->GetGroup())
                 {
-                    if (Creature* pCogspin = me->FindNearestCreature(NPC_COGSPIN, 100.0f))
-                        CAST_AI(npc_og_assistants::npc_og_assistantsAI, pCogspin->AI())->SetHoldState(b_OnHold);
-                    if (Creature* pFastblast = me->FindNearestCreature(NPC_FASTBLAST, 100.0f))
-                        CAST_AI(npc_og_assistants::npc_og_assistantsAI, pFastblast->AI())->SetHoldState(b_OnHold);
-                    ++uiStep;
-                }
-            }
-
-            void EnterCombat(Unit* pWho)
-            {
-                if (pWho && pWho->ToCreature())
-                    SquadAssist(pWho->ToCreature());
-            }
-
-            void PartyCast(uint32 spell)
-            {
-                if (Player* pPlayer = GetPlayerForEscort())
-                {
-                    if (Group* pGroup = pPlayer->GetGroup())
+                    for (GroupReference* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
                     {
-                        for (GroupReference* itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
-                        {
-                            if (Player* pMember = itr->getSource())
-                                pMember->CastSpell(pMember, spell, true);
-                        }
-                    }
-                    else
-                    {
-                        pPlayer->CastSpell(pPlayer, spell, true);
+                        if (Player* member = itr->GetSource())
+                            member->CastSpell(member, spell, true);
                     }
                 }
-            }
-
-            void SpecialKill(uint32 variation)
-            {
-                switch (variation)
-                {
-                    case 0:
-                        ++uiRLDestroyed;
-                        DoUpdateWorldState(WORLDSTATE_RL_DESTROYED, uiRLDestroyed);
-                        if (uiStep > 14)
-                        {
-                            switch (uiRLDestroyed)
-                            {
-                                case 1:
-                                    DoTalk(me, MEK_7_1, SOUND_MEK_7, false);
-                                    break;
-                                case 2:
-                                    DoTalk(me, MEK_8_1, SOUND_MEK_8, false);
-                                    break;
-                                case 3:
-                                    DoTalk(me, MEK_9_1, SOUND_MEK_9, false);
-                                    break;
-                                case 4:
-                                    break;
-                            }
-                        }
-                        break;
-                    case 1:
-                        ++uiCannonsDestroyed;
-                        DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED, uiCannonsDestroyed);
-                        if (uiCannonsDestroyed == 6)
-                        {
-                            bCanSummonBomber = false;
-                            DoUpdateWorldState(WORLDSTATE_AIRFIELD_CAPTURED, 0);
-                            DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED_CTRL, 0);
-                            DoUpdateWorldState(WORLDSTATE_AIRFIELD_AND_COMMAND_CENTER_CAPTURED, 1);
-                        }
-                        if (uiCannonsDestroyed > 6)
-                            //sLog->outError("More than 6 Tankbuster Cannons destroyed!");
-                        break;
-                    case 2:
-                        DoUpdateWorldState(WORLDSTATE_BATTLE_NEAR_ENTRANCE, 0);
-                        DoUpdateWorldState(WORLDSTATE_AIRFIELD_AND_COMMAND_CENTER_CAPTURED, 0);
-                        DoUpdateWorldState(WORLDSTATE_SURFACE_CAPTURED, 1);
-                        JumpToNextStep(2000);
-                        break;
-                    case 3:
-                        DoUpdateWorldState(WORLDSTATE_BATLLE_IN_TUNNELS, 0);
-                        DoUpdateWorldState(WORLDSTATE_TUNNELS_CAPTURED, 1);
-                        JumpToNextStep(100);
-                        break;
-                }
-            }
-
-            void DoTalk(Creature* pTalker, const char* text, uint32 sound, bool yell)
-            {
-                if (yell)
-                    pTalker->Yell(text, LANG_UNIVERSAL, 0);
                 else
-                    pTalker->Say(text, LANG_UNIVERSAL, 0);
-
-                if (sound)
-                    DoPlaySoundToSet(pTalker, sound);
-            }
-
-            void SquadAssist(Creature* pTarget)
-            {
-                if (!pTarget->isAlive())
-                    return;
-
-                if (Creature* pCogspin = me->FindNearestCreature(NPC_COGSPIN, 100))
-                    pCogspin->AI()->AttackStart(pTarget);
-
-                if (Creature* pFastblast = me->FindNearestCreature(NPC_FASTBLAST, 100))
-                    pFastblast->AI()->AttackStart(pTarget);
-            }
-
-            void SquadSetRun(bool b_Run)
-            {
-                if (Creature* pCogspin = me->FindNearestCreature(NPC_COGSPIN, 100))
-                    CAST_AI(npc_og_assistants::npc_og_assistantsAI, pCogspin->AI())->SetRun(b_Run);
-                if (Creature* pFastblast = me->FindNearestCreature(NPC_FASTBLAST, 100))
-                    CAST_AI(npc_og_assistants::npc_og_assistantsAI, pFastblast->AI())->SetRun(b_Run);
-
-                SetRun(b_Run);
-            }
-
-            void DoPlayMusic(uint8 musicId)
-            {
-                switch (musicId)
                 {
-                    case 0:
-                        PartyCast(SPELL_MUSIC_START);
-                        break;
-                    case 1:
-                        PartyCast(SPELL_MUSIC);
-                        break;
-                    case 2:
-                        PartyCast(SPELL_MUSIC_END);
-                        break;
+                    player->CastSpell(player, spell, true);
                 }
             }
+        }
 
-            void DoSummonBomber()
+        void SpecialKill(uint32 variation)
+        {
+            switch (variation)
             {
-                if (bCanSummonBomber)
-                {
-                    Creature* bomber = me->SummonCreature(NPC_BOMBER, BomberSpawn, TEMPSUMMON_CORPSE_DESPAWN);
-                    bomber->setActive(true);
-                    bomber->SetSpeed(MOVE_FLIGHT, 5.0, true);
-                    bomber->GetMotionMaster()->MovePoint(1, -5034.42f, 369.79f, 438.06f);
-                }
+                case 0:
+                    ++uiRLDestroyed;
+                    DoUpdateWorldState(WORLDSTATE_RL_DESTROYED, uiRLDestroyed);
+                    if (uiStep > 14)
+                    {
+                        switch (uiRLDestroyed)
+                        {
+                            case 1:
+                                DoTalk(me, MEK_7_1, SOUND_MEK_7, false);
+                                break;
+                            case 2:
+                                DoTalk(me, MEK_8_1, SOUND_MEK_8, false);
+                                break;
+                            case 3:
+                                DoTalk(me, MEK_9_1, SOUND_MEK_9, false);
+                                break;
+                            case 4:
+                                break;
+                        }
+                    }
+                    break;
+                case 1:
+                    ++uiCannonsDestroyed;
+                    DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED, uiCannonsDestroyed);
+                    if (uiCannonsDestroyed == 6)
+                    {
+                        bCanSummonBomber = false;
+                        DoUpdateWorldState(WORLDSTATE_AIRFIELD_CAPTURED, 0);
+                        DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED_CTRL, 0);
+                        DoUpdateWorldState(WORLDSTATE_AIRFIELD_AND_COMMAND_CENTER_CAPTURED, 1);
+                    }
+                    if (uiCannonsDestroyed > 6)
+                    break;
+                case 2:
+                    DoUpdateWorldState(WORLDSTATE_BATTLE_NEAR_ENTRANCE, 0);
+                    DoUpdateWorldState(WORLDSTATE_AIRFIELD_AND_COMMAND_CENTER_CAPTURED, 0);
+                    DoUpdateWorldState(WORLDSTATE_SURFACE_CAPTURED, 1);
+                    JumpToNextStep(2000);
+                    break;
+                case 3:
+                    DoUpdateWorldState(WORLDSTATE_BATLLE_IN_TUNNELS, 0);
+                    DoUpdateWorldState(WORLDSTATE_TUNNELS_CAPTURED, 1);
+                    JumpToNextStep(100);
+                    break;
             }
+        }
 
-        void SpellHit(Unit* caster, const SpellEntry* spell) override
+        void DoTalk(Creature* talker, const char* text, uint32 sound, bool yell)
+        {
+            if (yell)
+                talker->Yell(text, LANG_UNIVERSAL, 0);
+            else
+                talker->Say(text, LANG_UNIVERSAL, 0);
+
+            if (sound)
+                DoPlaySoundToSet(talker, sound);
+        }
+
+        void SquadAssist(Creature* pTarget)
+        {
+            if (!pTarget->IsAlive())
+                return;
+
+            if (Creature* cogspin = me->FindNearestCreature(NPC_COGSPIN, 100))
+                cogspin->AI()->AttackStart(pTarget);
+
+            if (Creature* fastblast = me->FindNearestCreature(NPC_FASTBLAST, 100))
+                fastblast->AI()->AttackStart(pTarget);
+        }
+
+        void SquadSetRun(bool b_Run)
+        {
+            if (Creature* cogspin = me->FindNearestCreature(NPC_COGSPIN, 100))
+                CAST_AI(npc_og_assistants::npc_og_assistantsAI, cogspin->AI())->SetRun(b_Run);
+            if (Creature* fastblast = me->FindNearestCreature(NPC_FASTBLAST, 100))
+                CAST_AI(npc_og_assistants::npc_og_assistantsAI, fastblast->AI())->SetRun(b_Run);
+
+            SetRun(b_Run);
+        }
+
+        void DoPlayMusic(uint8 musicId)
+        {
+            switch (musicId)
+            {
+                case 0:
+                    PartyCast(SPELL_MUSIC_START);
+                    break;
+                case 1:
+                    PartyCast(SPELL_MUSIC);
+                    break;
+                case 2:
+                    PartyCast(SPELL_MUSIC_END);
+                    break;
+            }
+        }
+
+        void DoSummonBomber()
+        {
+            if (bCanSummonBomber)
+            {
+                Creature* bomber = me->SummonCreature(NPC_BOMBER, BomberSpawn, TEMPSUMMON_CORPSE_DESPAWN);
+                bomber->setActive(true);
+                bomber->SetSpeed(MOVE_FLIGHT, 5.0, true);
+                bomber->GetMotionMaster()->MovePoint(1, -5034.42f, 369.79f, 438.06f);
+            }
+        }
+
+        void SpellHit(Unit* caster, SpellInfo const* spell) override
         {
             if (spell->Id == SPELL_TRIGGER)
             {
@@ -1519,7 +1518,7 @@ class npc_og_mekkatorque : public CreatureScript
 
             for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
             {
-                if (Player* player = i->getSource())
+                if (Player* player = i->GetSource())
                 {
                     if (player->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_INCOMPLETE)
                         player->SendUpdateWorldState(worldstate, value);
@@ -1537,7 +1536,7 @@ class npc_og_mekkatorque : public CreatureScript
 
                 for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
                 {
-                    if (Player* pPlayer = i->getSource())
+                    if (Player* pPlayer = i->GetSource())
                     {
                         if (pPlayer->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_NONE || pPlayer->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_REWARDED|| pPlayer->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_FAILED)
                             for (int8 n = 0; n < 15; ++n)
@@ -1582,7 +1581,7 @@ class npc_og_mekkatorque : public CreatureScript
             {
                 for (std::list<uint64>::const_iterator itr = SummonsGUID.begin(); itr != SummonsGUID.end(); ++itr)
                     if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
-                        if (summon->isAlive())
+                        if (summon->IsAlive())
                             summon->DisappearAndDie();
                         else
                             summon->DespawnOrUnsummon();
