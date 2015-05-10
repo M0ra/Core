@@ -158,8 +158,8 @@ enum Seats
 
 enum SeatCounts
 {
-	TWO_SEATS                      = 2, // 10p
-	FOUR_SEATS                     = 4  // 25p
+    TWO_SEATS                      = 2, // 10p
+    FOUR_SEATS                     = 4  // 25p
 };
 
 enum Vehicles
@@ -198,17 +198,17 @@ enum Yells
 
 enum Actions
 {
-	ACTION_ACTIVATE_HARD_MODE     = 5,
-	ACTION_SPAWN_VEHICLES         = 6,
-	ACTION_START_ENCOUNTER        = 10,
-	ACTION_OVERLOAD_CIRCUIT       = 11,
+    ACTION_ACTIVATE_HARD_MODE     = 5,
+    ACTION_SPAWN_VEHICLES         = 6,
+    ACTION_START_ENCOUNTER        = 10,
+    ACTION_OVERLOAD_CIRCUIT       = 11,
 
-	/* Also used, are settled in ulduar.h
-	ACTION_TOWER_OF_STORM_DESTROYED  = 1,
-	ACTION_TOWER_OF_FROST_DESTROYED  = 2,
-	ACTION_TOWER_OF_FLAMES_DESTROYED = 3,
-	ACTION_TOWER_OF_LIFE_DESTROYED   = 4,
-	*/
+    /* Also used, are settled in ulduar.h
+    ACTION_TOWER_OF_STORM_DESTROYED  = 1,
+    ACTION_TOWER_OF_FROST_DESTROYED  = 2,
+    ACTION_TOWER_OF_FLAMES_DESTROYED = 3,
+    ACTION_TOWER_OF_LIFE_DESTROYED   = 4,
+    */
 };
 
 Position const Misc[] =
@@ -915,11 +915,11 @@ enum PyriteContainer
 class npc_liquid_pyrite : public CreatureScript
 {
 public:
-	npc_liquid_pyrite() : CreatureScript("npc_liquid_pyrite") { }
+    npc_liquid_pyrite() : CreatureScript("npc_liquid_pyrite") { }
 
-	struct npc_liquid_pyriteAI : public PassiveAI
-	{
-		npc_liquid_pyriteAI(Creature* creature) : PassiveAI(creature)
+    struct npc_liquid_pyriteAI : public PassiveAI
+    {
+        npc_liquid_pyriteAI(Creature* creature) : PassiveAI(creature)
         {
             Initialize();
         }
@@ -929,38 +929,38 @@ public:
             despawnTimer = 5000;
         }
 
-		void Reset() override
-		{
-			DoCast(me, SPELL_LIQUID_PYRITE, true);
-			me->SetDisplayId(28783);
-		}
+        void Reset() override
+        {
+            DoCast(me, SPELL_LIQUID_PYRITE, true);
+            me->SetDisplayId(28783);
+        }
 
-		void MovementInform(uint32 type, uint32 /*id*/) override
-		{
-			if (type == POINT_MOTION_TYPE)
-			{
-				DoCast(me, SPELL_DUSTY_EXPLOSION, true);
-				DoCast(me, SPELL_DUST_CLOUD_IMPACT, true);
-				me->SetDisplayId(DISPLAY_ID_DAMAGED_PYRITE_CONTAINER);
-			}
-		}
+        void MovementInform(uint32 type, uint32 /*id*/) override
+        {
+            if (type == POINT_MOTION_TYPE)
+            {
+                DoCast(me, SPELL_DUSTY_EXPLOSION, true);
+                DoCast(me, SPELL_DUST_CLOUD_IMPACT, true);
+                me->SetDisplayId(DISPLAY_ID_DAMAGED_PYRITE_CONTAINER);
+            }
+        }
 
-		void DamageTaken(Unit* /*who*/, uint32& damage) override
-		{
-			damage = 0;
-		}
+        void DamageTaken(Unit* /*who*/, uint32& damage) override
+        {
+            damage = 0;
+        }
 
-		void UpdateAI(uint32 diff) override
-		{
-			if (despawnTimer <= diff)
-			{
-				if (me->GetVehicle())
-					me->DisappearAndDie();
-				despawnTimer = 5000;
-			}
-			else
-				despawnTimer -= diff;
-		}
+        void UpdateAI(uint32 diff) override
+        {
+            if (despawnTimer <= diff)
+            {
+                if (me->GetVehicle())
+                    me->DisappearAndDie();
+                despawnTimer = 5000;
+            }
+            else
+                despawnTimer -= diff;
+        }
 
 	private:
 		uint32 despawnTimer;
@@ -1053,70 +1053,70 @@ enum ThorimsHammerEvents
 class npc_thorims_hammer : public CreatureScript
 {
 public:
-	npc_thorims_hammer() : CreatureScript("npc_thorims_hammer") { }
+    npc_thorims_hammer() : CreatureScript("npc_thorims_hammer") { }
 
-	struct npc_thorims_hammerAI : public ScriptedAI
-	{
-		npc_thorims_hammerAI(Creature* creature) : ScriptedAI(creature)
-		{
+    struct npc_thorims_hammerAI : public ScriptedAI
+    {
+        npc_thorims_hammerAI(Creature* creature) : ScriptedAI(creature)
+        {
             Initialize();
-			me->setActive(true);
-			me->AddAura(SPELL_LIGHTNING_SKYBEAM, me);
-			me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
-			me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-			me->SetReactState(REACT_PASSIVE);
-		}
+            me->setActive(true);
+            me->AddAura(SPELL_LIGHTNING_SKYBEAM, me);
+            me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            me->SetReactState(REACT_PASSIVE);
+        }
 
         void Initialize()
         {
-			_timer = urand(2, 10) *IN_MILLISECONDS;
-			_action = 1;
+            _timer = urand(2, 10) *IN_MILLISECONDS;
+            _action = 1;
         }
 
-		void Reset() override
-		{
+        void Reset() override
+        {
             Initialize();
-		}
+        }
 
-		void UpdateAI(uint32 diff) override
-		{
-			if (_timer <= diff)
-			{
-				switch (_action)
-				{
-				    case EVENT_LIGHTNING_SKYBEAM:
-					    me->AddAura(SPELL_LIGHTNING_SKYBEAM, me);
-					    ++_action;
-					    _timer = 4000;
-					    break;
-				    case EVENT_SUMMON_THORIMS_BEACON:
-					    if (Creature* trigger = DoSummonFlyer(NPC_THORIM_BEACON, me, 50.0f, 0, 10000, TEMPSUMMON_TIMED_DESPAWN))
-					    {
-						    trigger->SetDisplayId(trigger->GetCreatureTemplate()->Modelid2);
-						    DoCast(trigger, SPELL_THORIM_S_HAMMER, true);
-					    }
-					    ++_action;
-					    _timer = 4000;
-					    break;
-				    case EVENT_DROP_AURAS_AND_WAIT:
-					    me->RemoveAllAuras();
-					    _timer = 30000;
-					    break;
-				}
-			}
-			else
-				_timer -= diff;
-		}
+        void UpdateAI(uint32 diff) override
+        {
+            if (_timer <= diff)
+            {
+                switch (_action)
+                {
+                    case EVENT_LIGHTNING_SKYBEAM:
+                        me->AddAura(SPELL_LIGHTNING_SKYBEAM, me);
+                        ++_action;
+                        _timer = 4000;
+                        break;
+                    case EVENT_SUMMON_THORIMS_BEACON:
+                        if (Creature* trigger = DoSummonFlyer(NPC_THORIM_BEACON, me, 50.0f, 0, 10000, TEMPSUMMON_TIMED_DESPAWN))
+                        {
+                            trigger->SetDisplayId(trigger->GetCreatureTemplate()->Modelid2);
+                            DoCast(trigger, SPELL_THORIM_S_HAMMER, true);
+                        }
+                        ++_action;
+                        _timer = 4000;
+                        break;
+                    case EVENT_DROP_AURAS_AND_WAIT:
+                        me->RemoveAllAuras();
+                        _timer = 30000;
+                        break;
+                }
+            }
+            else
+                _timer -= diff;
+        }
 
-	private:
-		uint32 _action;
-		uint32 _timer;
-	};
+    private:
+        uint32 _action;
+        uint32 _timer;
+    };
 
-	CreatureAI* GetAI(Creature* creature) const override
-	{
-		return new npc_thorims_hammerAI(creature);
-	}
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_thorims_hammerAI(creature);
+    }
 };
 
 class npc_mimirons_inferno : public CreatureScript
@@ -1202,19 +1202,19 @@ enum HodirsFuryEvents
 class npc_hodirs_fury : public CreatureScript
 {
 public:
-	npc_hodirs_fury() : CreatureScript("npc_hodirs_fury") {}
+    npc_hodirs_fury() : CreatureScript("npc_hodirs_fury") {}
 
-	struct npc_hodirs_furyAI : public ScriptedAI
-	{
+    struct npc_hodirs_furyAI : public ScriptedAI
+    {
         npc_hodirs_furyAI(Creature* creature) : ScriptedAI(creature)
-		{
-			me->setActive(true);
-			me->SetReactState(REACT_PASSIVE);
-			me->AddAura(SPELL_BLUE_SKYBEAM, me);
-			me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
-			events.ScheduleEvent(EVENT_SELECT_TARGET_AND_FOLLOW, 3000);
-			me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
-		}
+        {
+            me->setActive(true);
+            me->SetReactState(REACT_PASSIVE);
+            me->AddAura(SPELL_BLUE_SKYBEAM, me);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            events.ScheduleEvent(EVENT_SELECT_TARGET_AND_FOLLOW, 3000);
+            me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
+        }
 
         void UpdateAI(uint32 diff) override
         {
@@ -1286,10 +1286,10 @@ public:
         EventMap events;
     };
 
-	CreatureAI* GetAI(Creature* creature) const override
-	{
-		return new npc_hodirs_furyAI(creature);
-	}
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_hodirs_furyAI(creature);
+    }
 };
 
 class npc_freyas_ward : public CreatureScript
@@ -1733,12 +1733,12 @@ class spell_load_into_catapult : public SpellScriptLoader
         {
             PrepareAuraScript(spell_load_into_catapult_AuraScript);
 
-			bool Validate(SpellInfo const* /*spellInfo*/) override
-			{
-				if (!sSpellMgr->GetSpellInfo(SPELL_CATAPULT))
-					return false;
-				return true;
-			}
+            bool Validate(SpellInfo const* /*spellInfo*/) override
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_CATAPULT))
+                    return false;
+                return true;
+            }
 
             void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
@@ -2063,102 +2063,102 @@ class spell_vehicle_throw_passenger : public SpellScriptLoader
 class spell_freyas_ward_summon : public SpellScriptLoader
 {
 public:
-	spell_freyas_ward_summon() : SpellScriptLoader("spell_freyas_ward_summon") { }
+    spell_freyas_ward_summon() : SpellScriptLoader("spell_freyas_ward_summon") { }
 
-	class spell_freyas_ward_summon_SpellScript : public SpellScript
-	{
-		PrepareSpellScript(spell_freyas_ward_summon_SpellScript);
+    class spell_freyas_ward_summon_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_freyas_ward_summon_SpellScript);
 
-		bool Validate(SpellInfo const* /*spell*/) override
-		{
-			if (!sSpellMgr->GetSpellInfo(62907))
-				return false;
-			return true;
-		}
+        bool Validate(SpellInfo const* /*spell*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(62907))
+                return false;
+            return true;
+        }
 
-		void HandleDummy(SpellEffIndex effIndex)
-		{
-			PreventHitDefaultEffect(effIndex);
+        void HandleDummy(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
 
-			if (Unit* caster = GetCaster())
-				if (InstanceScript* instance = caster->GetInstanceScript())
-					if (Creature* leviathan = ObjectAccessor::GetCreature(*caster, instance->GetGuidData(BOSS_LEVIATHAN)))
-						for (uint8 i = 0; i < urand(3, 5); ++i)
-							leviathan->SummonCreature(NPC_WRITHING_LASHER, GetExplTargetDest()->GetPositionX(), GetExplTargetDest()->GetPositionY(),
-							GetExplTargetDest()->GetPositionZ(), 0.0f, TEMPSUMMON_CORPSE_DESPAWN, 3000);
-		}
+            if (Unit* caster = GetCaster())
+                if (InstanceScript* instance = caster->GetInstanceScript())
+                    if (Creature* leviathan = ObjectAccessor::GetCreature(*caster, instance->GetGuidData(BOSS_LEVIATHAN)))
+                        for (uint8 i = 0; i < urand(3, 5); ++i)
+                            leviathan->SummonCreature(NPC_WRITHING_LASHER, GetExplTargetDest()->GetPositionX(), GetExplTargetDest()->GetPositionY(),
+                            GetExplTargetDest()->GetPositionZ(), 0.0f, TEMPSUMMON_CORPSE_DESPAWN, 3000);
+        }
 
-		void HandleSummon(SpellEffIndex effIndex)
-		{
-			PreventHitDefaultEffect(effIndex);
+        void HandleSummon(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
 
-			if (Unit* caster = GetCaster())
-				if (InstanceScript* instance = caster->GetInstanceScript())
-					if (Creature* leviathan = ObjectAccessor::GetCreature(*caster, instance->GetGuidData(BOSS_LEVIATHAN)))
-						leviathan->SummonCreature(NPC_WARD_OF_LIFE, GetExplTargetDest()->GetPositionX(), GetExplTargetDest()->GetPositionY(),
-						GetExplTargetDest()->GetPositionZ(), 0.0f, TEMPSUMMON_CORPSE_DESPAWN, 3000);
-		}
+            if (Unit* caster = GetCaster())
+                if (InstanceScript* instance = caster->GetInstanceScript())
+                    if (Creature* leviathan = ObjectAccessor::GetCreature(*caster, instance->GetGuidData(BOSS_LEVIATHAN)))
+                        leviathan->SummonCreature(NPC_WARD_OF_LIFE, GetExplTargetDest()->GetPositionX(), GetExplTargetDest()->GetPositionY(),
+                        GetExplTargetDest()->GetPositionZ(), 0.0f, TEMPSUMMON_CORPSE_DESPAWN, 3000);
+        }
 
-		void Register() override
-		{
-			OnEffectHit += SpellEffectFn(spell_freyas_ward_summon_SpellScript::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
-			OnEffectHit += SpellEffectFn(spell_freyas_ward_summon_SpellScript::HandleSummon, EFFECT_2, SPELL_EFFECT_SUMMON);
-		}
-	};
+        void Register() override
+        {
+            OnEffectHit += SpellEffectFn(spell_freyas_ward_summon_SpellScript::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
+            OnEffectHit += SpellEffectFn(spell_freyas_ward_summon_SpellScript::HandleSummon, EFFECT_2, SPELL_EFFECT_SUMMON);
+        }
+    };
 
-	SpellScript* GetSpellScript() const override
-	{
-		return new spell_freyas_ward_summon_SpellScript();
-	}
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_freyas_ward_summon_SpellScript();
+    }
 };
 
 class FlameVentsTargetSelector
 {
 public:
-	bool operator() (WorldObject* unit)
-	{
-		if (unit->GetTypeId() != TYPEID_PLAYER)
-		{
-			if (unit->ToCreature()->GetEntry() == VEHICLE_SIEGE ||
-				unit->ToCreature()->GetEntry() == VEHICLE_CHOPPER ||
-				unit->ToCreature()->GetEntry() == VEHICLE_DEMOLISHER)
-				return false;
+    bool operator() (WorldObject* unit)
+    {
+        if (unit->GetTypeId() != TYPEID_PLAYER)
+        {
+            if (unit->ToCreature()->GetEntry() == VEHICLE_SIEGE ||
+                unit->ToCreature()->GetEntry() == VEHICLE_CHOPPER ||
+                unit->ToCreature()->GetEntry() == VEHICLE_DEMOLISHER)
+                return false;
 
-			if (!unit->ToCreature()->IsPet())
-				return true;
-		}
+            if (!unit->ToCreature()->IsPet())
+                return true;
+        }
 
-		// TODO: more check?
-		return unit->ToUnit()->GetVehicle();
-	}
+        // TODO: more check?
+        return unit->ToUnit()->GetVehicle();
+    }
 };
 
 class spell_leviathan_tower_buff : public SpellScriptLoader
 {
 public:
-	spell_leviathan_tower_buff() : SpellScriptLoader("spell_leviathan_tower_buff") { }
+    spell_leviathan_tower_buff() : SpellScriptLoader("spell_leviathan_tower_buff") { }
 
-	class spell_leviathan_tower_buff_AuraScript : public AuraScript
-	{
-		PrepareAuraScript(spell_leviathan_tower_buff_AuraScript);
+    class spell_leviathan_tower_buff_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_leviathan_tower_buff_AuraScript);
 
-		bool CheckAreaTarget(Unit* target)
-		{
-			if (target->GetEntry() == 33113)
-				return true;
-			return false;
-		}
+        bool CheckAreaTarget(Unit* target)
+        {
+            if (target->GetEntry() == 33113)
+                return true;
+            return false;
+        }
 
-		void Register() override
-		{
-			DoCheckAreaTarget += AuraCheckAreaTargetFn(spell_leviathan_tower_buff_AuraScript::CheckAreaTarget);
-		}
-	};
+        void Register() override
+        {
+            DoCheckAreaTarget += AuraCheckAreaTargetFn(spell_leviathan_tower_buff_AuraScript::CheckAreaTarget);
+        }
+    };
 
-	AuraScript* GetAuraScript() const override
-	{
-		return new spell_leviathan_tower_buff_AuraScript();
-	}
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_leviathan_tower_buff_AuraScript();
+    }
 };
 
 void AddSC_boss_flame_leviathan()
