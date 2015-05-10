@@ -29,7 +29,7 @@ public:
     {
         npc_og_suitAI(Creature* creature) : npc_escortAI(creature) { }
 
-        void WaypointReached(uint32 i) override
+        void WaypointReached(uint32 /*i*/) override
         {
         }
 
@@ -142,7 +142,6 @@ public:
                     AddWaypoint(23, -5093.171387f, 469.209137f, 403.715790f);
                     break;
                 default:
-                    //sLog->outError("Unexpected movement variation (%i) in npc_og_suitAI::SetupMovement call!", variation);
                     return;
             }
             if (npc_og_suitAI* escortAI = CAST_AI(npc_og_suitAI, me->AI()))
@@ -203,7 +202,7 @@ public:
             if (i == 9 && uiVariation <= 3)
                 if (Creature* suit = me->FindNearestCreature(NPC_BATTLE_SUIT, 50, true))
                 {
-                    CAST_AI(npc_og_battle_suit::npc_og_battle_suitAI, suit->AI())->SetupMovement(uiVariation);
+                    CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(uiVariation);
                     suit->setFaction(FACTION_GNOMEREGAN);
                 }
         }
@@ -305,7 +304,6 @@ public:
                     AddWaypoint(10, -4964.441895f, 722.924133f, 258.709137f);
                     break;
                 default:
-                    //sLog->outError("Unexpected movement variation (%i) in npc_og_infantryAI::SetupMovement call!", variation);
                     return;
             }
             uiVariation = variation;
@@ -484,7 +482,6 @@ public:
                     AddWaypoint(21, -5262.729492f, 572.853027f, 388.782532f);
                     break;
                 default:
-                    //sLog->outError("Unexpected movement variation (%i) in npc_og_tankAI::SetupMovement call!", variation);
                     return;
             }
             if (npc_og_tankAI* escortAI = CAST_AI(npc_og_tankAI, me->AI()))
@@ -529,76 +526,75 @@ public:
 
 class npc_og_i_tank : public CreatureScript
 {
-    public:
-        npc_og_i_tank() : CreatureScript("npc_og_i_tank") { }
+public:
+    npc_og_i_tank() : CreatureScript("npc_og_i_tank") { }
 
-        struct npc_og_i_tankAI : public npc_escortAI
+    struct npc_og_i_tankAI : public npc_escortAI
+    {
+        npc_og_i_tankAI(Creature* creature) : npc_escortAI(creature) { }
+
+        void Reset() override
         {
-            npc_og_i_tankAI(Creature* creature) : npc_escortAI(creature) { }
+        }
 
-            void Reset() override
+        void WaypointReached(uint32 i) override
+        {
+        }
+
+        void SetupMovement(uint32 variation)
+        {
+            switch (variation)
             {
-            }
-
-            void WaypointReached(uint32 i) override
-            {
-            }
-
-            void SetupMovement(uint32 variation)
-            {
-                switch (variation)
-                {
-                    case 0:
-                        AddWaypoint(0, -5339.479980f, 545.804688f, 384.888336f);
-                        AddWaypoint(1, -5348.981934f, 555.181458f, 385.137665f);
-                        AddWaypoint(2, -5348.816406f, 567.433472f, 384.981537f);
-                        AddWaypoint(3, -5348.981934f, 555.181458f, 385.137665f);
-                        break;
-                    case 1:
-                        AddWaypoint(0, -5318.129395f, 578.573425f, 387.439697f);
-                        AddWaypoint(1, -5305.049316f, 584.957153f, 389.928864f);
-                        AddWaypoint(2, -5291.333496f, 589.698730f, 387.835785f);
-                        AddWaypoint(3, -5283.275391f, 583.998413f, 386.930725f);
-                        AddWaypoint(4, -5279.059082f, 571.535461f, 386.423187f);
-                        AddWaypoint(5, -5283.275391f, 583.998413f, 386.930725f);
-                        AddWaypoint(6, -5291.333496f, 589.698730f, 387.835785f);
-                        AddWaypoint(7, -5305.049316f, 584.957153f, 389.928864f);
-                        break;
-                    case 3:
-                        AddWaypoint(0, -5085.889648f, 475.435455f, 402.240814f);
-                        AddWaypoint(1, -5092.540527f, 468.895569f, 403.767853f);
-                        AddWaypoint(2, -5100.161133f, 463.751984f, 403.568817f);
-                        AddWaypoint(3, -5110.015625f, 455.567688f, 401.042847f);
-                        AddWaypoint(4, -5116.595215f, 453.564240f, 398.949249f);
-                        AddWaypoint(5, -5127.697754f, 447.250763f, 395.562195f);
-                        AddWaypoint(6, -5116.622559f, 453.300476f, 398.915619f);
-                        AddWaypoint(7, -5111.297363f, 456.783386f, 400.862091f);
-                        AddWaypoint(8, -5100.011719f, 463.002197f, 403.610992f);
-                        AddWaypoint(9, -5093.187500f, 469.667328f, 403.619598f);
-                        AddWaypoint(10, -5088.007324f, 474.113739f, 402.551941f);
-                        break;
-                    default:
-                        //sLog->outError("Unexpected movement variation (%i) in npc_og_i_tankAI::SetupMovement call!", variation);
-                        return;
-                }
-                if (npc_og_i_tankAI* escortAI = CAST_AI(npc_og_i_tankAI, me->AI()))
-                {
-                    escortAI->Start(true, true);
-                    escortAI->SetDespawnAtFar(false);
-                    me->setActive(true);
-                }
-            }
-
-            void UpdateAI(uint32 uiDiff) override
-            {
-                npc_escortAI::UpdateAI(uiDiff);
-
-                if (!UpdateVictim())
+                case 0:
+                    AddWaypoint(0, -5339.479980f, 545.804688f, 384.888336f);
+                    AddWaypoint(1, -5348.981934f, 555.181458f, 385.137665f);
+                    AddWaypoint(2, -5348.816406f, 567.433472f, 384.981537f);
+                    AddWaypoint(3, -5348.981934f, 555.181458f, 385.137665f);
+                    break;
+                case 1:
+                    AddWaypoint(0, -5318.129395f, 578.573425f, 387.439697f);
+                    AddWaypoint(1, -5305.049316f, 584.957153f, 389.928864f);
+                    AddWaypoint(2, -5291.333496f, 589.698730f, 387.835785f);
+                    AddWaypoint(3, -5283.275391f, 583.998413f, 386.930725f);
+                    AddWaypoint(4, -5279.059082f, 571.535461f, 386.423187f);
+                    AddWaypoint(5, -5283.275391f, 583.998413f, 386.930725f);
+                    AddWaypoint(6, -5291.333496f, 589.698730f, 387.835785f);
+                    AddWaypoint(7, -5305.049316f, 584.957153f, 389.928864f);
+                    break;
+                case 3:
+                    AddWaypoint(0, -5085.889648f, 475.435455f, 402.240814f);
+                    AddWaypoint(1, -5092.540527f, 468.895569f, 403.767853f);
+                    AddWaypoint(2, -5100.161133f, 463.751984f, 403.568817f);
+                    AddWaypoint(3, -5110.015625f, 455.567688f, 401.042847f);
+                    AddWaypoint(4, -5116.595215f, 453.564240f, 398.949249f);
+                    AddWaypoint(5, -5127.697754f, 447.250763f, 395.562195f);
+                    AddWaypoint(6, -5116.622559f, 453.300476f, 398.915619f);
+                    AddWaypoint(7, -5111.297363f, 456.783386f, 400.862091f);
+                    AddWaypoint(8, -5100.011719f, 463.002197f, 403.610992f);
+                    AddWaypoint(9, -5093.187500f, 469.667328f, 403.619598f);
+                    AddWaypoint(10, -5088.007324f, 474.113739f, 402.551941f);
+                    break;
+                default:
                     return;
-
-                DoMeleeAttackIfReady();
             }
-        };
+            if (npc_og_i_tankAI* escortAI = CAST_AI(npc_og_i_tankAI, me->AI()))
+            {
+                escortAI->Start(true, true);
+                escortAI->SetDespawnAtFar(false);
+                me->setActive(true);
+            }
+        }
+
+        void UpdateAI(uint32 uiDiff) override
+        {
+            npc_escortAI::UpdateAI(uiDiff);
+
+            if (!UpdateVictim())
+                return;
+
+            DoMeleeAttackIfReady();
+        }
+    };
 
     CreatureAI* GetAI(Creature* creature) const override
     {
@@ -608,68 +604,68 @@ class npc_og_i_tank : public CreatureScript
 
 class npc_og_assistants : public CreatureScript
 {
-    public:
-        npc_og_assistants() : CreatureScript("npc_og_assistants") {}
+public:
+    npc_og_assistants() : CreatureScript("npc_og_assistants") { }
 
-        struct npc_og_assistantsAI : public npc_escortAI
+    struct npc_og_assistantsAI : public npc_escortAI
+    {
+        npc_og_assistantsAI(Creature* creature) : npc_escortAI(creature) { }
+
+        void Reset() override
         {
-            npc_og_assistantsAI(Creature* creature) : npc_escortAI(creature) { }
+        }
 
-            void Reset() override
+        void WaypointReached(uint32 i) override
+        {
+            switch (i)
             {
+                case 0:
+                case 2:
+                case 20:
+                case 35:
+                case 52:
+                case 57:
+                case 65:
+                case 66:
+                case 67:
+                case 70:
+                    SetHoldState(true);
+                    break;
+                case 49:
+                    SetHoldState(true);
+                    me->Dismount();
+                    if (Creature* mekkatorque = me->FindNearestCreature(NPC_MEKKATORQUE, 100.0f, true))
+                        me->CastSpell(mekkatorque, SPELL_TRIGGER, true);
+                    break;
+                case 50:
+                    me->CastSpell(me, SPELL_PARACHUTE_AURA, true);
+                    break;
+                case 51:
+                    me->RemoveAurasDueToSpell(SPELL_PARACHUTE_AURA);
+                    me->Mount(me->GetEntry() == NPC_FASTBLAST ? DATA_MOUNT_FAST : DATA_MOUNT_COG);
+                    break;
+                case 11:
+                case 17:
+                    SetHoldState(true);
+                    if (Creature* mekkatorque = me->FindNearestCreature(NPC_MEKKATORQUE, 100.0f, true))
+                        me->CastSpell(mekkatorque, SPELL_TRIGGER, true);
+                    break;
             }
+        }
 
-            void WaypointReached(uint32 i) override
-            {
-                switch (i)
-                {
-                    case 0:
-                    case 2:
-                    case 20:
-                    case 35:
-                    case 52:
-                    case 57:
-                    case 65:
-                    case 66:
-                    case 67:
-                    case 70:
-                        SetHoldState(true);
-                        break;
-                    case 49:
-                        SetHoldState(true);
-                        me->Dismount();
-                        if (Creature* mekkatorque = me->FindNearestCreature(NPC_MEKKATORQUE, 100.0f, true))
-                            me->CastSpell(mekkatorque, SPELL_TRIGGER, true);
-                        break;
-                    case 50:
-                        me->CastSpell(me, SPELL_PARACHUTE_AURA, true);
-                        break;
-                    case 51:
-                        me->RemoveAurasDueToSpell(SPELL_PARACHUTE_AURA);
-                        me->Mount(me->GetEntry() == NPC_FASTBLAST ? DATA_MOUNT_FAST : DATA_MOUNT_COG);
-                        break;
-                    case 11:
-                    case 17:
-                        SetHoldState(true);
-                        if (Creature* mekkatorque = me->FindNearestCreature(NPC_MEKKATORQUE, 100.0f, true))
-                            me->CastSpell(mekkatorque, SPELL_TRIGGER, true);
-                        break;
-                }
-            }
+        void SetHoldState(bool b_OnHold)
+        {
+            SetEscortPaused(b_OnHold);
+        }
 
-            void SetHoldState(bool b_OnHold)
-            {
-                SetEscortPaused(b_OnHold);
-            }
+        void UpdateAI(uint32 uiDiff) override
+        {
+            npc_escortAI::UpdateAI(uiDiff);
 
-            void UpdateAI(uint32 uiDiff) override
-            {
-                npc_escortAI::UpdateAI(uiDiff);
-
-                if (!UpdateVictim())
-                    return;
-            }
-        };
+            if (!UpdateVictim())
+                return;
+        }
+    };
 
     CreatureAI* GetAI(Creature* creature) const override
     {
@@ -804,7 +800,7 @@ class npc_og_mekkatorque : public CreatureScript
                         break;
                     case 34:
                         if (Creature* suit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[5], TEMPSUMMON_MANUAL_DESPAWN))
-                            CAST_AI(npc_og_battle_suit::npc_og_battle_suitAI, suit->AI())->SetupMovement(5);
+                            CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(5);
                         UpdateBannerState(10.0f);
                         break;
                     case 36:
@@ -1120,10 +1116,10 @@ class npc_og_mekkatorque : public CreatureScript
                             SetHoldState(false);
                             break;
                         case 45:
-                            if (Creature* pSuit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
-                                CAST_AI(npc_og_battle_suit::npc_og_battle_suitAI, pSuit->AI())->SetupMovement(3);
-                            if (Creature* pSuit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[4], TEMPSUMMON_MANUAL_DESPAWN))
-                                CAST_AI(npc_og_battle_suit::npc_og_battle_suitAI, pSuit->AI())->SetupMovement(4);
+                            if (Creature* suit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
+                                CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(3);
+                            if (Creature* suit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[4], TEMPSUMMON_MANUAL_DESPAWN))
+                                CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(4);
                             for (int8 n = 15; n < 19; ++n)
                                 if (Creature* pInfantry = me->SummonCreature(NPC_INFANTRY, InfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN))
                                     CAST_AI(npc_og_infantry::npc_og_infantryAI, pInfantry->AI())->SetupMovement(n);
