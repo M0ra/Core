@@ -541,7 +541,7 @@ public:
         {
         }
 
-        void WaypointReached(uint32 i) override
+        void WaypointReached(uint32 /*i*/) override
         {
         }
 
@@ -884,11 +884,11 @@ class npc_og_mekkatorque : public CreatureScript
                     switch (uiStep)
                     {
                         case 1:
-                            me->MonsterSay(MEK_1_2, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_1_2, LANG_UNIVERSAL, 0);
                             JumpToNextStep(9000);
                             break;
                         case 2:
-                            me->MonsterSay(MEK_1_3, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_1_3, LANG_UNIVERSAL, 0);
                             JumpToNextStep(5000);
                             break;
                         case 3:
@@ -900,7 +900,7 @@ class npc_og_mekkatorque : public CreatureScript
                             JumpToNextStep(4000);
                             break;
                         case 5:
-                            me->MonsterYell(MEK_3_2, LANG_UNIVERSAL, 0);
+                            me->Yell(MEK_3_2, LANG_UNIVERSAL, 0);
                             DoUpdateWorldState(WORLDSTATE_COUNTDOWN_CTRL, 1);
                             DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 5);
                             JumpToNextStep(60000);
@@ -949,7 +949,7 @@ class npc_og_mekkatorque : public CreatureScript
                             JumpToNextStep(7700);
                             break;
                         case 11:
-                            me->MonsterYell(MEK_4_2, LANG_UNIVERSAL, 0);
+                            me->Yell(MEK_4_2, LANG_UNIVERSAL, 0);
                             DoPlayMusic(1);
                             me->CastSpell(me, SPELL_HEALTH_REGEN, true);
                             me->CastSpell(me, SPELL_BRILLIANT_TACTICS, true);
@@ -960,21 +960,21 @@ class npc_og_mekkatorque : public CreatureScript
                             SetHoldState(false);
                             break;
                         case 14:
-                            me->MonsterSay(MEK_5_2, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_5_2, LANG_UNIVERSAL, 0);
                             DoUpdateWorldState(WORLDSTATE_AIRFIELD_ATTACKED, 1);
                             for (int8 n = 0; n < 3; ++n)
                                 CAST_AI(npc_og_tank::npc_og_tankAI, Tank[n]->AI())->SetupMovement(n);
                             JumpToNextStep(3300);
                             break;
                         case 15:
-                            me->MonsterSay(MEK_5_3, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_5_3, LANG_UNIVERSAL, 0);
                             JumpToNextStep(7000);
                             break;
                         case 16:
                             SetHoldState(false);
                             break;
                         case 18:
-                            me->MonsterSay(MEK_10_2, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_10_2, LANG_UNIVERSAL, 0);
                             DoUpdateWorldState(WORLDSTATE_BATTLE_NEAR_WORKSHOPS, 1);
                             DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED_CTRL, 1);
                             DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED, 0);
@@ -993,7 +993,7 @@ class npc_og_mekkatorque : public CreatureScript
                             JumpToNextStep(7250);
                             break;
                         case 19:
-                            me->MonsterSay(MEK_10_3, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_10_3, LANG_UNIVERSAL, 0);
                             if (Creature* pTank1 = me->SummonCreature(NPC_TANK, TankSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
                                 if (Creature* pTank2 = me->SummonCreature(NPC_TANK, TankSpawn[4], TEMPSUMMON_MANUAL_DESPAWN))
                                 {
@@ -1027,7 +1027,7 @@ class npc_og_mekkatorque : public CreatureScript
                             JumpToNextStep(8500);
                             break;
                         case 23:
-                            me->MonsterSay(MEK_12_2, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_12_2, LANG_UNIVERSAL, 0);
                             JumpToNextStep(8500);
                             break;
                         case 24:
@@ -1041,11 +1041,11 @@ class npc_og_mekkatorque : public CreatureScript
                             SetHoldState(false);
                             break;
                         case 30:
-                            me->MonsterSay(MEK_13_2, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_13_2, LANG_UNIVERSAL, 0);
                             JumpToNextStep(8000);
                             break;
                         case 31:
-                            me->MonsterSay(MEK_13_3, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_13_3, LANG_UNIVERSAL, 0);
                             for (int32 n = 0; n < 3; ++n)
                                 BattleSuit[n]->DisappearAndDie();
                             me->SummonCreature(NPC_BRAG_BOT, BragBotSpawn[0], TEMPSUMMON_MANUAL_DESPAWN);
@@ -1058,17 +1058,17 @@ class npc_og_mekkatorque : public CreatureScript
                             break;
                         case 33:
                             if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->MonsterYell(THERM_1_2, LANG_UNIVERSAL, 0);
+                                pBragBot->Yell(THERM_1_2, LANG_UNIVERSAL, 0);
                             JumpToNextStep(5000);
                             break;
                         case 34:
                             if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->MonsterYell(THERM_1_3, LANG_UNIVERSAL, 0);
+                                pBragBot->Yell(THERM_1_3, LANG_UNIVERSAL, 0);
                             JumpToNextStep(3000);
                             break;
                         case 35:
                             if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->MonsterYell(THERM_1_4, LANG_UNIVERSAL, 0);
+                                pBragBot->Yell(THERM_1_4, LANG_UNIVERSAL, 0);
                             JumpToNextStep(4500);
                             break;
                         case 36:
@@ -1089,7 +1089,7 @@ class npc_og_mekkatorque : public CreatureScript
                                         DoTalk(me, MEK_14_1, SOUND_MEK_14, false);
                                         break;
                                     case 5:
-                                        me->MonsterYell(MEK_14_2, LANG_UNIVERSAL, 0);
+                                        me->Yell(MEK_14_2, LANG_UNIVERSAL, 0);
                                         break;
                                 }
 
@@ -1184,12 +1184,12 @@ class npc_og_mekkatorque : public CreatureScript
                             break;
                         case 59:
                             if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->MonsterYell(THERM_2_2, LANG_UNIVERSAL, 0);
+                                pBragBot->Yell(THERM_2_2, LANG_UNIVERSAL, 0);
                             JumpToNextStep(3000);
                             break;
                         case 60:
                             if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->MonsterYell(THERM_2_3, LANG_UNIVERSAL, 0);
+                                pBragBot->Yell(THERM_2_3, LANG_UNIVERSAL, 0);
                             JumpToNextStep(5000);
                             break;
                         case 61:
@@ -1203,17 +1203,17 @@ class npc_og_mekkatorque : public CreatureScript
                             break;
                         case 63:
                             if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->MonsterYell(THERM_3_2, LANG_UNIVERSAL, 0);
+                                pBragBot->Yell(THERM_3_2, LANG_UNIVERSAL, 0);
                             JumpToNextStep(7000);
                             break;
                         case 64:
                             if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->MonsterYell(THERM_3_3, LANG_UNIVERSAL, 0);
+                                pBragBot->Yell(THERM_3_3, LANG_UNIVERSAL, 0);
                             JumpToNextStep(2000);
                             break;
                         case 65:
                             if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->MonsterYell(THERM_3_4, LANG_UNIVERSAL, 0);
+                                pBragBot->Yell(THERM_3_4, LANG_UNIVERSAL, 0);
                             JumpToNextStep(8000);
                             break;
                         case 66:
@@ -1230,7 +1230,7 @@ class npc_og_mekkatorque : public CreatureScript
                             JumpToNextStep(5000);
                             break;
                         case 68:
-                            me->MonsterSay(MEK_19_2, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_19_2, LANG_UNIVERSAL, 0);
                             me->Dismount();
                             me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 25140);
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_WORK_SHEATHED);
@@ -1309,7 +1309,7 @@ class npc_og_mekkatorque : public CreatureScript
                             JumpToNextStep(10000);
                             break;
                         case 77:
-                            me->MonsterSay(MEK_21_2, LANG_UNIVERSAL, 0);
+                            me->Say(MEK_21_2, LANG_UNIVERSAL, 0);
                             JumpToNextStep(10000);
                             break;
                         case 78:
@@ -1437,9 +1437,9 @@ class npc_og_mekkatorque : public CreatureScript
             void DoTalk(Creature* pTalker, const char* text, uint32 sound, bool yell)
             {
                 if (yell)
-                    pTalker->MonsterYell(text, LANG_UNIVERSAL, 0);
+                    pTalker->Yell(text, LANG_UNIVERSAL, 0);
                 else
-                    pTalker->MonsterSay(text, LANG_UNIVERSAL, 0);
+                    pTalker->Say(text, LANG_UNIVERSAL, 0);
 
                 if (sound)
                     DoPlaySoundToSet(pTalker, sound);
@@ -1487,45 +1487,45 @@ class npc_og_mekkatorque : public CreatureScript
             {
                 if (bCanSummonBomber)
                 {
-                    Creature* pBomber = me->SummonCreature(NPC_BOMBER, BomberSpawn, TEMPSUMMON_CORPSE_DESPAWN);
-                    pBomber->setActive(true);
-                    pBomber->SetSpeed(MOVE_FLIGHT, 5.0, true);
-                    pBomber->GetMotionMaster()->MovePoint(1, -5034.42f, 369.79f, 438.06f);
+                    Creature* bomber = me->SummonCreature(NPC_BOMBER, BomberSpawn, TEMPSUMMON_CORPSE_DESPAWN);
+                    bomber->setActive(true);
+                    bomber->SetSpeed(MOVE_FLIGHT, 5.0, true);
+                    bomber->GetMotionMaster()->MovePoint(1, -5034.42f, 369.79f, 438.06f);
                 }
             }
 
-            void SpellHit(Unit* pHitter, const SpellEntry* pSpell)
+        void SpellHit(Unit* caster, const SpellEntry* spell) override
+        {
+            if (spell->Id == SPELL_TRIGGER)
             {
-                if (pSpell->Id == SPELL_TRIGGER)
+                switch (caster->GetEntry())
                 {
-                    switch (pHitter->GetEntry())
-                    {
-                        case NPC_FASTBLAST:
-                            bControlWP_1 = true;
-                            break;
-                        case NPC_COGSPIN:
-                            bControlWP_2 = true;
-                            break;
-                    }
+                    case NPC_FASTBLAST:
+                        bControlWP_1 = true;
+                        break;
+                    case NPC_COGSPIN:
+                        bControlWP_2 = true;
+                        break;
                 }
             }
+        }
 
-            void DoUpdateWorldState(uint32 worldstate, uint32 value)
+        void DoUpdateWorldState(uint32 worldstate, uint32 value)
+        {
+            Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
+
+            if (PlList.isEmpty())
+                return;
+
+            for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
             {
-                Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
-
-                if (PlList.isEmpty())
-                    return;
-
-                for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+                if (Player* player = i->getSource())
                 {
-                    if (Player* pPlayer = i->getSource())
-                    {
-                        if (pPlayer->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_INCOMPLETE)
-                            pPlayer->SendUpdateWorldState(worldstate, value);
-                    }
+                    if (player->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_INCOMPLETE)
+                        player->SendUpdateWorldState(worldstate, value);
                 }
             }
+        }
 
             /*
             void DoRefreshWorldStates()
@@ -1547,92 +1547,92 @@ class npc_og_mekkatorque : public CreatureScript
             }
             */
 
-            bool ValidateEscortState()
-            {
-                if (!bControlWP_1 || !bControlWP_2)
-                    return false;
-                else
-                {
-                    bControlWP_1 = false;
-                    bControlWP_2 = false;
-                    return true;
-                }
-            }
-
-            void UpdateBannerState(float radius)
-            {
-                me->GetGameObjectListWithEntryInGrid(BannerList_temp, GO_BANNER, radius);
-                if (!BannerList_temp.empty())
-                {
-                    for (std::list<GameObject*>::const_iterator itr = BannerList_temp.begin(); itr != BannerList_temp.end(); ++itr)
-                    {
-                        if ((*itr)->GetRespawnTime() == 0)
-                        {
-                            (*itr)->SetRespawnTime(1*DAY);
-                            BannerList.push_back(*itr);
-                        }
-                    }
-                    BannerList_temp.clear();
-                }
-            }
-
-            void DoCleanup()
-            {
-                if (!SummonsGUID.empty())
-                {
-                    for (std::list<uint64>::const_iterator itr = SummonsGUID.begin(); itr != SummonsGUID.end(); ++itr)
-                        if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
-                            if (summon->isAlive())
-                                summon->DisappearAndDie();
-                            else
-                                summon->DespawnOrUnsummon();
-                    SummonsGUID.clear();
-                }
-                if (!BannerList.empty())
-                {
-                    for (std::list<GameObject*>::const_iterator itr = BannerList.begin(); itr != BannerList.end(); ++itr)
-                            (*itr)->SetRespawnTime(0);
-                    BannerList.clear();
-                }
-                if (Creature* pCogspin = me->FindNearestCreature(NPC_COGSPIN, 100.0f))
-                    pCogspin->DisappearAndDie();
-                if (Creature* pFastblast = me->FindNearestCreature(NPC_FASTBLAST, 100.0f))
-                    pFastblast->DisappearAndDie();
-                //DoRefreshWorldStates();
-            }
-        };
-
-        typedef npc_og_mekkatorque::npc_og_mekkatorqueAI MekkAI;
-
-        bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+        bool ValidateEscortState()
         {
-            if (quest->GetQuestId() == QUEST_OPERATION_GNOMEREGAN)
+            if (!bControlWP_1 || !bControlWP_2)
+                return false;
+            else
             {
-                if (!bProcessing)
-                {
-                    CAST_AI(MekkAI, creature->AI())->pEscortQuest = quest;
-                    CAST_AI(MekkAI, creature->AI())->pEscortPlayer = player;
-                    creature->MonsterSay(MEK_1_1, LANG_UNIVERSAL, 0);
-                    CAST_AI(MekkAI, creature->AI())->DoPlaySoundToSet(creature, SOUND_MEK_1);
-                    for (int8 n = 0; n < 4; ++n)
-                        CAST_AI(MekkAI, creature->AI())->RL[n] = creature->SummonCreature(NPC_RL, RLSpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                    for (int8 n = 0; n < 3; ++n)
-                        CAST_AI(MekkAI, creature->AI())->Tank[n] = creature->SummonCreature(NPC_TANK, TankSpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                    for (int8 n = 0; n < 8; ++n)
-                        creature->SummonCreature(NPC_I_INFANTRY, iInfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                    creature->SummonCreature(NPC_I_TANK, iTankSpawn[0], TEMPSUMMON_MANUAL_DESPAWN);
-                    for (int8 n = 1; n < 3; ++n)
-                        if (Creature* p_iTank = creature->SummonCreature(NPC_I_TANK, iTankSpawn[n], TEMPSUMMON_MANUAL_DESPAWN))
-                            CAST_AI(npc_og_i_tank::npc_og_i_tankAI, p_iTank->AI())->SetupMovement(n-1);
-                    CAST_AI(MekkAI, creature->AI())->JumpToNextStep(4000);
-                    bProcessing = true;
-                }
+                bControlWP_1 = false;
+                bControlWP_2 = false;
+                return true;
             }
-            return true;
         }
 
-        private:
-            bool bProcessing;
+        void UpdateBannerState(float radius)
+        {
+            me->GetGameObjectListWithEntryInGrid(BannerList_temp, GO_BANNER, radius);
+            if (!BannerList_temp.empty())
+            {
+                for (std::list<GameObject*>::const_iterator itr = BannerList_temp.begin(); itr != BannerList_temp.end(); ++itr)
+                {
+                    if ((*itr)->GetRespawnTime() == 0)
+                    {
+                        (*itr)->SetRespawnTime(1*DAY);
+                        BannerList.push_back(*itr);
+                    }
+                }
+                BannerList_temp.clear();
+            }
+        }
+
+        void DoCleanup()
+        {
+            if (!SummonsGUID.empty())
+            {
+                for (std::list<uint64>::const_iterator itr = SummonsGUID.begin(); itr != SummonsGUID.end(); ++itr)
+                    if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
+                        if (summon->isAlive())
+                            summon->DisappearAndDie();
+                        else
+                            summon->DespawnOrUnsummon();
+                SummonsGUID.clear();
+            }
+            if (!BannerList.empty())
+            {
+                for (std::list<GameObject*>::const_iterator itr = BannerList.begin(); itr != BannerList.end(); ++itr)
+                        (*itr)->SetRespawnTime(0);
+                BannerList.clear();
+            }
+            if (Creature* cogspin = me->FindNearestCreature(NPC_COGSPIN, 100.0f))
+                cogspin->DisappearAndDie();
+            if (Creature* fastblast = me->FindNearestCreature(NPC_FASTBLAST, 100.0f))
+                fastblast->DisappearAndDie();
+            //DoRefreshWorldStates();
+        }
+    };
+
+    typedef npc_og_mekkatorque::npc_og_mekkatorqueAI MekkAI;
+
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    {
+        if (quest->GetQuestId() == QUEST_OPERATION_GNOMEREGAN)
+        {
+            if (!bProcessing)
+            {
+                CAST_AI(MekkAI, creature->AI())->pEscortQuest = quest;
+                CAST_AI(MekkAI, creature->AI())->pEscortPlayer = player;
+                creature->Say(MEK_1_1, LANG_UNIVERSAL, 0);
+                CAST_AI(MekkAI, creature->AI())->DoPlaySoundToSet(creature, SOUND_MEK_1);
+                for (int8 n = 0; n < 4; ++n)
+                    CAST_AI(MekkAI, creature->AI())->RL[n] = creature->SummonCreature(NPC_RL, RLSpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                for (int8 n = 0; n < 3; ++n)
+                    CAST_AI(MekkAI, creature->AI())->Tank[n] = creature->SummonCreature(NPC_TANK, TankSpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                for (int8 n = 0; n < 8; ++n)
+                    creature->SummonCreature(NPC_I_INFANTRY, iInfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                creature->SummonCreature(NPC_I_TANK, iTankSpawn[0], TEMPSUMMON_MANUAL_DESPAWN);
+                for (int8 n = 1; n < 3; ++n)
+                    if (Creature* p_iTank = creature->SummonCreature(NPC_I_TANK, iTankSpawn[n], TEMPSUMMON_MANUAL_DESPAWN))
+                        CAST_AI(npc_og_i_tank::npc_og_i_tankAI, p_iTank->AI())->SetupMovement(n-1);
+                CAST_AI(MekkAI, creature->AI())->JumpToNextStep(4000);
+                bProcessing = true;
+            }
+        }
+        return true;
+    }
+
+    private:
+        bool bProcessing;
 
     CreatureAI* GetAI(Creature* creature) const override
     {
