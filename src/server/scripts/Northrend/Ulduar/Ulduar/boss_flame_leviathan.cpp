@@ -1371,8 +1371,8 @@ class npc_freya_ward_summon : public CreatureScript
 };
 
 //npc lore keeper
-#define GOSSIP_ITEM_1  "婵€娲昏緟鍔╅槻寰＄郴缁"
-#define GOSSIP_ITEM_2  "宸茬‘璁"
+#define GOSSIP_ITEM_1  "Activate secondary defensive systems
+#define GOSSIP_ITEM_2  "Confirmed"
 
 class npc_lorekeeper : public CreatureScript
 {
