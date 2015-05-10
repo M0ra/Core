@@ -713,19 +713,23 @@ public:
         uint32 uiCannonsDestroyed;
         uint32 uiTroggs;
         uint32 uiSoldiers;
+
         bool bCanSummonBomber;
         bool bCannonIntro;
         bool bBuffs;
         bool bControlWP_1;
         bool bControlWP_2;
+
         Creature* RL[4];
         Creature* Tank[3];
         Creature* Cannon[6];
         Creature* BattleSuit[3];
         Creature* ExplosionBunny;
+
         std::list<GameObject*> BannerList_temp;
         std::list<GameObject*> BannerList;
         GuidList SummonList;
+
         Player* pEscortPlayer;
         Quest const* pEscortQuest;
 
@@ -1297,7 +1301,7 @@ public:
                         me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                         DoPlayMusic(2);
-                        DoCleanup();
+                        RemoveSummons();
                         JumpToNextStep(10000);
                         break;
                     case 76:
@@ -1326,7 +1330,7 @@ public:
 
         void JustDied(Unit* /*who*/) override
         {
-            DoCleanup();
+            RemoveSummons();
         }
 
         void JustSummoned(Creature* summon) override
@@ -1440,16 +1444,16 @@ public:
                 DoPlaySoundToSet(talker, sound);
         }
 
-        void SquadAssist(Creature* pTarget)
+        void SquadAssist(Creature* target)
         {
-            if (!pTarget->IsAlive())
+            if (!target->IsAlive())
                 return;
 
             if (Creature* cogspin = me->FindNearestCreature(NPC_COGSPIN, 100))
-                cogspin->AI()->AttackStart(pTarget);
+                cogspin->AI()->AttackStart(target);
 
             if (Creature* fastblast = me->FindNearestCreature(NPC_FASTBLAST, 100))
-                fastblast->AI()->AttackStart(pTarget);
+                fastblast->AI()->AttackStart(target);
         }
 
         void SquadSetRun(bool b_Run)
