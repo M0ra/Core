@@ -1363,8 +1363,6 @@ class npc_freya_ward_summon : public CreatureScript
                 lashTimer = urand(2000, 8000);
             }
 
-            uint32 lashTimer;
-
             void Reset() override
             {
                 Initialize();
@@ -1406,9 +1404,7 @@ class npc_lorekeeper : public CreatureScript
 
         struct npc_lorekeeperAI : public ScriptedAI
         {
-            npc_lorekeeperAI(Creature* creature) : ScriptedAI(creature)
-            {
-            }
+            npc_lorekeeperAI(Creature* creature) : ScriptedAI(creature) { }
 
             void DoAction(int32 action) override
             {

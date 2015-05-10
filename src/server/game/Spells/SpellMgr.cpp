@@ -3394,6 +3394,15 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             // ULDUAR SPELLS
             //
+            case 64482: // Flame Leviathan - Tower of Life
+            case 65075: // Flame Leviathan - Tower of Flames
+            case 65076: // Flame Leviathan - Tower of Storms
+                spellInfo->Effects[EFFECT_1].Effect = SPELL_EFFECT_APPLY_AURA;
+                spellInfo->Effects[EFFECT_2].Effect = SPELL_EFFECT_APPLY_AURA;
+                break;
+            case 65077: // Flame Leviathan - Tower of Frost
+                spellInfo->Effects[EFFECT_0].Effect = SPELL_EFFECT_APPLY_AURA;
+                break;
             case 62374: // Pursued (Flame Leviathan)
                 spellInfo->Effects[EFFECT_0].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_50000_YARDS);   // 50000yd
                 break;
