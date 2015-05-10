@@ -1526,25 +1526,25 @@ public:
             }
         }
 
-            /*
-            void DoRefreshWorldStates()
+        /*
+        void DoRefreshWorldStates()
+        {
+            Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
+
+            if (PlList.isEmpty())
+                return;
+
+            for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
             {
-                Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
-
-                if (PlList.isEmpty())
-                    return;
-
-                for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+                if (Player* player = i->GetSource())
                 {
-                    if (Player* pPlayer = i->GetSource())
-                    {
-                        if (pPlayer->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_NONE || pPlayer->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_REWARDED|| pPlayer->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_FAILED)
-                            for (int8 n = 0; n < 15; ++n)
-                                pPlayer->SendUpdateWorldState(Worldstates[n], 0);
-                    }
+                    if (player->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_NONE || player->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_REWARDED|| player->GetQuestStatus(QUEST_OPERATION_GNOMEREGAN) == QUEST_STATUS_FAILED)
+                        for (int8 n = 0; n < 15; ++n)
+                            player->SendUpdateWorldState(Worldstates[n], 0);
                 }
             }
-            */
+        }
+        */
 
         bool ValidateEscortState()
         {
@@ -1603,7 +1603,7 @@ public:
 
     typedef npc_og_mekkatorque::npc_og_mekkatorqueAI MekkAI;
 
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
     {
         if (quest->GetQuestId() == QUEST_OPERATION_GNOMEREGAN)
         {
@@ -1661,6 +1661,10 @@ public:
         void Reset() override
         {
             Initialize();
+        }
+
+        void WaypointReached(uint32 /*i*/) override
+        {
         }
 
         void JustDied(Unit* /*who*/) override
@@ -1762,7 +1766,7 @@ public:
                 me->CastSpell(me, SPELL_CANNON_SHIELD, true);
         }
 
-        void SpellHit(Unit* /*caster*/, const SpellInfo* spell) override
+        void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
         {
             if (spell->Id == SPELL_ROCKET)
             {
@@ -1853,9 +1857,9 @@ public:
             if (who->GetEntry() != NPC_CANNON || !bAction || !who->HasAura(SPELL_CANNON_SHIELD))
                 return;
 
-            SpellInfo const* sEntry = sSpellMgr->GetSpellInfo(SPELL_ROCKET);
-            me->CastSpell(who, sEntry, true);
-            CAST_AI(npc_og_cannon::npc_og_cannonAI, who->ToCreature()->AI())->SpellHit(me, sEntry);
+            SpellInfo const* _spellInfo = sSpellMgr->GetSpellInfo(SPELL_ROCKET);
+            me->CastSpell(who, _spellInfo, true);
+            CAST_AI(npc_og_cannon::npc_og_cannonAI, who->ToCreature()->AI())->SpellHit(me, _spellInfo);
             bAction = false;
         }
     };
@@ -1989,7 +1993,7 @@ public:
     {
         npc_og_camera_vehicleAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void SpellHit(Unit* /*caster*/, const SpellEntry* spell) override
+        void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
         {
             if (spell->Id == SPELL_BINDSIGHT)
             {
