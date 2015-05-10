@@ -1973,41 +1973,6 @@ class spell_pursue : public SpellScriptLoader
         }
 };
 
-class spell_vehicle_throw_passenger : public SpellScriptLoader
-{
-public:
-	spell_vehicle_throw_passenger() : SpellScriptLoader("spell_vehicle_throw_passenger") { }
-
-	class spell_vehicle_throw_passenger_SpellScript : public SpellScript
-	{
-		PrepareSpellScript(spell_vehicle_throw_passenger_SpellScript);
-
-		void HandleDummy(SpellEffIndex /*effIndex*/) 
-		{
-			Unit* caster = GetCaster();
-
-			if (caster && caster->GetVehicleKit())
-				if (Unit* passenger = caster->GetVehicleKit()->GetPassenger(3))
-				{
-					passenger->ExitVehicle();
-					if (Creature* leviathan = caster->FindNearestCreature(33113, 120.0f))
-						leviathan->AI()->SetGUID(passenger->GetGUID());
-				}
-		}
-
-		void Register() override
-		{
-			OnEffectHit += SpellEffectFn(spell_vehicle_throw_passenger_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-		}
-	};
-
-	SpellScript* GetSpellScript() const override
-	{
-		return new spell_vehicle_throw_passenger_SpellScript();
-	}
-
-};
-
 class spell_freyas_ward_summon : public SpellScriptLoader
 {
 public:
