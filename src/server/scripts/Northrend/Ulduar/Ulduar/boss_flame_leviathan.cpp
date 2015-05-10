@@ -1171,7 +1171,7 @@ public:
             {
                 if (Creature* trigger = DoSummonFlyer(NPC_MIMIRON_BEACON, me, 50.0f, 0, 40000, TEMPSUMMON_TIMED_DESPAWN))
                 {
-                    trigger->SetDisplayId(trigger->GetCreatureInfo()->Modelid2);
+                    trigger->SetDisplayId(trigger->GetCreatureTemplate()->Modelid2);
                     trigger->CastSpell(me, SPELL_MIMIRON_S_INFERNO, true);
                     _infernoTimer = 2000;
                 }
@@ -1303,7 +1303,7 @@ class npc_freyas_ward : public CreatureScript
             {
                 Initialize();
                 me->setActive(true);
-                me->SetDisplayId(me->GetCreatureInfo()->Modelid2);
+                me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
                 me->AddAura(SPELL_GREEN_SKYBEAM, me);
                 me->SetReactState(REACT_PASSIVE);
@@ -1325,7 +1325,7 @@ class npc_freyas_ward : public CreatureScript
                 {
                     if (Creature* trigger = DoSummonFlyer(NPC_FREYA_BEACON, me, 50.0f, 0, 10000, TEMPSUMMON_TIMED_DESPAWN))
                     {
-                        trigger->SetDisplayId(trigger->GetCreatureInfo()->Modelid2);
+                        trigger->SetDisplayId(trigger->GetCreatureTemplate()->Modelid2);
                         trigger->CastSpell(me, SPELL_FREYA_S_WARD, true);
                         summonTimer = 30000;
                     }
