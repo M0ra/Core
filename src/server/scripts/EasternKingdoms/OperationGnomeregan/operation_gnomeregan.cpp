@@ -679,319 +679,319 @@ public:
 
 class npc_og_mekkatorque : public CreatureScript
 {
-    public:
-        npc_og_mekkatorque() : CreatureScript("npc_og_mekkatorque")
+public:
+    npc_og_mekkatorque() : CreatureScript("npc_og_mekkatorque")
+    {
+        bProcessing = false;
+    }
+
+    struct npc_og_mekkatorqueAI : public npc_escortAI
+    {
+        npc_og_mekkatorqueAI(Creature* creature) : npc_escortAI(creature)
         {
-            bProcessing = false;
+            Initialize();
         }
 
-        struct npc_og_mekkatorqueAI : public npc_escortAI
+        void Initialize()
         {
-            npc_og_mekkatorqueAI(Creature* creature) : npc_escortAI(creature)
+            uiStep = 0;
+            uiTroggs = 0;
+            uiSoldiers = 0;
+            uiStep_timer = 0;
+            uiRLDestroyed = 0;
+            uiCannonsDestroyed = 0;
+            bCanSummonBomber = true;
+            bCannonIntro = false;
+            bBuffs = false;
+            bControlWP_1 = false;
+            bControlWP_2 = false;
+        }
+
+        uint32 uiStep;
+        uint32 uiStep_timer;
+        uint32 uiRLDestroyed;
+        uint32 uiCannonsDestroyed;
+        uint32 uiTroggs;
+        uint32 uiSoldiers;
+        bool bCanSummonBomber;
+        bool bCannonIntro;
+        bool bBuffs;
+        bool bControlWP_1;
+        bool bControlWP_2;
+        Creature* RL[4];
+        Creature* Tank[3];
+        Creature* Cannon[6];
+        Creature* BattleSuit[3];
+        Creature* ExplosionBunny;
+        std::list<GameObject*> BannerList_temp;
+        std::list<GameObject*> BannerList;
+        GuidList SummonList;
+        Player* pEscortPlayer;
+        Quest const* pEscortQuest;
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        void WaypointReached(uint32 i) override
+        {
+            switch (i)
             {
-                Initialize();
+                case 0:
+                    DoPlayMusic(0);
+                    SetHoldState(true);
+                    break;
+                case 2:
+                    SetHoldState(true);
+                    DoTalk(me, MEK_5_1, SOUND_MEK_5, false);
+                    JumpToNextStep(3500);
+                    break;
+                case 3:
+                    SquadSetRun(true);
+                    DoUpdateWorldState(WORLDSTATE_RL_DESTROYED, uiRLDestroyed);
+                    DoUpdateWorldState(WORLDSTATE_RL_DESTROYED_CTRL, 1);
+                    break;
+                case 5:
+                    DoTalk(me, MEK_6_1, SOUND_MEK_6, false);
+                    if (RL[0]->IsAlive())
+                        AttackStart(RL[0]);
+                    break;
+                case 7:
+                    if (RL[1]->IsAlive())
+                        AttackStart(RL[1]);
+                    break;
+                case 8:
+                    if (RL[2]->IsAlive())
+                        AttackStart(RL[2]);
+                    break;
+                case 10:
+                    if (RL[3]->IsAlive())
+                        AttackStart(RL[3]);
+                    break;
+                case 12:
+                    SetHoldState(true);
+                    DoUpdateWorldState(WORLDSTATE_RL_DESTROYED_CTRL, 0);
+                    DoUpdateWorldState(WORLDSTATE_AIRFIELD_ATTACKED, 0);
+                    DoUpdateWorldState(WORLDSTATE_AIRFIELD_CAPTURED, 1);
+                    DoTalk(me, MEK_10_1, SOUND_MEK_10, false);
+                    for (int8 n = 0; n < 5; ++n)
+                        me->SummonCreature(NPC_INFANTRY, InfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                    UpdateBannerState(70.0f);
+                    JumpToNextStep(5500);
+                    break;
+                case 18:
+                    SetHoldState(true);
+                    JumpToNextStep(0);
+                    break;
+                case 19:
+                    SetHoldState(true);
+                    me->Dismount();
+                    JumpToNextStep(2000);
+                    break;
+                case 21:
+                    SetHoldState(true);
+                    me->Mount(DATA_MOUNT_MEK);
+                    for (int8 n = 18; n < 26; ++n)
+                        me->SummonCreature(NPC_I_INFANTRY, iInfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                    JumpToNextStep(7000);
+                    break;
+                case 27:
+                    DoUpdateWorldState(WORLDSTATE_BATTLE_NEAR_ENTRANCE, 1);
+                    for (int8 n = 5; n < 11; ++n)
+                        me->SummonCreature(NPC_INFANTRY, InfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                    UpdateBannerState(70.0f);
+                    break;
+                case 34:
+                    if (Creature* suit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[5], TEMPSUMMON_MANUAL_DESPAWN))
+                        CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(5);
+                    UpdateBannerState(10.0f);
+                    break;
+                case 36:
+                    SetHoldState(true);
+                    DoTalk(me, MEK_13_1, SOUND_MEK_13, false);
+                    JumpToNextStep(6500);
+                    break;
+                case 37:
+                    UpdateBannerState(10.0f);
+                    break;
+                case 47:
+                    UpdateBannerState(80.0f);
+                    break;
+                case 50:
+                    SetHoldState(true);
+                    me->Dismount();
+                    JumpToNextStep(1000);
+                    break;
+                case 51:
+                    me->CastSpell(me, SPELL_PARACHUTE_AURA, true);
+                    break;
+                case 52:
+                    me->RemoveAurasDueToSpell(SPELL_PARACHUTE_AURA);
+                    me->Mount(DATA_MOUNT_MEK);
+                    break;
+                case 53:
+                    SetHoldState(true);
+                    UpdateBannerState(30.0f);
+                    JumpToNextStep(5000);
+                    break;
+                case 58:
+                    SetHoldState(true);
+                    DoTalk(me, MEK_16_1, SOUND_MEK_16, false);
+                    DoUpdateWorldState(WORLDSTATE_BATLLE_IN_TUNNELS, 1);
+                    JumpToNextStep(3000);
+                    break;
+                case 67:
+                    SetHoldState(true);
+                    JumpToNextStep(3000);
+                    break;
+                case 68:
+                    SetHoldState(true);
+                    JumpToNextStep(3500);
+                    break;
+                case 71:
+                    me->SetReactState(REACT_AGGRESSIVE);
+                    if (Creature* cogspin = me->FindNearestCreature(NPC_COGSPIN, 100.0f))
+                        cogspin->SetReactState(REACT_AGGRESSIVE);
+                    if (Creature* fastblast = me->FindNearestCreature(NPC_FASTBLAST, 100.0f))
+                        fastblast->SetReactState(REACT_AGGRESSIVE);
+                    SetHoldState(true);
+                    break;
+                case 75:
+                    SetHoldState(true);
+                    me->SummonCreature(NPC_BRAG_BOT, BragBotSpawn[1], TEMPSUMMON_MANUAL_DESPAWN);
+                    JumpToNextStep(2000);
+                    break;
+            }
+        }
+
+        void UpdateAI(uint32 uiDiff) override
+        {
+            //DoRefreshWorldStates();
+
+            npc_escortAI::UpdateAI(uiDiff);
+
+            if (bBuffs)
+            {
+                if (!me->HasAura(SPELL_BRILLIANT_TACTICS))
+                    me->AddAura(SPELL_BRILLIANT_TACTICS, me);
+                if (!me->HasAura(SPELL_HEALTH_REGEN))
+                    me->AddAura(SPELL_HEALTH_REGEN, me);
             }
 
-            void Initialize()
+            if (uiStep_timer <= uiDiff)
             {
-                uiStep = 0;
-                uiTroggs = 0;
-                uiSoldiers = 0;
-                uiStep_timer = 0;
-                uiRLDestroyed = 0;
-                uiCannonsDestroyed = 0;
-                bCanSummonBomber = true;
-                bCannonIntro = false;
-                bBuffs = false;
-                bControlWP_1 = false;
-                bControlWP_2 = false;
-            }
-
-            uint32 uiStep;
-            uint32 uiStep_timer;
-            uint32 uiRLDestroyed;
-            uint32 uiCannonsDestroyed;
-            uint32 uiTroggs;
-            uint32 uiSoldiers;
-            bool bCanSummonBomber;
-            bool bCannonIntro;
-            bool bBuffs;
-            bool bControlWP_1;
-            bool bControlWP_2;
-            Creature* RL[4];
-            Creature* Tank[3];
-            Creature* Cannon[6];
-            Creature* BattleSuit[3];
-            Creature* ExplosionBunny;
-            std::list<GameObject*> BannerList_temp;
-            std::list<GameObject*> BannerList;
-            GuidList SummonList;
-            Player* pEscortPlayer;
-            Quest const* pEscortQuest;
-
-            void Reset() override
-            {
-                Initialize();
-            }
-
-            void WaypointReached(uint32 i) override
-            {
-                switch (i)
+                switch (uiStep)
                 {
-                    case 0:
-                        DoPlayMusic(0);
-                        SetHoldState(true);
+                    case 1:
+                        me->Say(MEK_1_2, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(9000);
                         break;
                     case 2:
-                        SetHoldState(true);
-                        DoTalk(me, MEK_5_1, SOUND_MEK_5, false);
-                        JumpToNextStep(3500);
-                        break;
-                    case 3:
-                        SquadSetRun(true);
-                        DoUpdateWorldState(WORLDSTATE_RL_DESTROYED, uiRLDestroyed);
-                        DoUpdateWorldState(WORLDSTATE_RL_DESTROYED_CTRL, 1);
-                        break;
-                    case 5:
-                        DoTalk(me, MEK_6_1, SOUND_MEK_6, false);
-                        if (RL[0]->IsAlive())
-                            AttackStart(RL[0]);
-                        break;
-                    case 7:
-                        if (RL[1]->IsAlive())
-                            AttackStart(RL[1]);
-                        break;
-                    case 8:
-                        if (RL[2]->IsAlive())
-                            AttackStart(RL[2]);
-                        break;
-                    case 10:
-                        if (RL[3]->IsAlive())
-                            AttackStart(RL[3]);
-                        break;
-                    case 12:
-                        SetHoldState(true);
-                        DoUpdateWorldState(WORLDSTATE_RL_DESTROYED_CTRL, 0);
-                        DoUpdateWorldState(WORLDSTATE_AIRFIELD_ATTACKED, 0);
-                        DoUpdateWorldState(WORLDSTATE_AIRFIELD_CAPTURED, 1);
-                        DoTalk(me, MEK_10_1, SOUND_MEK_10, false);
-                        for (int8 n = 0; n < 5; ++n)
-                            me->SummonCreature(NPC_INFANTRY, InfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                        UpdateBannerState(70.0f);
-                        JumpToNextStep(5500);
-                        break;
-                    case 18:
-                        SetHoldState(true);
-                        JumpToNextStep(0);
-                        break;
-                    case 19:
-                        SetHoldState(true);
-                        me->Dismount();
-                        JumpToNextStep(2000);
-                        break;
-                    case 21:
-                        SetHoldState(true);
-                        me->Mount(DATA_MOUNT_MEK);
-                        for (int8 n = 18; n < 26; ++n)
-                            me->SummonCreature(NPC_I_INFANTRY, iInfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                        JumpToNextStep(7000);
-                        break;
-                    case 27:
-                        DoUpdateWorldState(WORLDSTATE_BATTLE_NEAR_ENTRANCE, 1);
-                        for (int8 n = 5; n < 11; ++n)
-                            me->SummonCreature(NPC_INFANTRY, InfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                        UpdateBannerState(70.0f);
-                        break;
-                    case 34:
-                        if (Creature* suit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[5], TEMPSUMMON_MANUAL_DESPAWN))
-                            CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(5);
-                        UpdateBannerState(10.0f);
-                        break;
-                    case 36:
-                        SetHoldState(true);
-                        DoTalk(me, MEK_13_1, SOUND_MEK_13, false);
-                        JumpToNextStep(6500);
-                        break;
-                    case 37:
-                        UpdateBannerState(10.0f);
-                        break;
-                    case 47:
-                        UpdateBannerState(80.0f);
-                        break;
-                    case 50:
-                        SetHoldState(true);
-                        me->Dismount();
-                        JumpToNextStep(1000);
-                        break;
-                    case 51:
-                        me->CastSpell(me, SPELL_PARACHUTE_AURA, true);
-                        break;
-                    case 52:
-                        me->RemoveAurasDueToSpell(SPELL_PARACHUTE_AURA);
-                        me->Mount(DATA_MOUNT_MEK);
-                        break;
-                    case 53:
-                        SetHoldState(true);
-                        UpdateBannerState(30.0f);
+                        me->Say(MEK_1_3, LANG_UNIVERSAL, 0);
                         JumpToNextStep(5000);
                         break;
-                    case 58:
-                        SetHoldState(true);
-                        DoTalk(me, MEK_16_1, SOUND_MEK_16, false);
-                        DoUpdateWorldState(WORLDSTATE_BATLLE_IN_TUNNELS, 1);
-                        JumpToNextStep(3000);
+                    case 3:
+                        DoTalk(me, MEK_2_1, SOUND_MEK_2, false);
+                        JumpToNextStep(13000);
                         break;
-                    case 67:
-                        SetHoldState(true);
-                        JumpToNextStep(3000);
+                    case 4:
+                        DoTalk(me, MEK_3_1, SOUND_MEK_3, false);
+                        JumpToNextStep(4000);
                         break;
-                    case 68:
-                        SetHoldState(true);
-                        JumpToNextStep(3500);
+                    case 5:
+                        me->Yell(MEK_3_2, LANG_UNIVERSAL, 0);
+                        DoUpdateWorldState(WORLDSTATE_COUNTDOWN_CTRL, 1);
+                        DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 5);
+                        JumpToNextStep(60000);
                         break;
-                    case 71:
-                        me->SetReactState(REACT_AGGRESSIVE);
-                        if (Creature* cogspin = me->FindNearestCreature(NPC_COGSPIN, 100.0f))
-                            cogspin->SetReactState(REACT_AGGRESSIVE);
-                        if (Creature* fastblast = me->FindNearestCreature(NPC_FASTBLAST, 100.0f))
-                            fastblast->SetReactState(REACT_AGGRESSIVE);
-                        SetHoldState(true);
+                    case 6:
+                        DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 4);
+                        JumpToNextStep(60000);
                         break;
-                    case 75:
-                        SetHoldState(true);
-                        me->SummonCreature(NPC_BRAG_BOT, BragBotSpawn[1], TEMPSUMMON_MANUAL_DESPAWN);
+                    case 7:
+                        DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 3);
+                        JumpToNextStep(60000);
+                        break;
+                    case 8:
+                        DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 2);
+                        JumpToNextStep(60000);
+                        break;
+                    case 9:
+                        DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 1);
+                        JumpToNextStep(60000);
+                        break;
+                    case 10:
+                        DoUpdateWorldState(WORLDSTATE_COUNTDOWN_CTRL, 0);
+                        DoUpdateWorldState(WORLDSTATE_IN_PROCCESS, 1);
+                        if (npc_og_mekkatorqueAI* escortAI = CAST_AI(npc_og_mekkatorqueAI, me->AI()))
+                        {
+                            escortAI->Start(true, true, pEscortPlayer->GetGUID(), pEscortQuest);
+                            escortAI->SetDespawnAtFar(false);
+                            escortAI->SetDespawnAtEnd(false);
+                            me->setActive(true);
+                        }
+                        if (Creature* cogspin = me->FindNearestCreature(NPC_COGSPIN, 20))
+                        {
+                            CAST_AI(npc_og_assistants::npc_og_assistantsAI, cogspin->AI())->Start(true, true, pEscortPlayer->GetGUID(), pEscortQuest);
+                            CAST_AI(npc_og_assistants::npc_og_assistantsAI, cogspin->AI())->SetDespawnAtFar(false);
+                            CAST_AI(npc_og_assistants::npc_og_assistantsAI, cogspin->AI())->SetDespawnAtEnd(false);
+                            cogspin->setActive(true);
+                        }
+                        if (Creature* fastblast = me->FindNearestCreature(NPC_FASTBLAST, 20))
+                        {
+                            CAST_AI(npc_og_assistants::npc_og_assistantsAI, fastblast->AI())->Start(true, true, pEscortPlayer->GetGUID(), pEscortQuest);
+                            CAST_AI(npc_og_assistants::npc_og_assistantsAI, fastblast->AI())->SetDespawnAtFar(false);
+                            CAST_AI(npc_og_assistants::npc_og_assistantsAI, fastblast->AI())->SetDespawnAtEnd(false);
+                            fastblast->setActive(true);
+                        }
+                        DoTalk(me, MEK_4_1, SOUND_MEK_4, 0);
+                        JumpToNextStep(7700);
+                        break;
+                    case 11:
+                        me->Yell(MEK_4_2, LANG_UNIVERSAL, 0);
+                        DoPlayMusic(1);
+                        me->CastSpell(me, SPELL_HEALTH_REGEN, true);
+                        me->CastSpell(me, SPELL_BRILLIANT_TACTICS, true);
+                        bBuffs = true;
                         JumpToNextStep(2000);
                         break;
-                }
-            }
-
-            void UpdateAI(uint32 uiDiff) override
-            {
-                //DoRefreshWorldStates();
-
-                npc_escortAI::UpdateAI(uiDiff);
-
-                if (bBuffs)
-                {
-                    if (!me->HasAura(SPELL_BRILLIANT_TACTICS))
-                        me->AddAura(SPELL_BRILLIANT_TACTICS, me);
-                    if (!me->HasAura(SPELL_HEALTH_REGEN))
-                        me->AddAura(SPELL_HEALTH_REGEN, me);
-                }
-
-                if (uiStep_timer <= uiDiff)
-                {
-                    switch (uiStep)
-                    {
-                        case 1:
-                            me->Say(MEK_1_2, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(9000);
-                            break;
-                        case 2:
-                            me->Say(MEK_1_3, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(5000);
-                            break;
-                        case 3:
-                            DoTalk(me, MEK_2_1, SOUND_MEK_2, false);
-                            JumpToNextStep(13000);
-                            break;
-                        case 4:
-                            DoTalk(me, MEK_3_1, SOUND_MEK_3, false);
-                            JumpToNextStep(4000);
-                            break;
-                        case 5:
-                            me->Yell(MEK_3_2, LANG_UNIVERSAL, 0);
-                            DoUpdateWorldState(WORLDSTATE_COUNTDOWN_CTRL, 1);
-                            DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 5);
-                            JumpToNextStep(60000);
-                            break;
-                        case 6:
-                            DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 4);
-                            JumpToNextStep(60000);
-                            break;
-                        case 7:
-                            DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 3);
-                            JumpToNextStep(60000);
-                            break;
-                        case 8:
-                            DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 2);
-                            JumpToNextStep(60000);
-                            break;
-                        case 9:
-                            DoUpdateWorldState(WORLDSTATE_COUNTDOWN, 1);
-                            JumpToNextStep(60000);
-                            break;
-                        case 10:
-                            DoUpdateWorldState(WORLDSTATE_COUNTDOWN_CTRL, 0);
-                            DoUpdateWorldState(WORLDSTATE_IN_PROCCESS, 1);
-                            if (npc_og_mekkatorqueAI* escortAI = CAST_AI(npc_og_mekkatorqueAI, me->AI()))
-                            {
-                                escortAI->Start(true, true, pEscortPlayer->GetGUID(), pEscortQuest);
-                                escortAI->SetDespawnAtFar(false);
-                                escortAI->SetDespawnAtEnd(false);
-                                me->setActive(true);
-                            }
-                            if (Creature* pCogspin = me->FindNearestCreature(NPC_COGSPIN, 20))
-                            {
-                                CAST_AI(npc_og_assistants::npc_og_assistantsAI, pCogspin->AI())->Start(true, true, pEscortPlayer->GetGUID(), pEscortQuest);
-                                CAST_AI(npc_og_assistants::npc_og_assistantsAI, pCogspin->AI())->SetDespawnAtFar(false);
-                                CAST_AI(npc_og_assistants::npc_og_assistantsAI, pCogspin->AI())->SetDespawnAtEnd(false);
-                                pCogspin->setActive(true);
-                            }
-                            if (Creature* pFastblast = me->FindNearestCreature(NPC_FASTBLAST, 20))
-                            {
-                                CAST_AI(npc_og_assistants::npc_og_assistantsAI, pFastblast->AI())->Start(true, true, pEscortPlayer->GetGUID(), pEscortQuest);
-                                CAST_AI(npc_og_assistants::npc_og_assistantsAI, pFastblast->AI())->SetDespawnAtFar(false);
-                                CAST_AI(npc_og_assistants::npc_og_assistantsAI, pFastblast->AI())->SetDespawnAtEnd(false);
-                                pFastblast->setActive(true);
-                            }
-                            DoTalk(me, MEK_4_1, SOUND_MEK_4, 0);
-                            JumpToNextStep(7700);
-                            break;
-                        case 11:
-                            me->Yell(MEK_4_2, LANG_UNIVERSAL, 0);
-                            DoPlayMusic(1);
-                            me->CastSpell(me, SPELL_HEALTH_REGEN, true);
-                            me->CastSpell(me, SPELL_BRILLIANT_TACTICS, true);
-                            bBuffs = true;
-                            JumpToNextStep(2000);
-                            break;
-                        case 12:
-                            SetHoldState(false);
-                            break;
-                        case 14:
-                            me->Say(MEK_5_2, LANG_UNIVERSAL, 0);
-                            DoUpdateWorldState(WORLDSTATE_AIRFIELD_ATTACKED, 1);
-                            for (int8 n = 0; n < 3; ++n)
-                                CAST_AI(npc_og_tank::npc_og_tankAI, Tank[n]->AI())->SetupMovement(n);
-                            JumpToNextStep(3300);
-                            break;
-                        case 15:
-                            me->Say(MEK_5_3, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(7000);
-                            break;
-                        case 16:
-                            SetHoldState(false);
-                            break;
-                        case 18:
-                            me->Say(MEK_10_2, LANG_UNIVERSAL, 0);
-                            DoUpdateWorldState(WORLDSTATE_BATTLE_NEAR_WORKSHOPS, 1);
-                            DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED_CTRL, 1);
-                            DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED, 0);
-                            for (int8 n = 0; n < 6; ++n)
-                            {
-                                Cannon[n] = me->SummonCreature(NPC_CANNON, CannonSpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                                Cannon[n]->CastSpell(Cannon[n], SPELL_TRIGGER, true);
-                            }
-                            me->SummonGameObject(GO_RAD_CONTROL, RadControlSpawn.GetPositionX(), RadControlSpawn.GetPositionY(), RadControlSpawn.GetPositionZ(), RadControlSpawn.GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, 0);
-                            for (int8 n = 0; n < 3; ++n)
-                                BattleSuit[n] = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                            if (Creature* iTank = me->SummonCreature(NPC_I_TANK, iTankSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
-                                CAST_AI(npc_og_i_tank::npc_og_i_tankAI, iTank->AI())->SetupMovement(3);
-                            for (int8 n = 8; n < 18; ++n)
-                                me->SummonCreature(NPC_I_INFANTRY, iInfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                            JumpToNextStep(7250);
-                            break;
+                    case 12:
+                        SetHoldState(false);
+                        break;
+                    case 14:
+                        me->Say(MEK_5_2, LANG_UNIVERSAL, 0);
+                        DoUpdateWorldState(WORLDSTATE_AIRFIELD_ATTACKED, 1);
+                        for (int8 n = 0; n < 3; ++n)
+                            CAST_AI(npc_og_tank::npc_og_tankAI, Tank[n]->AI())->SetupMovement(n);
+                        JumpToNextStep(3300);
+                        break;
+                    case 15:
+                        me->Say(MEK_5_3, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(7000);
+                        break;
+                    case 16:
+                        SetHoldState(false);
+                        break;
+                    case 18:
+                        me->Say(MEK_10_2, LANG_UNIVERSAL, 0);
+                        DoUpdateWorldState(WORLDSTATE_BATTLE_NEAR_WORKSHOPS, 1);
+                        DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED_CTRL, 1);
+                        DoUpdateWorldState(WORLDSTATE_CANNONS_DESTROYED, 0);
+                        for (int8 n = 0; n < 6; ++n)
+                        {
+                            Cannon[n] = me->SummonCreature(NPC_CANNON, CannonSpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                            Cannon[n]->CastSpell(Cannon[n], SPELL_TRIGGER, true);
+                        }
+                        me->SummonGameObject(GO_RAD_CONTROL, RadControlSpawn.GetPositionX(), RadControlSpawn.GetPositionY(), RadControlSpawn.GetPositionZ(), RadControlSpawn.GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, 0);
+                        for (int8 n = 0; n < 3; ++n)
+                            BattleSuit[n] = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                        if (Creature* iTank = me->SummonCreature(NPC_I_TANK, iTankSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
+                            CAST_AI(npc_og_i_tank::npc_og_i_tankAI, iTank->AI())->SetupMovement(3);
+                        for (int8 n = 8; n < 18; ++n)
+                            me->SummonCreature(NPC_I_INFANTRY, iInfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                        JumpToNextStep(7250);
+                        break;
                     case 19:
                         me->Say(MEK_10_3, LANG_UNIVERSAL, 0);
                         if (Creature* tank1 = me->SummonCreature(NPC_TANK, TankSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
@@ -1080,7 +1080,7 @@ class npc_og_mekkatorque : public CreatureScript
                     case 37:
                         if (uiTroggs <= 20)
                         {
-                            me->SummonCreature(NPC_I_TROGG, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN)
+                            me->SummonCreature(NPC_I_TROGG, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN);
 
                             switch (uiTroggs)
                             {
@@ -1095,7 +1095,7 @@ class npc_og_mekkatorque : public CreatureScript
                         }
                         else
                         {
-                            me->SummonCreature(NPC_GASHERIKK, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN)
+                            me->SummonCreature(NPC_GASHERIKK, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN);
                             DoTalk(me, MEK_15_1, SOUND_MEK_15, true);
                             ++uiStep;
                         }
@@ -2023,17 +2023,17 @@ public:
 
 void AddSC_operation_gnomeregan()
 {
-    new npc_og_camera_vehicle;
-    new npc_og_mekkatorque;
-    new npc_og_assistants;
-    new npc_og_i_infantry;
-    new npc_og_infantry;
-    new npc_og_boltcog;
-    new npc_og_cannon;
-    new npc_og_i_tank;
-    new npc_og_bomber;
-    new npc_og_trogg;
-    new npc_og_tank;
+    new npc_og_camera_vehicle();
+    new npc_og_mekkatorque();
+    new npc_og_assistants();
+    new npc_og_i_infantry();
+    new npc_og_infantry();
+    new npc_og_boltcog();
+    new npc_og_cannon();
+    new npc_og_i_tank();
+    new npc_og_bomber();
+    new npc_og_trogg();
+    new npc_og_tank();
     new npc_og_suit();
-    new npc_og_rl;
+    new npc_og_rl();
 }
