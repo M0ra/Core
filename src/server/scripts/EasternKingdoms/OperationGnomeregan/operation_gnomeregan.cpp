@@ -402,6 +402,10 @@ public:
             Initialize();
         }
 
+        void WaypointReached(uint32 /*i*/) override
+        {
+        }
+
         void SetupMovement(uint32 variation)
         {
             switch (variation)
