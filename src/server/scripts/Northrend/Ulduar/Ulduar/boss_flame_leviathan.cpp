@@ -1130,7 +1130,7 @@ public:
         {
             Initialize();
             me->setActive(true);
-            me->SetDisplayId(me->GetCreatureInfo()->Modelid2);
+            me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
             me->AddAura(SPELL_RED_SKYBEAM, me);
             me->SetReactState(REACT_PASSIVE);
@@ -1202,7 +1202,7 @@ enum HodirsFuryEvents
 class npc_hodirs_fury : public CreatureScript
 {
 public:
-    npc_hodirs_fury() : CreatureScript("npc_hodirs_fury") {}
+    npc_hodirs_fury() : CreatureScript("npc_hodirs_fury") { }
 
     struct npc_hodirs_furyAI : public ScriptedAI
     {
