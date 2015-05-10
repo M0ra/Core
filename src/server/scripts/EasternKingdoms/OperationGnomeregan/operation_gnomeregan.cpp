@@ -1580,11 +1580,17 @@ public:
             if (!SummonList.empty())
             {
                 for (GuidList::const_iterator itr = SummonList.begin(); itr != SummonList.end(); ++itr)
+                {
                     if (Creature* temp = ObjectAccessor::GetCreature(*me, *itr))
+                    {
                         if (temp->IsAlive())
+                        {
                             temp->DisappearAndDie();
+                        }
                         else
                             temp->DespawnOrUnsummon();
+                    }
+                }
                 SummonList.clear();
             }
             if (!BannerList.empty())
@@ -1878,6 +1884,10 @@ public:
     struct npc_og_troggAI : public npc_escortAI
     {
         npc_og_troggAI(Creature* creature) : npc_escortAI(creature) { }
+
+        void WaypointReached(uint32 /*i*/) override
+        {
+        }
 
         void IsSummonedBy(Unit* /*who*/) override
         {
