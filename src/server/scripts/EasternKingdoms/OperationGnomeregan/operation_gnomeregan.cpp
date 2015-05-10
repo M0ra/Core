@@ -725,7 +725,7 @@ class npc_og_mekkatorque : public CreatureScript
             Creature* ExplosionBunny;
             std::list<GameObject*> BannerList_temp;
             std::list<GameObject*> BannerList;
-            std::list<uint64> SummonsGUID;
+            GuidList SummonList;
             Player* pEscortPlayer;
             Quest const* pEscortQuest;
 
@@ -1080,8 +1080,8 @@ class npc_og_mekkatorque : public CreatureScript
                         case 37:
                             if (uiTroggs <= 20)
                             {
-                                if (Creature* pTrogg = me->SummonCreature(NPC_I_TROGG, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN))
-                                    ++uiTroggs;
+                                me->SummonCreature(NPC_I_TROGG, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN)
+                                ++uiTroggs;
 
                                 switch (uiTroggs)
                                 {
@@ -1097,11 +1097,9 @@ class npc_og_mekkatorque : public CreatureScript
                             }
                             else
                             {
-                                if (Creature* pGasherikk = me->SummonCreature(NPC_GASHERIKK, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN))
-                                {
-                                    DoTalk(me, MEK_15_1, SOUND_MEK_15, true);
-                                    ++uiStep;
-                                }
+                                me->SummonCreature(NPC_GASHERIKK, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN)
+                                DoTalk(me, MEK_15_1, SOUND_MEK_15, true);
+                                ++uiStep;
                             }
                             break;
                         case 39:
@@ -1153,180 +1151,180 @@ class npc_og_mekkatorque : public CreatureScript
                             SetHoldState(false);
                             JumpToNextStep(5000);
                             break;
-                        case 53:
-                            if (uiSoldiers <= 30)
+                    case 53:
+                        if (uiSoldiers <= 30)
+                        {
+                            if (Creature* soldier = me->SummonCreature(urand(0, 1) ? NPC_I_INFANTRY : NPC_I_CAVALRY, iSoldierSpawn[urand(0, 5)], TEMPSUMMON_MANUAL_DESPAWN))
                             {
-                                if (Creature* pSoldier = me->SummonCreature(urand(0, 1) ? NPC_I_INFANTRY : NPC_I_CAVALRY, iSoldierSpawn[urand(0,5)], TEMPSUMMON_MANUAL_DESPAWN))
+                                soldier->GetMotionMaster()->MovePoint(0, -4955.23f, 728.98f, 259.31f);
+                                ++uiSoldiers;
+                            }
+                            uiStep_timer = 4000;
+                        }
+                        else
+                        {
+                            me->SummonCreature(NPC_BOLTCOG, -5035.236816f, 708.675232f, 260.499268f, 0, TEMPSUMMON_MANUAL_DESPAWN);
+                            JumpToNextStep(10000);
+                        }
+                        break;
+                    case 54:
+                        if (Creature* boltcog = me->FindNearestCreature(NPC_BOLTCOG, 1000, true))
+                            DoTalk(boltcog, BOLTCOG_1, SOUND_BOLTCOG_1, true);
+                        ++uiStep;
+                        break;
+                    case 56:
+                        SetHoldState(false);
+                        break;
+                    case 58:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            DoTalk(bragBot, THERM_2_1, SOUND_THERM_2, true);
+                        JumpToNextStep(6000);
+                        break;
+                    case 59:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->Yell(THERM_2_2, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(3000);
+                        break;
+                    case 60:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->Yell(THERM_2_3, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(5000);
+                        break;
+                    case 61:
+                        DoTalk(me, MEK_18_1, SOUND_MEK_18, false);
+                        JumpToNextStep(5000);
+                        break;
+                    case 62:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            DoTalk(bragBot, THERM_3_1, SOUND_THERM_3, true);
+                        JumpToNextStep(5000);
+                        break;
+                    case 63:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->Yell(THERM_3_2, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(7000);
+                        break;
+                    case 64:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->Yell(THERM_3_3, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(2000);
+                        break;
+                    case 65:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->Yell(THERM_3_4, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(8000);
+                        break;
+                    case 66:
+                        if (GameObject* go = me->FindNearestGameObject(GO_IRRADIATOR, 20))
+                        {
+                            go->SetGoState(GO_STATE_ACTIVE);
+                            if (Creature* irraiator = me->SummonCreature(NPC_IRRADIATOR, go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN))
+                                DoTalk(irraiator, IRRADIATOR_1_1, SOUND_IRRADIATOR_1, true);
+                        }
+                        JumpToNextStep(8000);
+                        break;
+                    case 67:
+                        DoTalk(me, MEK_19_1, SOUND_MEK_19, false);
+                        JumpToNextStep(5000);
+                        break;
+                    case 68:
+                        me->Say(MEK_19_2, LANG_UNIVERSAL, 0);
+                        me->Dismount();
+                        me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 25140);
+                        me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_WORK_SHEATHED);
+                        JumpToNextStep(10000);
+                        break;
+                    case 69:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            DoTalk(bragBot, THERM_4_1, SOUND_THERM_4, true);
+                        JumpToNextStep(10000);
+                        break;
+                    case 70:
+                        if (Creature* irraiator = me->FindNearestCreature(NPC_IRRADIATOR, 20, true))
+                            DoTalk(irraiator, IRRADIATOR_2_1, SOUND_IRRADIATOR_2, true);
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->DisappearAndDie();
+                        JumpToNextStep(8000);
+                        break;
+                    case 71:
+                        if (Creature* irraiator = me->FindNearestCreature(NPC_IRRADIATOR, 20, true))
+                            irraiator->DisappearAndDie();
+                        me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 53056);
+                        me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
+                        DoTalk(me, MEK_20_1, SOUND_MEK_20, false);
+                        JumpToNextStep(5000);
+                        break;
+                    case 72:
+                        if (Player* player = GetPlayerForEscort())
+                        {
+                            if (Group* pGroup = player->GetGroup())
+                            {
+                                for (GroupReference* itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
                                 {
-                                    pSoldier->GetMotionMaster()->MovePoint(0, -4955.23f, 728.98f, 259.31f);
-                                    ++uiSoldiers;
+                                    if (Player* member = itr->GetSource())
+                                    {
+                                        Creature* cameraVeh = me->SummonCreature(NPC_CAMERA_VEHICLE, -5164.767578f, 556.341125f, 423.753784f, 25.29f, TEMPSUMMON_MANUAL_DESPAWN);
+                                        member->CastSpell(member, SPELL_SEE_INVISIBILITY, true);
+                                        member->CastSpell(cameraVeh, SPELL_BINDSIGHT, true);
+                                    }
                                 }
-                                uiStep_timer = 4000;
                             }
                             else
                             {
-                                me->SummonCreature(NPC_BOLTCOG, -5035.236816f, 708.675232f, 260.499268f, 0, TEMPSUMMON_MANUAL_DESPAWN);
-                                JumpToNextStep(10000);
+                                player->GetMap()->LoadGrid(ExplosionBunnySpawn.GetPositionX(), ExplosionBunnySpawn.GetPositionY());
+                                Creature* cameraVeh = me->SummonCreature(NPC_CAMERA_VEHICLE, -5164.767578f, 556.341125f, 423.753784f, 25.29f, TEMPSUMMON_MANUAL_DESPAWN);
+                                player->CastSpell(player, SPELL_SEE_INVISIBILITY, true);
+                                player->CastSpell(cameraVeh, SPELL_BINDSIGHT, true);
                             }
-                            break;
-                        case 54:
-                            if (Creature* pBoltcog = me->FindNearestCreature(NPC_BOLTCOG, 1000, true))
-                                DoTalk(pBoltcog, BOLTCOG_1, SOUND_BOLTCOG_1, true);
-                            ++uiStep;
-                            break;
-                        case 56:
-                            SetHoldState(false);
-                            break;
-                        case 58:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                DoTalk(pBragBot, THERM_2_1, SOUND_THERM_2, true);
-                            JumpToNextStep(6000);
-                            break;
-                        case 59:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->Yell(THERM_2_2, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(3000);
-                            break;
-                        case 60:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->Yell(THERM_2_3, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(5000);
-                            break;
-                        case 61:
-                            DoTalk(me, MEK_18_1, SOUND_MEK_18, false);
-                            JumpToNextStep(5000);
-                            break;
-                        case 62:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                DoTalk(pBragBot, THERM_3_1, SOUND_THERM_3, true);
-                            JumpToNextStep(5000);
-                            break;
-                        case 63:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->Yell(THERM_3_2, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(7000);
-                            break;
-                        case 64:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->Yell(THERM_3_3, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(2000);
-                            break;
-                        case 65:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->Yell(THERM_3_4, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(8000);
-                            break;
-                        case 66:
-                            if (GameObject* pGO = me->FindNearestGameObject(GO_IRRADIATOR, 20))
-                            {
-                                pGO->SetGoState(GO_STATE_ACTIVE);
-                                if (Creature* pIrraiator = me->SummonCreature(NPC_IRRADIATOR, pGO->GetPositionX(), pGO->GetPositionY(), pGO->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN))
-                                    DoTalk(pIrraiator, IRRADIATOR_1_1, SOUND_IRRADIATOR_1, true);
-                            }
-                            JumpToNextStep(8000);
-                            break;
-                        case 67:
-                            DoTalk(me, MEK_19_1, SOUND_MEK_19, false);
-                            JumpToNextStep(5000);
-                            break;
-                        case 68:
-                            me->Say(MEK_19_2, LANG_UNIVERSAL, 0);
-                            me->Dismount();
-                            me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 25140);
-                            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_WORK_SHEATHED);
-                            JumpToNextStep(10000);
-                            break;
-                        case 69:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                DoTalk(pBragBot, THERM_4_1, SOUND_THERM_4, true);
-                            JumpToNextStep(10000);
-                            break;
-                        case 70:
-                            if (Creature* pIrraiator = me->FindNearestCreature(NPC_IRRADIATOR, 20, true))
-                                DoTalk(pIrraiator, IRRADIATOR_2_1, SOUND_IRRADIATOR_2, true);
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->DisappearAndDie();
-                            JumpToNextStep(8000);
-                            break;
-                        case 71:
-                            if (Creature* pIrraiator = me->FindNearestCreature(NPC_IRRADIATOR, 20, true))
-                                pIrraiator->DisappearAndDie();
-                            me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 53056);
-                            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
-                            DoTalk(me, MEK_20_1, SOUND_MEK_20, false);
-                            JumpToNextStep(5000);
-                            break;
-                        case 72:
-                            if (Player* pPlayer = GetPlayerForEscort())
-                            {
-                                if (Group* pGroup = pPlayer->GetGroup())
-                                {
-                                    for (GroupReference* itr = pGroup->GetFirstMember(); itr != NULL; itr = itr->next())
-                                    {
-                                        if (Player* pMember = itr->GetSource())
-                                        {
-                                            Creature* pCameraVeh = me->SummonCreature(NPC_CAMERA_VEHICLE, -5164.767578f, 556.341125f, 423.753784f, 25.29f, TEMPSUMMON_MANUAL_DESPAWN);
-                                            pMember->CastSpell(pMember, SPELL_SEE_INVISIBILITY, true);
-                                            pMember->CastSpell(pCameraVeh, SPELL_BINDSIGHT, true);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    pPlayer->GetMap()->LoadGrid(ExplosionBunnySpawn.GetPositionX(), ExplosionBunnySpawn.GetPositionY());
-                                    Creature* pCameraVeh = me->SummonCreature(NPC_CAMERA_VEHICLE, -5164.767578f, 556.341125f, 423.753784f, 25.29f, TEMPSUMMON_MANUAL_DESPAWN);
-                                    pPlayer->CastSpell(pPlayer, SPELL_SEE_INVISIBILITY, true);
-                                    pPlayer->CastSpell(pCameraVeh, SPELL_BINDSIGHT, true);
-                                }
-                            }
-                            JumpToNextStep(1300);
-                            break;
-                        case 73:
-                            ExplosionBunny = me->SummonCreature(NPC_EXPLOSION_BUNNY, ExplosionBunnySpawn, TEMPSUMMON_MANUAL_DESPAWN);
-                            ExplosionBunny->setActive(true);
-                            ExplosionBunny->CastSpell(ExplosionBunny, SPELL_SPAWN_INVISIBILITY, true);
-                            JumpToNextStep(1500);
-                            break;
-                        case 74:
-                            ExplosionBunny->CastSpell(ExplosionBunny, SPELL_RAD_EXPLOSION, true);
-                            JumpToNextStep(7000);
-                            break;
-                        case 75:
-                            ExplosionBunny->DespawnOrUnsummon();
-                            bBuffs = false;
-                            me->RemoveAurasDueToSpell(SPELL_HEALTH_REGEN);
-                            me->RemoveAurasDueToSpell(SPELL_BRILLIANT_TACTICS);
-                            me->NearTeleportTo(-4827.0f, -1256.0f, 506.077f, 4.535f);
-                            me->SetDisplayId(11686);
-                            me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
-                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                            DoPlayMusic(2);
-                            DoCleanup();
-                            JumpToNextStep(10000);
-                            break;
-                        case 76:
-                            DoTalk(me, MEK_21_1, SOUND_MEK_21, false);
-                            JumpToNextStep(10000);
-                            break;
-                        case 77:
-                            me->Say(MEK_21_2, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(10000);
-                            break;
-                        case 78:
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                            me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 53056);
-                            me->DisappearAndDie();
-                            break;
-                    }
+                        }
+                        JumpToNextStep(1300);
+                        break;
+                    case 73:
+                        ExplosionBunny = me->SummonCreature(NPC_EXPLOSION_BUNNY, ExplosionBunnySpawn, TEMPSUMMON_MANUAL_DESPAWN);
+                        ExplosionBunny->setActive(true);
+                        ExplosionBunny->CastSpell(ExplosionBunny, SPELL_SPAWN_INVISIBILITY, true);
+                        JumpToNextStep(1500);
+                        break;
+                    case 74:
+                        ExplosionBunny->CastSpell(ExplosionBunny, SPELL_RAD_EXPLOSION, true);
+                        JumpToNextStep(7000);
+                        break;
+                    case 75:
+                        ExplosionBunny->DespawnOrUnsummon();
+                        bBuffs = false;
+                        me->RemoveAurasDueToSpell(SPELL_HEALTH_REGEN);
+                        me->RemoveAurasDueToSpell(SPELL_BRILLIANT_TACTICS);
+                        me->NearTeleportTo(-4827.0f, -1256.0f, 506.077f, 4.535f);
+                        me->SetDisplayId(11686);
+                        me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
+                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        DoPlayMusic(2);
+                        DoCleanup();
+                        JumpToNextStep(10000);
+                        break;
+                    case 76:
+                        DoTalk(me, MEK_21_1, SOUND_MEK_21, false);
+                        JumpToNextStep(10000);
+                        break;
+                    case 77:
+                        me->Say(MEK_21_2, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(10000);
+                        break;
+                    case 78:
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 53056);
+                        me->DisappearAndDie();
+                        break;
                 }
-                else 
-                    uiStep_timer -= uiDiff;
-
-                if (!UpdateVictim())
-                    return;
-
-                DoMeleeAttackIfReady();
             }
+            else 
+                uiStep_timer -= uiDiff;
+
+            if (!UpdateVictim())
+                return;
+
+            DoMeleeAttackIfReady();
+        }
 
         void JustDied(Unit* /*who*/) override
         {
@@ -1335,7 +1333,7 @@ class npc_og_mekkatorque : public CreatureScript
 
         void JustSummoned(Creature* summon) override
         {
-            SummonsGUID.push_back(summon->GetGUID());
+            SummonList.push_back(summon->GetGUID());
         }
 
         void JumpToNextStep(uint32 uiTimer)
@@ -1575,17 +1573,17 @@ class npc_og_mekkatorque : public CreatureScript
             }
         }
 
-        void DoCleanup()
+        void RemoveSummons()
         {
-            if (!SummonsGUID.empty())
+            if (!SummonList.empty())
             {
-                for (std::list<uint64>::const_iterator itr = SummonsGUID.begin(); itr != SummonsGUID.end(); ++itr)
-                    if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
-                        if (summon->IsAlive())
-                            summon->DisappearAndDie();
+                for (GuidList::const_iterator itr = SummonList.begin(); itr != SummonList.end(); ++itr)
+                    if (Creature* temp = ObjectAccessor::GetCreature(*me, *itr))
+                        if (temp->IsAlive())
+                            temp->DisappearAndDie();
                         else
-                            summon->DespawnOrUnsummon();
-                SummonsGUID.clear();
+                            temp->DespawnOrUnsummon();
+                SummonList.clear();
             }
             if (!BannerList.empty())
             {
