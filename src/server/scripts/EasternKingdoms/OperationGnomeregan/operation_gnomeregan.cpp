@@ -992,165 +992,163 @@ class npc_og_mekkatorque : public CreatureScript
                                 me->SummonCreature(NPC_I_INFANTRY, iInfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
                             JumpToNextStep(7250);
                             break;
-                        case 19:
-                            me->Say(MEK_10_3, LANG_UNIVERSAL, 0);
-                            if (Creature* pTank1 = me->SummonCreature(NPC_TANK, TankSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
-                                if (Creature* pTank2 = me->SummonCreature(NPC_TANK, TankSpawn[4], TEMPSUMMON_MANUAL_DESPAWN))
+                    case 19:
+                        me->Say(MEK_10_3, LANG_UNIVERSAL, 0);
+                        if (Creature* tank1 = me->SummonCreature(NPC_TANK, TankSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
+                            if (Creature* tank2 = me->SummonCreature(NPC_TANK, TankSpawn[4], TEMPSUMMON_MANUAL_DESPAWN))
+                            {
+                                CAST_AI(npc_og_tank::npc_og_tankAI, tank1->AI())->SetupMovement(3);
+                                CAST_AI(npc_og_tank::npc_og_tankAI, tank2->AI())->SetupMovement(4);
+                            }
+                        DoSummonBomber();
+                        JumpToNextStep(3000);
+                        break;
+                    case 20:
+                        if (!ValidateEscortState())
+                            uiStep_timer = 2000;
+                        else
+                            SetHoldState(false);
+                        break;
+                    case 22:
+                        if (!ValidateEscortState() || me->FindNearestCreature(NPC_CANNON, 100.0f, true))
+                        {
+                            uiStep_timer = 2000;
+                            return;
+                        }
+                        DoTalk(me, MEK_12_1, SOUND_MEK_12, false);
+                        if (Creature* driver1 = me->SummonCreature(NPC_INFANTRY, BattleSuitDriverSpawn[0], TEMPSUMMON_MANUAL_DESPAWN))
+                            if (Creature* driver2 = me->SummonCreature(NPC_INFANTRY, BattleSuitDriverSpawn[1], TEMPSUMMON_MANUAL_DESPAWN))
+                                if (Creature* driver3 = me->SummonCreature(NPC_INFANTRY, BattleSuitDriverSpawn[2], TEMPSUMMON_MANUAL_DESPAWN))
                                 {
-                                    CAST_AI(npc_og_tank::npc_og_tankAI, pTank1->AI())->SetupMovement(3);
-                                    CAST_AI(npc_og_tank::npc_og_tankAI, pTank2->AI())->SetupMovement(4);
+                                    CAST_AI(npc_og_infantry::npc_og_infantryAI, driver1->AI())->SetupMovement(0);
+                                    CAST_AI(npc_og_infantry::npc_og_infantryAI, driver2->AI())->SetupMovement(1);
+                                    CAST_AI(npc_og_infantry::npc_og_infantryAI, driver3->AI())->SetupMovement(2);
                                 }
-                            DoSummonBomber();
-                            JumpToNextStep(3000);
-                            break;
-                        case 20:
-                            if(!ValidateEscortState())
-                                uiStep_timer = 2000;
-                            else
-                                SetHoldState(false);
-                            break;
-                        case 22:
-                            if (!ValidateEscortState() || me->FindNearestCreature(NPC_CANNON, 100.0f, true))
-                            {
-                                uiStep_timer = 2000;
-                                return;
-                            }
-                            DoTalk(me, MEK_12_1, SOUND_MEK_12, false);
-                            if (Creature* pDriver1 = me->SummonCreature(NPC_INFANTRY, BattleSuitDriverSpawn[0], TEMPSUMMON_MANUAL_DESPAWN))
-                                if (Creature* pDriver2 = me->SummonCreature(NPC_INFANTRY, BattleSuitDriverSpawn[1], TEMPSUMMON_MANUAL_DESPAWN))
-                                    if (Creature* pDriver3 = me->SummonCreature(NPC_INFANTRY, BattleSuitDriverSpawn[2], TEMPSUMMON_MANUAL_DESPAWN))
-                                    {
-                                        CAST_AI(npc_og_infantry::npc_og_infantryAI, pDriver1->AI())->SetupMovement(0);
-                                        CAST_AI(npc_og_infantry::npc_og_infantryAI, pDriver2->AI())->SetupMovement(1);
-                                        CAST_AI(npc_og_infantry::npc_og_infantryAI, pDriver3->AI())->SetupMovement(2);
-                                    }
-                            JumpToNextStep(8500);
-                            break;
-                        case 23:
-                            me->Say(MEK_12_2, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(8500);
-                            break;
-                        case 24:
-                            SetHoldState(false);
-                            break;
-                        case 26:
-                            SetEscortPaused(false);
-                            JumpToNextStep(0);
-                            break;
-                        case 28:
-                            SetHoldState(false);
-                            break;
-                        case 30:
-                            me->Say(MEK_13_2, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(8000);
-                            break;
-                        case 31:
-                            me->Say(MEK_13_3, LANG_UNIVERSAL, 0);
-                            for (int32 n = 0; n < 3; ++n)
-                                BattleSuit[n]->DisappearAndDie();
-                            me->SummonCreature(NPC_BRAG_BOT, BragBotSpawn[0], TEMPSUMMON_MANUAL_DESPAWN);
-                            JumpToNextStep(5000);
-                            break;
-                        case 32:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                DoTalk(pBragBot, THERM_1_1, SOUND_THERM_1, true);
-                            JumpToNextStep(7000);
-                            break;
-                        case 33:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->Yell(THERM_1_2, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(5000);
-                            break;
-                        case 34:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->Yell(THERM_1_3, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(3000);
-                            break;
-                        case 35:
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->Yell(THERM_1_4, LANG_UNIVERSAL, 0);
-                            JumpToNextStep(4500);
-                            break;
-                        case 36:
-                            PartyCast(SPELL_EXPLOSION);
-                            if (Creature* pBragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
-                                pBragBot->DisappearAndDie();
-                            JumpToNextStep(1000);
-                            break;
-                        case 37:
-                            if (uiTroggs <= 20)
-                            {
-                                me->SummonCreature(NPC_I_TROGG, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN)
-                                ++uiTroggs;
+                        JumpToNextStep(8500);
+                        break;
+                    case 23:
+                        me->Say(MEK_12_2, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(8500);
+                        break;
+                    case 24:
+                        SetHoldState(false);
+                        break;
+                    case 26:
+                        SetEscortPaused(false);
+                        JumpToNextStep(0);
+                        break;
+                    case 28:
+                        SetHoldState(false);
+                        break;
+                    case 30:
+                        me->Say(MEK_13_2, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(8000);
+                        break;
+                    case 31:
+                        me->Say(MEK_13_3, LANG_UNIVERSAL, 0);
+                        for (int32 n = 0; n < 3; ++n)
+                            BattleSuit[n]->DisappearAndDie();
+                        me->SummonCreature(NPC_BRAG_BOT, BragBotSpawn[0], TEMPSUMMON_MANUAL_DESPAWN);
+                        JumpToNextStep(5000);
+                        break;
+                    case 32:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            DoTalk(bragBot, THERM_1_1, SOUND_THERM_1, true);
+                        JumpToNextStep(7000);
+                        break;
+                    case 33:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->Yell(THERM_1_2, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(5000);
+                        break;
+                    case 34:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->Yell(THERM_1_3, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(3000);
+                        break;
+                    case 35:
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->Yell(THERM_1_4, LANG_UNIVERSAL, 0);
+                        JumpToNextStep(4500);
+                        break;
+                    case 36:
+                        PartyCast(SPELL_EXPLOSION);
+                        if (Creature* bragBot = me->FindNearestCreature(NPC_BRAG_BOT, 20, true))
+                            bragBot->DisappearAndDie();
+                        JumpToNextStep(1000);
+                        break;
+                    case 37:
+                        if (uiTroggs <= 20)
+                        {
+                            me->SummonCreature(NPC_I_TROGG, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN)
 
-                                switch (uiTroggs)
-                                {
-                                    case 2:
-                                        DoTalk(me, MEK_14_1, SOUND_MEK_14, false);
-                                        break;
-                                    case 5:
-                                        me->Yell(MEK_14_2, LANG_UNIVERSAL, 0);
-                                        break;
-                                }
-
-                                uiStep_timer = uiTroggs % 4 == 0 ? 30000 : 1500;
-                            }
-                            else
+                            switch (uiTroggs)
                             {
-                                me->SummonCreature(NPC_GASHERIKK, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN)
-                                DoTalk(me, MEK_15_1, SOUND_MEK_15, true);
-                                ++uiStep;
+                                case 2:
+                                    DoTalk(me, MEK_14_1, SOUND_MEK_14, false);
+                                    break;
+                                case 5:
+                                    me->Yell(MEK_14_2, LANG_UNIVERSAL, 0);
+                                    break;
                             }
-                            break;
-                        case 39:
+                            uiStep_timer = uiTroggs % 4 == 0 ? 30000 : 1500;
+                        }
+                        else
+                        {
+                            me->SummonCreature(NPC_GASHERIKK, TroggSpawn, TEMPSUMMON_MANUAL_DESPAWN)
+                            DoTalk(me, MEK_15_1, SOUND_MEK_15, true);
+                            ++uiStep;
+                        }
+                        break;
+                    case 39:
+                        SetHoldState(false);
+                        break;
+                    case 41:
+                        if (!ValidateEscortState())
+                            uiStep_timer = 2000;
+                        else
+                        {
+                            PartyCast(SPELL_PARACHUTE);
                             SetHoldState(false);
-                            break;
-                        case 41:
-                            if(!ValidateEscortState())
-                                uiStep_timer = 2000;
-                            else
-                            {
-                                PartyCast(SPELL_PARACHUTE);
-                                SetHoldState(false);
-                            }
-                            break;
-                        case 43:
-                            SetHoldState(false);
-                            break;
-                        case 45:
-                            if (Creature* suit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
-                                CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(3);
-                            if (Creature* suit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[4], TEMPSUMMON_MANUAL_DESPAWN))
-                                CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(4);
-                            for (int8 n = 15; n < 19; ++n)
-                                if (Creature* pInfantry = me->SummonCreature(NPC_INFANTRY, InfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN))
-                                    CAST_AI(npc_og_infantry::npc_og_infantryAI, pInfantry->AI())->SetupMovement(n);
-                            JumpToNextStep(1500);
-                            break;
-                        case 46:
-                            SetHoldState(false);
-                            break;
-                        case 48:
-                            DoTalk(me, MEK_17_1, SOUND_MEK_17, false);
-                            for (int8 n = 11; n < 15; ++n)
-                                me->SummonCreature(NPC_INFANTRY, InfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
-                            for (int8 n = 0; n < 5; ++n)
-                                if (Creature* pSoldier = me->SummonCreature(urand(0, 1) ? NPC_I_INFANTRY : NPC_I_CAVALRY, iSoldierSpawn[n], TEMPSUMMON_MANUAL_DESPAWN))
-                                    pSoldier->GetMotionMaster()->MovePoint(0, -4955.23f, 728.98f, 259.31f);
-                            JumpToNextStep(5000);
-                            break;
-                        case 49:
-                            me->SetReactState(REACT_PASSIVE);
-                            if (Creature* pCogspin = me->FindNearestCreature(NPC_COGSPIN, 100.0f))
-                                pCogspin->SetReactState(REACT_PASSIVE);
-                            if (Creature* pFastblast = me->FindNearestCreature(NPC_FASTBLAST, 100.0f))
-                                pFastblast->SetReactState(REACT_PASSIVE);
-                            SetHoldState(false);
-                            break;
-                        case 51:
-                            SetHoldState(false);
-                            JumpToNextStep(5000);
-                            break;
+                        }
+                        break;
+                    case 43:
+                        SetHoldState(false);
+                        break;
+                    case 45:
+                        if (Creature* suit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[3], TEMPSUMMON_MANUAL_DESPAWN))
+                            CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(3);
+                        if (Creature* suit = me->SummonCreature(NPC_BATTLE_SUIT, BattleSuitSpawn[4], TEMPSUMMON_MANUAL_DESPAWN))
+                            CAST_AI(npc_og_suit::npc_og_suitAI, suit->AI())->SetupMovement(4);
+                        for (int8 n = 15; n < 19; ++n)
+                            if (Creature* infantry = me->SummonCreature(NPC_INFANTRY, InfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN))
+                                CAST_AI(npc_og_infantry::npc_og_infantryAI, infantry->AI())->SetupMovement(n);
+                        JumpToNextStep(1500);
+                        break;
+                    case 46:
+                        SetHoldState(false);
+                        break;
+                    case 48:
+                        DoTalk(me, MEK_17_1, SOUND_MEK_17, false);
+                        for (int8 n = 11; n < 15; ++n)
+                            me->SummonCreature(NPC_INFANTRY, InfantrySpawn[n], TEMPSUMMON_MANUAL_DESPAWN);
+                        for (int8 n = 0; n < 5; ++n)
+                            if (Creature* soldier = me->SummonCreature(urand(0, 1) ? NPC_I_INFANTRY : NPC_I_CAVALRY, iSoldierSpawn[n], TEMPSUMMON_MANUAL_DESPAWN))
+                                soldier->GetMotionMaster()->MovePoint(0, -4955.23f, 728.98f, 259.31f);
+                        JumpToNextStep(5000);
+                        break;
+                    case 49:
+                        me->SetReactState(REACT_PASSIVE);
+                        if (Creature* cogspin = me->FindNearestCreature(NPC_COGSPIN, 100.0f))
+                            cogspin->SetReactState(REACT_PASSIVE);
+                        if (Creature* fastblast = me->FindNearestCreature(NPC_FASTBLAST, 100.0f))
+                            fastblast->SetReactState(REACT_PASSIVE);
+                        SetHoldState(false);
+                        break;
+                    case 51:
+                        SetHoldState(false);
+                        JumpToNextStep(5000);
+                        break;
                     case 53:
                         if (uiSoldiers <= 30)
                         {
