@@ -347,6 +347,12 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
                             return;
                         break;
                     }
+                    case 62912: // Thorim's Hammer
+                    {
+                        if (effIndex == EFFECT_0)
+                            damage = unitTarget->CountPctFromMaxHealth(damage);
+                        break;
+                    }
                     // Gargoyle Strike
                     case 51963:
                     {
@@ -1717,6 +1723,9 @@ void Spell::EffectPersistentAA(SpellEffIndex effIndex)
             delete dynObj;
             return;
         }
+
+        if (m_spellInfo->Id == 62910)
+            dynObj->setActive(true);
 
         if (Aura* aura = Aura::TryCreate(m_spellInfo, MAX_EFFECT_MASK, dynObj, caster, &m_spellValue->EffectBasePoints[0]))
         {

@@ -1335,7 +1335,7 @@ class npc_freyas_ward : public CreatureScript
             }
 
         private:
-            uint32 _summonTimer;
+            uint32 summonTimer;
 
         };
 
