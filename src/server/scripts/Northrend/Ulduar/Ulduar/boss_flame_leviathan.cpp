@@ -1124,23 +1124,27 @@ class npc_mimirons_inferno : public CreatureScript
 public:
     npc_mimirons_inferno() : CreatureScript("npc_mimirons_inferno") { }
 
-    struct npc_mimirons_infernoAI : public ScriptedAI
+    struct npc_mimirons_infernoAI : public npc_escortAI
     {
-        npc_mimirons_infernoAI(Creature* creature) : ScriptedAI(creature)
-        {
+        npc_mimirons_infernoAI(Creature* creature) : npc_escortAI(creature)
+		{
             Initialize();
-            me->setActive(true);
-            me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-            me->AddAura(SPELL_RED_SKYBEAM, me);
-            me->SetReactState(REACT_PASSIVE);
-        }
+			me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+			me->CastSpell(me, AURA_DUMMY_YELLOW, true);
+			me->SetReactState(REACT_PASSIVE);
+			infernoTimer = 2000;
+			me->AddAura(SPELL_RED_SKYBEAM, me);
+			me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
+		}
 
         void Initialize()
         {
-            _count = 2;
-            _infernoTimer = 2000;
-            _pointReached = true;
+            infernoTimer = 2000;
+        }
+
+        void WaypointReached(uint32 /*waypointId*/) override
+        {
+
         }
 
         void Reset() override
@@ -1148,42 +1152,35 @@ public:
             Initialize();
         }
 
-        void MovementInform(uint32 type, uint32 id) override
-        {
-            if (type != POINT_MOTION_TYPE || id != _count)
-                return;
-
-                if (++_count > 4)
-                    _count = 1;
-
-                _pointReached = true;
-        }
-
         void UpdateAI(uint32 diff) override
         {
-            if (_pointReached)
-            {
-                _pointReached = false;
-                me->GetMotionMaster()->MovePoint(_count, Misc[_count]);
-            }
+            npc_escortAI::UpdateAI(diff);
 
-            if (_infernoTimer <= diff)
-            {
-                if (Creature* trigger = DoSummonFlyer(NPC_MIMIRON_BEACON, me, 50.0f, 0, 40000, TEMPSUMMON_TIMED_DESPAWN))
-                {
-                    trigger->SetDisplayId(trigger->GetCreatureTemplate()->Modelid2);
-                    trigger->CastSpell(me, SPELL_MIMIRON_S_INFERNO, true);
-                    _infernoTimer = 2000;
-                }
-            }
+            if (!HasEscortState(STATE_ESCORT_ESCORTING))
+                Start(false, true);
             else
-                _infernoTimer -= diff;
+            {
+                if (infernoTimer <= diff)
+                {
+                    if (Creature* trigger = DoSummonFlyer(NPC_MIMIRON_TARGET_BEACON, me, 30.0f, 0, 2000, TEMPSUMMON_TIMED_DESPAWN))
+                    {
+                        /// @todo Check if this works properly, the spell's target selection is somehow curious o锟?
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f))
+                            DoCast(target, SPELL_MIMIRON_S_INFERNO, true);
+                        infernoTimer = 2000;
+                        trigger->SetDisplayId(trigger->GetCreatureTemplate()->Modelid2);
+                    }
+                }
+                else
+                    infernoTimer -= diff;
+
+                if (!me->HasAura(AURA_DUMMY_YELLOW))
+                    me->CastSpell(me, AURA_DUMMY_YELLOW, true);
+            }
         }
 
-    private:
-        uint32 _infernoTimer;
-        uint8 _count;
-        bool _pointReached;
+        private:
+            uint32 infernoTimer;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
