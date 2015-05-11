@@ -1344,50 +1344,50 @@ class npc_freyas_ward : public CreatureScript
 
 class npc_freya_ward_summon : public CreatureScript
 {
-    public:
-        npc_freya_ward_summon() : CreatureScript("npc_freya_ward_summon") { }
+public:
+    npc_freya_ward_summon() : CreatureScript("npc_freya_ward_summon") { }
 
-        struct npc_freya_ward_summonAI : public ScriptedAI
+    struct npc_freya_ward_summonAI : public ScriptedAI
+    {
+        npc_freya_ward_summonAI(Creature* creature) : ScriptedAI(creature)
         {
-            npc_freya_ward_summonAI(Creature* creature) : ScriptedAI(creature)
-            {
-                Initialize();
-                creature->GetMotionMaster()->MoveRandom(100);
-            }
-
-            void Initialize()
-            {
-                lashTimer = urand(2000, 8000);
-            }
-
-            void Reset() override
-            {
-                Initialize();
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (!UpdateVictim())
-                    return;
-
-                if (lashTimer <= diff)
-                {
-                    DoCast(SPELL_LASH);
-                    lashTimer = urand(8000, 12000);
-                }
-                else
-                    lashTimer -= diff;
-            }
-
-        private:
-            uint32 lashTimer;
-
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_freya_ward_summonAI(creature);
+            Initialize();
+            creature->GetMotionMaster()->MoveRandom(100);
         }
+
+        void Initialize()
+        {
+            lashTimer = 5000;
+        }
+
+        uint32 lashTimer;
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (!UpdateVictim())
+                return;
+
+            if (lashTimer <= diff)
+            {
+                DoCast(SPELL_LASH);
+                lashTimer = 20000;
+            }
+            else
+                lashTimer -= diff;
+
+            DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_freya_ward_summonAI(creature);
+    }
 };
 
 //npc lore keeper
