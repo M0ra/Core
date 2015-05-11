@@ -3392,6 +3392,8 @@ void SpellMgr::LoadSpellInfoCorrections()
                 spellInfo->Effects[EFFECT_1].TargetA = TARGET_UNIT_CASTER;
                 spellInfo->Effects[EFFECT_1].SpellClassMask = flag96(0x40000000, 0x00000002, 0x00000000);
                 break;
+            case 60553: // Relentless Aggression
+                spellInfo->Effects[EFFECT_1].Effect = 0;
             // ULDUAR SPELLS
             //
             case 64482: // Flame Leviathan - Tower of Life
