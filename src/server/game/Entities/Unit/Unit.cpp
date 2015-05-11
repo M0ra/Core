@@ -10985,6 +10985,10 @@ uint32 Unit::SpellHealingBonusTaken(Unit* caster, SpellInfo const* spellProto, u
 {
     float TakenTotalMod = 1.0f;
 
+    // No bonus healing taken for these spells
+    if (spellProto->AttributesEx6 & SPELL_ATTR6_NO_HEALING_BONUS)
+        return healamount;
+
     // Healing taken percent
     float minval = float(GetMaxNegativeAuraModifier(SPELL_AURA_MOD_HEALING_PCT));
     if (minval)
