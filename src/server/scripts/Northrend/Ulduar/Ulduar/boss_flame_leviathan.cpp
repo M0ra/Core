@@ -1440,6 +1440,7 @@ class npc_lorekeeper : public CreatureScript
                     {
                         leviathan->AI()->DoAction(ACTION_ACTIVATE_HARD_MODE);
                         creature->SetVisible(false);
+                        creature->AI()->DoAction(ACTION_SPAWN_VEHICLES); // spawn the vehicles
                         if (Creature* Delorah = creature->FindNearestCreature(NPC_DELORAH, 200.0f, true))
                         {
                             if (Creature* Branz = creature->FindNearestCreature(NPC_BRANZ_BRONZBEARD, 200.0f, true))
