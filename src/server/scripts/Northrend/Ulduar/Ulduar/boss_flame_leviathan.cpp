@@ -1127,15 +1127,15 @@ public:
     struct npc_mimirons_infernoAI : public npc_escortAI
     {
         npc_mimirons_infernoAI(Creature* creature) : npc_escortAI(creature)
-		{
+        {
             Initialize();
-			me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-			me->CastSpell(me, AURA_DUMMY_YELLOW, true);
-			me->SetReactState(REACT_PASSIVE);
-			infernoTimer = 2000;
-			me->AddAura(SPELL_RED_SKYBEAM, me);
-			me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
-		}
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            me->CastSpell(me, AURA_DUMMY_YELLOW, true);
+            me->SetReactState(REACT_PASSIVE);
+            infernoTimer = 2000;
+            me->AddAura(SPELL_RED_SKYBEAM, me);
+            me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
+        }
 
         void Initialize()
         {
