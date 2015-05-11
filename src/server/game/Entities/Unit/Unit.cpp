@@ -226,7 +226,6 @@ Unit::Unit(bool isWorldObject) :
     // Set when temporarily active due to player combat
     m_combatwithplayer = false;
 
-
     m_attacking = NULL;
     m_modMeleeHitChance = 0.0f;
     m_modRangedHitChance = 0.0f;
@@ -11874,11 +11873,11 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy)
     // If creature is attacking player, set it active, so player leaving sight doesn't disable updates for the cell
     // Helps prevent the main cause of stuck in combat bugs.
     // Only if this unit is NOT a player
-    if (GetTypeId() != TYPEID_PLAYER)
+    if (enemy && GetTypeId() != TYPEID_PLAYER)
     {
         // Check if enemy is a player, or player pet/summon
         Unit* pOwner = enemy->GetCharmerOrOwner();
-        if ((enemy->GetTypeId() == TYPEID_PLAYER) || ((enemy->IsPet() || enemy->IsSummon() || enemy->IsGuardian() || enemy->IsCharmed()) && pOwner && pOwner->GetTypeId() == TYPEID_PLAYER))
+        if ((enemy->GetTypeId() == TYPEID_PLAYER) || (pOwner && (enemy->IsPet() || enemy->IsSummon() || enemy->IsGuardian() || enemy->IsCharmed()) && pOwner->GetTypeId() == TYPEID_PLAYER))
         {
             // Check if object is already active (do nothing if so)
             if (!isActiveObject())
