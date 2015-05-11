@@ -917,6 +917,7 @@ class instance_ulduar : public InstanceMapScript
                         ColossusData = data;
                         if (data == 2)
                         {
+                            instance->SummonCreature(NPC_BRONZEBEARD_RADIO, BrannRadioSummonPos);
                             if (Creature* radio = instance->SummonCreature(NPC_BRONZEBEARD_RADIO, BrannRadioSummonPos))
                             {
                                 RadioGUID = radio->GetGUID();
