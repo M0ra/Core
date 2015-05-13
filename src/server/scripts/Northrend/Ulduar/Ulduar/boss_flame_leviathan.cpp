@@ -530,41 +530,45 @@ class boss_flame_leviathan : public CreatureScript
                 if (action && action <= 4) // Tower destruction, debuff leviathan loot and reduce active tower count
                 {
                     if (me->HasLootMode(LOOT_MODE_DEFAULT | LOOT_MODE_HARD_MODE_1 | LOOT_MODE_HARD_MODE_2 | LOOT_MODE_HARD_MODE_3 | LOOT_MODE_HARD_MODE_4) && ActiveTowersCount == 4)
-                    {
                         me->RemoveLootMode(LOOT_MODE_HARD_MODE_4);
-                        --ActiveTowersCount;
-                    }
                     if (me->HasLootMode(LOOT_MODE_DEFAULT | LOOT_MODE_HARD_MODE_1 | LOOT_MODE_HARD_MODE_2 | LOOT_MODE_HARD_MODE_3) && ActiveTowersCount == 3)
-                    {
                         me->RemoveLootMode(LOOT_MODE_HARD_MODE_3);
-                        --ActiveTowersCount;
-                    }
                     if (me->HasLootMode(LOOT_MODE_DEFAULT | LOOT_MODE_HARD_MODE_1 | LOOT_MODE_HARD_MODE_2) && ActiveTowersCount == 2)
-                    {
                         me->RemoveLootMode(LOOT_MODE_HARD_MODE_2);
-                        --ActiveTowersCount;
-                    }
                     if (me->HasLootMode(LOOT_MODE_DEFAULT | LOOT_MODE_HARD_MODE_1) && ActiveTowersCount == 1)
-                    {
                         me->RemoveLootMode(LOOT_MODE_HARD_MODE_1);
-                        --ActiveTowersCount;
-                    }
                 }
 
                 switch (action)
                 {
-                    case ACTION_TOWER_OF_STORM_DESTROYED:
-                        towerOfStorms = false;
-                        break;
-                    case ACTION_TOWER_OF_FROST_DESTROYED:
-                        towerOfFrost = false;
-                        break;
-                    case ACTION_TOWER_OF_FLAMES_DESTROYED:
-                        towerOfFlames = false;
-                        break;
-                    case ACTION_TOWER_OF_LIFE_DESTROYED:
-                        towerOfLife = false;
-                        break;
+                     case ACTION_TOWER_OF_STORM_DESTROYED:
+                         if (towerOfStorms)
+                         {
+                             towerOfStorms = false;
+                             --ActiveTowersCount;
+                         }
+                         break;
+                     case ACTION_TOWER_OF_FROST_DESTROYED:
+                         if (towerOfFrost)
+                         {
+                             towerOfFrost = false;
+                             --ActiveTowersCount;
+                         }
+                         break;
+                     case ACTION_TOWER_OF_FLAMES_DESTROYED:
+                         if (towerOfFlames)
+                         {
+                             towerOfFlames = false;
+                             --ActiveTowersCount;
+                         }
+                         break;
+                     case ACTION_TOWER_OF_LIFE_DESTROYED:
+                         if (towerOfLife)
+                         {
+                             towerOfLife = false;
+                             --ActiveTowersCount;
+                         }
+                         break;
                     case ACTION_ACTIVATE_HARD_MODE:  // Activate hard-mode enable all towers, apply buffs on leviathan
                         ActiveTowers = true;
                         towerOfStorms = true;
@@ -1173,9 +1177,6 @@ public:
                 }
                 else
                     infernoTimer -= diff;
-
-                if (!me->HasAura(AURA_DUMMY_YELLOW))
-                    me->CastSpell(me, AURA_DUMMY_YELLOW, true);
             }
         }
 
@@ -1220,13 +1221,13 @@ public:
 
             events.Update(diff);
 
-            while (uint32 event = events.ExecuteEvent())
+            while (uint32 eventId = events.ExecuteEvent())
             {
-                switch (event)
+                switch (eventId)
                 {
                     case EVENT_SELECT_TARGET_AND_FOLLOW:
                         DoZoneInCombat(me, 200.0f);
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0)
                         {
                             if (target->GetTypeId() == TYPEID_PLAYER && target->IsVehicle())
                             {
@@ -2128,34 +2129,6 @@ public:
     }
 };
 
-class spell_leviathan_tower_buff : public SpellScriptLoader
-{
-public:
-    spell_leviathan_tower_buff() : SpellScriptLoader("spell_leviathan_tower_buff") { }
-
-    class spell_leviathan_tower_buff_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_leviathan_tower_buff_AuraScript);
-
-        bool CheckAreaTarget(Unit* target)
-        {
-            if (target->GetEntry() == 33113)
-                return true;
-            return false;
-        }
-
-        void Register() override
-        {
-            DoCheckAreaTarget += AuraCheckAreaTargetFn(spell_leviathan_tower_buff_AuraScript::CheckAreaTarget);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_leviathan_tower_buff_AuraScript();
-    }
-};
-
 void AddSC_boss_flame_leviathan()
 {
     new boss_flame_leviathan();
@@ -2193,5 +2166,4 @@ void AddSC_boss_flame_leviathan()
     new spell_pursue();
     new spell_vehicle_throw_passenger();
     new spell_freyas_ward_summon();                 // 62907
-    new spell_leviathan_tower_buff();
 }
