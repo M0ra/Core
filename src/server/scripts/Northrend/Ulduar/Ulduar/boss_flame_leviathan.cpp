@@ -541,34 +541,34 @@ class boss_flame_leviathan : public CreatureScript
 
                 switch (action)
                 {
-                     case ACTION_TOWER_OF_STORM_DESTROYED:
-                         if (towerOfStorms)
-                         {
-                             towerOfStorms = false;
-                             --ActiveTowersCount;
-                         }
-                         break;
-                     case ACTION_TOWER_OF_FROST_DESTROYED:
-                         if (towerOfFrost)
-                         {
-                             towerOfFrost = false;
-                             --ActiveTowersCount;
-                         }
-                         break;
-                     case ACTION_TOWER_OF_FLAMES_DESTROYED:
-                         if (towerOfFlames)
-                         {
-                             towerOfFlames = false;
-                             --ActiveTowersCount;
-                         }
-                         break;
-                     case ACTION_TOWER_OF_LIFE_DESTROYED:
-                         if (towerOfLife)
-                         {
-                             towerOfLife = false;
-                             --ActiveTowersCount;
-                         }
-                         break;
+                    case ACTION_TOWER_OF_STORM_DESTROYED:
+                        if (towerOfStorms)
+                        {
+                            towerOfStorms = false;
+                            --ActiveTowersCount;
+                        }
+                        break;
+                    case ACTION_TOWER_OF_FROST_DESTROYED:
+                        if (towerOfFrost)
+                        {
+                            towerOfFrost = false;
+                            --ActiveTowersCount;
+                        }
+                        break;
+                    case ACTION_TOWER_OF_FLAMES_DESTROYED:
+                        if (towerOfFlames)
+                        {
+                            towerOfFlames = false;
+                            --ActiveTowersCount;
+                        }
+                        break;
+                    case ACTION_TOWER_OF_LIFE_DESTROYED:
+                        if (towerOfLife)
+                        {
+                            towerOfLife = false;
+                            --ActiveTowersCount;
+                        }
+                        break;
                     case ACTION_ACTIVATE_HARD_MODE:  // Activate hard-mode enable all towers, apply buffs on leviathan
                         ActiveTowers = true;
                         towerOfStorms = true;
@@ -1227,7 +1227,7 @@ public:
                 {
                     case EVENT_SELECT_TARGET_AND_FOLLOW:
                         DoZoneInCombat(me, 200.0f);
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0)
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
                         {
                             if (target->GetTypeId() == TYPEID_PLAYER && target->IsVehicle())
                             {
