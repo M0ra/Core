@@ -517,11 +517,11 @@ class instance_ulduar : public InstanceMapScript
                         HodirChestGUID = gameObject->GetGUID();
                         break;
                     case GO_MIMIRON_TRAM:
-                        gameObject->setActive(true);
+                        gameObject->SetGoState(GO_STATE_ACTIVE);
                         MimironTramGUID = gameObject->GetGUID();
                         break;
                     case GO_MIMIRON_ELEVATOR:
-                        gameObject->setActive(true);
+                        gameObject->SetGoState(GO_STATE_ACTIVE);
                         MimironElevatorGUID = gameObject->GetGUID();
                         break;
                     case GO_MIMIRON_BUTTON:
@@ -619,7 +619,7 @@ class instance_ulduar : public InstanceMapScript
                     case GO_MIMIRON_DOOR_1:
                     case GO_MIMIRON_DOOR_2:
                     case GO_MIMIRON_DOOR_3:
-                        gameObject->setActive(true);
+                        gameObject->SetGoState(GO_STATE_ACTIVE);
                         MimironDoorGUIDList.push_back(gameObject->GetGUID());
                         break;
                     case GO_ANCIENT_GATE:
@@ -968,8 +968,37 @@ class instance_ulduar : public InstanceMapScript
                             go->SetGoState(GOState(data));
                         break;
                     case DATA_CALL_TRAM:
-                        if (GameObject* go = instance->GetGameObject(MimironTrainGUID))
-                            go->UseDoorOrButton();
+                        if (GameObject* MimironTram = instance->GetGameObject(MimironTramGUID))
+                        {
+                        instance->LoadGrid(2307, 284.632f);
+                        if (data == 0)
+                        MimironTram->SetGoState(GO_STATE_READY);
+                        if (data == 1)
+                        MimironTram->SetGoState(GO_STATE_ACTIVE);
+
+                        	if (Map* pMap = MimironTram->GetMap())
+                        	{
+                        	if (pMap->IsDungeon())
+                        		{
+                        		Map::PlayerList const &PlayerList = pMap->GetPlayers();
+
+                			if (!PlayerList.isEmpty())
+                        			{
+                        			for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                					 {
+                        				if (i->GetSource())
+                        				 	{
+                        				UpdateData data;
+                        				WorldPacket pkt;
+                        				MimironTram->BuildValuesUpdateBlockForPlayer(&data, i->GetSource());
+                        				data.BuildPacket(&pkt);
+                        				i->GetSource()->GetSession()->SendPacket(&pkt);
+                        					}
+                        				}
+                        			}
+                		 	}
+                	 	}
+                        }
                         break;
                     case DATA_MIMIRON_ELEVATOR:
                         if (GameObject* go = instance->GetGameObject(MimironElevatorGUID))
@@ -1426,8 +1455,35 @@ class spell_ulduar_teleporter : public SpellScriptLoader
         }
 };
 
+class go_call_tram : public GameObjectScript
+{
+public:
+    go_call_tram() : GameObjectScript("go_call_tram") { }
+
+    bool OnGossipHello(Player* /*player*/, GameObject* go) override
+    {
+        InstanceScript* instance = go->GetInstanceScript();
+        if (!instance)
+            return false;
+
+        switch (go->GetEntry())
+        {
+            case GO_CALL_TRAM:
+            case GO_ACTIVATE_TRAM:
+                instance->SetData(DATA_CALL_TRAM, 0);
+                break;
+            case GO_CALL_TRAM_2:
+            case GO_ACTIVATE_TRAM_2:
+                instance->SetData(DATA_CALL_TRAM, 1);
+                break;
+        }
+        return true;
+    }
+};
+
 void AddSC_instance_ulduar()
 {
     new instance_ulduar();
     new spell_ulduar_teleporter();
+    new  go_call_tram();
 }
