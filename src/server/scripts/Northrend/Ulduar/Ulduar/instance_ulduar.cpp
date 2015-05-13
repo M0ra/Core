@@ -540,6 +540,7 @@ class instance_ulduar : public InstanceMapScript
                     case GO_HODIR_ICE_DOOR:
                     case GO_VEZAX_DOOR:
                     case GO_YOGG_SARON_DOOR:
+                        AddDoor(gameObject, true);
                         break;
                     case GO_RAZOR_HARPOON_1:
                         RazorHarpoonGUIDs[0] = gameObject->GetGUID();
@@ -1384,7 +1385,7 @@ class instance_ulduar : public InstanceMapScript
             uint32 _CoUAchivePlayerDeathMask;
         };
 
-        InstanceScript* GetInstanceScript(InstanceMap* map) const
+        InstanceScript* GetInstanceScript(InstanceMap* map) const override
         {
             return new instance_ulduar_InstanceMapScript(map);
         }
