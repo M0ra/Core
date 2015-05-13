@@ -3460,6 +3460,10 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 62968:
             case 65761:
                 spellInfo->Effects[EFFECT_0].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_200_YARDS); // 200yd
+            case 62385:
+            case 62386:
+            case 62387:
+                spellInfo->Effects[EFFECT_0].Effect = SPELL_EFFECT_APPLY_AURA;
             case 64468: // Empowering Shadows (Yogg-Saron)
             case 64486: // Empowering Shadows (Yogg-Saron)
                 spellInfo->MaxAffectedTargets = 3;  // same for both modes?
