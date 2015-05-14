@@ -970,34 +970,34 @@ class instance_ulduar : public InstanceMapScript
                     case DATA_CALL_TRAM:
                         if (GameObject* MimironTram = instance->GetGameObject(MimironTramGUID))
                         {
-                        instance->LoadGrid(2307, 284.632f);
-                        if (data == 0)
-                        MimironTram->SetGoState(GO_STATE_READY);
-                        if (data == 1)
-                        MimironTram->SetGoState(GO_STATE_ACTIVE);
+                            instance->LoadGrid(2307, 284.632f);
+                            if (data == 0)
+                                MimironTram->SetGoState(GO_STATE_READY);
+                            if (data == 1)
+                                MimironTram->SetGoState(GO_STATE_ACTIVE);
 
-                        	if (Map* pMap = MimironTram->GetMap())
+                        	if (Map* map = MimironTram->GetMap())
                         	{
-                        	if (pMap->IsDungeon())
+                        	    if (map->IsDungeon())
                         		{
-                        		Map::PlayerList const &PlayerList = pMap->GetPlayers();
+                        		    Map::PlayerList const &PlayerList = map->GetPlayers();
 
-                			if (!PlayerList.isEmpty())
+                			        if (!PlayerList.isEmpty())
                         			{
-                        			for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-                					 {
-                        				if (i->GetSource())
+                        			    for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                					    {
+                        				    if (i->GetSource())
                         				 	{
-                        				UpdateData data;
-                        				WorldPacket pkt;
-                        				MimironTram->BuildValuesUpdateBlockForPlayer(&data, i->GetSource());
-                        				data.BuildPacket(&pkt);
-                        				i->GetSource()->GetSession()->SendPacket(&pkt);
+                        				        UpdateData data;
+                        				        WorldPacket pkt;
+                        				        MimironTram->BuildValuesUpdateBlockForPlayer(&data, i->GetSource());
+                        				        data.BuildPacket(&pkt);
+                        				        i->GetSource()->GetSession()->SendPacket(&pkt);
                         					}
                         				}
                         			}
-                		 	}
-                	 	}
+                		 	    }
+                	 	    }
                         }
                         break;
                     case DATA_MIMIRON_ELEVATOR:

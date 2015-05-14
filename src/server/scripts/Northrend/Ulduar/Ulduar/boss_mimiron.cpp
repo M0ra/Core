@@ -1669,32 +1669,6 @@ class go_mimiron_hardmode_button : public GameObjectScript
         }
 };
 
-class go_call_tram : public GameObjectScript
-{
-public:
-    go_call_tram() : GameObjectScript("go_call_tram") { }
-
-    bool OnGossipHello(Player* /*player*/, GameObject* go) override
-    {
-        InstanceScript* instance = go->GetInstanceScript();
-        if (!instance)
-            return false;
-
-        switch (go->GetEntry())
-        {
-            case GO_CALL_TRAM:
-            case GO_ACTIVATE_TRAM:
-                instance->SetData(DATA_CALL_TRAM, 0);
-                break;
-            case GO_CALL_TRAM_2:
-            case GO_ACTIVATE_TRAM_2:
-                instance->SetData(DATA_CALL_TRAM, 1);
-                break;
-        }
-        return true;
-    }
-};
-
 // 63801 - Bomb Bot
 class spell_mimiron_bomb_bot : public SpellScriptLoader
 {
@@ -2857,7 +2831,6 @@ void AddSC_boss_mimiron()
     new npc_mimiron_proximity_mine();
 
     new go_mimiron_hardmode_button();
-    new go_call_tram();
 
     new spell_mimiron_bomb_bot();
     new spell_mimiron_clear_fires();
